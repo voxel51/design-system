@@ -1,0 +1,84 @@
+name: test and publish package
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: Node version to use
+        type: string
+        required: true
+      registry-url:
+        description: Package registry URL
+        type: string
+        required: true
+
+    secrets:
+      ORG_GOOGLE_WORKLOAD_IDP:
+        required: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: 'computer-vision-team'
+          service_account: 'github@computer-vision-team.iam.gserviceaccount.com'
+          workload_identity_provider: ${{ secrets.ORG_GOOGLE_WORKLOAD_IDP }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+          registry-url: ${{ inputs.registry-url }}
+
+      - name: Initialize auth
+        run: npx google-artifactregistry-auth
+
+      - name: Clean install
+        run: npm ci
+
+      - name: Test package
+        run: npm run test
+
+
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: 'computer-vision-team'
+          service_account: 'github@computer-vision-team.iam.gserviceaccount.com'
+          workload_identity_provider: ${{ secrets.ORG_GOOGLE_WORKLOAD_IDP }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+          registry-url: ${{ inputs.registry-url }}
+
+      - name: Initialize auth
+        run: npx google-artifactregistry-auth
+
+      - name: Clean install
+        run: npm ci
+
+      - name: Publish package
+        run: npm publish

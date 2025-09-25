@@ -1,0 +1,17 @@
+name: publish package
+
+on:
+  push:
+    branches:
+      - 'release/**'
+
+jobs:
+  publish:
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/_test_and_publish.yaml
+    with:
+      node-version: 18
+      registry-url: https://us-central1-npm.pkg.dev/computer-vision-team/dev-js/
+    secrets: inherit
