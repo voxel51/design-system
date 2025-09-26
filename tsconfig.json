@@ -2,12 +2,19 @@
   "extends": "@tsconfig/recommended/tsconfig.json",
   "compilerOptions": {
     "isolatedModules": true,
-    "outDir": "./dist",
+    "outDir": "dist/types",
     "typeRoots": [
       "node_modules/@types"
     ],
     "declaration": true,
-    "module": "NodeNext"
+    "emitDeclarationOnly": true,
+    "module": "NodeNext",
+    "moduleResolution": "bundler",
+    "jsx": "preserve",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
   "include": [
     "src/**/*.ts"
