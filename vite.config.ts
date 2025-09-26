@@ -8,7 +8,19 @@ export default defineConfig({
     react({
       jsxRuntime: "automatic",
     }),
-    dts({ insertTypesEntry: true }),
+    dts({
+      insertTypesEntry: true,
+      include: ["src/**/*"],
+      exclude: ["src/gallery/**/*", "**/*.test.*"],
+      outDir: "dist",
+      entryRoot: "src",
+      compilerOptions: {
+        baseUrl: ".",
+        paths: {
+          "@/*": ["src/*"],
+        },
+      },
+    }),
   ],
   resolve: {
     alias: {
