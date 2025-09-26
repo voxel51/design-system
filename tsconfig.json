@@ -1,6 +1,7 @@
 {
   "extends": "@tsconfig/recommended/tsconfig.json",
   "compilerOptions": {
+    "isolatedModules": true,
     "outDir": "./dist",
     "typeRoots": [
       "node_modules/@types"
@@ -14,5 +15,5 @@
   "exclude": [
     "node_modules",
     "**/*.d.ts"
-  ]
+  ],
 }
