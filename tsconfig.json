@@ -2,25 +2,30 @@
   "extends": "@tsconfig/recommended/tsconfig.json",
   "compilerOptions": {
     "isolatedModules": true,
-    "outDir": "dist/types",
     "typeRoots": [
       "node_modules/@types"
     ],
     "declaration": true,
     "emitDeclarationOnly": true,
-    "module": "NodeNext",
-    "moduleResolution": "bundler",
-    "jsx": "preserve",
+    "declarationMap": true,
+    "noEmit": false,
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
     }
   },
   "include": [
-    "src/**/*.ts"
+    "src"
   ],
   "exclude": [
     "node_modules",
+    "src/gallery",
     "**/*.d.ts"
   ],
 }

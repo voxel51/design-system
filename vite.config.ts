@@ -4,7 +4,24 @@ import path from "path";
 import dts from "vite-plugin-dts";
 
 export default defineConfig({
-  plugins: [react(), dts({ insertTypesEntry: true })],
+  plugins: [
+    react({
+      jsxRuntime: "automatic",
+    }),
+    dts({
+      insertTypesEntry: true,
+      include: ["src/**/*"],
+      exclude: ["src/gallery/**/*", "**/*.test.*"],
+      outDir: "dist",
+      entryRoot: "src",
+      compilerOptions: {
+        baseUrl: ".",
+        paths: {
+          "@/*": ["src/*"],
+        },
+      },
+    }),
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
@@ -19,12 +36,22 @@ export default defineConfig({
     },
     rollupOptions: {
       // Don't bundle peer dependencies
-      external: ["react", "react-dom", "@mui/material"],
+      external: [
+        "@emotion/react",
+        "@emotion/styled",
+        "@mui/icons-material",
+        "@mui/material",
+        "react",
+        "react-dom",
+        "react/jsx-runtime",
+        "react/jsx-dev-runtime",
+      ],
       output: {
         globals: {
           react: "React",
           "react-dom": "ReactDOM",
-          "@mui/material": "MaterialUI",
+          "react/jsx-runtime": "React",
+          "react/jsx-dev-runtime": "React",
         },
       },
     },
