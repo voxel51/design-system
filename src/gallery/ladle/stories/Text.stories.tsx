@@ -3,6 +3,12 @@ import { generateText } from "../../utils";
 
 export const TextStyles = () => (
   <>
+    <Text variant="h1">[h1]: {generateText()}</Text>
+    <Text variant="h2">[h2]: {generateText()}</Text>
+    <Text variant="h3">[h3]: {generateText()}</Text>
+    <Text variant="h4">[h4]: {generateText()}</Text>
+    <Text variant="h5">[h5]: {generateText()}</Text>
+    <Text variant="h6">[h6]: {generateText()}</Text>
     <Text>[default]: {generateText()}</Text>
     <Text variant="body1">[body1]: {generateText()}</Text>
     <Text variant="body2">[body2]: {generateText()}</Text>

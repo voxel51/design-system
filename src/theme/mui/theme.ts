@@ -45,13 +45,30 @@ export const createMUITheme = ({
     },
     typography: {
       fontFamily: typography.fontFamily.sans.join(","),
-      // todo
-      // h1: {},
-      // h2: {},
-      // h3: {},
-      // h4: {},
-      // h5: {},
-      // h6: {},
+      h1: {
+        fontSize: typography.fontSize["3xl"],
+        fontWeight: typography.fontWeight.bold,
+      },
+      h2: {
+        fontSize: typography.fontSize["2xl"],
+        fontWeight: typography.fontWeight.bold,
+      },
+      h3: {
+        fontSize: typography.fontSize.xl,
+        fontWeight: typography.fontWeight.semibold,
+      },
+      h4: {
+        fontSize: typography.fontSize.lg,
+        fontWeight: typography.fontWeight.semibold,
+      },
+      h5: {
+        fontSize: typography.fontSize.md,
+        fontWeight: typography.fontWeight.normal,
+      },
+      h6: {
+        fontSize: typography.fontSize.sm,
+        fontWeight: typography.fontWeight.normal,
+      },
       body1: {
         fontSize: typography.fontSize.base,
         fontWeight: typography.fontWeight.normal,
