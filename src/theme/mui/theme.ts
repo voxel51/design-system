@@ -39,10 +39,17 @@ export const createMUITheme = ({
       // warning: {},
       // success: {},
       // info: {},
+      // background: {},
     },
     typography: {
       fontFamily: typography.fontFamily.sans.join(","),
-      // todo h1-h6
+      // todo
+      // h1: {},
+      // h2: {},
+      // h3: {},
+      // h4: {},
+      // h5: {},
+      // h6: {},
       body1: {
         fontSize: typography.fontSize.base,
         fontWeight: typography.fontWeight.normal,
@@ -56,7 +63,8 @@ export const createMUITheme = ({
     },
     spacing: (factor: number) =>
       spacing[factor as keyof typeof spacing] ?? `${factor * 0.25}rem`,
-    // todo shape
+    // todo
+    // shape: {}
   });
 
   const componentTheme = createComponentTheme(baseTheme);
