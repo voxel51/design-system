@@ -27,21 +27,12 @@ export const createMUITheme = ({
     palette: {
       primary: {
         main: activeTheme.primary.main,
-        // main: dark.primary.main,
-        // dark: dark.primary.main,
-        // light: light.primary.main,
       },
       secondary: {
         main: activeTheme.secondary.main,
-        // main: dark.secondary.main,
-        // dark: dark.secondary.main,
-        // light: light.secondary.main,
       },
       error: {
         main: activeTheme.error.main,
-        // main: dark.error.main,
-        // dark: dark.error.main,
-        // light: light.error.main,
       },
       // todo
       // warning: {},
