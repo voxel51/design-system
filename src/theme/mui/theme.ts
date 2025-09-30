@@ -1,4 +1,4 @@
-import { createTheme, ThemeOptions } from "@mui/material";
+import { createTheme, PaletteMode, ThemeOptions } from "@mui/material";
 import { deepmerge } from "@mui/utils";
 import { colors } from "@/theme/default/colors";
 import { spacing } from "@/theme/default/spacing";
@@ -17,7 +17,7 @@ export const createMUITheme = ({
   mode = "dark",
   overrides = {},
 }: {
-  mode?: "light" | "dark";
+  mode?: PaletteMode;
   overrides?: ThemeOptions;
 }) => {
   const { light, dark } = colors;
@@ -25,6 +25,7 @@ export const createMUITheme = ({
 
   const baseTheme = createTheme({
     palette: {
+      mode,
       primary: {
         main: activeTheme.primary.main,
       },
