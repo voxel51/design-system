@@ -39,7 +39,9 @@ export const createMUITheme = ({
       // warning: {},
       // success: {},
       // info: {},
-      // background: {},
+      background: {
+        default: activeTheme.background.body,
+      },
     },
     typography: {
       fontFamily: typography.fontFamily.sans.join(","),
