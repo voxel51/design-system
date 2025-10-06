@@ -24,7 +24,7 @@
     "test": "jest",
     "ladle:dev": "npx ladle serve",
     "ladle:build": "npx ladle build",
-    "ladle:preview": "npm run ladle-build && npx ladle preview"
+    "ladle:preview": "npm run ladle:build && npx ladle preview"
   },
   "devDependencies": {
     "@emotion/react": "^11.14.0",
@@ -36,6 +36,7 @@
     "@types/jest": "^29.5.13",
     "@types/node": "^22.7.4",
     "jest": "^29.7.0",
+    "lorem-ipsum": "^2.0.8",
     "prettier": "^3.4.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
