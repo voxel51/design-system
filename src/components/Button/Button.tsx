@@ -10,6 +10,7 @@ export type ButtonType =
   | "secondary"
   | "danger"
   | "success";
+
 export type ButtonProps = Omit<BaseButtonProps, "color" | "variant"> & {
   buttonType: ButtonType;
 };

@@ -1,5 +1,5 @@
 import { Stack } from "@mui/material";
-import { Button } from "@/components/Button/Button";
+import { Button } from "@/components/Button";
 
 export const ButtonStyles = () => {
   return (
