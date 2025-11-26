@@ -49,12 +49,20 @@ export const colors = {
   light: {
     content: {
       background: {
+        primary: "#FFF",
+        secondary: "#AAA",
+      },
+      text: {
         primary: "#000",
         secondary: "#555",
       },
-      text: {
-        primary: "#FFF",
-        secondary: "#AAA",
+      border: {
+        secondary: {
+          primary: "#333",
+          hover: "#555",
+          active: "#333",
+          disabled: "#444",
+        },
       },
     },
     action: {
@@ -62,13 +70,13 @@ export const colors = {
         primary: "#FF6D05FF",
         hover: "#D05700FF",
         active: "#9C4100FF",
-        text: "#FFF",
+        text: "#000",
       },
       secondary: {
-        primary: "transparent",
-        hover: "transparent",
-        active: "#222",
-        text: "#FFF",
+        primary: "#FFF",
+        hover: "#FF6D05FF",
+        active: "#9C4100FF",
+        text: "#000",
       },
       success: {
         primary: "#047A48FF",
