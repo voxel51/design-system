@@ -70,3 +70,5 @@ export const Button: FC<ButtonProps> = ({
     </HeadlessButton>
   );
 };
+
+Button.displayName = "Button";
