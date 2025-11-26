@@ -1,6 +1,6 @@
 export const typography = {
   fontFamily: {
-    sans: ["sans-serif"],
+    sans: ["Palanquin", "sans-serif"],
     mono: ["monospace"],
   },
   fontSize: {

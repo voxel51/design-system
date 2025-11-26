@@ -3,7 +3,7 @@ import clsx from "clsx";
 import type { FC, ButtonHTMLAttributes } from "react";
 
 export type ButtonVariant = "primary" | "success" | "danger";
-export type ButtonSize = "sm" | "md" | "lg";
+export type ButtonSize = "xs" | "sm" | "md";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
@@ -33,9 +33,9 @@ const variantStyles: Record<ButtonVariant, string> = {
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
-  sm: "px-3 py-1.5 text-sm",
-  md: "px-4 py-2 text-base",
-  lg: "px-6 py-3 text-lg",
+  xs: "px-2.5 py-0.75 text-xs/5",
+  sm: "px-3.5 py-1.5 text-sm/5",
+  md: "px-4 py-2 text-base/5",
 };
 
 export const Button: FC<ButtonProps> = ({
@@ -48,7 +48,7 @@ export const Button: FC<ButtonProps> = ({
   return (
     <HeadlessButton
       className={clsx(
-        "inline-flex items-center justify-center rounded",
+        "inline-flex items-center justify-center rounded-sm",
         "font-medium transition-colors",
         "hover:cursor-pointer",
         "disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none",
