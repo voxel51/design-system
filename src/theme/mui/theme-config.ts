@@ -27,16 +27,16 @@ export const createMUIThemeConfig = ({
     palette: {
       mode,
       primary: {
-        main: activeTheme.primary.main,
+        main: activeTheme.action.primary.primary,
       },
       secondary: {
-        main: activeTheme.secondary.main,
+        main: activeTheme.action.secondary.primary,
       },
       error: {
-        main: activeTheme.error.main,
+        main: activeTheme.action.danger.primary,
       },
       background: {
-        default: activeTheme.background.body,
+        default: activeTheme.content.background.primary,
       },
     },
     typography: {
@@ -68,12 +68,12 @@ export const createMUIThemeConfig = ({
       body1: {
         fontSize: typography.fontSize.base,
         fontWeight: typography.fontWeight.normal,
-        color: activeTheme.text.primary,
+        color: activeTheme.content.text.primary,
       },
       body2: {
         fontSize: typography.fontSize.sm,
         fontWeight: typography.fontWeight.normal,
-        color: activeTheme.text.secondary,
+        color: activeTheme.content.text.primary,
       },
     },
     spacing: (factor: number) =>

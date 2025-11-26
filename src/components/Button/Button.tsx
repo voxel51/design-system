@@ -2,7 +2,7 @@ import { Button as HeadlessButton } from "@headlessui/react";
 import clsx from "clsx";
 import type { FC, ButtonHTMLAttributes } from "react";
 
-export type ButtonVariant = "primary" | "secondary" | "outlined";
+export type ButtonVariant = "primary" | "success" | "danger";
 export type ButtonSize = "sm" | "md" | "lg";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -12,11 +12,24 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 // todo - light/dark
 const variantStyles: Record<ButtonVariant, string> = {
-  primary: "bg-primary text-white hover:bg-primary-dark focus:ring-primary",
-  secondary:
-    "bg-secondary text-white hover:bg-secondary-dark focus:ring-secondary",
-  outlined:
-    "border-2 border-primary text-primary hover:bg-primary hover:text-white focus:ring-primary",
+  primary: clsx(
+      "bg-action-primary-primary",
+      "hover:bg-action-primary-hover",
+      "active:bg-action-primary-active",
+      "text-action-primary-text",
+  ),
+  success: clsx(
+      "bg-action-success-primary",
+      "hover:bg-action-success-hover",
+      "active:bg-action-success-active",
+      "text-action-success-text",
+  ),
+  danger: clsx(
+      "bg-action-danger-primary",
+      "hover:bg-action-danger-hover",
+      "active:bg-action-danger-active",
+      "text-action-danger-text",
+  ),
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
@@ -37,8 +50,8 @@ export const Button: FC<ButtonProps> = ({
       className={clsx(
         "inline-flex items-center justify-center rounded",
         "font-medium transition-colors",
-        "focus:outline-none focus:ring-2 focus:ring-offset-2",
         "hover:cursor-pointer",
+        "disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none",
         variantStyles[variant],
         sizeStyles[size],
         className
