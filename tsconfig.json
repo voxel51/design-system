@@ -1,20 +1,30 @@
 {
   "extends": "@tsconfig/recommended/tsconfig.json",
   "compilerOptions": {
-    "isolatedModules": true,
-    "typeRoots": [
-      "node_modules/@types"
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": [
+      "ES2020", "DOM", "DOM.Iterable"
     ],
-    "declaration": true,
-    "emitDeclarationOnly": true,
-    "declarationMap": true,
-    "noEmit": false,
     "module": "ESNext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": false,
+    "outDir": "./dist",
 
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
     "jsx": "react-jsx",
     "jsxImportSource": "react",
+
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
@@ -25,7 +35,8 @@
   ],
   "exclude": [
     "node_modules",
-    "src/gallery",
-    "**/*.d.ts"
+    "dist",
+    "**/*.test.tsx",
+    "**/*.test.ts",
   ],
 }

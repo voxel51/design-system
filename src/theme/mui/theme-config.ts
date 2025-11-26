@@ -1,29 +1,29 @@
-import { createTheme, PaletteMode, ThemeOptions } from "@mui/material";
-import { deepmerge } from "@mui/utils";
-import { colors } from "@/theme/default/colors";
-import { spacing } from "@/theme/default/spacing";
-import { createComponentTheme } from "@/theme/mui/components";
-import { typography } from "@/theme/default/typography";
+import type { ThemeOptions, PaletteMode } from "@mui/material";
+import { colors } from "@/theme/tokens/colors";
+import { spacing } from "@/theme/tokens/spacing";
+import { typography } from "@/theme/tokens/typography";
+import { getComponentThemeConfig } from "@/theme/mui/components";
 
 /**
- * Create a `Theme` object compatible with Material UI.
+ * Create a theme configuration object compatible with Material UI's createTheme.
+ * This is a plain object, not a Theme instance.
  *
  * @param mode Light or dark mode
  * @param overrides Optional theme overrides
  *
- * @returns `Theme` instance
+ * @returns ThemeOptions configuration object
  */
-export const createMUITheme = ({
+export const createMUIThemeConfig = ({
   mode = "dark",
   overrides = {},
 }: {
   mode?: PaletteMode;
   overrides?: ThemeOptions;
-}) => {
+} = {}): ThemeOptions => {
   const { light, dark } = colors;
   const activeTheme = mode === "light" ? light : dark;
 
-  const baseTheme = createTheme({
+  const baseConfig: ThemeOptions = {
     palette: {
       mode,
       primary: {
@@ -35,10 +35,6 @@ export const createMUITheme = ({
       error: {
         main: activeTheme.error.main,
       },
-      // todo
-      // warning: {},
-      // success: {},
-      // info: {},
       background: {
         default: activeTheme.background.body,
       },
@@ -82,18 +78,38 @@ export const createMUITheme = ({
     },
     spacing: (factor: number) =>
       spacing[factor as keyof typeof spacing] ?? `${factor * 0.25}rem`,
-    // todo
-    // shape: {}
-  });
+  };
 
-  const componentTheme = createComponentTheme(baseTheme);
+  // Get component overrides
+  const componentConfig = getComponentThemeConfig(baseConfig);
 
-  const themeParts = [baseTheme, componentTheme, overrides ?? {}];
-  const resolvedTheme = themeParts.reduce((a, b) =>
-    deepmerge(a, b)
-  ) as ThemeOptions;
-
-  return createTheme(resolvedTheme);
+  // Merge base, components, and user overrides
+  return {
+    ...baseConfig,
+    ...componentConfig,
+    ...overrides,
+    // Deep merge components specifically
+    components: {
+      ...componentConfig.components,
+      ...overrides.components,
+    },
+  };
 };
 
-export const defaultTheme = createMUITheme({});
+/**
+ * Default theme configuration (dark mode)
+ *
+ * Usage:
+ * ```tsx
+ * import { createTheme } from '@mui/material/styles';
+ * import { defaultMUIThemeConfig } from '@voxel51/design-system';
+ *
+ * const theme = createTheme(defaultMUIThemeConfig);
+ * ```
+ */
+export const defaultMUIThemeConfig = createMUIThemeConfig({ mode: "dark" });
+
+/**
+ * Light mode theme configuration
+ */
+export const lightMUIThemeConfig = createMUIThemeConfig({ mode: "light" });
