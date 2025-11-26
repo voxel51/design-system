@@ -7,7 +7,7 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/voxel51/ux-common.git"
+    "url": "https://github.com/voxel51/design-system.git"
   },
   "publishConfig": {
     "registry": "https://us-central1-npm.pkg.dev/computer-vision-team/dev-js/"

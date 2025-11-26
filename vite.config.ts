@@ -18,7 +18,13 @@ export default defineConfig({
     dts({
       insertTypesEntry: true,
       include: ["src/**/*"],
-      exclude: ["**/*.test.tsx", "**/*.test.ts", "**/*.stories.tsx"],
+      exclude: [
+        "**/*.spec.ts",
+        "**/*.spec.tsx",
+        "**/*.test.tsx",
+        "**/*.test.ts",
+        "src/setupTests.ts",
+      ],
     }),
   ],
   css: {
@@ -38,7 +44,6 @@ export default defineConfig({
         "react-dom",
         "react/jsx-runtime",
         "react/jsx-dev-runtime",
-        "@mui/material",
         "@emotion/react",
         "@emotion/styled",
         "@headlessui/react",
@@ -49,7 +54,6 @@ export default defineConfig({
           react: "React",
           "react-dom": "ReactDOM",
           "react/jsx-runtime": "jsxRuntime",
-          "@mui/material": "MaterialUI",
           "@emotion/react": "EmotionReact",
           "@emotion/styled": "EmotionStyled",
           "@headlessui/react": "HeadlessUI",
