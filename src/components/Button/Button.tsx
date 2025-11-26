@@ -10,7 +10,6 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: ButtonSize;
 }
 
-// todo - light/dark
 const variantStyles: Record<ButtonVariant, string> = {
   primary: clsx(
     "bg-action-primary-primary",
