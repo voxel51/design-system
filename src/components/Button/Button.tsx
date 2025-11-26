@@ -2,7 +2,7 @@ import { Button as HeadlessButton } from "@headlessui/react";
 import clsx from "clsx";
 import type { FC, ButtonHTMLAttributes } from "react";
 
-export type ButtonVariant = "primary" | "success" | "danger";
+export type ButtonVariant = "primary" | "secondary" | "success" | "danger";
 export type ButtonSize = "xs" | "sm" | "md";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -17,6 +17,14 @@ const variantStyles: Record<ButtonVariant, string> = {
       "hover:bg-action-primary-hover",
       "active:bg-action-primary-active",
       "text-action-primary-text",
+  ),
+  secondary: clsx(
+      "border-1",
+      "bg-action-secondary-primary border-content-border-secondary-primary",
+      "hover:bg-action-secondary-hover hover:border-content-border-secondary-hover",
+      "active:bg-action-secondary-active active:border-content-border-secondary-active",
+      "text-action-secondary-text",
+      "disabled:border-content-border-secondary-disabled",
   ),
   success: clsx(
       "bg-action-success-primary",

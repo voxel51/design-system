@@ -9,6 +9,14 @@ export const colors = {
         primary: "#FFF",
         secondary: "#AAA",
       },
+      border: {
+        secondary: {
+          primary: "#333",
+          hover: "#555",
+          active: "#333",
+          disabled: "#444",
+        }
+      }
     },
     action: {
       primary: {
@@ -21,7 +29,7 @@ export const colors = {
         primary: "transparent",
         hover: "transparent",
         active: "#222",
-        text: "#FFF",
+        text: "#CCC",
       },
       success: {
         primary: "#047A48FF",
