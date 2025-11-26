@@ -13,30 +13,30 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 // todo - light/dark
 const variantStyles: Record<ButtonVariant, string> = {
   primary: clsx(
-      "bg-action-primary-primary",
-      "hover:bg-action-primary-hover",
-      "active:bg-action-primary-active",
-      "text-action-primary-text",
+    "bg-action-primary-primary",
+    "hover:bg-action-primary-hover",
+    "active:bg-action-primary-active",
+    "text-action-primary-text"
   ),
   secondary: clsx(
-      "border-1",
-      "bg-action-secondary-primary border-content-border-secondary-primary",
-      "hover:bg-action-secondary-hover hover:border-content-border-secondary-hover",
-      "active:bg-action-secondary-active active:border-content-border-secondary-active",
-      "text-action-secondary-text",
-      "disabled:border-content-border-secondary-disabled",
+    "border-1",
+    "bg-action-secondary-primary border-content-border-secondary-primary",
+    "hover:bg-action-secondary-hover hover:border-content-border-secondary-hover",
+    "active:bg-action-secondary-active active:border-content-border-secondary-active",
+    "text-action-secondary-text",
+    "disabled:border-content-border-secondary-disabled"
   ),
   success: clsx(
-      "bg-action-success-primary",
-      "hover:bg-action-success-hover",
-      "active:bg-action-success-active",
-      "text-action-success-text",
+    "bg-action-success-primary",
+    "hover:bg-action-success-hover",
+    "active:bg-action-success-active",
+    "text-action-success-text"
   ),
   danger: clsx(
-      "bg-action-danger-primary",
-      "hover:bg-action-danger-hover",
-      "active:bg-action-danger-active",
-      "text-action-danger-text",
+    "bg-action-danger-primary",
+    "hover:bg-action-danger-hover",
+    "active:bg-action-danger-active",
+    "text-action-danger-text"
   ),
 };
 

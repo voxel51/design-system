@@ -15,8 +15,8 @@ export const colors = {
           hover: "#555",
           active: "#333",
           disabled: "#444",
-        }
-      }
+        },
+      },
     },
     action: {
       primary: {
