@@ -3,7 +3,7 @@ import { Button } from "./Button";
 import userEvent, { UserEvent } from "@testing-library/user-event";
 
 describe("Button", () => {
-  it("renders with text", () => {
+  it("should render with text", () => {
     render(<Button>Click me</Button>);
     expect(screen.getByText("Click me")).toBeInTheDocument();
   });
