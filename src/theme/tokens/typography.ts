@@ -4,9 +4,9 @@ export const typography = {
     mono: ["monospace"],
   },
   fontSize: {
-    xs: "0.5rem",
+    xs: "0.6875rem",
     sm: "0.75rem",
-    md: "1rem",
+    md: "0.8125rem",
     base: "1rem",
     lg: "1.25rem",
     xl: "1.5rem",
