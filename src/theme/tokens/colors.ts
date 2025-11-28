@@ -12,8 +12,8 @@ export const colors = {
       border: {
         secondary: {
           primary: "#333",
-          hover: "#555",
-          active: "#333",
+          secondary: "#555",
+          tertiary: "#333",
           disabled: "#444",
         },
       },
@@ -21,26 +21,26 @@ export const colors = {
     action: {
       primary: {
         primary: "#FF6D05FF",
-        hover: "#D05700FF",
-        active: "#9C4100FF",
+        secondary: "#D05700FF",
+        tertiary: "#9C4100FF",
         text: "#FFF",
       },
       secondary: {
         primary: "transparent",
-        hover: "transparent",
-        active: "#222",
+        secondary: "transparent",
+        tertiary: "#222",
         text: "#CCC",
       },
       success: {
         primary: "#047A48FF",
-        hover: "#276749FF",
-        active: "#1F563BFF",
+        secondary: "#276749FF",
+        tertiary: "#1F563BFF",
         text: "#FFF",
       },
       danger: {
         primary: "#C53030FF",
-        hover: "#9B2C2CFF",
-        active: "#822727FF",
+        secondary: "#9B2C2CFF",
+        tertiary: "#822727FF",
         text: "#FFF",
       },
     },
@@ -59,8 +59,8 @@ export const colors = {
       border: {
         secondary: {
           primary: "#333",
-          hover: "#555",
-          active: "#333",
+          secondary: "#555",
+          tertiary: "#333",
           disabled: "#444",
         },
       },
@@ -68,26 +68,26 @@ export const colors = {
     action: {
       primary: {
         primary: "#FF6D05FF",
-        hover: "#D05700FF",
-        active: "#9C4100FF",
+        secondary: "#D05700FF",
+        tertiary: "#9C4100FF",
         text: "#000",
       },
       secondary: {
         primary: "#FFF",
-        hover: "#FF6D05FF",
-        active: "#9C4100FF",
+        secondary: "#FF6D05FF",
+        tertiary: "#9C4100FF",
         text: "#000",
       },
       success: {
         primary: "#047A48FF",
-        hover: "#276749FF",
-        active: "#1F563BFF",
+        secondary: "#276749FF",
+        tertiary: "#1F563BFF",
         text: "#FFF",
       },
       danger: {
         primary: "#C53030FF",
-        hover: "#9B2C2CFF",
-        active: "#822727FF",
+        secondary: "#9B2C2CFF",
+        tertiary: "#822727FF",
         text: "#FFF",
       },
     },

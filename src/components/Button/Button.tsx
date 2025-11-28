@@ -13,28 +13,28 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const variantStyles: Record<ButtonVariant, string> = {
   primary: clsx(
     "bg-action-primary-primary",
-    "hover:bg-action-primary-hover",
-    "active:bg-action-primary-active",
+    "hover:bg-action-primary-secondary",
+    "active:bg-action-primary-tertiary",
     "text-action-primary-text"
   ),
   secondary: clsx(
     "border-1",
     "bg-action-secondary-primary border-content-border-secondary-primary",
-    "hover:bg-action-secondary-hover hover:border-content-border-secondary-hover",
-    "active:bg-action-secondary-active active:border-content-border-secondary-active",
+    "hover:bg-action-secondary-secondary hover:border-content-border-secondary-secondary",
+    "active:bg-action-secondary-tertiary active:border-content-border-secondary-tertiary",
     "text-action-secondary-text",
     "disabled:border-content-border-secondary-disabled"
   ),
   success: clsx(
     "bg-action-success-primary",
-    "hover:bg-action-success-hover",
-    "active:bg-action-success-active",
+    "hover:bg-action-success-secondary",
+    "active:bg-action-success-tertiary",
     "text-action-success-text"
   ),
   danger: clsx(
     "bg-action-danger-primary",
-    "hover:bg-action-danger-hover",
-    "active:bg-action-danger-active",
+    "hover:bg-action-danger-secondary",
+    "active:bg-action-danger-tertiary",
     "text-action-danger-text"
   ),
 };
