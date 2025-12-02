@@ -8,6 +8,8 @@ export type ButtonSize = "xs" | "sm" | "md";
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
+  leadingIcon?: FC;
+  trailingIcon?: FC;
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
@@ -40,14 +42,22 @@ const variantStyles: Record<ButtonVariant, string> = {
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
-  xs: "px-2.5 py-0.75 text-xs/5",
-  sm: "px-3.5 py-1.5 text-sm/5",
-  md: "px-4 py-2 text-md/5",
+  xs: clsx("px-2.5 py-0.75", "text-xs/5"),
+  sm: clsx("px-3.5 py-1.5", "text-sm/5"),
+  md: clsx("px-4 py-2", "px-4 py-2"),
+};
+
+const iconStyles: Record<ButtonSize, string> = {
+  xs: clsx("w-4 h-4", "leading-none"),
+  sm: clsx("w-4 h-4", "leading-none"),
+  md: clsx("w-5 h-5", "leading-none"),
 };
 
 export const Button: FC<ButtonProps> = ({
   variant = "primary",
   size = "md",
+  leadingIcon: LeadingIcon,
+  trailingIcon: TrailingIcon,
   className,
   children,
   ...props
@@ -67,7 +77,21 @@ export const Button: FC<ButtonProps> = ({
       )}
       {...props}
     >
-      {children}
+      <div className="flex flex-nowrap align-items justify-center gap-x-sm">
+        {LeadingIcon && (
+          <span className={clsx(iconStyles[size])}>
+            <LeadingIcon />
+          </span>
+        )}
+
+        {children}
+
+        {TrailingIcon && (
+          <span className={clsx(iconStyles[size])}>
+            <TrailingIcon />
+          </span>
+        )}
+      </div>
     </HeadlessButton>
   );
 };
