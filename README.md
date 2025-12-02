@@ -80,3 +80,15 @@ function App() {
     );
 }
 ```
+
+## Contributing
+
+This library is based on [HeadlessUI](https://headlessui.com/) and [Tailwind](https://tailwindcss.com/). 
+Components should be minimal, intentional, and adhere strictly to the Voxel51's internal design guidelines.
+
+General rules of thumb:
+ - Prefer explicit behavior over implicit
+ - Provide configurability where appropriate
+   - Ensure top-level properties adhere to design guidelines
+   - Allow for property overrides
+ - Prefer small, composable components
