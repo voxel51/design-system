@@ -35,3 +35,5 @@ export const Text: FC<TextProps> = ({
     </span>
   );
 };
+
+Text.displayName = "Text";
