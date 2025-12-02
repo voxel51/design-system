@@ -1,6 +1,5 @@
 import type { ThemeOptions, PaletteMode } from "@mui/material";
 import { colors } from "@/theme/tokens/colors";
-import { spacing } from "@/theme/tokens/spacing";
 import { typography } from "@/theme/tokens/typography";
 import { getComponentThemeConfig } from "@/theme/mui/components";
 
@@ -76,8 +75,7 @@ export const createMUIThemeConfig = ({
         color: activeTheme.content.text.primary,
       },
     },
-    spacing: (factor: number) =>
-      spacing[factor as keyof typeof spacing] ?? `${factor * 0.25}rem`,
+    spacing: (factor: number) => `${factor * 0.25}rem`,
   };
 
   // Get component overrides
