@@ -10,7 +10,7 @@
     "url": "https://github.com/voxel51/design-system.git"
   },
   "publishConfig": {
-    "registry": "https://us-central1-npm.pkg.dev/computer-vision-team/dev-js/"
+    "access": "public"
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

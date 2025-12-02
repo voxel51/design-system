@@ -12,6 +12,6 @@ jobs:
       id-token: write
     uses: ./.github/workflows/_test_and_publish.yaml
     with:
-      node-version: 18
+      node-version: 20
       registry-url: https://us-central1-npm.pkg.dev/computer-vision-team/dev-js/
     secrets: inherit
