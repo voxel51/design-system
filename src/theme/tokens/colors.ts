@@ -70,7 +70,7 @@ export const colors = {
         primary: "#FF6D05FF",
         secondary: "#D05700FF",
         tertiary: "#9C4100FF",
-        text: "#000",
+        text: "#FFF",
       },
       secondary: {
         primary: "#FFF",
