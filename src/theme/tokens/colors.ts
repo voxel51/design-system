@@ -1,16 +1,28 @@
 export const colors = {
+  common: {
+    brand: {
+      primary: "#FF6D04",
+      accent: "#FF9950",
+    },
+    semantic: {
+      success: "#047A48",
+      destructive: "#C53030",
+      info: "#2F5DF5",
+      warning: "#C27803",
+    },
+  },
   dark: {
     content: {
       bg: {
         background: "#1A1A1A",
         card: {
-          1: "#222",
-          2: "#262626",
-          elevated: "#333",
+          1: "#1E1E1E",
+          2: "#232323",
+          elevated: "#2D2D2D",
         },
-        muted: "#333",
-        popover: "#222",
-        secondary: "#333",
+        muted: "#2A2A2A",
+        popover: "#181818",
+        secondary: "#2C2C2C",
       },
       text: {
         fg: "#FFF",
