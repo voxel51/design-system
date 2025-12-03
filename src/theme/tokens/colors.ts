@@ -1,9 +1,16 @@
 export const colors = {
   dark: {
     content: {
-      background: {
-        primary: "#000",
-        secondary: "#555",
+      bg: {
+        background: "#1A1A1A",
+        card: {
+          1: "#222",
+          2: "#262626",
+          elevated: "#333",
+        },
+        muted: "#333",
+        popover: "#222",
+        secondary: "#333",
       },
       text: {
         primary: "#FFF",
@@ -46,12 +53,18 @@ export const colors = {
       },
     },
   },
-  // todo, placeholders for now
   light: {
     content: {
-      background: {
-        primary: "#FFF",
-        secondary: "#AAA",
+      bg: {
+        background: "#F8F8F8",
+        card: {
+          1: "#FFF",
+          2: "#F5F5F5",
+          elevated: "#FAFAFA",
+        },
+        muted: "#F0F0F0",
+        popover: "#FFF",
+        secondary: "#F0F0F0",
       },
       text: {
         primary: "#000",

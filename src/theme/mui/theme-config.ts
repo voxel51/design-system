@@ -35,7 +35,7 @@ export const createMUIThemeConfig = ({
         main: activeTheme.action.danger.primary,
       },
       background: {
-        default: activeTheme.content.background.primary,
+        default: activeTheme.content.bg.background,
       },
     },
     typography: {
