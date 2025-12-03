@@ -15,10 +15,10 @@ const elementMap: Record<HeadingVariant, FC<HeadingProps>> = {
 };
 
 const variantStyles: Record<HeadingVariant, string> = {
-  h1: clsx("text-2xl/5"),
-  h2: clsx("text-xl/5"),
-  h3: clsx("text-lg/5"),
-  h4: clsx("text-base/5"),
+  h1: clsx("text-xxl/13 text-bold"),
+  h2: clsx("text-xl/11 text-semibold"),
+  h3: clsx("text-lg/9 text-semibold"),
+  h4: clsx("text-md/7"),
 };
 
 export const Heading: FC<HeadingProps> = ({

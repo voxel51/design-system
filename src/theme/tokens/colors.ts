@@ -7,7 +7,8 @@ export const colors = {
       },
       text: {
         primary: "#FFF",
-        secondary: "#AAA",
+        secondary: "#A5A5A5",
+        tertiary: "#8A8A8A",
       },
       border: {
         secondary: {
@@ -54,7 +55,8 @@ export const colors = {
       },
       text: {
         primary: "#000",
-        secondary: "#555",
+        secondary: "#333",
+        tertiary: "#555",
       },
       border: {
         secondary: {
