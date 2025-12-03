@@ -12,7 +12,7 @@ export type TextVariant =
   | "label"
   | "caption";
 
-export type TextColor = "primary" | "secondary" | "tertiary";
+export type TextColor = "fg" | "primary" | "secondary" | "tertiary" | "muted";
 
 export interface TextProps extends HTMLAttributes<any> {
   variant?: TextVariant;
@@ -32,9 +32,11 @@ const variantStyles: Record<TextVariant, string> = {
 };
 
 const colorStyles: Record<TextColor, string> = {
+  fg: "text-content-text-fg",
   primary: "text-content-text-primary",
   secondary: "text-content-text-secondary",
   tertiary: "text-content-text-tertiary",
+  muted: "text-content-text-muted",
 };
 
 export const Text: FC<TextProps> = ({

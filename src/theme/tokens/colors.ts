@@ -13,9 +13,11 @@ export const colors = {
         secondary: "#333",
       },
       text: {
+        fg: "#FFF",
         primary: "#FFF",
-        secondary: "#A5A5A5",
-        tertiary: "#8A8A8A",
+        secondary: "#BBB",
+        tertiary: "#888",
+        muted: "#6E6E6E",
       },
       border: {
         secondary: {
@@ -67,9 +69,11 @@ export const colors = {
         secondary: "#F0F0F0",
       },
       text: {
-        primary: "#000",
-        secondary: "#333",
-        tertiary: "#555",
+        fg: "#000",
+        primary: "#111",
+        secondary: "#555",
+        tertiary: "#777",
+        muted: "#999",
       },
       border: {
         secondary: {
