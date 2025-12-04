@@ -1,9 +1,16 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import path from "path";
+import { resolve } from "path";
 import dts from "vite-plugin-dts";
+import tailwindcss from "@tailwindcss/postcss";
+import autoprefixer from "autoprefixer";
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      "@": resolve(__dirname, "src"),
+    },
+  },
   plugins: [
     react({
       jsxRuntime: "automatic",
@@ -11,49 +18,53 @@ export default defineConfig({
     dts({
       insertTypesEntry: true,
       include: ["src/**/*"],
-      exclude: ["src/gallery/**/*", "**/*.test.*"],
-      outDir: "dist",
-      entryRoot: "src",
-      compilerOptions: {
-        baseUrl: ".",
-        paths: {
-          "@/*": ["src/*"],
-        },
-      },
+      exclude: [
+        "**/*.spec.ts",
+        "**/*.spec.tsx",
+        "**/*.test.tsx",
+        "**/*.test.ts",
+        "src/setupTests.ts",
+      ],
     }),
   ],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "src"),
+  css: {
+    postcss: {
+      plugins: [tailwindcss, autoprefixer],
     },
   },
   build: {
     lib: {
-      entry: path.resolve(__dirname, "src/index.ts"),
-      name: "ux-common",
+      entry: resolve(__dirname, "src/index.ts"),
       formats: ["es", "cjs"],
-      fileName: (format) => `ux-common.${format}.js`,
+      fileName: (format) => `index.${format === "es" ? "js" : "cjs"}`,
     },
     rollupOptions: {
-      // Don't bundle peer dependencies
       external: [
-        "@emotion/react",
-        "@emotion/styled",
-        "@mui/icons-material",
-        "@mui/material",
         "react",
         "react-dom",
         "react/jsx-runtime",
         "react/jsx-dev-runtime",
+        "@emotion/react",
+        "@emotion/styled",
+        "@headlessui/react",
+        "clsx",
       ],
       output: {
         globals: {
           react: "React",
           "react-dom": "ReactDOM",
-          "react/jsx-runtime": "React",
-          "react/jsx-dev-runtime": "React",
+          "react/jsx-runtime": "jsxRuntime",
+          "@emotion/react": "EmotionReact",
+          "@emotion/styled": "EmotionStyled",
+          "@headlessui/react": "HeadlessUI",
+          clsx: "clsx",
         },
+        preserveModules: false,
+        exports: "named",
       },
     },
+    cssCodeSplit: false,
+    sourcemap: true,
+    emptyOutDir: true,
   },
 });

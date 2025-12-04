@@ -1,0 +1,5 @@
+/* tailwind base */
+@import "tailwindcss";
+
+/* custom theme */
+@import "./tailwind.css";

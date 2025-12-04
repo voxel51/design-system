@@ -129,5 +129,10 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+# Generated files
+*.d.ts
+*.d.ts.map
+src/styles/tailwind.css
+
 .idea
 build
