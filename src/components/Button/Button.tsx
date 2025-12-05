@@ -1,9 +1,19 @@
 import { Button as HeadlessButton } from "@headlessui/react";
 import clsx from "clsx";
-import type { FC, ButtonHTMLAttributes } from "react";
+import type { ButtonHTMLAttributes, FC } from "react";
 
-export type ButtonVariant = "primary" | "secondary" | "success" | "danger";
-export type ButtonSize = "xs" | "sm" | "md";
+export enum ButtonVariant {
+  Primary = "primary",
+  Secondary = "secondary",
+  Success = "success",
+  Danger = "danger",
+}
+
+export enum ButtonSize {
+  Xs = "xs",
+  Sm = "sm",
+  Md = "md",
+}
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
@@ -13,13 +23,13 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
-  primary: clsx(
+  [ButtonVariant.Primary]: clsx(
     "bg-action-primary-primary",
     "hover:bg-action-primary-secondary",
     "active:bg-action-primary-tertiary",
     "text-action-primary-text"
   ),
-  secondary: clsx(
+  [ButtonVariant.Secondary]: clsx(
     "border-1",
     "bg-action-secondary-primary border-content-border-secondary-primary",
     "hover:bg-action-secondary-secondary hover:border-content-border-secondary-secondary",
@@ -27,13 +37,13 @@ const variantStyles: Record<ButtonVariant, string> = {
     "text-action-secondary-text",
     "disabled:border-content-border-secondary-disabled"
   ),
-  success: clsx(
+  [ButtonVariant.Success]: clsx(
     "bg-action-success-primary",
     "hover:bg-action-success-secondary",
     "active:bg-action-success-tertiary",
     "text-action-success-text"
   ),
-  danger: clsx(
+  [ButtonVariant.Danger]: clsx(
     "bg-action-danger-primary",
     "hover:bg-action-danger-secondary",
     "active:bg-action-danger-tertiary",
@@ -42,20 +52,20 @@ const variantStyles: Record<ButtonVariant, string> = {
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
-  xs: clsx("px-2.5 py-0.75", "text-xs/5"),
-  sm: clsx("px-3.5 py-1.5", "text-sm/5"),
-  md: clsx("px-4 py-2", "px-4 py-2"),
+  [ButtonSize.Xs]: clsx("px-2.5 py-0.75", "text-xs/5"),
+  [ButtonSize.Sm]: clsx("px-3.5 py-1.5", "text-sm/5"),
+  [ButtonSize.Md]: clsx("px-4 py-2", "px-4 py-2"),
 };
 
 const iconStyles: Record<ButtonSize, string> = {
-  xs: clsx("w-4 h-4", "leading-none"),
-  sm: clsx("w-4 h-4", "leading-none"),
-  md: clsx("w-5 h-5", "leading-none"),
+  [ButtonSize.Xs]: clsx("w-4 h-4", "leading-none"),
+  [ButtonSize.Sm]: clsx("w-4 h-4", "leading-none"),
+  [ButtonSize.Md]: clsx("w-5 h-5", "leading-none"),
 };
 
 export const Button: FC<ButtonProps> = ({
-  variant = "primary",
-  size = "md",
+  variant = ButtonVariant.Primary,
+  size = ButtonSize.Md,
   leadingIcon: LeadingIcon,
   trailingIcon: TrailingIcon,
   className,
