@@ -1,5 +1,6 @@
 import type { FC, HTMLAttributes } from "react";
 import clsx from "clsx";
+import { cn } from "@/util/classes";
 
 export type HeadingVariant = "h1" | "h2" | "h3" | "h4";
 
@@ -31,7 +32,7 @@ export const Heading: FC<HeadingProps> = ({
 
   return (
     <Element
-      className={clsx(
+      className={cn(
         "text-content-text-primary",
         variantStyles[variant],
         className
