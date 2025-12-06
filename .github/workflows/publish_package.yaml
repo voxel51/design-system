@@ -13,6 +13,6 @@ jobs:
     uses: ./.github/workflows/_test_and_publish.yaml
     with:
       node-version: 20
-      registry-url: https://us-central1-npm.pkg.dev/computer-vision-team/dev-js/
+      registry-url: https://registry.npmjs.org
     secrets:
       REGISTRY_TOKEN: ${{ secrets.NPM_TOKEN }}
