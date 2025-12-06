@@ -14,4 +14,5 @@ jobs:
     with:
       node-version: 20
       registry-url: https://us-central1-npm.pkg.dev/computer-vision-team/dev-js/
-    secrets: inherit
+    secrets:
+      REGISTRY_TOKEN: ${{ secrets.NPM_TOKEN }}
