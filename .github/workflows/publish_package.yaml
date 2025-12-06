@@ -2,8 +2,8 @@ name: publish package
 
 on:
   push:
-    branches:
-      - 'release/**'
+    tags:
+      - 'v*'
 
 jobs:
   publish:
