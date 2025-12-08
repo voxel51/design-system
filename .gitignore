@@ -1,5 +1,5 @@
 # Application specific
-src/styles/tailwind.css
+*tailwind.css
 
 # Logs
 logs

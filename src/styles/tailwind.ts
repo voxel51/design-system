@@ -16,7 +16,7 @@ type ColorEnumType = typeof TextColor | typeof BackgroundColor;
  * @returns True if the color is a valid tailwind class, false otherwise.
  */
 function isTailwindClass(color: string, enumType: ColorEnumType): boolean {
-  return Object.values(enumType).includes(color as any);
+  return Object.values(enumType).includes(color);
 }
 
 /**
