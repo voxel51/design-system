@@ -76,7 +76,7 @@ export const Button: FC<ButtonProps> = ({
         "disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none",
         variantStyles[variant],
         sizeStyles[size],
-        borderless ? "border-0" : "",
+        borderless && "border-0",
         className
       )}
       {...props}

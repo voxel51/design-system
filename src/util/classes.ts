@@ -20,6 +20,8 @@ import clsx from "clsx";
  *
  * @param classes Classes to apply
  */
-export const cn = (...classes: (string | undefined)[]): string => {
+export const cn = (
+  ...classes: (string | boolean | null | undefined)[]
+): string => {
   return twMerge(clsx(...classes));
 };

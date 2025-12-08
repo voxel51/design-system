@@ -12,6 +12,27 @@ describe("cn", () => {
     }
   });
 
+  it("should ignore null/undefined values", () => {
+    const expectedClasses = ["px-4", "mb-2"];
+    const badClasses = [undefined, null, false, true];
+
+    const result = cn(...[...expectedClasses, ...badClasses]);
+
+    expectedClasses.forEach((className) => expect(result).toContain(className));
+    badClasses.forEach((className) =>
+      expect(result).not.toContain(`${className}`)
+    );
+  });
+
+  it("should allow for conditional syntax", () => {
+    const included = "px-5";
+    const excluded = "py-5";
+    const result = cn(true && included, false && excluded);
+
+    expect(result).toContain(included);
+    expect(result).not.toContain(excluded);
+  });
+
   describe("class deduplication", () => {
     it("should dedupe conflicting classes", () => {
       const result = cn("border-0", "border-1");
