@@ -3,12 +3,12 @@ import shadowStyles from "@/styles/shadow";
 import { bg, text } from "@/styles/tailwind";
 import {
   BackgroundColor,
-  BackgroundColorType,
+  BackgroundColorProp,
   Radius,
   Shadow,
   Size,
   TextColor,
-  TextColorType,
+  TextColorProp,
 } from "@/types";
 import clsx from "clsx";
 import type { FC, HTMLAttributes } from "react";
@@ -17,8 +17,8 @@ export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   size?: Size;
   radius?: Radius;
   shadow?: Shadow;
-  color?: TextColorType;
-  backgroundColor?: BackgroundColorType;
+  color?: TextColorProp;
+  backgroundColor?: BackgroundColorProp;
 }
 
 const sizeStyles: Record<Size, string> = {

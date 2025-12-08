@@ -10,7 +10,7 @@ export enum TextColor {
 }
 
 // Allows for arbitrary string values (hex, rgb, named colors, etc.)
-export type TextColorType = TextColor | string;
+export type TextColorProp = TextColor | string;
 
 /**
  * Tailwind classes for background colors
@@ -26,4 +26,4 @@ export enum BackgroundColor {
 }
 
 // Allows for arbitrary string values (hex, rgb, named colors, etc.)
-export type BackgroundColorType = BackgroundColor | string;
+export type BackgroundColorProp = BackgroundColor | string;
