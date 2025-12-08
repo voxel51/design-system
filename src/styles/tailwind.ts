@@ -24,7 +24,7 @@ function isTailwindClass(color: string, enumType: ColorEnumType): boolean {
  * @param color - The color to convert to a tailwind class.
  * @returns The tailwind class for the color.
  */
-export function text(color: string): string | null {
+export function text(color: string | null | undefined): string | null {
   if (!color) return null;
   if (isTailwindClass(color, TextColor)) {
     return color;
@@ -37,7 +37,7 @@ export function text(color: string): string | null {
  * @param color - The color to convert to a tailwind class.
  * @returns The tailwind class for the color.
  */
-export function bg(color: string): string | null {
+export function bg(color: string | null | undefined): string | null {
   if (!color) return null;
   if (isTailwindClass(color, BackgroundColor)) {
     return color;
