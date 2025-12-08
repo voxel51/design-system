@@ -1,25 +1,12 @@
 import { TextColor, TextColorProp, TextVariant } from "@/types";
-import clsx from "clsx";
 import type { FC, HTMLAttributes } from "react";
-import { cn } from "@/util/classes";
-
+import { textStyles } from "@/styles/text";
+import clsx from "clsx";
 
 export interface TextProps extends HTMLAttributes<any> {
   variant?: TextVariant;
   color?: TextColorProp;
 }
-
-const variantStyles: Record<TextVariant, string> = {
-  xxs: "text-xxs/4",
-  xs: "text-xs/5",
-  sm: "text-sm/6",
-  md: "text-md/7",
-  lg: "text-lg/9",
-  xl: "text-xl/11",
-  xxl: "text-xxl/13",
-  label: "text-xs/5 text-bold uppercase",
-  caption: "text-xs/5 text-content-text-tertiary",
-};
 
 export const Text: FC<TextProps> = ({
   variant = TextVariant.Md,
@@ -29,7 +16,7 @@ export const Text: FC<TextProps> = ({
   ...props
 }) => {
   return (
-    <span className={clsx(color, variantStyles[variant], className)} {...props}>
+    <span className={clsx(color, textStyles(variant), className)} {...props}>
       {children}
     </span>
   );

@@ -12,6 +12,7 @@ import {
 } from "@/types";
 import clsx from "clsx";
 import type { FC, HTMLAttributes } from "react";
+import { cn } from "@/util/classes";
 
 export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   size?: Size;
@@ -37,11 +38,8 @@ export const Badge: FC<BadgeProps> = ({
   children,
   ...props
 }) => {
-  // TODO - refactor to use Tom's cn method
-  const colorClass = color ? text(color) : TextColor.Muted;
-  const backgroundColorClass = backgroundColor
-    ? bg(backgroundColor)
-    : BackgroundColor.Muted;
+  const colorClass = cn(TextColor.Muted, text(color));
+  const backgroundColorClass = cn(BackgroundColor.Muted, bg(backgroundColor));
   return (
     <span
       className={clsx(

@@ -1,7 +1,6 @@
 import { render, screen } from "@testing-library/react";
-import { Heading, HeadingVariant } from "./Heading";
-
-const headingVariants: HeadingVariant[] = ["h1", "h2", "h3", "h4"];
+import { Heading } from "./Heading";
+import HeadingLevel from "@/types/heading";
 
 describe("Heading", () => {
   const headingText = "some heading";
@@ -13,14 +12,14 @@ describe("Heading", () => {
     expect(element.innerHTML).toBe(headingText);
   });
 
-  headingVariants.forEach((variant) =>
-    describe(variant, () => {
+  Object.values(HeadingLevel).forEach((level) =>
+    describe(level, () => {
       it("should render with the correct DOM node", () => {
-        render(<Heading variant={variant}>{headingText}</Heading>);
+        render(<Heading level={level}>{headingText}</Heading>);
         const element = screen.getByRole("heading");
         expect(element).toBeInTheDocument();
         expect(element.innerHTML).toBe(headingText);
-        expect(element.nodeName.toLowerCase()).toBe(variant);
+        expect(element.nodeName.toLowerCase()).toBe(level);
       });
     })
   );
