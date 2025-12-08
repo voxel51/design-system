@@ -1,6 +1,8 @@
 import { TextColor, TextColorProp, TextVariant } from "@/types";
 import clsx from "clsx";
 import type { FC, HTMLAttributes } from "react";
+import { cn } from "@/util/classes";
+
 
 export interface TextProps extends HTMLAttributes<any> {
   variant?: TextVariant;
