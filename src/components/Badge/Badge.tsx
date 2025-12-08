@@ -1,7 +1,15 @@
-import { Radius, Shadow, Size } from "@/enums";
-import radius_styles from "@/styles/radius";
-import shadow_styles from "@/styles/shadow";
+import radiusStyles from "@/styles/radius";
+import shadowStyles from "@/styles/shadow";
 import { bg, text } from "@/styles/tailwind";
+import {
+  BackgroundColor,
+  BackgroundColorType,
+  Radius,
+  Shadow,
+  Size,
+  TextColor,
+  TextColorType,
+} from "@/types";
 import clsx from "clsx";
 import type { FC, HTMLAttributes } from "react";
 
@@ -9,30 +17,31 @@ export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   size?: Size;
   radius?: Radius;
   shadow?: Shadow;
-  color?: string;
-  backgroundColor?: string;
+  color?: TextColorType;
+  backgroundColor?: BackgroundColorType;
 }
 
 const sizeStyles: Record<Size, string> = {
   [Size.Xs]: clsx("px-2.5 py-0.75", "text-xs/5"),
   [Size.Sm]: clsx("px-3.5 py-1.5", "text-sm/5"),
-  [Size.Md]: clsx("px-4 py-2", "text-sm/5"),
+  [Size.Md]: clsx("px-4 py-2", "text-md/5"),
 };
 
 export const Badge: FC<BadgeProps> = ({
   size = Size.Sm,
   radius = Radius.Full,
   shadow = undefined,
-  color,
-  backgroundColor,
+  color = undefined,
+  backgroundColor = undefined,
   className,
   children,
   ...props
 }) => {
-  const colorClass = color ? text(color) : "text-content-text-muted";
+  // TODO - refactor to use Tom's cn method
+  const colorClass = color ? text(color) : TextColor.Muted;
   const backgroundColorClass = backgroundColor
     ? bg(backgroundColor)
-    : "bg-content-bg-muted";
+    : BackgroundColor.Muted;
   return (
     <span
       className={clsx(
@@ -40,8 +49,8 @@ export const Badge: FC<BadgeProps> = ({
         "font-small",
         colorClass,
         backgroundColorClass,
-        radius_styles(radius),
-        shadow_styles(shadow),
+        radiusStyles(radius),
+        shadowStyles(shadow),
         sizeStyles[size],
         className
       )}

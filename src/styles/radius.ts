@@ -1,4 +1,4 @@
-import { Radius } from "@/enums/radius";
+import { Radius } from "@/types/radius";
 
 export const RADIUS_STYLES: Record<Radius, string> = {
   [Radius.None]: "rounded-none",
@@ -10,6 +10,6 @@ export const RADIUS_STYLES: Record<Radius, string> = {
   [Radius.Full]: "rounded-full",
 };
 
-export default function radius_styles(radius: Radius): string {
+export default function radiusStyles(radius: Radius): string {
   return RADIUS_STYLES[radius];
 }

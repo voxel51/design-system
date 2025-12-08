@@ -1,4 +1,4 @@
-import Shadow from "@/enums/shadow";
+import Shadow from "@/types/shadow";
 
 export const SHADOW_STYLES: Record<Shadow, string> = {
   [Shadow.Xs]: "shadow-xs",
@@ -8,7 +8,7 @@ export const SHADOW_STYLES: Record<Shadow, string> = {
   [Shadow.Xl]: "shadow-xl",
 };
 
-export default function shadow_styles(shadow?: Shadow): string | null {
+export default function shadowStyles(shadow?: Shadow): string | null {
   if (!shadow) return null;
   return SHADOW_STYLES[shadow];
 }

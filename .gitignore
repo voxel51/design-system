@@ -1,3 +1,6 @@
+# Application specific
+src/styles/tailwind.css
+
 # Logs
 logs
 *.log

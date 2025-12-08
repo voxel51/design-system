@@ -1,4 +1,4 @@
-import { Size, Variant } from "@/enums";
+import { Size, Variant } from "@/types";
 import { Button as HeadlessButton } from "@headlessui/react";
 import clsx from "clsx";
 import type { ButtonHTMLAttributes, FC } from "react";
