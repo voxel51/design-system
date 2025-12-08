@@ -95,3 +95,14 @@ General rules of thumb:
    - Ensure top-level properties adhere to design guidelines
    - Allow for property overrides
  - Prefer small, composable components
+
+## Publishing
+
+This library is published to NPM via GitHub Actions workflows.
+Releases are triggered by tagging a commit with a `v<version>` tag, where `<version>`
+should match the `version` property in `package.json`. For example, the initial release has the tag `v0.0.1`.
+
+Once a release is tagged and published, the `version` property in `package.json` should receive a patch bump.
+
+This library is currently in a pre-release state, with versions matching `0.x.y`.
+Standard semantic versioning will be enforced starting with version `1.0.0`.
