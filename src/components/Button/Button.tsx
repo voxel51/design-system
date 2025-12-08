@@ -1,6 +1,7 @@
 import { Button as HeadlessButton } from "@headlessui/react";
 import clsx from "clsx";
 import type { FC, ButtonHTMLAttributes } from "react";
+import { cn } from "@/util/classes";
 
 export type ButtonVariant = "primary" | "secondary" | "success" | "danger";
 export type ButtonSize = "xs" | "sm" | "md";
@@ -10,6 +11,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: ButtonSize;
   leadingIcon?: FC;
   trailingIcon?: FC;
+  borderless?: boolean;
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
@@ -44,7 +46,7 @@ const variantStyles: Record<ButtonVariant, string> = {
 const sizeStyles: Record<ButtonSize, string> = {
   xs: clsx("px-2.5 py-0.75", "text-xs/5"),
   sm: clsx("px-3.5 py-1.5", "text-sm/5"),
-  md: clsx("px-4 py-2", "px-4 py-2"),
+  md: clsx("px-4 py-2", "text-md/5"),
 };
 
 const iconStyles: Record<ButtonSize, string> = {
@@ -56,6 +58,7 @@ const iconStyles: Record<ButtonSize, string> = {
 export const Button: FC<ButtonProps> = ({
   variant = "primary",
   size = "md",
+  borderless = false,
   leadingIcon: LeadingIcon,
   trailingIcon: TrailingIcon,
   className,
@@ -64,15 +67,16 @@ export const Button: FC<ButtonProps> = ({
 }) => {
   return (
     <HeadlessButton
-      className={clsx(
+      className={cn(
         "inline-flex items-center justify-center",
-        "rounded-sm",
+        borderless ? "rounded-full" : "rounded-sm",
         "font-medium",
         "transition-colors",
         "hover:cursor-pointer",
         "disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none",
         variantStyles[variant],
         sizeStyles[size],
+        borderless && "border-0",
         className
       )}
       {...props}

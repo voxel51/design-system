@@ -1,5 +1,5 @@
 import type { FC, HTMLAttributes } from "react";
-import clsx from "clsx";
+import { cn } from "@/util/classes";
 
 export type TextVariant =
   | "xxs"
@@ -48,7 +48,7 @@ export const Text: FC<TextProps> = ({
 }) => {
   return (
     <span
-      className={clsx(colorStyles[color], variantStyles[variant], className)}
+      className={cn(colorStyles[color], variantStyles[variant], className)}
       {...props}
     >
       {children}
