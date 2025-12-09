@@ -9,6 +9,7 @@ on:
 
 jobs:
   run_tests:
+    name: run unit tests
     uses: ./.github/workflows/_run_tests.yaml
     with:
       node-version: 20
