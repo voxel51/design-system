@@ -1,0 +1,14 @@
+on:
+  pull_request:
+    branches:
+      - develop
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  run_tests:
+    uses: ./.github/workflows/_run_tests.yaml
+    with:
+      node-version: 20
