@@ -79,7 +79,7 @@ export const Button: FC<ButtonProps> = ({
       )}
       {...props}
     >
-      <div className="flex flex-nowrap align-items justify-center gap-x-sm">
+      <div className="flex flex-nowrap items-center justify-center gap-x-sm">
         {LeadingIcon && (
           <span className={clsx(iconStyles[size])}>
             <LeadingIcon />
