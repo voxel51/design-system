@@ -14,26 +14,11 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    uses: ./.github/workflows/_run_tests.yaml
+    with:
+      node-version: ${{ inputs.node-version }}
     permissions:
       contents: read
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ inputs.node-version }}
-          registry-url: ${{ inputs.registry-url }}
-
-      - name: Clean install
-        run: npm ci
-
-      - name: Test package
-        run: npm run test
-
 
   publish:
     needs: test
@@ -44,10 +29,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ inputs.node-version }}
           registry-url: ${{ inputs.registry-url }}
