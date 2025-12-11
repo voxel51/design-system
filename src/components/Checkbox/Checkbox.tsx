@@ -1,20 +1,23 @@
 import radiusStyles from "@/styles/radius";
-import shadowStyles from "@/styles/shadow";
 import { TEXT_STYLES } from "@/styles/text";
-import { Radius, Shadow, Size, TextColor } from "@/types";
+import { Radius, Size, TextColor } from "@/types";
 import { cn } from "@/util/classes";
 import { Field, Checkbox as HeadlessCheckbox, Label } from "@headlessui/react";
 import clsx from "clsx";
-import { type FC } from "react";
+import { InputHTMLAttributes, type FC } from "react";
 
-export interface CheckboxProps {
+type ModifiedCheckboxProps = Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  "size" | "onChange" | "checked" | "disabled" | "className"
+>;
+
+export interface CheckboxProps extends ModifiedCheckboxProps {
   checked?: boolean;
   onChange?: (checked: boolean) => void;
-  label: string;
+  label?: string;
   disabled?: boolean;
   size?: Size;
   radius?: Radius;
-  shadow?: Shadow;
   className?: string;
   labelClassName?: string;
 }
@@ -36,7 +39,6 @@ export const Checkbox: FC<CheckboxProps> = ({
   onChange = undefined,
   size = Size.Sm,
   radius = Radius.Xs,
-  shadow = undefined,
   className,
   labelClassName,
   label,
@@ -54,7 +56,6 @@ export const Checkbox: FC<CheckboxProps> = ({
           "border",
           "border-content-border-secondary-primary",
           radiusStyles(radius),
-          shadowStyles(shadow),
           sizeStyles[size],
           checkmarkSizeStyles[size],
           "focus:outline-none",
