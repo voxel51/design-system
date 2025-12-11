@@ -82,6 +82,8 @@ export const Toggle: FC<ToggleProps> = ({
           "cursor-pointer",
           "items-center",
           "bg-content-bg-card-elevated", // TODO - evaluate if this intent is correct
+          "border",
+          "border-content-border-secondary-primary",
           "transition-colors",
           // when focused
           "focus:outline-none",
