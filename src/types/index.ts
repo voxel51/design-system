@@ -1,4 +1,5 @@
 export * from "./color";
+export * from "./descriptor";
 export * from "./heading";
 export * from "./radius";
 export * from "./shadow";
