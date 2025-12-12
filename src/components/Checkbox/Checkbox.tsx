@@ -24,21 +24,23 @@ export interface CheckboxProps extends ModifiedCheckboxProps {
 }
 
 const sizeStyles: Record<Size, string> = {
-  [Size.Xs]: clsx("w-4 h-4"),
-  [Size.Sm]: clsx("w-5 h-5"),
-  [Size.Md]: clsx("w-6 h-6"),
+  [Size.Xs]: clsx("w-3 h-3"),
+  [Size.Sm]: clsx("w-4 h-4"),
+  [Size.Md]: clsx("w-5 h-5"),
+  [Size.Lg]: clsx("w-6 h-6"),
 };
 
 const checkmarkSizeStyles: Record<Size, string> = {
-  [Size.Xs]: clsx("checked:after:text-sm"),
-  [Size.Sm]: clsx("checked:after:text-base"),
-  [Size.Md]: clsx("checked:after:text-lg"),
+  [Size.Xs]: clsx("checked:after:text-xs"),
+  [Size.Sm]: clsx("checked:after:text-sm"),
+  [Size.Md]: clsx("checked:after:text-base"),
+  [Size.Lg]: clsx("checked:after:text-lg"),
 };
 
 export const Checkbox: FC<CheckboxProps> = ({
   checked = false,
   onChange = undefined,
-  size = Size.Sm,
+  size = Size.Md,
   radius = Radius.Xs,
   className,
   labelClassName,
@@ -46,7 +48,7 @@ export const Checkbox: FC<CheckboxProps> = ({
   ...props
 }) => {
   return (
-    <Field className="flex items-center gap-2">
+    <Field className="group flex items-center gap-2">
       <HeadlessCheckbox
         checked={checked}
         onChange={onChange}
@@ -56,6 +58,7 @@ export const Checkbox: FC<CheckboxProps> = ({
           "appearance-none",
           "border",
           "border-content-border-secondary-primary",
+          "group-hover:border-action-primary-primary",
           radiusStyles(radius),
           sizeStyles[size],
           checkmarkSizeStyles[size],
