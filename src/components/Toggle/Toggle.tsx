@@ -57,6 +57,7 @@ const getThumbTranslateStyles = (size: Size): string => {
 
 export const Toggle: FC<ToggleProps> = ({
   checked = false,
+  disabled = false,
   onChange = undefined,
   size = Size.Md,
   className,
@@ -69,7 +70,7 @@ export const Toggle: FC<ToggleProps> = ({
       <HeadlessSwitch
         checked={checked}
         onChange={onChange}
-        disabled={props.disabled}
+        disabled={disabled}
         className={cn(
           "group",
           "relative",
