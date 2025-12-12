@@ -5,6 +5,7 @@ import { cn } from "@/util/classes";
 import { Field, Checkbox as HeadlessCheckbox, Label } from "@headlessui/react";
 import clsx from "clsx";
 import { InputHTMLAttributes, type FC } from "react";
+import { CheckmarkIcon } from "../Icons/Checkmark";
 
 type ModifiedCheckboxProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
@@ -70,18 +71,7 @@ export const Checkbox: FC<CheckboxProps> = ({
         )}
         {...props}
       >
-        <svg
-          className="stroke-white opacity-0 group-data-checked:opacity-100"
-          viewBox="0 0 14 14"
-          fill="none"
-        >
-          <path
-            d="M3 8L6 11L11 3.5"
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        <CheckmarkIcon />
       </HeadlessCheckbox>
       {label && (
         <Label
