@@ -15,25 +15,22 @@ export interface ToggleProps extends ModifiedToggleProps {
   onChange?: (checked: boolean) => void;
   label?: string;
   disabled?: boolean;
-  size?: Size;
+  size?: Size.Sm | Size.Md;
   className?: string;
   labelClassName?: string;
 }
 
-const trackSizeStyles: Record<Size, string> = {
-  [Size.Xs]: cn("w-8 h-4"),
-  [Size.Sm]: cn("w-9 h-5"),
-  [Size.Md]: cn("w-12 h-6"),
+const trackSizeStyles: Partial<Record<Size, string>> = {
+  [Size.Sm]: cn("w-8 h-4"),
+  [Size.Md]: cn("w-9 h-5"),
 };
 
-const thumbSizeStyles: Record<Size, string> = {
-  [Size.Xs]: cn("w-3 h-3"),
-  [Size.Sm]: cn("w-4 h-4"),
-  [Size.Md]: cn("w-5 h-5"),
+const thumbSizeStyles: Partial<Record<Size, string>> = {
+  [Size.Sm]: cn("w-3 h-3"),
+  [Size.Md]: cn("w-4 h-4"),
 };
 
-const textStyles: Record<Size, string> = {
-  [Size.Xs]: TEXT_STYLES[TextVariant.Xs],
+const textStyles: Partial<Record<Size, string>> = {
   [Size.Sm]: TEXT_STYLES[TextVariant.Sm],
   [Size.Md]: TEXT_STYLES[TextVariant.Md],
 };
@@ -49,12 +46,10 @@ const textStyles: Record<Size, string> = {
  */
 const getThumbTranslateStyles = (size: Size): string => {
   switch (size) {
-    case Size.Xs:
-      return "group-data-checked:translate-x-[calc(2.1rem-0.75rem-0.28rem)]";
     case Size.Sm:
       return "group-data-checked:translate-x-[calc(2.3rem-1rem-0.28rem)]";
     case Size.Md:
-      return "group-data-checked:translate-x-[calc(3.3rem-1.5rem-0.28rem)]";
+      return "group-data-checked:translate-x-[calc(2.8rem-1.5rem-0.28rem)]";
     default:
       return "";
   }
@@ -63,7 +58,7 @@ const getThumbTranslateStyles = (size: Size): string => {
 export const Toggle: FC<ToggleProps> = ({
   checked = false,
   onChange = undefined,
-  size = Size.Sm,
+  size = Size.Md,
   className,
   labelClassName,
   label,
@@ -85,9 +80,11 @@ export const Toggle: FC<ToggleProps> = ({
           "border",
           "border-content-border-secondary-primary",
           "transition-colors",
+          // when hovered
+          "hover:bg-[#999999]", // TODO - current scheme doesn't have a light grey
           // when focused
           "focus:outline-none",
-          "focus:ring-2",
+          "focus:ring-1",
           "focus:ring-action-primary-primary",
           "focus:ring-offset-2",
           // when disabled
