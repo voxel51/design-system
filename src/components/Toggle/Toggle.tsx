@@ -24,9 +24,40 @@ export interface ToggleProps extends Omit<
 }
 
 const sizeStyles: Record<Size, string> = {
-  [Size.Xs]: clsx("px-2.5 py-0.75", "text-xs/5"),
-  [Size.Sm]: clsx("px-3.5 py-1.5", "text-sm/5"),
-  [Size.Md]: clsx("px-4 py-2", "text-md/5"),
+  [Size.Xs]: clsx("w-[1.25rem] h-[1.35rem]", "text-xs/5"),
+  [Size.Sm]: clsx("w-[1.65rem] h-[1.5rem]", "text-sm/5"),
+  [Size.Md]: clsx("w-[3rem] h-[2rem]", "text-md/5"),
+};
+
+const tabListStyles = {
+  soft: clsx("w-fit", "p-1"),
+  default: clsx("w-full"),
+};
+
+const tabStyles = {
+  soft: clsx("mx-0.5", "rounded-sm", "data-[selected]:text-brand-accent"),
+  default: clsx("data-[selected]:text-content-text-primary"),
+};
+
+/**
+ * We are using this to determine the border radius of the tab where
+ * we expect exterior corners to be rounded and interior corners to
+ * be square.
+ * @param soft - Whether to enable soft toggle
+ * @param isFirst - Whether the tab is the first tab
+ * @param isLast - Whether the tab is the last tab
+ * @returns The border radius of the tab
+ */
+const getTabBorderRadius = (
+  soft: boolean,
+  isFirst: boolean,
+  isLast: boolean
+) => {
+  if (soft) return "";
+  if (isFirst && isLast) return "rounded-md";
+  if (isFirst) return "rounded-l-md";
+  if (isLast) return "rounded-r-md";
+  return "";
 };
 
 export const Toggle: FC<ToggleProps> = ({
@@ -34,49 +65,56 @@ export const Toggle: FC<ToggleProps> = ({
   soft = false,
   defaultIndex = 0,
   onChange,
-  size = Size.Md,
+  size = Size.Sm,
   className,
   tabListClassName,
   tabPanelClassName,
   ...props
 }) => {
+  const variant = soft ? "soft" : "default";
+
   return (
     <TabGroup
       defaultIndex={defaultIndex}
       onChange={onChange}
-      className={cn("w-full", className)} // tab group fills the container
+      className={className}
       {...props}
     >
       <TabList
         className={cn(
           "flex flex-nowrap items-center",
-          "w-full", // tablist fill the container
-          "p-1",
           "bg-content-bg-card-1",
-          "rounded-sm",
+          "rounded-md",
+          tabListStyles[variant],
           tabListClassName
         )}
       >
-        {tabs.map(({ id, data }) => (
-          <Tab
-            key={id}
-            className={cn(
-              "cursor-pointer",
-              "flex-1", // tabs are equal width and expand to fill the container
-              "px-4 py-2",
-              "font-medium",
-              "text-content-text-secondary",
-              "rounded-xs",
-              "outline-none",
-              "data-[selected]:bg-content-bg-card-2",
-              "data-[selected]:text-content-text-primary",
-              "data-[focus]:outline-none",
-              sizeStyles[size]
-            )}
-          >
-            {data.label}
-          </Tab>
-        ))}
+        {tabs.map(({ id, data }, index) => {
+          const isFirst = index === 0;
+          const isLast = index === tabs.length - 1;
+          return (
+            <Tab
+              key={id}
+              className={cn(
+                "cursor-pointer",
+                "flex-1",
+                "flex items-center justify-center",
+                "font-medium",
+                "text-content-text-secondary",
+                "outline-none",
+                "hover:bg-content-bg-card-2",
+                "hover:text-content-text-primary",
+                "data-[selected]:bg-content-bg-card-2",
+                "data-[focus]:outline-none",
+                getTabBorderRadius(soft, isFirst, isLast),
+                tabStyles[variant],
+                sizeStyles[size]
+              )}
+            >
+              {data.label}
+            </Tab>
+          );
+        })}
       </TabList>
       <TabPanels className={cn("mt-4", tabPanelClassName)}>
         {tabs.map(({ id, data }) => (

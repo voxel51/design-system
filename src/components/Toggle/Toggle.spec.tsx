@@ -4,9 +4,9 @@ import { Toggle } from "./Toggle";
 
 describe("Toggle", () => {
   const tabs = [
-    { label: "Tab 1", content: <div>Content 1</div> },
-    { label: "Tab 2", content: <div>Content 2</div> },
-    { label: "Tab 3", content: <div>Content 3</div> },
+    { id: "tab-1", data: { label: "Tab 1", content: <div>Content 1</div> } },
+    { id: "tab-2", data: { label: "Tab 2", content: <div>Content 2</div> } },
+    { id: "tab-3", data: { label: "Tab 3", content: <div>Content 3</div> } },
   ];
 
   it("should render with tabs", () => {
@@ -51,5 +51,32 @@ describe("Toggle", () => {
 
     const toggle = screen.getByTestId("toggle-component");
     expect(toggle).toHaveAttribute("id", "test-toggle");
+  });
+
+  it("should apply default styles when soft is false", () => {
+    const { container } = render(<Toggle tabs={tabs} soft={false} />);
+
+    const tabList = container.querySelector('[role="tablist"]');
+    expect(tabList).toBeInTheDocument();
+    expect(tabList).toHaveClass("w-full");
+    expect(tabList).not.toHaveClass("w-fit");
+  });
+
+  it("should apply soft styles when soft is true", () => {
+    const { container } = render(<Toggle tabs={tabs} soft={true} />);
+
+    const tabList = container.querySelector('[role="tablist"]');
+    expect(tabList).toBeInTheDocument();
+    expect(tabList).toHaveClass("w-fit");
+    expect(tabList).not.toHaveClass("w-full");
+  });
+
+  it("should default to soft=false when soft prop is not provided", () => {
+    const { container } = render(<Toggle tabs={tabs} />);
+
+    const tabList = container.querySelector('[role="tablist"]');
+    expect(tabList).toBeInTheDocument();
+    expect(tabList).toHaveClass("w-full");
+    expect(tabList).not.toHaveClass("w-fit");
   });
 });
