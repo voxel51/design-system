@@ -1,25 +1,16 @@
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
-import { bg, text } from "@/styles/tailwind";
-import {
-  BackgroundColor,
-  BackgroundColorProp,
-  Radius,
-  Shadow,
-  Size,
-  TextColor,
-  TextColorProp,
-} from "@/types";
+import { BackgroundColor, Radius, Shadow, Size, TextColor } from "@/types";
+import { bgColorClass, textColorClass } from "@/types/color";
 import clsx from "clsx";
 import type { FC, HTMLAttributes } from "react";
-import { cn } from "@/util/classes";
 
-export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
+export interface PillProps extends HTMLAttributes<HTMLSpanElement> {
   size?: Size;
   radius?: Radius;
   shadow?: Shadow;
-  color?: TextColorProp;
-  backgroundColor?: BackgroundColorProp;
+  color?: TextColor;
+  backgroundColor?: BackgroundColor;
 }
 
 const sizeStyles: Record<Size, string> = {
@@ -28,25 +19,23 @@ const sizeStyles: Record<Size, string> = {
   [Size.Md]: clsx("px-4 py-2", "text-md/5"),
 };
 
-export const Badge: FC<BadgeProps> = ({
+export const Pill: FC<PillProps> = ({
   size = Size.Sm,
   radius = Radius.Full,
   shadow = undefined,
-  color = undefined,
-  backgroundColor = undefined,
+  color = TextColor.Muted,
+  backgroundColor = BackgroundColor.Muted,
   className,
   children,
   ...props
 }) => {
-  const colorClass = cn(TextColor.Muted, text(color));
-  const backgroundColorClass = cn(BackgroundColor.Muted, bg(backgroundColor));
   return (
     <span
       className={clsx(
         "inline-flex items-center justify-center",
         "font-small",
-        colorClass,
-        backgroundColorClass,
+        textColorClass(color),
+        bgColorClass(backgroundColor),
         radiusStyles(radius),
         shadowStyles(shadow),
         sizeStyles[size],
@@ -59,4 +48,4 @@ export const Badge: FC<BadgeProps> = ({
   );
 };
 
-Badge.displayName = "Badge";
+Pill.displayName = "Pill";
