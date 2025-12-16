@@ -10,6 +10,7 @@ export interface PillProps extends HTMLAttributes<HTMLSpanElement> {
   radius?: Radius;
   shadow?: Shadow;
   color?: TextColor;
+  isStatus?: boolean;
   backgroundColor?: BackgroundColor;
 }
 
@@ -25,6 +26,7 @@ export const Pill: FC<PillProps> = ({
   shadow = undefined,
   color = TextColor.Muted,
   backgroundColor = BackgroundColor.Muted,
+  isStatus = false,
   className,
   children,
   ...props
@@ -43,6 +45,18 @@ export const Pill: FC<PillProps> = ({
       )}
       {...props}
     >
+      {isStatus && ( // TODO: change this to an icon
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="5"
+          height="5"
+          viewBox="0 0 5 5"
+          fill="none"
+          className="mr-1"
+        >
+          <circle cx="2.5" cy="2.5" r="2.5" fill="currentColor" />
+        </svg>
+      )}
       {children}
     </span>
   );

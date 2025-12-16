@@ -7,6 +7,12 @@ export enum TextColor {
   Secondary = "secondary",
   Tertiary = "tertiary",
   Muted = "muted",
+  BrandPrimary = "brand-primary",
+  BrandAccent = "brand-accent",
+  SemanticSuccess = "semantic-success",
+  SemanticDestructive = "semantic-destructive",
+  SemanticInfo = "semantic-info",
+  SemanticWarning = "semantic-warning",
 }
 
 const textColorMap: Record<TextColor, string> = {
@@ -15,6 +21,12 @@ const textColorMap: Record<TextColor, string> = {
   [TextColor.Secondary]: "text-content-text-secondary",
   [TextColor.Tertiary]: "text-content-text-tertiary",
   [TextColor.Muted]: "text-content-text-muted",
+  [TextColor.BrandPrimary]: "text-brand-primary",
+  [TextColor.BrandAccent]: "text-brand-accent",
+  [TextColor.SemanticSuccess]: "text-semantic-success",
+  [TextColor.SemanticDestructive]: "text-semantic-destructive",
+  [TextColor.SemanticInfo]: "text-semantic-info",
+  [TextColor.SemanticWarning]: "text-semantic-warning",
 };
 
 export function textColorClass(color: TextColor): string {
@@ -32,6 +44,12 @@ export enum BackgroundColor {
   Muted = "muted",
   Popover = "popover",
   Secondary = "secondary",
+  BrandPrimary = "brand-primary",
+  BrandAccent = "brand-accent",
+  SemanticSuccess = "semantic-success",
+  SemanticDestructive = "semantic-destructive",
+  SemanticInfo = "semantic-info",
+  SemanticWarning = "semantic-warning",
 }
 
 const backgroundColorMap: Record<BackgroundColor, string> = {
@@ -42,6 +60,12 @@ const backgroundColorMap: Record<BackgroundColor, string> = {
   [BackgroundColor.Muted]: "bg-content-bg-muted",
   [BackgroundColor.Popover]: "bg-content-bg-popover",
   [BackgroundColor.Secondary]: "bg-content-bg-secondary",
+  [BackgroundColor.BrandPrimary]: "bg-brand-primary",
+  [BackgroundColor.BrandAccent]: "bg-brand-accent",
+  [BackgroundColor.SemanticSuccess]: "bg-semantic-success",
+  [BackgroundColor.SemanticDestructive]: "bg-semantic-destructive",
+  [BackgroundColor.SemanticInfo]: "bg-semantic-info",
+  [BackgroundColor.SemanticWarning]: "bg-semantic-warning",
 };
 
 export function bgColorClass(color: BackgroundColor): string {
