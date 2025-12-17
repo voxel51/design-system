@@ -6,6 +6,32 @@ front-end applications.
 Note: this library is currently in a pre-release state and may have frequent breaking changes.
 This library will adhere to semantic versioning best-practices starting with version 1.0.0.
 
+## Development
+
+### Viewing Components
+
+To view and interact with VOODO components in a live environment, use the [design-system-documentation](https://github.com/voxel51/design-system-documentation) repository. Follow the setup instructions there to run the documentation webapp locally.
+
+### Local Development
+
+When developing components in this repository:
+
+```shell
+# Install dependencies
+npm install
+
+# Build the library
+npm run build
+
+# create local npm link for `design-system-documentation`
+npm link
+
+# Run in watch mode (rebuilds on file changes)
+npm run dev
+```
+```shell
+```
+
 ## Installation
 
 ```shell
