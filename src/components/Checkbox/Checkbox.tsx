@@ -1,11 +1,11 @@
 import radiusStyles from "@/styles/radius";
-import { TEXT_STYLES } from "@/styles/text";
-import { Radius, Size, TextColor } from "@/types";
+import { Radius, Size, TextColor, textColorClass } from "@/types";
 import { cn } from "@/util/classes";
-import { Field, Checkbox as HeadlessCheckbox, Label } from "@headlessui/react";
+import { Checkbox as HeadlessCheckbox, Field, Label } from "@headlessui/react";
 import clsx from "clsx";
-import { InputHTMLAttributes, type FC } from "react";
+import { type FC, InputHTMLAttributes } from "react";
 import { CheckmarkIcon } from "../Icons/Checkmark";
+import { TEXT_STYLES } from "@/styles/text.ts";
 
 type ModifiedCheckboxProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
@@ -79,7 +79,7 @@ export const Checkbox: FC<CheckboxProps> = ({
       {label && (
         <Label
           className={cn(
-            TextColor.Primary,
+            textColorClass(TextColor.Primary),
             TEXT_STYLES[size],
             "cursor-pointer",
             labelClassName

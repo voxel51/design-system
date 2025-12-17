@@ -1,6 +1,6 @@
 import radiusStyles from "@/styles/radius";
 import { TEXT_STYLES } from "@/styles/text";
-import { Radius, Size, TextColor, TextVariant } from "@/types";
+import { Radius, Size, TextColor, textColorClass, TextVariant } from "@/types";
 import { cn } from "@/util/classes";
 import { Field, Switch as HeadlessSwitch, Label } from "@headlessui/react";
 import { ButtonHTMLAttributes, type FC } from "react";
@@ -121,7 +121,7 @@ export const Toggle: FC<ToggleProps> = ({
       {label && (
         <Label
           className={cn(
-            TextColor.Muted,
+            textColorClass(TextColor.Muted),
             textStyles[size],
             "cursor-pointer",
             labelClassName
