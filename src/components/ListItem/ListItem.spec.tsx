@@ -1,5 +1,6 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { ListItem } from "./ListItem";
+import userEvent from "@testing-library/user-event";
 
 describe("ListItem", () => {
   let elementId: string;
@@ -13,5 +14,80 @@ describe("ListItem", () => {
 
     const element = screen.getByTestId(elementId);
     expect(element).toBeInTheDocument();
+  });
+
+  describe("canSelect", () => {
+    describe("when true", () => {
+      it("should render a checkbox", () => {
+        render(<ListItem canSelect={true} data-testid={elementId} />);
+
+        const element = screen.getByTestId(elementId);
+        expect(element).toBeInTheDocument();
+
+        const checkbox = within(element).getByRole("checkbox");
+        expect(checkbox).toBeInTheDocument();
+      });
+
+      it("should respect the selected property", () => {
+        [true, false].forEach((selected) => {
+          const testId = `${elementId}-${selected}`;
+          render(
+            <ListItem
+              canSelect={true}
+              selected={selected}
+              data-testid={testId}
+            />
+          );
+
+          const element = screen.getByTestId(testId);
+          expect(element).toBeInTheDocument();
+
+          const checkbox = within(element).getByRole("checkbox");
+          expect(checkbox).toBeInTheDocument();
+
+          if (selected) {
+            expect(checkbox).toBeChecked();
+          } else {
+            expect(checkbox).not.toBeChecked();
+          }
+        });
+      });
+
+      it("should emit onSelected events", async () => {
+        const onSelected = jest.fn();
+        render(
+          <ListItem
+            canSelect={true}
+            onSelected={onSelected}
+            data-testid={elementId}
+          />
+        );
+
+        const element = screen.getByTestId(elementId);
+        expect(element).toBeInTheDocument();
+
+        const checkbox = within(element).getByRole("checkbox");
+        expect(checkbox).toBeInTheDocument();
+        expect(checkbox).not.toBeChecked();
+
+        const user = userEvent.setup();
+
+        await user.click(checkbox);
+
+        expect(onSelected).toHaveBeenCalledWith(true);
+      });
+    });
+
+    describe("when false", () => {
+      it("should not render a checkbox", () => {
+        render(<ListItem data-testid={elementId} />);
+
+        const element = screen.getByTestId(elementId);
+        expect(element).toBeInTheDocument();
+
+        const checkbox = within(element).queryByRole("checkbox");
+        expect(checkbox).not.toBeInTheDocument();
+      });
+    });
   });
 });
