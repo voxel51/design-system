@@ -1,4 +1,5 @@
-import { render, screen } from "@testing-library/react";
+import { Size } from "@/types";
+import { act, render, screen } from "@testing-library/react";
 import { Checkbox } from "./Checkbox";
 
 describe("Checkbox", () => {
@@ -38,12 +39,23 @@ describe("Checkbox", () => {
   it("should handle click events", () => {
     const handleChange = jest.fn();
     render(
-      <Checkbox onChange={handleChange} label={checkboxLabel} data-testid="clickable-checkbox" />
+      <Checkbox
+        onChange={handleChange}
+        label={checkboxLabel}
+        data-testid="clickable-checkbox"
+      />
     );
 
     const checkbox = screen.getByTestId("clickable-checkbox");
-    checkbox.click();
+    act(() => {
+      checkbox.click();
+    });
     expect(handleChange).toHaveBeenCalledTimes(1);
   });
-});
 
+  it("should apply correct classes when size is Large", () => {
+    render(<Checkbox size={Size.Lg} label={checkboxLabel} />);
+    const checkbox = screen.getByRole("checkbox");
+    expect(checkbox).toHaveClass("w-6", "h-6", "checked:after:text-lg");
+  });
+});
