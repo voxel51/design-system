@@ -1,11 +1,12 @@
-import { TextColor, TextColorProp, TextVariant } from "@/types";
-import type { FC, HTMLAttributes } from "react";
 import { textStyles } from "@/styles/text";
+import { TextColor, TextVariant } from "@/types";
+import { textColorClass } from "@/types/color";
 import clsx from "clsx";
+import type { FC, HTMLAttributes } from "react";
 
 export interface TextProps extends HTMLAttributes<any> {
   variant?: TextVariant;
-  color?: TextColorProp;
+  color?: TextColor;
 }
 
 export const Text: FC<TextProps> = ({
@@ -16,7 +17,10 @@ export const Text: FC<TextProps> = ({
   ...props
 }) => {
   return (
-    <span className={clsx(color, textStyles(variant), className)} {...props}>
+    <span
+      className={clsx(textColorClass(color), textStyles(variant), className)}
+      {...props}
+    >
       {children}
     </span>
   );
