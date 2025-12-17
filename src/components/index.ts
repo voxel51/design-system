@@ -1,6 +1,7 @@
 export * from "./Button";
 export * from "./Clickable";
 export * from "./Heading";
+export * from "./Icons";
 export * from "./ListItem";
 export * from "./Pill";
 export * from "./RichList";
