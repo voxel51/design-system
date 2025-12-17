@@ -4,21 +4,26 @@ import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import clsx from "clsx";
 import type { FC, HTMLAttributes, ReactNode } from "react";
 
-export interface ToggleTab {
+export interface ToggleSwitchTab {
   label: ReactNode;
   content: ReactNode;
 }
 
-export interface ToggleProps extends Omit<
+export enum ToggleSwitchVariant {
+  Default = "default",
+  Soft = "soft",
+  Full = "full",
+}
+
+export interface ToggleSwitchProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   "children" | "onChange"
 > {
-  soft?: boolean;
-  tabs: Descriptor<ToggleTab>[];
+  variant?: ToggleSwitchVariant;
+  tabs: Descriptor<ToggleSwitchTab>[];
   defaultIndex?: number;
   onChange?: (index: number) => void;
   size?: Size;
-  className?: string;
   tabListClassName?: string;
   tabPanelClassName?: string;
 }
@@ -29,57 +34,48 @@ const sizeStyles: Record<Size, string> = {
   [Size.Md]: clsx("w-[3rem] h-[2rem]", "text-md/5"),
 };
 
-const tabListStyles = {
-  soft: clsx("w-fit", "p-1"),
-  default: clsx("w-full"),
+const tabListStyles: Record<ToggleSwitchVariant, string> = {
+  [ToggleSwitchVariant.Soft]: clsx("w-fit", "p-1"),
+  [ToggleSwitchVariant.Default]: clsx("w-fit"),
+  [ToggleSwitchVariant.Full]: clsx("w-full"),
 };
 
-const tabStyles = {
-  soft: clsx("mx-0.5", "rounded-sm", "data-[selected]:text-brand-accent"),
-  default: clsx("data-[selected]:text-content-text-primary"),
+const tabStyles: Record<ToggleSwitchVariant, string> = {
+  [ToggleSwitchVariant.Soft]: clsx(
+    "mx-0.5",
+    "rounded-sm",
+    "data-[selected]:text-brand-accent"
+  ),
+  [ToggleSwitchVariant.Default]: clsx(
+    "data-[selected]:text-content-text-primary"
+  ),
+  [ToggleSwitchVariant.Full]: clsx("data-[selected]:text-content-text-primary"),
 };
 
-/**
- * We are using this to determine the border radius of the tab where
- * we expect exterior corners to be rounded and interior corners to
- * be square.
- * @param soft - Whether to enable soft toggle
- * @param isFirst - Whether the tab is the first tab
- * @param isLast - Whether the tab is the last tab
- * @returns The border radius of the tab
- */
 const getTabBorderRadius = (
-  soft: boolean,
+  variant: ToggleSwitchVariant,
   isFirst: boolean,
   isLast: boolean
 ) => {
-  if (soft) return "";
+  if (variant === ToggleSwitchVariant.Soft) return "";
   if (isFirst && isLast) return "rounded-md";
   if (isFirst) return "rounded-l-md";
   if (isLast) return "rounded-r-md";
   return "";
 };
 
-export const Toggle: FC<ToggleProps> = ({
+export const ToggleSwitch: FC<ToggleSwitchProps> = ({
   tabs,
-  soft = false,
+  variant = ToggleSwitchVariant.Default,
   defaultIndex = 0,
   onChange,
   size = Size.Sm,
-  className,
   tabListClassName,
   tabPanelClassName,
   ...props
 }) => {
-  const variant = soft ? "soft" : "default";
-
   return (
-    <TabGroup
-      defaultIndex={defaultIndex}
-      onChange={onChange}
-      className={className}
-      {...props}
-    >
+    <TabGroup defaultIndex={defaultIndex} onChange={onChange} {...props}>
       <TabList
         className={cn(
           "flex flex-nowrap items-center",
@@ -106,7 +102,7 @@ export const Toggle: FC<ToggleProps> = ({
                 "hover:text-content-text-primary",
                 "data-[selected]:bg-content-bg-card-2",
                 "data-[focus]:outline-none",
-                getTabBorderRadius(soft, isFirst, isLast),
+                getTabBorderRadius(variant, isFirst, isLast),
                 tabStyles[variant],
                 sizeStyles[size]
               )}
@@ -127,4 +123,4 @@ export const Toggle: FC<ToggleProps> = ({
   );
 };
 
-Toggle.displayName = "Toggle";
+ToggleSwitch.displayName = "ToggleSwitch";
