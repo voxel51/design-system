@@ -4,9 +4,11 @@ import { Button as HeadlessButton } from "@headlessui/react";
 import clsx from "clsx";
 import type { ButtonHTMLAttributes, FC } from "react";
 
+type ButtonSize = Exclude<Size, Size.Lg>;
+
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
-  size?: Size;
+  size?: ButtonSize;
   leadingIcon?: FC;
   trailingIcon?: FC;
   borderless?: boolean;
@@ -41,13 +43,13 @@ const variantStyles: Record<Variant, string> = {
   ),
 };
 
-const sizeStyles: Partial<Record<Size, string>> = {
+const sizeStyles: Record<ButtonSize, string> = {
   [Size.Xs]: clsx("px-2.5 py-0.75", "text-xs/5"),
   [Size.Sm]: clsx("px-3.5 py-1.5", "text-sm/5"),
   [Size.Md]: clsx("px-4 py-2", "text-md/5"),
 };
 
-const iconStyles: Partial<Record<Size, string>> = {
+const iconStyles: Record<ButtonSize, string> = {
   [Size.Xs]: clsx("w-4 h-4", "leading-none"),
   [Size.Sm]: clsx("w-4 h-4", "leading-none"),
   [Size.Md]: clsx("w-5 h-5", "leading-none"),

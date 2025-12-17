@@ -5,8 +5,10 @@ import { bgColorClass, textColorClass } from "@/types/color";
 import clsx from "clsx";
 import type { FC, HTMLAttributes } from "react";
 
+type PillSize = Exclude<Size, Size.Lg>;
+
 export interface PillProps extends HTMLAttributes<HTMLSpanElement> {
-  size?: Size;
+  size?: PillSize;
   radius?: Radius;
   shadow?: Shadow;
   color?: TextColor;
@@ -14,7 +16,7 @@ export interface PillProps extends HTMLAttributes<HTMLSpanElement> {
   backgroundColor?: BackgroundColor;
 }
 
-const sizeStyles: Record<Size, string> = {
+const sizeStyles: Record<PillSize, string> = {
   [Size.Xs]: clsx("px-2.5 py-0.75", "text-xs/5"),
   [Size.Sm]: clsx("px-3.5 py-1.5", "text-sm/5"),
   [Size.Md]: clsx("px-4 py-2", "text-md/5"),
