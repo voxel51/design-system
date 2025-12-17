@@ -3,6 +3,7 @@ import clsx from "clsx";
 import { DragHandleIcon } from "@/components/Icons/DragHandle";
 import { Text } from "@/components/Text";
 import { TextColor, TextVariant } from "@/types";
+import { Checkbox } from "@/components/Checkbox";
 
 export interface ListItemProps extends HTMLAttributes<HTMLDivElement> {
   canSelect?: boolean;
@@ -40,11 +41,10 @@ export const ListItem: FC<ListItemProps> = ({
     >
       <div className={clsx("flex flex-nowrap items-center", "gap-x-md")}>
         {canSelect && (
-          <input
-            type="checkbox"
+          <Checkbox
             checked={selected}
-            onChange={(e) => onSelected?.(e.target.checked)}
-          /> // todo replace with checkbox when available
+            onChange={(checked) => onSelected?.(checked)}
+          />
         )}
         {canDrag && (
           <span className="flex align-items cursor-grab">
