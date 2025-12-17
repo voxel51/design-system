@@ -15,6 +15,8 @@ export enum ToggleSwitchVariant {
   Full = "full",
 }
 
+type ToggleSwitchSize = Exclude<Size, Size.Lg>;
+
 export interface ToggleSwitchProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   "children" | "onChange"
@@ -23,12 +25,12 @@ export interface ToggleSwitchProps extends Omit<
   tabs: Descriptor<ToggleSwitchTab>[];
   defaultIndex?: number;
   onChange?: (index: number) => void;
-  size?: Size;
+  size?: ToggleSwitchSize;
   tabListClassName?: string;
   tabPanelClassName?: string;
 }
 
-const sizeStyles: Record<Size, string> = {
+const sizeStyles: Record<ToggleSwitchSize, string> = {
   [Size.Xs]: clsx("w-[1.25rem] h-[1.35rem]", "text-xs/5"),
   [Size.Sm]: clsx("w-[1.65rem] h-[1.5rem]", "text-sm/5"),
   [Size.Md]: clsx("w-[3rem] h-[2rem]", "text-md/5"),

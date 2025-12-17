@@ -2,7 +2,7 @@ import { Radius } from "@/types/radius";
 
 export const RADIUS_STYLES: Record<Radius, string> = {
   [Radius.None]: "rounded-none",
-  [Radius.Xs]: "rounded",
+  [Radius.Xs]: "rounded-xs",
   [Radius.Sm]: "rounded-sm",
   [Radius.Md]: "rounded-md",
   [Radius.Lg]: "rounded-lg",

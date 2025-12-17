@@ -1,4 +1,5 @@
 export * from "./Button";
+export * from "./Checkbox";
 export * from "./Clickable";
 export * from "./Heading";
 export * from "./Icons";

@@ -10,27 +10,29 @@ type ModifiedToggleProps = Omit<
   "size" | "onChange" | "checked" | "disabled" | "className" | "value"
 >;
 
+type ToggleSize = Extract<Size, Size.Sm | Size.Md>;
+
 export interface ToggleProps extends ModifiedToggleProps {
   checked?: boolean;
   onChange?: (checked: boolean) => void;
   label?: string;
   disabled?: boolean;
-  size?: Size.Sm | Size.Md;
+  size?: ToggleSize;
   className?: string;
   labelClassName?: string;
 }
 
-const trackSizeStyles: Partial<Record<Size, string>> = {
+const trackSizeStyles: Record<ToggleSize, string> = {
   [Size.Sm]: cn("w-8 h-4"),
   [Size.Md]: cn("w-9 h-5"),
 };
 
-const thumbSizeStyles: Partial<Record<Size, string>> = {
+const thumbSizeStyles: Record<ToggleSize, string> = {
   [Size.Sm]: cn("w-3 h-3"),
   [Size.Md]: cn("w-4 h-4"),
 };
 
-const textStyles: Partial<Record<Size, string>> = {
+const textStyles: Record<ToggleSize, string> = {
   [Size.Sm]: TEXT_STYLES[TextVariant.Sm],
   [Size.Md]: TEXT_STYLES[TextVariant.Md],
 };
