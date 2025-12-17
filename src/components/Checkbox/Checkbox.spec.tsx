@@ -1,6 +1,7 @@
 import { Size } from "@/types";
-import { act, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { Checkbox } from "./Checkbox";
+import userEvent from "@testing-library/user-event";
 
 describe("Checkbox", () => {
   const checkboxLabel = "Checkbox label";
@@ -36,7 +37,7 @@ describe("Checkbox", () => {
     expect(checkbox).toBeChecked();
   });
 
-  it("should handle click events", () => {
+  it("should handle click events", async () => {
     const handleChange = jest.fn();
     render(
       <Checkbox
@@ -47,9 +48,10 @@ describe("Checkbox", () => {
     );
 
     const checkbox = screen.getByTestId("clickable-checkbox");
-    act(() => {
-      checkbox.click();
-    });
+    const user = userEvent.setup();
+
+    await user.click(checkbox);
+
     expect(handleChange).toHaveBeenCalledTimes(1);
   });
 
