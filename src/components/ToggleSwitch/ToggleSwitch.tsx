@@ -1,8 +1,9 @@
-import { Descriptor, Size } from "@/types";
+import { Descriptor, Size, TextVariant } from "@/types";
 import { cn } from "@/util/classes";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import clsx from "clsx";
 import type { FC, HTMLAttributes, ReactNode } from "react";
+import { textStyles } from "@/styles/text";
 
 export interface ToggleSwitchTab {
   label: ReactNode;
@@ -30,21 +31,34 @@ export interface ToggleSwitchProps extends Omit<
   tabPanelClassName?: string;
 }
 
-const sizeStyles: Record<ToggleSwitchSize, string> = {
-  [Size.Xs]: clsx("w-[1.25rem] h-[1.35rem]", "text-xs/5"),
-  [Size.Sm]: clsx("w-[1.65rem] h-[1.5rem]", "text-sm/5"),
-  [Size.Md]: clsx("w-[3rem] h-[2rem]", "text-md/5"),
+const tabSizeStyles: Record<ToggleSwitchSize, string> = {
+  [Size.Xs]: clsx(textStyles(TextVariant.Xs), "min-w-5 min-h-5"),
+  [Size.Sm]: clsx(textStyles(TextVariant.Sm), "min-w-6 min-h-6"),
+  [Size.Md]: clsx(textStyles(TextVariant.Md), "min-w-7 min-h-7"),
+};
+
+const softSizeStyles: Record<ToggleSwitchSize, string> = {
+  [Size.Xs]: clsx("min-w-5 min-h-5"),
+  [Size.Sm]: clsx("min-w-6 min-h-6"),
+  [Size.Md]: clsx("min-w-7 min-h-7"),
+};
+
+const tabPaddingStyles: Record<ToggleSwitchSize, string> = {
+  [Size.Xs]: clsx("py-1 px-3"),
+  [Size.Sm]: clsx("py-1.5 px-3.75"),
+  [Size.Md]: clsx("py-2 px-4"),
 };
 
 const tabListStyles: Record<ToggleSwitchVariant, string> = {
-  [ToggleSwitchVariant.Soft]: clsx("w-fit", "p-1"),
+  [ToggleSwitchVariant.Soft]: clsx("w-fit"),
   [ToggleSwitchVariant.Default]: clsx("w-fit"),
   [ToggleSwitchVariant.Full]: clsx("w-full"),
 };
 
-const tabStyles: Record<ToggleSwitchVariant, string> = {
+const tabVariantStyles: Record<ToggleSwitchVariant, string> = {
   [ToggleSwitchVariant.Soft]: clsx(
-    "mx-0.5",
+    "m-1",
+    "py-1 px-1.5",
     "rounded-sm",
     "data-[selected]:text-brand-accent"
   ),
@@ -64,6 +78,18 @@ const getTabBorderRadius = (
   if (isFirst) return "rounded-l-md";
   if (isLast) return "rounded-r-md";
   return "";
+};
+
+const getTabStyles = (variant: ToggleSwitchVariant, size: ToggleSwitchSize) => {
+  const classNames = [tabVariantStyles[variant], tabSizeStyles[size]];
+
+  if (variant !== ToggleSwitchVariant.Soft) {
+    classNames.push(tabPaddingStyles[size]);
+  } else {
+    classNames.push(softSizeStyles[size]);
+  }
+
+  return clsx(...classNames);
 };
 
 export const ToggleSwitch: FC<ToggleSwitchProps> = ({
@@ -92,7 +118,6 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
           const isLast = index === tabs.length - 1;
           return (
             <Tab
-              key={id}
               className={cn(
                 "cursor-pointer",
                 "flex-1",
@@ -100,21 +125,22 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
                 "font-medium",
                 "text-content-text-secondary",
                 "outline-none",
+                "transition-colors",
                 "hover:bg-content-bg-card-2",
                 "hover:text-content-text-primary",
                 "data-[selected]:bg-content-bg-card-2",
                 "data-[focus]:outline-none",
                 getTabBorderRadius(variant, isFirst, isLast),
-                tabStyles[variant],
-                sizeStyles[size]
+                getTabStyles(variant, size)
               )}
+              key={id}
             >
               {data.label}
             </Tab>
           );
         })}
       </TabList>
-      <TabPanels className={cn("mt-4", tabPanelClassName)}>
+      <TabPanels className={cn(tabPanelClassName)}>
         {tabs.map(({ id, data }) => (
           <TabPanel key={id} className={cn("focus:outline-none")}>
             {data.content}

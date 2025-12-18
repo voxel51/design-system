@@ -8,3 +8,4 @@ export * from "./Pill";
 export * from "./RichList";
 export * from "./Text";
 export * from "./Toggle";
+export * from "./ToggleSwitch";
