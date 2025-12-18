@@ -43,12 +43,12 @@ describe("InputLabel", () => {
     expect(label.className).toBeTruthy();
   });
 
-  it("should apply custom labelClassName", () => {
+  it("should apply custom className", () => {
     renderWithField(
       <InputLabel
         label="Test Label"
         size={Size.Md}
-        labelClassName="custom-label-class"
+        className="custom-label-class"
       />
     );
     const label = screen.getByText("Test Label");

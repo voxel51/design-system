@@ -31,7 +31,7 @@ export interface InputProps extends ModifiedInputProps {
   label?: string;
   labelClassName?: string;
   secondaryLabel?: string;
-  secondaryLabelClassName?: string;
+  secondaryClassName?: string;
   type?: InputType;
   error?: string;
   icon?: FC<IconProps>;
@@ -48,7 +48,7 @@ export const Input: FC<InputProps> = ({
   label,
   labelClassName,
   secondaryLabel,
-  secondaryLabelClassName,
+  secondaryClassName,
   error,
   icon: Icon,
   ...props
@@ -63,15 +63,18 @@ export const Input: FC<InputProps> = ({
     error
       ? "border-semantic-destructive"
       : "border-content-border-secondary-primary",
+    // TODO - evaluate if this border class is correct
     !disabled && !error && "hover:border-content-border-secondary-secondary",
     "focus:outline-none",
     "focus:ring-2",
+    // TODO - evaluate if this border class is correct
     error
       ? "focus:ring-semantic-destructive"
       : "focus:ring-action-secondary-tertiary",
     "focus:ring-offset-2",
     "disabled:opacity-50",
     "disabled:cursor-not-allowed",
+    // TODO - evaluate if this border class is correct
     "disabled:border-content-border-secondary-disabled",
     radiusStyles(radius),
     sizeStyles[size],
@@ -85,8 +88,8 @@ export const Input: FC<InputProps> = ({
         label={label}
         secondaryLabel={secondaryLabel}
         size={size}
-        labelClassName={labelClassName}
-        secondaryLabelClassName={secondaryLabelClassName}
+        className={labelClassName}
+        secondaryClassName={secondaryClassName}
       />
       <div className={cn("relative", Icon && "flex items-center")}>
         {Icon && <InputIcon Icon={Icon} size={size} />}

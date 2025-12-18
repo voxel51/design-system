@@ -8,16 +8,16 @@ export interface InputLabelProps {
   label?: string;
   secondaryLabel?: string;
   size: Size;
-  labelClassName?: string;
-  secondaryLabelClassName?: string;
+  className?: string;
+  secondaryClassName?: string;
 }
 
 export const InputLabel: FC<InputLabelProps> = ({
   label,
   secondaryLabel,
   size,
-  labelClassName,
-  secondaryLabelClassName,
+  className,
+  secondaryClassName,
 }) => {
   if (!label && !secondaryLabel) {
     return null;
@@ -34,7 +34,7 @@ export const InputLabel: FC<InputLabelProps> = ({
             textColorClass(TextColor.Primary),
             "font-medium",
             labelTextStyles[size],
-            labelClassName
+            className
           )}
         >
           {label}
@@ -46,7 +46,7 @@ export const InputLabel: FC<InputLabelProps> = ({
             "pl-1",
             textColorClass(TextColor.Secondary),
             secondaryLabelTextStyles[size],
-            secondaryLabelClassName
+            secondaryClassName
           )}
         >
           {secondaryLabel}
