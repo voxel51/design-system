@@ -32,6 +32,10 @@ export const colors = {
         muted: "#6E6E6E",
       },
       border: {
+        default: "#444",
+        strong: "#333",
+        hover: "#666",
+        focus: "#999",
         secondary: {
           primary: "#333",
           secondary: "#555",
@@ -88,6 +92,10 @@ export const colors = {
         muted: "#999",
       },
       border: {
+        default: "#444",
+        strong: "#333",
+        hover: "#666",
+        focus: "#999",
         secondary: {
           primary: "#333",
           secondary: "#555",

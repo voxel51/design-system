@@ -4,11 +4,8 @@ import { cn } from "@/util/classes";
 import { Field, Input as HeadlessInput } from "@headlessui/react";
 import { InputHTMLAttributes, type FC } from "react";
 import { IconProps } from "../Icons/types";
-import { InputError } from "./InputError";
 import { InputIcon } from "./InputIcon";
-import { InputLabel } from "./InputLabel";
 import { paddingLeftStyles, sizeStyles } from "./styles";
-
 type ModifiedInputProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
   "size" | "className"
@@ -28,12 +25,8 @@ export interface InputProps extends ModifiedInputProps {
   size?: Size;
   radius?: Radius;
   className?: string;
-  label?: string;
-  labelClassName?: string;
-  secondaryLabel?: string;
-  secondaryClassName?: string;
   type?: InputType;
-  error?: string;
+  error?: boolean;
   icon?: FC<IconProps>;
 }
 
@@ -45,10 +38,6 @@ export const Input: FC<InputProps> = ({
   disabled,
   value,
   onChange,
-  label,
-  labelClassName,
-  secondaryLabel,
-  secondaryClassName,
   error,
   icon: Icon,
   ...props
@@ -60,21 +49,14 @@ export const Input: FC<InputProps> = ({
     "placeholder:text-content-text-tertiary",
     "transition-colors",
     "border",
-    error
-      ? "border-semantic-destructive"
-      : "border-content-border-secondary-primary",
-    // TODO - evaluate if this border class is correct
-    !disabled && !error && "hover:border-content-border-secondary-secondary",
+    error ? "border-semantic-destructive" : "border-content-border-default",
+    !disabled && !error && "hover:border-content-border-hover",
     "focus:outline-none",
-    "focus:ring-2",
-    // TODO - evaluate if this border class is correct
     error
-      ? "focus:ring-semantic-destructive"
-      : "focus:ring-action-secondary-tertiary",
-    "focus:ring-offset-2",
+      ? "focus:border-semantic-destructive"
+      : "focus:border-content-border-focus",
     "disabled:opacity-50",
     "disabled:cursor-not-allowed",
-    // TODO - evaluate if this border class is correct
     "disabled:border-content-border-secondary-disabled",
     radiusStyles(radius),
     sizeStyles[size],
@@ -82,17 +64,13 @@ export const Input: FC<InputProps> = ({
     className
   );
 
+  // we track and change styles if the input has a value
+  const hasText = Boolean(value && String(value).trim().length > 0);
+
   return (
     <Field className="flex flex-col gap-1">
-      <InputLabel
-        label={label}
-        secondaryLabel={secondaryLabel}
-        size={size}
-        className={labelClassName}
-        secondaryClassName={secondaryClassName}
-      />
       <div className={cn("relative", Icon && "flex items-center")}>
-        {Icon && <InputIcon Icon={Icon} size={size} />}
+        {Icon && <InputIcon Icon={Icon} size={size} hasText={hasText} />}
         <HeadlessInput
           className={inputClasses}
           disabled={disabled}
@@ -102,7 +80,6 @@ export const Input: FC<InputProps> = ({
           {...props}
         />
       </div>
-      {error && <InputError error={error} size={size} />}
     </Field>
   );
 };

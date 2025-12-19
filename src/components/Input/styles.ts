@@ -1,23 +1,10 @@
-import { textStyles, textStylesStep } from "@/styles/text";
-import { Size, TextVariant } from "@/types";
+import { Size } from "@/types";
 import clsx from "clsx";
 
 export const sizeStyles: Partial<Record<Size, string>> = {
-  [Size.Sm]: clsx("py-2", "text-sm/5"),
-  [Size.Md]: clsx("py-2.25", "text-md/5"),
-  [Size.Lg]: clsx("py-2.5", "text-lg/5"),
-};
-
-export const labelTextStyles: Partial<Record<Size, string | null>> = {
-  [Size.Sm]: textStyles(TextVariant.Sm),
-  [Size.Md]: textStyles(TextVariant.Md),
-  [Size.Lg]: textStyles(TextVariant.Lg),
-};
-
-export const secondaryLabelTextStyles: Partial<Record<Size, string | null>> = {
-  [Size.Sm]: textStylesStep(TextVariant.Sm, -1),
-  [Size.Md]: textStylesStep(TextVariant.Md, -1),
-  [Size.Lg]: textStylesStep(TextVariant.Lg, -1),
+  [Size.Sm]: clsx("py-1.75", "text-sm/5", "h-[2rem]"),
+  [Size.Md]: clsx("py-2", "text-md/5", "h-[2.25rem]"),
+  [Size.Lg]: clsx("py-2.25", "text-lg/5", "h-[2.5rem]"),
 };
 
 export const iconPaddingStyles: Partial<Record<Size, string>> = {
@@ -34,6 +21,6 @@ export const iconSizeStyles: Partial<Record<Size, string>> = {
 
 export const paddingLeftStyles: Partial<Record<Size, string>> = {
   [Size.Sm]: "pl-7.5",
-  [Size.Md]: "pl-7.75",
-  [Size.Lg]: "pl-8",
+  [Size.Md]: "pl-8",
+  [Size.Lg]: "pl-8.25",
 };
