@@ -2,7 +2,8 @@ import { FC, HTMLAttributes, ReactNode, useState } from "react";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import clsx from "clsx";
 import { cn } from "@/util/classes";
-import { BackgroundColor, bgColorClass } from "@/types";
+import { BackgroundColor, bgColorClass, Radius } from "@/types";
+import radiusStyles from "@/styles/radius";
 
 export enum Anchor {
   Top = "top",
@@ -73,9 +74,9 @@ export const Tooltip: FC<TooltipProps> = ({
           className={cn(
             "relative",
             "py-0.75 px-2.5",
-            "rounded-sm",
             "!overflow-visible",
             bgColorClass(BackgroundColor.Card2),
+            radiusStyles(Radius.Sm),
             anchorStyles[anchor],
             className
           )}
