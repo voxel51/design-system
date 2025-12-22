@@ -2,6 +2,7 @@ export * from "./Button";
 export * from "./Checkbox";
 export * from "./Clickable";
 export * from "./FormField";
+export * from "./FormFieldGroup";
 export * from "./Heading";
 export * from "./Icons";
 export * from "./ListItem";
