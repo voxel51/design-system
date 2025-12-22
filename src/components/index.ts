@@ -7,6 +7,8 @@ export * from "./Heading";
 export * from "./Icons";
 export * from "./ListItem";
 export * from "./Pill";
+export * from "./RichButton";
+export * from "./RichButtonGroup";
 export * from "./RichList";
 export * from "./Stack";
 export * from "./Text";
