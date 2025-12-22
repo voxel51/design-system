@@ -6,6 +6,7 @@ export * from "./Icons";
 export * from "./ListItem";
 export * from "./Pill";
 export * from "./RichList";
+export * from "./Stack";
 export * from "./Text";
 export * from "./Toggle";
 export * from "./ToggleSwitch";
