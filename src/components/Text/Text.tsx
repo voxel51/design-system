@@ -4,7 +4,7 @@ import { textColorClass } from "@/types/color";
 import clsx from "clsx";
 import type { FC, HTMLAttributes } from "react";
 
-export interface TextProps extends HTMLAttributes<any> {
+export interface TextProps extends HTMLAttributes<HTMLSpanElement> {
   variant?: TextVariant;
   color?: TextColor;
 }
