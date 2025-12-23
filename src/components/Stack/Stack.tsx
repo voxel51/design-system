@@ -28,7 +28,8 @@ export const Stack: React.FC<StackProps> = ({
       className={cn(
         "flex",
         orientation === Orientation.Column && "flex-col",
-        spacingStyles[spacing]
+        spacingStyles[spacing],
+        className
       )}
       {...props}
     >

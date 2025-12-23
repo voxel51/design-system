@@ -11,6 +11,7 @@ export * from "./Pill";
 export * from "./RichButton";
 export * from "./RichButtonGroup";
 export * from "./RichList";
+export * from "./Select";
 export * from "./Stack";
 export * from "./Text";
 export * from "./TextBadge";
