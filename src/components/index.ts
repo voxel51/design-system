@@ -7,6 +7,7 @@ export * from "./ListItem";
 export * from "./Pill";
 export * from "./RichList";
 export * from "./Text";
+export * from "./Toast";
 export * from "./ToastContainer";
 export * from "./Toggle";
 export * from "./ToggleSwitch";
