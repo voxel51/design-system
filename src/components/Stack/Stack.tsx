@@ -1,7 +1,6 @@
 import { HTMLAttributes } from "react";
-import Orientation from "@/types/orientation";
+import { Orientation, Spacing } from "@/types";
 import { cn } from "@/util/classes";
-import Spacing from "@/types/spacing";
 
 export interface StackProps extends HTMLAttributes<HTMLDivElement> {
   orientation?: Orientation;
@@ -9,6 +8,7 @@ export interface StackProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const spacingStyles: Record<Spacing, string> = {
+  [Spacing.None]: "",
   [Spacing.Xs]: "gap-xs",
   [Spacing.Sm]: "gap-sm",
   [Spacing.Md]: "gap-md",
@@ -18,7 +18,7 @@ const spacingStyles: Record<Spacing, string> = {
 
 export const Stack: React.FC<StackProps> = ({
   orientation = Orientation.Row,
-  spacing = Spacing.Sm,
+  spacing = Spacing.None,
   children,
   className,
   ...props

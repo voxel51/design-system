@@ -1,4 +1,5 @@
 export enum Spacing {
+  None = "none",
   Xs = "xs",
   Sm = "sm",
   Md = "md",
