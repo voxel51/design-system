@@ -1,3 +1,4 @@
+export * from "./anchor";
 export * from "./color";
 export * from "./descriptor";
 export * from "./heading";
