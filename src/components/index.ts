@@ -12,6 +12,7 @@ export * from "./RichButtonGroup";
 export * from "./RichList";
 export * from "./Stack";
 export * from "./Text";
+export * from "./TextBadge";
 export * from "./Toggle";
 export * from "./ToggleSwitch";
 export * from "./Tooltip";
