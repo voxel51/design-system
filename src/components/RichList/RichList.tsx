@@ -1,4 +1,4 @@
-import { FC, HTMLAttributes, useState } from "react";
+import { FC, HTMLAttributes, useCallback, useMemo, useState } from "react";
 import clsx from "clsx";
 import {
   DndContext,
@@ -34,8 +34,8 @@ export const RichList: FC<RichListProps> = ({
   onOrderChange,
   ...props
 }) => {
+  // selected contains the ID for each selected element in the list
   const [selected, setSelected] = useState<string[]>(() => []);
-
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -43,21 +43,26 @@ export const RichList: FC<RichListProps> = ({
     })
   );
 
-  const onSelect = (itemId: string, isSelected: boolean) => {
-    if (selected.includes(itemId)) {
-      if (!isSelected) {
-        const newSelectionState = selected.filter((v) => v !== itemId);
-        setSelected(newSelectionState);
-        onSelected?.(newSelectionState);
+  const onSelect = useCallback(
+    (itemId: string, isSelected: boolean) => {
+      if (selected.includes(itemId)) {
+        if (!isSelected) {
+          // remove element
+          const newSelectionState = selected.filter((v) => v !== itemId);
+          setSelected(newSelectionState);
+          onSelected?.(newSelectionState);
+        }
+      } else {
+        if (isSelected) {
+          // add element
+          const newSelectionState = [...selected, itemId];
+          setSelected(newSelectionState);
+          onSelected?.(newSelectionState);
+        }
       }
-    } else {
-      if (isSelected) {
-        const newSelectionState = [...selected, itemId];
-        setSelected(newSelectionState);
-        onSelected?.(newSelectionState);
-      }
-    }
-  };
+    },
+    [selected, onSelected]
+  );
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -70,18 +75,22 @@ export const RichList: FC<RichListProps> = ({
     }
   };
 
-  const listContent = listItems.map((descriptor) => (
-    <SortableListItem
-      key={descriptor.id}
-      id={descriptor.id}
-      disabled={!draggable}
-      data-testid={descriptor.id}
-      {...descriptor.data}
-      canDrag={draggable && descriptor.data.canDrag !== false}
-      selected={selected.includes(descriptor.id)}
-      onSelected={(isSelected) => onSelect(descriptor.id, isSelected)}
-    />
-  ));
+  const listContent = useMemo(
+    () =>
+      listItems.map((descriptor) => (
+        <SortableListItem
+          key={descriptor.id}
+          id={descriptor.id}
+          disabled={!draggable}
+          data-testid={descriptor.id}
+          {...descriptor.data}
+          canDrag={draggable && descriptor.data.canDrag !== false}
+          selected={selected.includes(descriptor.id)}
+          onSelected={(isSelected) => onSelect(descriptor.id, isSelected)}
+        />
+      )),
+    [listItems, draggable, selected, onSelect]
+  );
 
   return (
     <div
