@@ -6,6 +6,7 @@ export * from "./FormField";
 export * from "./FormFieldGroup";
 export * from "./Heading";
 export * from "./Icons";
+export * from "./Input";
 export * from "./ListItem";
 export * from "./Pill";
 export * from "./RichButton";
