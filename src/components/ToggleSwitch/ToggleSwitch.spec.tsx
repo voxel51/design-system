@@ -77,10 +77,8 @@ describe("ToggleSwitch", () => {
     expect(tabList).not.toHaveClass("w-full");
   });
 
-  it("should be full width when variant is full", () => {
-    const { container } = render(
-      <ToggleSwitch tabs={tabs} variant={ToggleSwitchVariant.Full} />
-    );
+  it("should be full width when specified", () => {
+    const { container } = render(<ToggleSwitch tabs={tabs} fullWidth />);
 
     const tabList = container.querySelector('[role="tablist"]');
     expect(tabList).toBeInTheDocument();

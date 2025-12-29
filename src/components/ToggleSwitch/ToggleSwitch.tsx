@@ -14,9 +14,10 @@ export enum ToggleSwitchVariant {
   Default = "default",
   Soft = "soft",
   Full = "full",
+  Borderless = "borderless",
 }
 
-type ToggleSwitchSize = Exclude<Size, Size.Lg>;
+export type ToggleSwitchSize = Exclude<Size, Size.Lg>;
 
 export interface ToggleSwitchProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
@@ -29,6 +30,7 @@ export interface ToggleSwitchProps extends Omit<
   size?: ToggleSwitchSize;
   tabListClassName?: string;
   tabPanelClassName?: string;
+  fullWidth?: boolean;
 }
 
 const tabSizeStyles: Record<ToggleSwitchSize, string> = {
@@ -49,12 +51,6 @@ const tabPaddingStyles: Record<ToggleSwitchSize, string> = {
   [Size.Md]: clsx("py-2 px-4"),
 };
 
-const tabListStyles: Record<ToggleSwitchVariant, string> = {
-  [ToggleSwitchVariant.Soft]: clsx("w-fit"),
-  [ToggleSwitchVariant.Default]: clsx("w-fit"),
-  [ToggleSwitchVariant.Full]: clsx("w-full"),
-};
-
 const tabVariantStyles: Record<ToggleSwitchVariant, string> = {
   [ToggleSwitchVariant.Soft]: clsx(
     "m-1",
@@ -66,6 +62,14 @@ const tabVariantStyles: Record<ToggleSwitchVariant, string> = {
     "data-[selected]:text-content-text-primary"
   ),
   [ToggleSwitchVariant.Full]: clsx("data-[selected]:text-content-text-primary"),
+  [ToggleSwitchVariant.Borderless]: clsx(
+    "bg-transparent",
+    "hover:bg-transparent",
+    "data-[selected]:bg-transparent",
+    "data-[selected]:text-content-text-primary",
+    "data-[selected]:border-b-2",
+    "data-[selected]:border-context-text-primary"
+  ),
 };
 
 const getTabBorderRadius = (
@@ -73,7 +77,11 @@ const getTabBorderRadius = (
   isFirst: boolean,
   isLast: boolean
 ) => {
-  if (variant === ToggleSwitchVariant.Soft) return "";
+  if (
+    variant === ToggleSwitchVariant.Soft ||
+    variant === ToggleSwitchVariant.Borderless
+  )
+    return "";
   if (isFirst && isLast) return "rounded-md";
   if (isFirst) return "rounded-l-md";
   if (isLast) return "rounded-r-md";
@@ -98,6 +106,7 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
   defaultIndex = 0,
   onChange,
   size = Size.Sm,
+  fullWidth,
   tabListClassName,
   tabPanelClassName,
   ...props
@@ -107,9 +116,9 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
       <TabList
         className={cn(
           "flex flex-nowrap items-center",
-          "bg-content-bg-card-1",
+          variant !== ToggleSwitchVariant.Borderless && "bg-content-bg-card-1",
           "rounded-md",
-          tabListStyles[variant],
+          fullWidth ? "w-full" : "w-fit",
           tabListClassName
         )}
       >
