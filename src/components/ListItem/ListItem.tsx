@@ -1,4 +1,5 @@
 import type { FC, HTMLAttributes, ReactNode } from "react";
+import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import clsx from "clsx";
 import { DragHandleIcon } from "@/components/Icons/DragHandle";
 import { Text } from "@/components/Text";
@@ -10,6 +11,7 @@ export interface ListItemProps extends HTMLAttributes<HTMLDivElement> {
   selected?: boolean;
   onSelected?: (selected: boolean) => void;
   canDrag?: boolean;
+  dragHandleListeners?: SyntheticListenerMap;
   primaryContent?: ReactNode;
   secondaryContent?: ReactNode;
   actions?: ReactNode;
@@ -20,6 +22,7 @@ export const ListItem: FC<ListItemProps> = ({
   selected = false,
   onSelected = undefined,
   canDrag = false,
+  dragHandleListeners,
   primaryContent = undefined,
   secondaryContent = undefined,
   actions = undefined,
@@ -47,7 +50,10 @@ export const ListItem: FC<ListItemProps> = ({
           />
         )}
         {canDrag && (
-          <span className="flex align-items cursor-grab">
+          <span
+            className="flex align-items cursor-grab touch-none"
+            {...dragHandleListeners}
+          >
             <DragHandleIcon className="size-4 text-content-text-secondary" />
           </span>
         )}
