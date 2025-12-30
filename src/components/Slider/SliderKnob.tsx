@@ -25,6 +25,7 @@ export const SliderKnob: FC<SliderKnobProps> = ({
       )}
       style={{ left: `${position * 100}%` }}
       onMouseDown={onDragStart}
+      role="slider"
       {...props}
     />
   );

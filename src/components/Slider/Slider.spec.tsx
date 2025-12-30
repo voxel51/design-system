@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { Slider } from "@/components/Slider";
 import { randomString } from "#/testing-utils";
 import userEvent from "@testing-library/user-event";
@@ -78,6 +78,60 @@ describe("Slider", () => {
       await user.type(input, newValue.toString());
 
       expect(onChange).not.toHaveBeenCalled();
+    });
+
+    describe("mouse interaction", () => {
+      let onChange: jest.Mock;
+      let knob: HTMLDivElement;
+      let track: HTMLElement;
+      let mockTrackWidth: number;
+
+      beforeEach(() => {
+        onChange = jest.fn();
+        render(<Slider {...defaultProps} onChange={onChange} />);
+
+        knob = within(screen.getByTestId(testId)).getByRole("slider");
+        track = knob.parentElement!;
+
+        expect(track).toBeInTheDocument();
+
+        mockTrackWidth = 200;
+        jest.spyOn(track!, "getBoundingClientRect").mockReturnValue({
+          left: 0,
+          width: mockTrackWidth,
+          top: 0,
+          height: 20,
+          right: 200,
+          bottom: 20,
+          x: 0,
+          y: 0,
+          toJSON: () => {},
+        });
+      });
+
+      it("should emit onChange when dragging the slider knob", () => {
+        const relativeTarget = 0.75;
+        fireEvent.mouseDown(knob);
+        fireEvent.mouseMove(document, {
+          clientX: Math.round(mockTrackWidth * relativeTarget),
+        });
+        fireEvent.mouseUp(document);
+
+        expect(onChange).toHaveBeenLastCalledWith(
+          expect.closeTo(defaultProps.max * relativeTarget, 5)
+        );
+      });
+
+      it("should emit onChange when clicking the slider track", () => {
+        const relativeTarget = 0.75;
+        fireEvent.click(track!, {
+          clientX: Math.round(mockTrackWidth * relativeTarget),
+        });
+
+        expect(onChange).toHaveBeenLastCalledWith(
+          expect.closeTo(defaultProps.max * relativeTarget, 5)
+        );
+      });
     });
   });
 
@@ -180,6 +234,89 @@ describe("Slider", () => {
       await user.type(maxInput, invalidMax.toString());
 
       expect(onChange).not.toHaveBeenCalled();
+    });
+
+    describe("mouse interaction", () => {
+      let onChange: jest.Mock;
+      let knobs: HTMLDivElement[];
+      let track: HTMLElement;
+      let mockTrackWidth: number;
+
+      beforeEach(() => {
+        onChange = jest.fn();
+        render(<Slider {...defaultProps} onChange={onChange} />);
+
+        knobs = within(screen.getByTestId(testId)).getAllByRole("slider");
+        expect(knobs).toHaveLength(2);
+        track = knobs[0].parentElement!;
+
+        expect(track).toBeInTheDocument();
+
+        mockTrackWidth = 200;
+        jest.spyOn(track!, "getBoundingClientRect").mockReturnValue({
+          left: 0,
+          width: mockTrackWidth,
+          top: 0,
+          height: 20,
+          right: 200,
+          bottom: 20,
+          x: 0,
+          y: 0,
+          toJSON: () => {},
+        });
+      });
+
+      it("should emit onChange when dragging the slider knobs", () => {
+        // update minimum value
+        const minRelativeTarget = 0.1;
+        fireEvent.mouseDown(knobs[0]);
+        fireEvent.mouseMove(document, {
+          clientX: Math.round(mockTrackWidth * minRelativeTarget),
+        });
+        fireEvent.mouseUp(document);
+
+        expect(onChange).toHaveBeenLastCalledWith([
+          defaultProps.max * minRelativeTarget,
+          (defaultProps.value as number[])[1],
+        ]);
+
+        // update maximum value
+        const maxRelativeTarget = 0.9;
+        fireEvent.mouseDown(knobs[1]);
+        fireEvent.mouseMove(document, {
+          clientX: Math.round(mockTrackWidth * maxRelativeTarget),
+        });
+        fireEvent.mouseUp(document);
+
+        expect(onChange).toHaveBeenLastCalledWith([
+          (defaultProps.value as number[])[0],
+          defaultProps.max * maxRelativeTarget,
+        ]);
+      });
+
+      it("should emit onChange when clicking the slider track", () => {
+        // update minimum value
+        const minRelativeTarget = 0.1;
+        fireEvent.click(track!, {
+          clientX: Math.round(mockTrackWidth * minRelativeTarget),
+        });
+
+        expect(onChange).toHaveBeenLastCalledWith([
+          defaultProps.max * minRelativeTarget,
+          (defaultProps.value as number[])[1],
+        ]);
+
+        // update maximum value
+        const maxRelativeTarget = 0.9;
+        fireEvent.click(track!, {
+          clientX: Math.round(mockTrackWidth * maxRelativeTarget),
+        });
+
+        expect(onChange).toHaveBeenLastCalledWith([
+          (defaultProps.value as number[])[0],
+          defaultProps.max * maxRelativeTarget,
+        ]);
+      });
     });
   });
 });
