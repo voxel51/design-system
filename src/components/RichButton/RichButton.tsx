@@ -1,7 +1,7 @@
 import type { FC, HTMLAttributes, ReactNode } from "react";
 import { cn } from "@/util/classes.ts";
 import radiusStyles from "@/styles/radius.ts";
-import { Radius, TextColor, textColorClass } from "@/types";
+import { IconColor, Radius, TextColor, textColorClass } from "@/types";
 import { Text } from "@/components/Text";
 import { Clickable } from "@/components/Clickable";
 import clsx from "clsx";
@@ -45,8 +45,8 @@ export const RichButton: FC<RichButtonProps> = ({
               className={cn(
                 "size-5",
                 active
-                  ? textColorClass(TextColor.BrandPrimary)
-                  : textColorClass(TextColor.Primary)
+                  ? textColorClass(IconColor.Brand)
+                  : textColorClass(IconColor.Default)
               )}
             >
               <Icon />
