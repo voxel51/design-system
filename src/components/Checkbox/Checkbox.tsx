@@ -57,7 +57,7 @@ export const Checkbox: FC<CheckboxProps> = ({
           "cursor-pointer",
           "appearance-none",
           "border",
-          "border-content-border-secondary-primary",
+          "border-content-border-default",
           "group-hover:border-action-primary-primary",
           radiusStyles(radius),
           sizeStyles[size],

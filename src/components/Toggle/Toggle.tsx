@@ -1,9 +1,17 @@
-import radiusStyles from "@/styles/radius";
 import { TEXT_STYLES } from "@/styles/text";
-import { Radius, Size, TextColor, textColorClass, TextVariant } from "@/types";
+import {
+  BackgroundColor,
+  bgColorClass,
+  Radius,
+  Size,
+  TextColor,
+  textColorClass,
+  TextVariant,
+} from "@/types";
 import { cn } from "@/util/classes";
-import { Field, Switch as HeadlessSwitch, Label } from "@headlessui/react";
+import { Field, Label, Switch as HeadlessSwitch } from "@headlessui/react";
 import { ButtonHTMLAttributes, type FC } from "react";
+import radiusStyles from "@/styles/radius";
 
 type ModifiedToggleProps = Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
@@ -79,9 +87,9 @@ export const Toggle: FC<ToggleProps> = ({
           "inline-flex",
           "cursor-pointer",
           "items-center",
-          "bg-content-bg-card-elevated", // TODO - evaluate if this intent is correct
+          bgColorClass(BackgroundColor.CardElevated),
           "border",
-          "border-content-border-secondary-primary",
+          "border-content-border-default",
           "transition-colors",
           // when hovered
           "hover:bg-[#999999]", // TODO - current scheme doesn't have a light grey

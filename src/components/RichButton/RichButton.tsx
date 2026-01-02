@@ -29,8 +29,8 @@ export const RichButton: FC<RichButtonProps> = ({
         "border",
         active
           ? "border-action-primary-primary"
-          : "border-content-border-secondary-primary",
-        !active && "hover:border-content-border-secondary-secondary",
+          : "border-content-border-default",
+        !active && "hover:border-content-border-hover",
         "p-3",
         radiusStyles(Radius.Md),
         className

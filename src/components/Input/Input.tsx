@@ -57,7 +57,7 @@ export const Input: FC<InputProps> = ({
       : "focus:border-content-border-focus",
     "disabled:opacity-50",
     "disabled:cursor-not-allowed",
-    "disabled:border-content-border-secondary-disabled",
+    "disabled:border-content-border-disabled",
     radiusStyles(radius),
     sizeStyles[size],
     Icon ? paddingLeftStyles[size] : "pl-3",

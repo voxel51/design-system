@@ -23,11 +23,11 @@ const variantStyles: Record<Variant, string> = {
   ),
   [Variant.Secondary]: clsx(
     "border-1",
-    "bg-action-secondary-primary border-content-border-secondary-primary",
-    "hover:bg-action-secondary-secondary hover:border-content-border-secondary-secondary",
-    "active:bg-action-secondary-tertiary active:border-content-border-secondary-tertiary",
+    "bg-action-secondary-primary border-content-border-default",
+    "hover:bg-action-secondary-secondary hover:border-content-border-hover",
+    "active:bg-action-secondary-tertiary active:border-content-border-focus",
     "text-action-secondary-text",
-    "disabled:border-content-border-secondary-disabled"
+    "disabled:border-content-border-disabled"
   ),
   [Variant.Success]: clsx(
     "bg-action-success-primary",

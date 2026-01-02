@@ -38,7 +38,7 @@ export const ActivityToast: FC<ActivityToastProps> = ({
         "gap-x-sm",
         "items-center",
         "py-2 pr-4 pl-3",
-        "border border-content-border-secondary-primary",
+        "border border-content-border-default",
         bgColorClass(BackgroundColor.Card1),
         radiusStyles(Radius.Md),
         className
