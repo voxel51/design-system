@@ -1,7 +1,10 @@
 import radiusStyles from "@/styles/radius";
 import {
+  ActionColor,
+  bgColorClass,
   BorderColor,
   borderColorClass,
+  ElementState,
   Radius,
   Size,
   TextColor,
@@ -75,8 +78,8 @@ export const Checkbox: FC<CheckboxProps> = ({
           "focus:ring-offset-2",
           "disabled:opacity-50",
           "disabled:cursor-not-allowed",
-          "data-checked:bg-action-primary-primary",
-          "data-checked:border-action-primary-primary",
+          bgColorClass(ActionColor.PrimaryDefault, ElementState.Checked),
+          borderColorClass(BorderColor.Active, ElementState.Checked),
           className
         )}
         {...props}

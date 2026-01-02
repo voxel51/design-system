@@ -1,14 +1,19 @@
 import {
+  ActionColor,
+  bgColorClass,
   BorderColor,
   borderColorClass,
   ElementState,
+  Radius,
   Size,
+  textColorClass,
   Variant,
 } from "@/types";
 import { cn } from "@/util/classes";
 import { Button as HeadlessButton } from "@headlessui/react";
 import clsx from "clsx";
 import type { ButtonHTMLAttributes, FC } from "react";
+import radiusStyles from "@/styles/radius";
 
 type ButtonSize = Exclude<Size, Size.Lg>;
 
@@ -22,33 +27,33 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles: Record<Variant, string> = {
   [Variant.Primary]: clsx(
-    "bg-action-primary-primary",
-    "hover:bg-action-primary-secondary",
-    "active:bg-action-primary-tertiary",
-    "text-action-primary-text"
+    bgColorClass(ActionColor.PrimaryDefault),
+    bgColorClass(ActionColor.PrimaryHover, ElementState.Hover),
+    bgColorClass(ActionColor.PrimaryFocus, ElementState.Active),
+    textColorClass(ActionColor.PrimaryText)
   ),
   [Variant.Secondary]: clsx(
     "border-1",
-    "bg-action-secondary-primary",
+    bgColorClass(ActionColor.SecondaryDefault),
     borderColorClass(BorderColor.Default),
-    "hover:bg-action-secondary-secondary",
+    bgColorClass(ActionColor.SecondaryHover, ElementState.Hover),
     borderColorClass(BorderColor.Hover, ElementState.Hover),
-    "active:bg-action-secondary-tertiary",
+    bgColorClass(ActionColor.SecondaryFocus, ElementState.Active),
     borderColorClass(BorderColor.Focus, ElementState.Active),
-    "text-action-secondary-text",
+    textColorClass(ActionColor.SecondaryText),
     borderColorClass(BorderColor.Disabled, ElementState.Disabled)
   ),
   [Variant.Success]: clsx(
-    "bg-action-success-primary",
-    "hover:bg-action-success-secondary",
-    "active:bg-action-success-tertiary",
-    "text-action-success-text"
+    bgColorClass(ActionColor.SuccessDefault),
+    bgColorClass(ActionColor.SuccessHover, ElementState.Hover),
+    bgColorClass(ActionColor.SuccessFocus, ElementState.Active),
+    textColorClass(ActionColor.SuccessText)
   ),
   [Variant.Danger]: clsx(
-    "bg-action-danger-primary",
-    "hover:bg-action-danger-secondary",
-    "active:bg-action-danger-tertiary",
-    "text-action-danger-text"
+    bgColorClass(ActionColor.DangerDefault),
+    bgColorClass(ActionColor.DangerHover, ElementState.Hover),
+    bgColorClass(ActionColor.DangerFocus, ElementState.Active),
+    textColorClass(ActionColor.DangerText)
   ),
 };
 
@@ -78,7 +83,7 @@ export const Button: FC<ButtonProps> = ({
     <HeadlessButton
       className={cn(
         "inline-flex items-center justify-center",
-        borderless ? "rounded-full" : "rounded-sm",
+        borderless ? radiusStyles(Radius.Full) : radiusStyles(Radius.Sm),
         "font-medium",
         "transition-colors",
         "hover:cursor-pointer",

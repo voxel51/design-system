@@ -1,5 +1,24 @@
 import { ElementState, withElementState } from "@/types/element";
 
+export enum ActionColor {
+  PrimaryDefault = "action-primary-primary",
+  PrimaryHover = "action-primary-secondary",
+  PrimaryFocus = "action-primary-tertiary",
+  PrimaryText = "action-primary-text",
+  SecondaryDefault = "action-secondary-primary",
+  SecondaryHover = "action-secondary-secondary",
+  SecondaryFocus = "action-secondary-tertiary",
+  SecondaryText = "action-secondary-text",
+  SuccessDefault = "action-success-primary",
+  SuccessHover = "action-success-secondary",
+  SuccessFocus = "action-success-tertiary",
+  SuccessText = "action-success-text",
+  DangerDefault = "action-danger-primary",
+  DangerHover = "action-danger-secondary",
+  DangerFocus = "action-danger-tertiary",
+  DangerText = "action-danger-text",
+}
+
 export enum BackgroundColor {
   Background = "bg-background",
   Card1 = "bg-card-1",
@@ -71,6 +90,7 @@ export enum TextColor {
 }
 
 export type Color =
+  | ActionColor
   | BackgroundColor
   | BrandColor
   | IconColor
@@ -79,6 +99,23 @@ export type Color =
   | TextColor;
 
 const textColorMap: Record<Color, string> = {
+  [ActionColor.PrimaryDefault]: "text-action-primary-primary",
+  [ActionColor.PrimaryHover]: "text-action-primary-secondary",
+  [ActionColor.PrimaryFocus]: "text-action-primary-tertiary",
+  [ActionColor.PrimaryText]: "text-action-primary-text",
+  [ActionColor.SecondaryDefault]: "text-action-secondary-primary",
+  [ActionColor.SecondaryHover]: "text-action-secondary-secondary",
+  [ActionColor.SecondaryFocus]: "text-action-secondary-tertiary",
+  [ActionColor.SecondaryText]: "text-action-secondary-text",
+  [ActionColor.SuccessDefault]: "text-action-success-primary",
+  [ActionColor.SuccessHover]: "text-action-success-secondary",
+  [ActionColor.SuccessFocus]: "text-action-success-tertiary",
+  [ActionColor.SuccessText]: "text-action-success-text",
+  [ActionColor.DangerDefault]: "text-action-danger-primary",
+  [ActionColor.DangerHover]: "text-action-danger-secondary",
+  [ActionColor.DangerFocus]: "text-action-danger-tertiary",
+  [ActionColor.DangerText]: "text-action-danger-text",
+
   [BackgroundColor.Background]: "text-content-bg-background",
   [BackgroundColor.Card1]: "text-content-bg-card-1",
   [BackgroundColor.Card2]: "text-content-bg-card-2",
@@ -126,6 +163,23 @@ const textColorMap: Record<Color, string> = {
 };
 
 const backgroundColorMap: Record<Color, string> = {
+  [ActionColor.PrimaryDefault]: "bg-action-primary-primary",
+  [ActionColor.PrimaryHover]: "bg-action-primary-secondary",
+  [ActionColor.PrimaryFocus]: "bg-action-primary-tertiary",
+  [ActionColor.PrimaryText]: "bg-action-primary-text",
+  [ActionColor.SecondaryDefault]: "bg-action-secondary-primary",
+  [ActionColor.SecondaryHover]: "bg-action-secondary-secondary",
+  [ActionColor.SecondaryFocus]: "bg-action-secondary-tertiary",
+  [ActionColor.SecondaryText]: "bg-action-secondary-text",
+  [ActionColor.SuccessDefault]: "bg-action-success-primary",
+  [ActionColor.SuccessHover]: "bg-action-success-secondary",
+  [ActionColor.SuccessFocus]: "bg-action-success-tertiary",
+  [ActionColor.SuccessText]: "bg-action-success-text",
+  [ActionColor.DangerDefault]: "bg-action-danger-primary",
+  [ActionColor.DangerHover]: "bg-action-danger-secondary",
+  [ActionColor.DangerFocus]: "bg-action-danger-tertiary",
+  [ActionColor.DangerText]: "bg-action-danger-text",
+
   [BackgroundColor.Background]: "bg-content-bg-background",
   [BackgroundColor.Card1]: "bg-content-bg-card-1",
   [BackgroundColor.Card2]: "bg-content-bg-card-2",
@@ -197,7 +251,11 @@ export const bgColorClass = (
 };
 
 const getColorCssVar = (color: Color | BorderColor): string => {
-  if (isEnumValue(BrandColor, color) || isEnumValue(SemanticColor, color)) {
+  if (
+    isEnumValue(color, BrandColor) ||
+    isEnumValue(color, SemanticColor) ||
+    isEnumValue(color, ActionColor)
+  ) {
     return `--color-${color}`;
   }
 
@@ -205,8 +263,8 @@ const getColorCssVar = (color: Color | BorderColor): string => {
 };
 
 const isEnumValue = <T extends Record<string, string>>(
-  enumType: T,
-  value: unknown
+  value: unknown,
+  enumType: T
 ): value is T[keyof T] => {
   return Object.values(enumType).includes(value as string);
 };
