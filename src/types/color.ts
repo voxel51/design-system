@@ -1,15 +1,4 @@
-export enum TextColor {
-  Fg = "text-fg",
-  Primary = "text-primary",
-  Secondary = "text-secondary",
-  Tertiary = "text-tertiary",
-  Muted = "text-muted",
-  Placeholder = "text-placeholder",
-  Success = "text-success",
-  Destructive = "text-destructive",
-  Warning = "text-warning",
-  Info = "text-info",
-}
+import { ElementState, withElementState } from "@/types/element";
 
 export enum BackgroundColor {
   Background = "bg-background",
@@ -21,16 +10,22 @@ export enum BackgroundColor {
   Secondary = "bg-secondary",
 }
 
+export enum BorderColor {
+  Default = "border-default",
+  Strong = "border-strong",
+  Hover = "border-hover",
+  Focus = "border-focus",
+  Subtle = "border-subtle",
+  Active = "border-active",
+  Error = "border-error",
+  Success = "border-success",
+  Warning = "border-warning",
+  Disabled = "border-disabled",
+}
+
 export enum BrandColor {
   Primary = "brand-primary",
   Accent = "brand-accent",
-}
-
-export enum SemanticColor {
-  Success = "semantic-success",
-  Destructive = "semantic-destructive",
-  Info = "semantic-info",
-  Warning = "semantic-warning",
 }
 
 export enum IconColor {
@@ -47,12 +42,32 @@ export enum IconColor {
   Info = "icon-info",
 }
 
+export enum SemanticColor {
+  Success = "semantic-success",
+  Destructive = "semantic-destructive",
+  Info = "semantic-info",
+  Warning = "semantic-warning",
+}
+
 export enum StatusColor {
   Approved = "status-approved",
   Review = "status-review",
   Progress = "status-progress",
   Default = "status-default",
   Failed = "status-failed",
+}
+
+export enum TextColor {
+  Fg = "text-fg",
+  Primary = "text-primary",
+  Secondary = "text-secondary",
+  Tertiary = "text-tertiary",
+  Muted = "text-muted",
+  Placeholder = "text-placeholder",
+  Success = "text-success",
+  Destructive = "text-destructive",
+  Warning = "text-warning",
+  Info = "text-info",
 }
 
 export type Color =
@@ -157,10 +172,63 @@ const backgroundColorMap: Record<Color, string> = {
   [TextColor.Warning]: "bg-content-text-warning",
 };
 
-export const bgColorClass = (color: Color): string => {
-  return backgroundColorMap[color];
+const borderColorMap: Record<BorderColor, string> = {
+  [BorderColor.Active]: "border-content-border-active",
+  [BorderColor.Default]: "border-content-border-default",
+  [BorderColor.Disabled]: "border-content-border-disabled",
+  [BorderColor.Error]: "border-content-border-error",
+  [BorderColor.Focus]: "border-content-border-focus",
+  [BorderColor.Hover]: "border-content-border-hover",
+  [BorderColor.Strong]: "border-content-border-strong",
+  [BorderColor.Subtle]: "border-content-border-subtle",
+  [BorderColor.Success]: "border-content-border-success",
+  [BorderColor.Warning]: "border-content-border-warning",
 };
 
-export const textColorClass = (color: Color): string => {
-  return textColorMap[color];
+export const bgColorClass = (
+  color: Color,
+  elementState: ElementState = ElementState.None
+): string => {
+  if (elementState === ElementState.None) {
+    return backgroundColorMap[color];
+  }
+
+  return withElementState(`bg-(${getColorCssVar(color)})`, elementState);
+};
+
+const getColorCssVar = (color: Color | BorderColor): string => {
+  if (isEnumValue(BrandColor, color) || isEnumValue(SemanticColor, color)) {
+    return `--color-${color}`;
+  }
+
+  return `--color-content-${color}`;
+};
+
+const isEnumValue = <T extends Record<string, string>>(
+  enumType: T,
+  value: unknown
+): value is T[keyof T] => {
+  return Object.values(enumType).includes(value as string);
+};
+
+export const borderColorClass = (
+  color: BorderColor,
+  elementState: ElementState = ElementState.None
+): string => {
+  if (elementState === ElementState.None) {
+    return borderColorMap[color];
+  }
+
+  return withElementState(`border-(${getColorCssVar(color)})`, elementState);
+};
+
+export const textColorClass = (
+  color: Color,
+  elementState: ElementState = ElementState.None
+): string => {
+  if (elementState === ElementState.None) {
+    return textColorMap[color];
+  }
+
+  return withElementState(`text-(${getColorCssVar(color)})`, elementState);
 };

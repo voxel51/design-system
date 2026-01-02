@@ -1,4 +1,10 @@
-import { Size, Variant } from "@/types";
+import {
+  BorderColor,
+  borderColorClass,
+  ElementState,
+  Size,
+  Variant,
+} from "@/types";
 import { cn } from "@/util/classes";
 import { Button as HeadlessButton } from "@headlessui/react";
 import clsx from "clsx";
@@ -23,11 +29,14 @@ const variantStyles: Record<Variant, string> = {
   ),
   [Variant.Secondary]: clsx(
     "border-1",
-    "bg-action-secondary-primary border-content-border-default",
-    "hover:bg-action-secondary-secondary hover:border-content-border-hover",
-    "active:bg-action-secondary-tertiary active:border-content-border-focus",
+    "bg-action-secondary-primary",
+    borderColorClass(BorderColor.Default),
+    "hover:bg-action-secondary-secondary",
+    borderColorClass(BorderColor.Hover, ElementState.Hover),
+    "active:bg-action-secondary-tertiary",
+    borderColorClass(BorderColor.Focus, ElementState.Active),
     "text-action-secondary-text",
-    "disabled:border-content-border-disabled"
+    borderColorClass(BorderColor.Disabled, ElementState.Disabled)
   ),
   [Variant.Success]: clsx(
     "bg-action-success-primary",

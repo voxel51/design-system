@@ -1,11 +1,22 @@
 import radiusStyles from "@/styles/radius";
-import { Radius, Size } from "@/types";
+import {
+  BackgroundColor,
+  bgColorClass,
+  BorderColor,
+  borderColorClass,
+  ElementState,
+  Radius,
+  Size,
+  TextColor,
+  textColorClass,
+} from "@/types";
 import { cn } from "@/util/classes";
 import { Field, Input as HeadlessInput } from "@headlessui/react";
-import { InputHTMLAttributes, type FC } from "react";
-import { IconProps } from "../Icons/types";
+import { type FC, InputHTMLAttributes } from "react";
+import { IconProps } from "@/components/Icons/types";
 import { InputIcon } from "./InputIcon";
 import { paddingLeftStyles, sizeStyles } from "./styles";
+
 type ModifiedInputProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
   "size" | "className"
@@ -44,20 +55,24 @@ export const Input: FC<InputProps> = ({
 }) => {
   const inputClasses = cn(
     "w-full",
-    "bg-content-background-primary",
-    "text-content-text-primary",
+    bgColorClass(BackgroundColor.Background),
+    textColorClass(TextColor.Primary),
     "placeholder:text-content-text-tertiary",
     "transition-colors",
     "border",
-    error ? "border-semantic-destructive" : "border-content-border-default",
-    !disabled && !error && "hover:border-content-border-hover",
+    error
+      ? borderColorClass(BorderColor.Error)
+      : borderColorClass(BorderColor.Default),
+    !disabled &&
+      !error &&
+      borderColorClass(BorderColor.Hover, ElementState.Hover),
     "focus:outline-none",
     error
-      ? "focus:border-semantic-destructive"
-      : "focus:border-content-border-focus",
+      ? borderColorClass(BorderColor.Error, ElementState.Focus)
+      : borderColorClass(BorderColor.Focus, ElementState.Focus),
     "disabled:opacity-50",
     "disabled:cursor-not-allowed",
-    "disabled:border-content-border-disabled",
+    borderColorClass(BorderColor.Disabled, ElementState.Disabled),
     radiusStyles(radius),
     sizeStyles[size],
     Icon ? paddingLeftStyles[size] : "pl-3",

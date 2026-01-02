@@ -2,6 +2,8 @@ import { TEXT_STYLES } from "@/styles/text";
 import {
   BackgroundColor,
   bgColorClass,
+  BorderColor,
+  borderColorClass,
   Radius,
   Size,
   TextColor,
@@ -89,7 +91,7 @@ export const Toggle: FC<ToggleProps> = ({
           "items-center",
           bgColorClass(BackgroundColor.CardElevated),
           "border",
-          "border-content-border-default",
+          borderColorClass(BorderColor.Default),
           "transition-colors",
           // when hovered
           "hover:bg-[#999999]", // TODO - current scheme doesn't have a light grey
