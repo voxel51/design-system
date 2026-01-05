@@ -5,6 +5,7 @@ import clsx from "clsx";
 import {
   BackgroundColor,
   bgColorClass,
+  ElementState,
   TextColor,
   textColorClass,
 } from "@/types";
@@ -33,7 +34,7 @@ export const Option: FC<OptionProps> = ({
           bgColorClass(BackgroundColor.Card1),
           selected && bgColorClass(BackgroundColor.CardElevated)
         ),
-        "hover:bg-content-bg-card-2"
+        bgColorClass(BackgroundColor.Card2, ElementState.Hover)
       )}
     >
       <Text>{children}</Text>

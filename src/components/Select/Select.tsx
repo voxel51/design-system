@@ -12,11 +12,13 @@ import { Option } from "./Option";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
 import clsx from "clsx";
+import { inputStyle } from "@/components/Input";
 
 export interface SelectProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   "onChange"
 > {
+  disabled?: boolean;
   exclusive?: boolean;
   onChange?: (value: string | string[] | null) => void;
   options?: Descriptor<{ label: string; content?: ReactNode }>[];
@@ -25,6 +27,7 @@ export interface SelectProps extends Omit<
 
 export const Select: FC<SelectProps> = ({
   className,
+  disabled,
   exclusive,
   onChange,
   options,
@@ -55,24 +58,37 @@ export const Select: FC<SelectProps> = ({
     [onChange]
   );
 
+  const getDisplayValue = useCallback(
+    (v: string | string[] | null): string =>
+      v && v.length > 0
+        ? typeof v === "string"
+          ? (options?.find((e) => e.id === v)?.data.label ?? "")
+          : v
+              .map((id) => options?.find((e) => e.id === id)?.data.label)
+              .filter((e) => !!e)
+              .join(", ")
+        : "",
+    [options]
+  );
+
   return (
     <div className={className} {...props}>
-      <Combobox value={value} onChange={handleChange} multiple={!exclusive}>
-        {/*// todo - replace with `Input` when available*/}
+      <Combobox
+        disabled={disabled}
+        value={value}
+        onChange={handleChange}
+        multiple={!exclusive}
+      >
         <ComboboxInput
-          displayValue={(v: string | string[] | null): string =>
-            v && v.length > 0
-              ? typeof v === "string"
-                ? (options?.find((e) => e.id === v)?.data.label ?? "")
-                : v
-                    .map((id) => options?.find((e) => e.id === id)?.data.label)
-                    .filter((e) => !!e)
-                    .join(", ")
-              : ""
-          }
+          displayValue={getDisplayValue}
           onFocus={() => setOpen(true)}
           onBlur={() => setOpen(false)}
-          className="border border-content-border-secondary-primary text-content-text-primary p-2"
+          // We'd normally prefer to use `as={Input}`,
+          // but ref forwarding doesn't work here properly in react 18,
+          // which causes the dropdown menu to be anchored in the wrong place.
+          // Until we switch to react 19,
+          // we'll just style this component using the same classes as the `Input` component.
+          className={inputStyle({ disabled })}
         />
 
         <ComboboxOptions
