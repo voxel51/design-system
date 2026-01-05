@@ -1,6 +1,6 @@
 import { FC, HTMLAttributes, MouseEvent, useCallback, useRef } from "react";
 import clsx from "clsx";
-import { BackgroundColor, bgColorClass, Radius } from "@/types";
+import { BackgroundColor, bgColorClass, BrandColor, Radius } from "@/types";
 import radiusStyles from "@/styles/radius";
 import { SliderKnob } from "@/components/Slider/SliderKnob";
 
@@ -168,7 +168,7 @@ export const SliderBar: FC<SliderBarProps> = ({
         className={clsx(
           "absolute",
           "h-2",
-          bgColorClass(BackgroundColor.BrandPrimary),
+          bgColorClass(BrandColor.Primary),
           radiusStyles(Radius.Full)
         )}
         style={{
