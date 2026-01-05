@@ -1,3 +1,5 @@
+import { Combobox, ComboboxInput, ComboboxOptions } from "@headlessui/react";
+import clsx from "clsx";
 import {
   FC,
   HTMLAttributes,
@@ -6,13 +8,14 @@ import {
   useEffect,
   useState,
 } from "react";
-import { Descriptor, Radius } from "@/types";
-import { Combobox, ComboboxInput, ComboboxOptions } from "@headlessui/react";
-import { Option } from "./Option";
+
+import { inputStyle } from "@/components/Input";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
-import clsx from "clsx";
-import { inputStyle } from "@/components/Input";
+import { Descriptor, Radius } from "@/types";
+
+import { Option } from "./Option";
+
 
 export interface SelectProps extends Omit<
   HTMLAttributes<HTMLDivElement>,

@@ -1,7 +1,9 @@
-import type { FC, HTMLAttributes } from "react";
 import { ComboboxOption } from "@headlessui/react";
-import { Text } from "@/components/Text";
 import clsx from "clsx";
+import type { FC, HTMLAttributes } from "react";
+
+import { CheckIcon } from "@/components/Icons/CheckIcon";
+import { Text } from "@/components/Text";
 import {
   BackgroundColor,
   bgColorClass,
@@ -9,17 +11,16 @@ import {
   TextColor,
   textColorClass,
 } from "@/types";
-import { CheckIcon } from "@/components/Icons/CheckIcon";
 import { cn } from "@/util/classes";
 
 export interface OptionProps extends HTMLAttributes<HTMLDivElement> {
-  value?: any;
+  value?: unknown;
   selected?: boolean;
 }
 
 export const Option: FC<OptionProps> = ({
   children,
-  className,
+  className: _className,
   selected,
   value,
   ...props

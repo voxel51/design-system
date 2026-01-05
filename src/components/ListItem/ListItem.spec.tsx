@@ -1,6 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
-import { ListItem } from "./ListItem";
 import userEvent from "@testing-library/user-event";
+
+import { ListItem } from "./ListItem";
 
 describe("ListItem", () => {
   let elementId: string;

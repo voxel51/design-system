@@ -1,6 +1,10 @@
+import clsx from "clsx";
 import type { FC, HTMLAttributes, ReactNode } from "react";
-import { cn } from "@/util/classes";
+
 import { Text } from "@/components/Text";
+import { ToastContainer } from "@/components/ToastContainer";
+import radiusStyles from "@/styles/radius";
+import shadowStyles from "@/styles/shadow";
 import {
   Anchor,
   BackgroundColor,
@@ -12,10 +16,7 @@ import {
   textColorClass,
   Variant,
 } from "@/types";
-import clsx from "clsx";
-import { ToastContainer } from "@/components/ToastContainer";
-import radiusStyles from "@/styles/radius";
-import shadowStyles from "@/styles/shadow";
+import { cn } from "@/util/classes";
 
 export interface ToastProps extends Omit<
   HTMLAttributes<HTMLDivElement>,

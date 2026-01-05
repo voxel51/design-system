@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
-import { Button } from "./Button";
 import userEvent, { UserEvent } from "@testing-library/user-event";
+
+import { Button } from "./Button";
 
 const DummyIcon = () => {
   return (

@@ -1,6 +1,9 @@
-import { Size, TextColor, textColorClass } from "@/types";
 import { render } from "@testing-library/react";
+
+import { Size, TextColor, textColorClass } from "@/types";
+
 import { CheckmarkIcon } from "../Icons/Checkmark";
+
 import { InputIcon } from "./InputIcon";
 
 describe("InputIcon", () => {

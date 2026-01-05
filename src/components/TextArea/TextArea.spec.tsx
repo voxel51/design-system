@@ -1,6 +1,8 @@
-import { Radius, Size } from "@/types";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+
+import { Radius, Size } from "@/types";
+
 import { TextArea } from "./TextArea";
 
 describe("TextArea", () => {

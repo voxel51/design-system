@@ -1,6 +1,7 @@
 import type { FC, HTMLAttributes } from "react";
-import { IconColor, TextColor, TextVariant } from "@/types";
+
 import { Text } from "@/components/Text";
+import { IconColor, TextColor, TextVariant } from "@/types";
 
 export interface TextBadgeProps extends HTMLAttributes<HTMLSpanElement> {
   color?: TextColor | IconColor;

@@ -1,7 +1,8 @@
 import { FC, HTMLAttributes, useCallback, useState } from "react";
-import { cn } from "@/util/classes";
-import { Descriptor } from "@/types";
+
 import { RichButton, RichButtonProps } from "@/components/RichButton";
+import { Descriptor } from "@/types";
+import { cn } from "@/util/classes";
 
 export interface RichButtonGroupProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
@@ -29,7 +30,7 @@ export const RichButtonGroup: FC<RichButtonGroupProps> = ({
         onChange?.(newActiveArray);
       }
     },
-    [active]
+    [active, exclusive, onChange]
   );
   const deactivate = useCallback(
     (id: string) => {
@@ -39,7 +40,7 @@ export const RichButtonGroup: FC<RichButtonGroupProps> = ({
         onChange?.(newActiveArray);
       }
     },
-    [active]
+    [active, onChange]
   );
 
   return (

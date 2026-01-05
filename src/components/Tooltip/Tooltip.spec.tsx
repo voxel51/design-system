@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
+
 import { Tooltip } from "@/components/Tooltip";
 
 describe("Tooltip", () => {

@@ -1,4 +1,5 @@
-import { HTMLAttributes } from "react";
+import { FC, HTMLAttributes } from "react";
+
 import { Orientation, Spacing } from "@/types";
 import { cn } from "@/util/classes";
 
@@ -16,7 +17,7 @@ const spacingStyles: Record<Spacing, string> = {
   [Spacing.Xl]: "gap-xl",
 };
 
-export const Stack: React.FC<StackProps> = ({
+export const Stack: FC<StackProps> = ({
   orientation = Orientation.Row,
   spacing = Spacing.None,
   children,

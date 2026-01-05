@@ -1,6 +1,7 @@
 import clsx from "clsx";
-import { Anchor } from "@/types";
 import type { FC, HTMLAttributes } from "react";
+
+import { Anchor } from "@/types";
 
 export interface ToastContainerProps extends HTMLAttributes<HTMLDivElement> {
   anchor?: Anchor;

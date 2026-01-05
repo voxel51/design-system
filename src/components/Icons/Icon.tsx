@@ -1,6 +1,7 @@
-import { IconProps } from "@/components/Icons/types";
 import clsx from "clsx";
 import type { FC } from "react";
+
+import { IconProps } from "@/components/Icons/types";
 
 export const Icon: FC<IconProps> = ({ className, children, ...props }) => {
   return (

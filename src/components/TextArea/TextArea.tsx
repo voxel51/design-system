@@ -1,9 +1,10 @@
-import radiusStyles from "@/styles/radius";
-import { Radius, Size } from "@/types";
-import { cn } from "@/util/classes";
 import { Field, Textarea as HeadlessTextarea } from "@headlessui/react";
 import clsx from "clsx";
 import { type FC, TextareaHTMLAttributes } from "react";
+
+import radiusStyles from "@/styles/radius";
+import { Radius, Size } from "@/types";
+import { cn } from "@/util/classes";
 
 export interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   size?: Size;

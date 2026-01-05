@@ -1,5 +1,6 @@
-import { IconProps } from "@/components/Icons/types";
 import { FC } from "react";
+
+import { IconProps } from "@/components/Icons/types";
 
 export const CheckIcon: FC<IconProps> = ({ className, ...props }) => (
   <svg

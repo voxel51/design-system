@@ -1,8 +1,11 @@
-import type { FC, HTMLAttributes, ReactNode } from "react";
 import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import clsx from "clsx";
+import type { FC, HTMLAttributes, ReactNode } from "react";
+
+import { Checkbox } from "@/components/Checkbox";
 import { DragHandleIcon } from "@/components/Icons/DragHandle";
 import { Text } from "@/components/Text";
+import radiusStyles from "@/styles/radius";
 import {
   BackgroundColor,
   bgColorClass,
@@ -11,8 +14,6 @@ import {
   textColorClass,
   TextVariant,
 } from "@/types";
-import { Checkbox } from "@/components/Checkbox";
-import radiusStyles from "@/styles/radius";
 
 export interface ListItemProps extends HTMLAttributes<HTMLDivElement> {
   canSelect?: boolean;

@@ -1,5 +1,6 @@
-import type { FC, HTMLAttributes, ReactNode } from "react";
 import { Description, Field, Label } from "@headlessui/react";
+import type { FC, HTMLAttributes, ReactNode } from "react";
+
 import { Stack } from "@/components/Stack";
 import { Text } from "@/components/Text";
 import { Orientation, Spacing, TextColor } from "@/types";

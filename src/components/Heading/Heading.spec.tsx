@@ -1,6 +1,8 @@
 import { render, screen } from "@testing-library/react";
-import { Heading } from "./Heading";
+
 import HeadingLevel from "@/types/heading";
+
+import { Heading } from "./Heading";
 
 describe("Heading", () => {
   const headingText = "some heading";

@@ -1,3 +1,7 @@
+import { Field, Label, Switch as HeadlessSwitch } from "@headlessui/react";
+import { ButtonHTMLAttributes, type FC } from "react";
+
+import radiusStyles from "@/styles/radius";
 import { TEXT_STYLES } from "@/styles/text";
 import {
   BackgroundColor,
@@ -11,9 +15,7 @@ import {
   TextVariant,
 } from "@/types";
 import { cn } from "@/util/classes";
-import { Field, Label, Switch as HeadlessSwitch } from "@headlessui/react";
-import { ButtonHTMLAttributes, type FC } from "react";
-import radiusStyles from "@/styles/radius";
+
 
 type ModifiedToggleProps = Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,

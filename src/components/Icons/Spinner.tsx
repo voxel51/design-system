@@ -1,4 +1,5 @@
 import type { FC } from "react";
+
 import { IconProps } from "@/components/Icons/types";
 
 export const SpinnerIcon: FC<IconProps> = ({ className, ...props }) => (

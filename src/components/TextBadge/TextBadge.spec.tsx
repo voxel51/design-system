@@ -1,5 +1,6 @@
-import { TextBadge } from "./TextBadge";
 import { render, screen, within } from "@testing-library/react";
+
+import { TextBadge } from "./TextBadge";
 
 describe("TextBadge", () => {
   let testId: string;

@@ -1,7 +1,9 @@
+import { type FC } from "react";
+
+import { IconProps } from "@/components/Icons/types";
 import { Size, TextColor, textColorClass } from "@/types";
 import { cn } from "@/util/classes";
-import { type FC } from "react";
-import { IconProps } from "@/components/Icons/types";
+
 import { iconPaddingStyles, iconSizeStyles } from "./styles";
 
 export interface InputIconProps {
