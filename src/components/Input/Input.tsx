@@ -41,19 +41,20 @@ export interface InputProps extends ModifiedInputProps {
   icon?: FC<IconProps>;
 }
 
-export const Input: FC<InputProps> = ({
-  size = Size.Md,
-  radius = Radius.Sm,
-  type = InputType.Text,
-  className,
+export const inputStyle = ({
   disabled,
-  value,
-  onChange,
   error,
-  icon: Icon,
-  ...props
-}) => {
-  const inputClasses = cn(
+  icon,
+  radius = Radius.Sm,
+  size = Size.Md,
+}: {
+  disabled?: boolean;
+  error?: boolean;
+  icon?: boolean;
+  radius?: Radius;
+  size?: Size;
+}) =>
+  cn(
     "w-full",
     bgColorClass(BackgroundColor.Background),
     textColorClass(TextColor.Primary),
@@ -75,7 +76,29 @@ export const Input: FC<InputProps> = ({
     borderColorClass(BorderColor.Disabled, ElementState.Disabled),
     radiusStyles(radius),
     sizeStyles[size],
-    Icon ? paddingLeftStyles[size] : "pl-3",
+    icon ? paddingLeftStyles[size] : "pl-3"
+  );
+
+export const Input: FC<InputProps> = ({
+  size = Size.Md,
+  radius = Radius.Sm,
+  type = InputType.Text,
+  className,
+  disabled,
+  value,
+  onChange,
+  error,
+  icon: Icon,
+  ...props
+}) => {
+  const inputClasses = cn(
+    inputStyle({
+      disabled,
+      error,
+      icon: !!Icon,
+      radius,
+      size,
+    }),
     className
   );
 
