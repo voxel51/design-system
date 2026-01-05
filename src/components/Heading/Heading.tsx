@@ -1,5 +1,5 @@
 import type { FC, HTMLAttributes } from "react";
-import { TextVariant } from "@/types";
+import { TextColor, textColorClass, TextVariant } from "@/types";
 import HeadingLevel from "@/types/heading";
 import { textStyles } from "@/styles/text";
 import clsx from "clsx";
@@ -33,7 +33,7 @@ export const Heading: FC<HeadingProps> = ({
   return (
     <Element
       className={clsx(
-        "text-content-text-primary",
+        textColorClass(TextColor.Primary),
         variantStyles[level],
         className
       )}

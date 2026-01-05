@@ -1,12 +1,12 @@
 import { textStyles } from "@/styles/text";
-import { TextColor, TextVariant } from "@/types";
+import { IconColor, TextColor, TextVariant } from "@/types";
 import { textColorClass } from "@/types/color";
-import clsx from "clsx";
 import type { FC, HTMLAttributes } from "react";
+import clsx from "clsx";
 
 export interface TextProps extends HTMLAttributes<HTMLSpanElement> {
   variant?: TextVariant;
-  color?: TextColor;
+  color?: TextColor | IconColor;
 }
 
 export const Text: FC<TextProps> = ({

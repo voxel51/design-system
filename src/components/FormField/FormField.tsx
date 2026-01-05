@@ -40,7 +40,7 @@ export const FormField: FC<FormFieldProps> = ({
 
         {control}
 
-        {error && <Text color={TextColor.SemanticDestructive}>{error}</Text>}
+        {error && <Text color={TextColor.Destructive}>{error}</Text>}
       </Stack>
     </Field>
   );

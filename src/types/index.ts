@@ -1,6 +1,7 @@
 export * from "./anchor";
 export * from "./color";
 export * from "./descriptor";
+export * from "./element";
 export * from "./heading";
 export * from "./orientation";
 export * from "./radius";

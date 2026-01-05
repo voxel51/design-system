@@ -5,12 +5,16 @@ import {
   Anchor,
   BackgroundColor,
   bgColorClass,
+  IconColor,
+  Radius,
   Shadow,
   TextColor,
+  textColorClass,
   Variant,
 } from "@/types";
 import clsx from "clsx";
 import { ToastContainer } from "@/components/ToastContainer";
+import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
 
 export interface ToastProps extends Omit<
@@ -27,10 +31,10 @@ export interface ToastProps extends Omit<
 }
 
 const variantStyles: Record<Variant, string> = {
-  [Variant.Primary]: "text-content-text-primary",
-  [Variant.Secondary]: "text-content-text-secondary",
-  [Variant.Success]: "text-semantic-success",
-  [Variant.Danger]: "text-semantic-destructive",
+  [Variant.Primary]: textColorClass(TextColor.Primary),
+  [Variant.Secondary]: textColorClass(TextColor.Secondary),
+  [Variant.Success]: textColorClass(IconColor.Success),
+  [Variant.Danger]: textColorClass(IconColor.Destructive),
 };
 
 export const Toast: FC<ToastProps> = ({
@@ -51,7 +55,7 @@ export const Toast: FC<ToastProps> = ({
           "flex flex-nowrap",
           "gap-x-md",
           "p-4",
-          "rounded-md",
+          radiusStyles(Radius.Md),
           bgColorClass(BackgroundColor.Card2),
           shadowStyles(Shadow.Md),
           className

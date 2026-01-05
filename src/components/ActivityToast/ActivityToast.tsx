@@ -5,10 +5,12 @@ import {
   Anchor,
   BackgroundColor,
   bgColorClass,
+  BorderColor,
+  borderColorClass,
   Radius,
   Variant,
 } from "@/types";
-import { cn } from "@/util/classes.ts";
+import { cn } from "@/util/classes";
 import { textColor } from "@/styles/text";
 import radiusStyles from "@/styles/radius";
 
@@ -38,7 +40,8 @@ export const ActivityToast: FC<ActivityToastProps> = ({
         "gap-x-sm",
         "items-center",
         "py-2 pr-4 pl-3",
-        "border border-content-border-secondary-primary",
+        "border",
+        borderColorClass(BorderColor.Default),
         bgColorClass(BackgroundColor.Card1),
         radiusStyles(Radius.Md),
         className
