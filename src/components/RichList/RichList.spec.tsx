@@ -71,4 +71,54 @@ describe("RichList", () => {
 
     expect(onSelected).toHaveBeenCalledWith([]);
   });
+
+  it("should render drag handles when draggable is true", () => {
+    const listItems: Descriptor<ListItemProps>[] = [
+      { id: "item-1", data: { primaryContent: "Item 1" } },
+      { id: "item-2", data: { primaryContent: "Item 2" } },
+    ];
+
+    render(
+      <RichList listItems={listItems} draggable data-testid={testId} />
+    );
+
+    const element = screen.getByTestId(testId);
+    expect(element).toBeInTheDocument();
+
+    // Each item should have a drag handle (svg icon)
+    const dragHandles = element.querySelectorAll("svg");
+    expect(dragHandles.length).toBe(2);
+  });
+
+  it("should not render drag handles when draggable is false", () => {
+    const listItems: Descriptor<ListItemProps>[] = [
+      { id: "item-1", data: { primaryContent: "Item 1" } },
+      { id: "item-2", data: { primaryContent: "Item 2" } },
+    ];
+
+    render(<RichList listItems={listItems} data-testid={testId} />);
+
+    const element = screen.getByTestId(testId);
+    expect(element).toBeInTheDocument();
+
+    // No drag handles should be present
+    const dragHandles = element.querySelectorAll("svg");
+    expect(dragHandles.length).toBe(0);
+  });
+
+  it("should respect canDrag=false on individual items when draggable", () => {
+    const listItems: Descriptor<ListItemProps>[] = [
+      { id: "item-1", data: { primaryContent: "Item 1", canDrag: true } },
+      { id: "item-2", data: { primaryContent: "Item 2", canDrag: false } },
+    ];
+
+    render(
+      <RichList listItems={listItems} draggable data-testid={testId} />
+    );
+
+    const element = screen.getByTestId(testId);
+    // Only one drag handle should be present (item-1)
+    const dragHandles = element.querySelectorAll("svg");
+    expect(dragHandles.length).toBe(1);
+  });
 });

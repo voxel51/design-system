@@ -1,15 +1,25 @@
 import type { FC, HTMLAttributes, ReactNode } from "react";
+import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import clsx from "clsx";
 import { DragHandleIcon } from "@/components/Icons/DragHandle";
 import { Text } from "@/components/Text";
-import { TextColor, TextVariant } from "@/types";
+import {
+  BackgroundColor,
+  bgColorClass,
+  Radius,
+  TextColor,
+  textColorClass,
+  TextVariant,
+} from "@/types";
 import { Checkbox } from "@/components/Checkbox";
+import radiusStyles from "@/styles/radius";
 
 export interface ListItemProps extends HTMLAttributes<HTMLDivElement> {
   canSelect?: boolean;
   selected?: boolean;
   onSelected?: (selected: boolean) => void;
   canDrag?: boolean;
+  dragHandleListeners?: SyntheticListenerMap;
   primaryContent?: ReactNode;
   secondaryContent?: ReactNode;
   actions?: ReactNode;
@@ -20,6 +30,7 @@ export const ListItem: FC<ListItemProps> = ({
   selected = false,
   onSelected = undefined,
   canDrag = false,
+  dragHandleListeners,
   primaryContent = undefined,
   secondaryContent = undefined,
   actions = undefined,
@@ -30,11 +41,11 @@ export const ListItem: FC<ListItemProps> = ({
     <div
       className={clsx(
         "flex flex-nowrap items-center justify-between",
+        "w-full",
         "gap-x-lg",
         "py-3 pr-3 pl-2",
-        "bg-content-bg-card-2",
-        "rounded-sm",
-        "w-full",
+        bgColorClass(BackgroundColor.Card2),
+        radiusStyles(Radius.Sm),
         className
       )}
       {...props}
@@ -47,8 +58,13 @@ export const ListItem: FC<ListItemProps> = ({
           />
         )}
         {canDrag && (
-          <span className="flex align-items cursor-grab">
-            <DragHandleIcon className="size-4 text-content-text-secondary" />
+          <span
+            className="flex align-items cursor-grab touch-none"
+            {...dragHandleListeners}
+          >
+            <DragHandleIcon
+              className={clsx("size-4", textColorClass(TextColor.Secondary))}
+            />
           </span>
         )}
         <Text variant={TextVariant.Lg}>{primaryContent}</Text>
