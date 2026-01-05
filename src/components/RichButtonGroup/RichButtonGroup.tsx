@@ -1,0 +1,67 @@
+import { FC, HTMLAttributes, useCallback, useState } from "react";
+import { cn } from "@/util/classes";
+import { Descriptor } from "@/types";
+import { RichButton, RichButtonProps } from "@/components/RichButton";
+
+export interface RichButtonGroupProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "onChange"
+> {
+  buttons: Descriptor<RichButtonProps>[];
+  exclusive?: boolean;
+  onChange?: (active: string[]) => void;
+}
+
+export const RichButtonGroup: FC<RichButtonGroupProps> = ({
+  buttons,
+  className,
+  exclusive,
+  onChange,
+  ...props
+}) => {
+  const [active, setActive] = useState<string[]>(() => []);
+
+  const activate = useCallback(
+    (id: string) => {
+      if (!active.includes(id)) {
+        const newActiveArray = exclusive ? [id] : [...active, id];
+        setActive(newActiveArray);
+        onChange?.(newActiveArray);
+      }
+    },
+    [active]
+  );
+  const deactivate = useCallback(
+    (id: string) => {
+      if (active.includes(id)) {
+        const newActiveArray = active.filter((elem) => elem !== id);
+        setActive(newActiveArray);
+        onChange?.(newActiveArray);
+      }
+    },
+    [active]
+  );
+
+  return (
+    <div className={cn("flex", "gap-x-md", className)} {...props}>
+      {buttons.map((buttonProps) => (
+        <RichButton
+          key={buttonProps.id}
+          {...buttonProps.data}
+          active={active.includes(buttonProps.id)}
+          onClick={() => {
+            if (active.includes(buttonProps.id)) {
+              deactivate(buttonProps.id);
+            } else {
+              activate(buttonProps.id);
+            }
+
+            buttonProps.data.onClick?.();
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
+RichButtonGroup.displayName = "RichButtonGroup";
