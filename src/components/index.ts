@@ -15,6 +15,7 @@ export * from "./RichList";
 export * from "./Spinner";
 export * from "./Stack";
 export * from "./Text";
+export * from "./TextArea";
 export * from "./TextBadge";
 export * from "./Toast";
 export * from "./ToastContainer";
