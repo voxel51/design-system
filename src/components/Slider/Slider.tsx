@@ -1,4 +1,5 @@
 import {
+  ChangeEvent,
   FC,
   HTMLAttributes,
   ReactNode,
@@ -85,6 +86,30 @@ export const Slider: FC<SliderProps> = ({
     }
   }, [max, min, value]);
 
+  const handleMinInputChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setMinValue(e.target.value);
+
+      const v = Number.parseFloat(e.target.value);
+      if (isValidRange(v, maxValue) && v !== Number.parseFloat(minValue)) {
+        onChange?.([v, Number.parseFloat(maxValue)]);
+      }
+    },
+    [isValidRange, maxValue, minValue, onChange]
+  );
+
+  const handleMaxInputChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setMaxValue(e.target.value);
+
+      const v = Number.parseFloat(e.target.value);
+      if (isValidRange(minValue, v) && v !== Number.parseFloat(maxValue)) {
+        onChange?.(multi ? [Number.parseFloat(minValue), v] : v);
+      }
+    },
+    [isValidRange, maxValue, minValue, multi, onChange]
+  );
+
   return (
     <Stack
       orientation={Orientation.Column}
@@ -111,17 +136,7 @@ export const Slider: FC<SliderProps> = ({
               control={
                 <Input
                   value={minValue}
-                  onChange={(e) => {
-                    setMinValue(e.target.value);
-
-                    const v = Number.parseFloat(e.target.value);
-                    if (
-                      isValidRange(v, maxValue) &&
-                      v !== Number.parseFloat(minValue)
-                    ) {
-                      onChange?.([v, Number.parseFloat(maxValue)]);
-                    }
-                  }}
+                  onChange={handleMinInputChange}
                   error={!isValidRange(minValue, maxValue)}
                 />
               }
@@ -132,17 +147,7 @@ export const Slider: FC<SliderProps> = ({
             control={
               <Input
                 value={maxValue}
-                onChange={(e) => {
-                  setMaxValue(e.target.value);
-
-                  const v = Number.parseFloat(e.target.value);
-                  if (
-                    isValidRange(minValue, v) &&
-                    v !== Number.parseFloat(maxValue)
-                  ) {
-                    onChange?.(multi ? [Number.parseFloat(minValue), v] : v);
-                  }
-                }}
+                onChange={handleMaxInputChange}
                 error={!isValidRange(minValue, maxValue)}
               />
             }
