@@ -20,7 +20,6 @@ export interface OptionProps extends HTMLAttributes<HTMLDivElement> {
 
 export const Option: FC<OptionProps> = ({
   children,
-  className: _className,
   selected,
   value,
   ...props

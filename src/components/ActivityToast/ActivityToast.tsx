@@ -19,7 +19,6 @@ export interface ActivityToastProps extends HTMLAttributes<HTMLDivElement> {
   anchor?: Anchor;
   icon?: FC;
   message?: string;
-  onClose?: () => void;
   open?: boolean;
   variant?: Variant;
 }
