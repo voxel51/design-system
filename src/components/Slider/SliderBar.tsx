@@ -1,8 +1,9 @@
-import { FC, HTMLAttributes, MouseEvent, useCallback, useRef } from "react";
 import clsx from "clsx";
-import { BackgroundColor, bgColorClass, BrandColor, Radius } from "@/types";
-import radiusStyles from "@/styles/radius";
+import { FC, HTMLAttributes, MouseEvent, useCallback, useRef } from "react";
+
 import { SliderKnob } from "@/components/Slider/SliderKnob";
+import radiusStyles from "@/styles/radius";
+import { BackgroundColor, bgColorClass, BrandColor, Radius } from "@/types";
 
 interface SliderBarProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
@@ -94,7 +95,7 @@ export const SliderBar: FC<SliderBarProps> = ({
         onChange?.(newValue);
       }
     },
-    [getKnobValue, onChange]
+    [getKnobValue, getRelativeX, maxValue, minValue, multi, onChange]
   );
 
   /**
@@ -104,14 +105,15 @@ export const SliderBar: FC<SliderBarProps> = ({
     (e: MouseEvent, knob: "min" | "max") => {
       e.preventDefault();
 
-      const handleMouseMove = (e: MouseEvent) => handleDrag(e.clientX, knob);
+      const handleMouseMove = (e: globalThis.MouseEvent): void =>
+        handleDrag(e.clientX, knob);
 
-      const handleMouseUp = () => {
-        document.removeEventListener("mousemove", handleMouseMove as any);
+      const handleMouseUp = (): void => {
+        document.removeEventListener("mousemove", handleMouseMove);
         document.removeEventListener("mouseup", handleMouseUp);
       };
 
-      document.addEventListener("mousemove", handleMouseMove as any);
+      document.addEventListener("mousemove", handleMouseMove);
       document.addEventListener("mouseup", handleMouseUp);
     },
     [handleDrag]
@@ -132,13 +134,13 @@ export const SliderBar: FC<SliderBarProps> = ({
       const clickValue = getKnobValue(clickPos);
 
       if (multi) {
-        const minPos = getKnobPosition(minValue);
-        const maxPos = getKnobPosition(maxValue);
+        const minKnobPos = getKnobPosition(minValue);
+        const maxKnobPos = getKnobPosition(maxValue);
 
-        const minDist = Math.abs(clickPos - minPos);
-        const maxDist = Math.abs(clickPos - maxPos);
+        const minKnobDist = Math.abs(clickPos - minKnobPos);
+        const maxKnobDist = Math.abs(clickPos - maxKnobPos);
 
-        if (clickPos < minPos || minDist < maxDist) {
+        if (clickPos < minKnobPos || minKnobDist < maxKnobDist) {
           onChange?.([clickValue, maxValue]);
         } else {
           onChange?.([minValue, clickValue]);
@@ -147,7 +149,15 @@ export const SliderBar: FC<SliderBarProps> = ({
         onChange?.(clickValue);
       }
     },
-    [maxValue, minValue, getKnobPosition, getKnobValue, getRelativeX, onChange]
+    [
+      getRelativeX,
+      getKnobValue,
+      multi,
+      getKnobPosition,
+      minValue,
+      maxValue,
+      onChange,
+    ]
   );
 
   return (
@@ -162,6 +172,8 @@ export const SliderBar: FC<SliderBarProps> = ({
         radiusStyles(Radius.Full)
       )}
       onClick={handleTrackClick}
+      onKeyDown={(e) => e.stopPropagation()}
+      role="presentation"
       {...props}
     >
       <div
@@ -181,11 +193,13 @@ export const SliderBar: FC<SliderBarProps> = ({
         <SliderKnob
           position={getKnobPosition(minValue)}
           onDragStart={(e) => registerKnobDragHandlers(e, "min")}
+          value={minValue}
         />
       )}
       <SliderKnob
         position={getKnobPosition(maxValue)}
         onDragStart={(e) => registerKnobDragHandlers(e, "max")}
+        value={maxValue}
       />
     </div>
   );

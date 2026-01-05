@@ -7,13 +7,16 @@ import {
   useEffect,
   useState,
 } from "react";
+
+import { FormField } from "@/components/FormField";
+import { Input } from "@/components/Input";
+import { SliderBar } from "@/components/Slider/SliderBar";
+import { SliderLabels } from "@/components/Slider/SliderLabels";
 import { Stack } from "@/components/Stack";
 import { Orientation, Spacing } from "@/types";
-import { Input } from "@/components/Input";
-import { SliderLabels } from "@/components/Slider/SliderLabels";
-import { SliderBar } from "@/components/Slider/SliderBar";
 import { makeRangeValidator } from "@/util/validators";
-import { FormField } from "@/components/FormField";
+
+type ChangeHandler = (value: number | number[]) => void;
 
 export interface SliderProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
@@ -26,7 +29,7 @@ export interface SliderProps extends Omit<
   max: number;
   maxLabel?: ReactNode;
   multi?: boolean;
-  onChange?: (value: number | number[]) => void;
+  onChange?: ChangeHandler;
   step?: number;
   value?: number | number[];
 }
@@ -185,7 +188,7 @@ export const SingleValueSlider: FC<SingleValueSliderProps> = ({
     max={max}
     {...props}
     multi={false}
-    onChange={onChange as any}
+    onChange={onChange as ChangeHandler}
   />
 );
 
@@ -200,7 +203,7 @@ export const MultiValueSlider: FC<MultiValueSliderProps> = ({
     max={max}
     {...props}
     multi={true}
-    onChange={onChange as any}
+    onChange={onChange as ChangeHandler}
   />
 );
 

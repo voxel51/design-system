@@ -1,16 +1,19 @@
-import { DragEventHandler, FC, HTMLAttributes } from "react";
 import clsx from "clsx";
-import { bgColorClass, BrandColor, Radius } from "@/types";
+import { DragEventHandler, FC, HTMLAttributes } from "react";
+
 import radiusStyles from "@/styles/radius";
+import { bgColorClass, BrandColor, Radius } from "@/types";
 
 interface SliderKnobProps extends HTMLAttributes<HTMLDivElement> {
   position: number;
   onDragStart: DragEventHandler<HTMLDivElement>;
+  value: number;
 }
 
 export const SliderKnob: FC<SliderKnobProps> = ({
   position,
   onDragStart,
+  value,
   ...props
 }) => {
   return (
@@ -26,6 +29,8 @@ export const SliderKnob: FC<SliderKnobProps> = ({
       style={{ left: `${position * 100}%` }}
       onMouseDown={onDragStart}
       role="slider"
+      aria-valuenow={value}
+      tabIndex={0}
       {...props}
     />
   );

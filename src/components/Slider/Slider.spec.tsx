@@ -1,7 +1,9 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
-import { MultiValueSlider, SingleValueSlider } from "@/components/Slider";
-import { randomString } from "#/testing-utils";
 import userEvent from "@testing-library/user-event";
+
+import { MultiValueSlider, SingleValueSlider } from "@/components/Slider";
+
+import { randomString } from "#/testing-utils";
 
 describe("Slider", () => {
   let testId: string;

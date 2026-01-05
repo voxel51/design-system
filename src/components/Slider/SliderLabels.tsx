@@ -1,8 +1,9 @@
+import clsx from "clsx";
 import type { FC, HTMLAttributes } from "react";
-import { cn } from "@/util/classes";
+
 import { Text } from "@/components/Text";
 import { TextVariant } from "@/types";
-import clsx from "clsx";
+import { cn } from "@/util/classes";
 
 interface SliderLabelProps extends HTMLAttributes<HTMLDivElement> {
   min: number;
