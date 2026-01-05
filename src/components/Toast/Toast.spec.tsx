@@ -1,6 +1,7 @@
-import { DummyIcon, makeChild, randomString } from "#/testing-utils";
-import { Toast } from "./Toast";
+import { DummyIcon, makeChild } from "#/testing-utils";
+import { randomString } from "@/util/random";
 import { render, screen, within } from "@testing-library/react";
+import { Toast } from "./Toast";
 
 describe("Toast", () => {
   let testId: string;

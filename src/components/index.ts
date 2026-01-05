@@ -9,6 +9,7 @@ export * from "./Icons";
 export * from "./Input";
 export * from "./ListItem";
 export * from "./Pill";
+export * from "./Radio";
 export * from "./RichButton";
 export * from "./RichButtonGroup";
 export * from "./RichList";

@@ -1,4 +1,5 @@
 import { RichButton } from "@/components/RichButton/RichButton.tsx";
+import { randomString } from "@/util/random";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
@@ -26,7 +27,7 @@ describe("RichButton", () => {
   let defaultProps: { "data-testid": string };
 
   beforeEach(() => {
-    testId = Math.random().toString(36).substring(2, 9);
+    testId = randomString();
     defaultProps = { "data-testid": testId };
   });
 
@@ -45,7 +46,7 @@ describe("RichButton", () => {
   });
 
   it("should render a provided label", () => {
-    const label = Math.random().toString(36).substring(2, 9);
+    const label = randomString();
     render(<RichButton {...defaultProps} label={label} />);
 
     expect(
@@ -54,7 +55,7 @@ describe("RichButton", () => {
   });
 
   it("should render a provided description", () => {
-    const description = Math.random().toString(36).substring(2, 9);
+    const description = randomString();
     render(<RichButton {...defaultProps} description={description} />);
 
     expect(

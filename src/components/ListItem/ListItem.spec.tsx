@@ -1,12 +1,13 @@
+import { randomString } from "@/util/random";
 import { render, screen, within } from "@testing-library/react";
-import { ListItem } from "./ListItem";
 import userEvent from "@testing-library/user-event";
+import { ListItem } from "./ListItem";
 
 describe("ListItem", () => {
   let elementId: string;
 
   beforeEach(() => {
-    elementId = Math.random().toString(36).substring(2, 9);
+    elementId = randomString();
   });
 
   it("should render", () => {
