@@ -28,7 +28,6 @@ export const ActivityToast: FC<ActivityToastProps> = ({
   className,
   icon: Icon,
   message,
-  onClose: _onClose,
   open,
   variant = Variant.Primary,
   ...props
