@@ -1,3 +1,7 @@
+import { Field, Input as HeadlessInput } from "@headlessui/react";
+import { type FC, InputHTMLAttributes } from "react";
+
+import { IconProps } from "@/components/Icons/types";
 import radiusStyles from "@/styles/radius";
 import {
   BackgroundColor,
@@ -11,9 +15,8 @@ import {
   textColorClass,
 } from "@/types";
 import { cn } from "@/util/classes";
-import { Field, Input as HeadlessInput } from "@headlessui/react";
-import { type FC, InputHTMLAttributes } from "react";
-import { IconProps } from "@/components/Icons/types";
+
+
 import { InputIcon } from "./InputIcon";
 import { paddingLeftStyles, sizeStyles } from "./styles";
 
@@ -53,7 +56,7 @@ export const inputStyle = ({
   icon?: boolean;
   radius?: Radius;
   size?: Size;
-}) =>
+}): string =>
   cn(
     "w-full",
     bgColorClass(BackgroundColor.Background),

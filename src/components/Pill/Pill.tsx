@@ -1,3 +1,6 @@
+import clsx from "clsx";
+import type { FC, HTMLAttributes } from "react";
+
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
 import {
@@ -10,8 +13,6 @@ import {
   TextColor,
 } from "@/types";
 import { bgColorClass, textColorClass } from "@/types/color";
-import clsx from "clsx";
-import type { FC, HTMLAttributes } from "react";
 
 export type PillSize = Exclude<Size, Size.Lg>;
 export type PillColor = BackgroundColor | SemanticColor | StatusColor;

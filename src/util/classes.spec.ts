@@ -27,6 +27,7 @@ describe("cn", () => {
   it("should allow for conditional syntax", () => {
     const included = "px-5";
     const excluded = "py-5";
+    // eslint-disable-next-line no-constant-binary-expression
     const result = cn(true && included, false && excluded);
 
     expect(result).toContain(included);

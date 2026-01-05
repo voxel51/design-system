@@ -1,6 +1,7 @@
+import type { FC } from "react";
+
 import { Icon } from "@/components/Icons/Icon";
 import { IconProps } from "@/components/Icons/types";
-import type { FC } from "react";
 
 export const EditIcon: FC<IconProps> = ({ ...props }) => {
   return (

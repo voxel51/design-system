@@ -1,8 +1,9 @@
-import type { FC, HTMLAttributes } from "react";
-import Spacing from "@/types/spacing";
 import { Fieldset } from "@headlessui/react";
+import type { FC, HTMLAttributes } from "react";
+
 import { Stack } from "@/components/Stack";
 import Orientation from "@/types/orientation.ts";
+import Spacing from "@/types/spacing";
 
 export interface FormFieldGroupProps extends HTMLAttributes<HTMLFieldSetElement> {
   disabled?: boolean;

@@ -1,3 +1,8 @@
+import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
+import clsx from "clsx";
+import type { FC, HTMLAttributes, ReactNode } from "react";
+
+import { textStyles } from "@/styles/text";
 import {
   BackgroundColor,
   bgColorClass,
@@ -10,10 +15,6 @@ import {
   TextVariant,
 } from "@/types";
 import { cn } from "@/util/classes";
-import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
-import clsx from "clsx";
-import type { FC, HTMLAttributes, ReactNode } from "react";
-import { textStyles } from "@/styles/text";
 
 export interface ToggleSwitchTab {
   label: ReactNode;
@@ -87,7 +88,7 @@ const getTabBorderRadius = (
   variant: ToggleSwitchVariant,
   isFirst: boolean,
   isLast: boolean
-) => {
+): string => {
   if (
     variant === ToggleSwitchVariant.Soft ||
     variant === ToggleSwitchVariant.Borderless
@@ -99,7 +100,7 @@ const getTabBorderRadius = (
   return "";
 };
 
-const getTabStyles = (variant: ToggleSwitchVariant, size: ToggleSwitchSize) => {
+const getTabStyles = (variant: ToggleSwitchVariant, size: ToggleSwitchSize): string => {
   const classNames = [tabVariantStyles[variant], tabSizeStyles[size]];
 
   if (variant !== ToggleSwitchVariant.Soft) {

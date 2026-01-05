@@ -1,7 +1,8 @@
 import type { FC, HTMLAttributes } from "react";
-import { cn } from "@/util/classes";
-import { Size, TextColor, textColorClass } from "@/types";
+
 import { SpinnerIcon } from "@/components/Icons/Spinner";
+import { Size, TextColor, textColorClass } from "@/types";
+import { cn } from "@/util/classes";
 
 export interface SpinnerProps extends HTMLAttributes<HTMLDivElement> {
   size?: Size;

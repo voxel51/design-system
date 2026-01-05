@@ -1,5 +1,9 @@
+import clsx from "clsx";
 import type { FC, HTMLAttributes, ReactNode } from "react";
-import { cn } from "@/util/classes";
+
+import { Clickable } from "@/components/Clickable";
+import { Text } from "@/components/Text";
+import radiusStyles from "@/styles/radius";
 import {
   BorderColor,
   borderColorClass,
@@ -9,10 +13,7 @@ import {
   TextColor,
   textColorClass,
 } from "@/types";
-import { Text } from "@/components/Text";
-import { Clickable } from "@/components/Clickable";
-import clsx from "clsx";
-import radiusStyles from "@/styles/radius";
+import { cn } from "@/util/classes";
 
 export interface RichButtonProps extends HTMLAttributes<HTMLDivElement> {
   active?: boolean;
@@ -44,6 +45,14 @@ export const RichButton: FC<RichButtonProps> = ({
         className
       )}
       onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick?.();
+        }
+      }}
+      role="button"
+      tabIndex={0}
       {...props}
     >
       <div className="flex flex-col">

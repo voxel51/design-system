@@ -1,3 +1,8 @@
+import { Button as HeadlessButton } from "@headlessui/react";
+import clsx from "clsx";
+import type { ButtonHTMLAttributes, FC } from "react";
+
+import radiusStyles from "@/styles/radius";
 import {
   ActionColor,
   bgColorClass,
@@ -10,10 +15,6 @@ import {
   Variant,
 } from "@/types";
 import { cn } from "@/util/classes";
-import { Button as HeadlessButton } from "@headlessui/react";
-import clsx from "clsx";
-import type { ButtonHTMLAttributes, FC } from "react";
-import radiusStyles from "@/styles/radius";
 
 type ButtonSize = Exclude<Size, Size.Lg>;
 

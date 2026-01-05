@@ -1,3 +1,3 @@
 import { HTMLAttributes } from "react";
 
-export interface IconProps extends HTMLAttributes<SVGElement> {}
+export type IconProps = HTMLAttributes<SVGElement>;

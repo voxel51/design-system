@@ -1,6 +1,9 @@
 import type { FC, HTMLAttributes } from "react";
+
 import { Text } from "@/components/Text";
 import { ToastContainer } from "@/components/ToastContainer";
+import radiusStyles from "@/styles/radius";
+import { textColor } from "@/styles/text";
 import {
   Anchor,
   BackgroundColor,
@@ -11,14 +14,11 @@ import {
   Variant,
 } from "@/types";
 import { cn } from "@/util/classes";
-import { textColor } from "@/styles/text";
-import radiusStyles from "@/styles/radius";
 
 export interface ActivityToastProps extends HTMLAttributes<HTMLDivElement> {
   anchor?: Anchor;
   icon?: FC;
   message?: string;
-  onClose?: () => void;
   open?: boolean;
   variant?: Variant;
 }
@@ -28,7 +28,6 @@ export const ActivityToast: FC<ActivityToastProps> = ({
   className,
   icon: Icon,
   message,
-  onClose,
   open,
   variant = Variant.Primary,
   ...props

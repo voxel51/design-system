@@ -1,4 +1,10 @@
+import { Checkbox as HeadlessCheckbox, Field, Label } from "@headlessui/react";
+import clsx from "clsx";
+import { type FC, InputHTMLAttributes } from "react";
+
+import { CheckmarkIcon } from "@/components/Icons/Checkmark";
 import radiusStyles from "@/styles/radius";
+import { TEXT_STYLES } from "@/styles/text";
 import {
   ActionColor,
   bgColorClass,
@@ -11,11 +17,6 @@ import {
   textColorClass,
 } from "@/types";
 import { cn } from "@/util/classes";
-import { Checkbox as HeadlessCheckbox, Field, Label } from "@headlessui/react";
-import clsx from "clsx";
-import { type FC, InputHTMLAttributes } from "react";
-import { CheckmarkIcon } from "@/components/Icons/Checkmark";
-import { TEXT_STYLES } from "@/styles/text";
 
 type ModifiedCheckboxProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,

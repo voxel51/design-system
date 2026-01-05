@@ -1,8 +1,9 @@
+import clsx from "clsx";
 import type { FC, HTMLAttributes } from "react";
+
+import { textStyles } from "@/styles/text";
 import { TextColor, textColorClass, TextVariant } from "@/types";
 import HeadingLevel from "@/types/heading";
-import { textStyles } from "@/styles/text";
-import clsx from "clsx";
 
 export interface HeadingProps extends HTMLAttributes<HTMLHeadingElement> {
   level?: HeadingLevel;

@@ -1,5 +1,3 @@
-import { FC, HTMLAttributes, useCallback, useMemo, useState } from "react";
-import clsx from "clsx";
 import {
   DndContext,
   closestCenter,
@@ -15,9 +13,14 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { SortableListItem } from "./SortableListItem";
+import clsx from "clsx";
+import { FC, HTMLAttributes, useCallback, useMemo, useState } from "react";
+
+
 import { ListItemProps } from "@/components/ListItem";
 import { Descriptor } from "@/types";
+
+import { SortableListItem } from "./SortableListItem";
 
 export interface RichListProps extends HTMLAttributes<HTMLDivElement> {
   listItems: Descriptor<ListItemProps>[];
@@ -64,7 +67,7 @@ export const RichList: FC<RichListProps> = ({
     [selected, onSelected]
   );
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = (event: DragEndEvent): void => {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {

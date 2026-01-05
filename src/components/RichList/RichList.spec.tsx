@@ -1,7 +1,8 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { RichList } from "@/components/RichList";
+
 import { ListItemProps } from "@/components/ListItem";
+import { RichList } from "@/components/RichList";
 import { Descriptor } from "@/types";
 
 describe("RichList", () => {

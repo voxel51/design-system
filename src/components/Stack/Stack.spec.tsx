@@ -1,5 +1,6 @@
-import { Stack } from "@/components/Stack/Stack.tsx";
 import { render, screen } from "@testing-library/react";
+
+import { Stack } from "@/components/Stack/Stack.tsx";
 
 describe("Stack", () => {
   let testId: string;

@@ -1,9 +1,10 @@
-import { FC, HTMLAttributes, ReactNode, useState } from "react";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import clsx from "clsx";
-import { cn } from "@/util/classes";
-import { Anchor, BackgroundColor, bgColorClass, Radius } from "@/types";
+import { FC, HTMLAttributes, ReactNode, useState } from "react";
+
 import radiusStyles from "@/styles/radius";
+import { Anchor, BackgroundColor, bgColorClass, Radius } from "@/types";
+import { cn } from "@/util/classes";
 
 export type TooltipAnchor = Extract<
   Anchor,

@@ -1,7 +1,10 @@
-import { Size } from "@/types";
 import { render, screen } from "@testing-library/react";
-import { Checkbox } from "./Checkbox";
 import userEvent from "@testing-library/user-event";
+
+import { Size } from "@/types";
+
+import { Checkbox } from "./Checkbox";
+
 
 describe("Checkbox", () => {
   const checkboxLabel = "Checkbox label";

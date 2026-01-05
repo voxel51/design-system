@@ -1,8 +1,10 @@
 import { render, screen, within } from "@testing-library/react";
-import { RichButtonGroup } from "@/components/RichButtonGroup/RichButtonGroup.tsx";
-import { RichButtonProps } from "@/components/RichButton";
-import { Descriptor } from "@/types";
 import userEvent, { UserEvent } from "@testing-library/user-event";
+
+import { RichButtonProps } from "@/components/RichButton";
+import { RichButtonGroup } from "@/components/RichButtonGroup/RichButtonGroup.tsx";
+import { Descriptor } from "@/types";
+
 
 describe("RichButtonGroup", () => {
   let testId: string;
