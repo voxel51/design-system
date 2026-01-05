@@ -1,32 +1,35 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
-import { Slider } from "@/components/Slider";
+import { MultiValueSlider, SingleValueSlider } from "@/components/Slider";
 import { randomString } from "#/testing-utils";
 import userEvent from "@testing-library/user-event";
 
 describe("Slider", () => {
   let testId: string;
-  let defaultProps: {
-    "data-testid": string;
-    min: number;
-    max: number;
-    value: number | number[];
-    multi?: boolean;
-  };
 
   beforeEach(() => {
-    testId = Math.random().toString(36).substring(2, 9);
-    defaultProps = { "data-testid": testId, min: 0, max: 1, value: 0.5 };
+    testId = randomString();
   });
 
   describe("with a single value", () => {
+    let defaultProps: {
+      "data-testid": string;
+      min: number;
+      max: number;
+      value: number;
+    };
+
+    beforeEach(() => {
+      defaultProps = { "data-testid": testId, min: 0, max: 1, value: 0.5 };
+    });
+
     it("should render", () => {
-      render(<Slider {...defaultProps} />);
+      render(<SingleValueSlider {...defaultProps} />);
 
       expect(screen.getByTestId(testId)).toBeInTheDocument();
     });
 
     it("should render an input field with the provided value", () => {
-      render(<Slider {...defaultProps} />);
+      render(<SingleValueSlider {...defaultProps} />);
 
       const input: HTMLInputElement = within(
         screen.getByTestId(testId)
@@ -38,14 +41,14 @@ describe("Slider", () => {
 
     it("should render an input label", () => {
       const maxLabel = randomString();
-      render(<Slider {...defaultProps} maxLabel={maxLabel} />);
+      render(<SingleValueSlider {...defaultProps} maxLabel={maxLabel} />);
 
       const slider = screen.getByTestId(testId);
       expect(within(slider).getByText(maxLabel)).toBeInTheDocument();
     });
 
     it("should not render inputs when bare", () => {
-      render(<Slider {...defaultProps} bare />);
+      render(<SingleValueSlider {...defaultProps} bare />);
 
       expect(
         within(screen.getByTestId(testId)).queryByRole("textbox")
@@ -54,7 +57,7 @@ describe("Slider", () => {
 
     it("should emit onChange when inputs change", async () => {
       const onChange = jest.fn();
-      render(<Slider {...defaultProps} onChange={onChange} />);
+      render(<SingleValueSlider {...defaultProps} onChange={onChange} />);
 
       const input = within(screen.getByTestId(testId)).getByRole("textbox");
 
@@ -68,7 +71,7 @@ describe("Slider", () => {
 
     it("should not emit onChange for invalid inputs", async () => {
       const onChange = jest.fn();
-      render(<Slider {...defaultProps} onChange={onChange} />);
+      render(<SingleValueSlider {...defaultProps} onChange={onChange} />);
 
       const input = within(screen.getByTestId(testId)).getByRole("textbox");
 
@@ -88,7 +91,7 @@ describe("Slider", () => {
 
       beforeEach(() => {
         onChange = jest.fn();
-        render(<Slider {...defaultProps} onChange={onChange} />);
+        render(<SingleValueSlider {...defaultProps} onChange={onChange} />);
 
         knob = within(screen.getByTestId(testId)).getByRole("slider");
         track = knob.parentElement!;
@@ -136,22 +139,30 @@ describe("Slider", () => {
   });
 
   describe("with multiple values", () => {
+    let defaultProps: {
+      "data-testid": string;
+      min: number;
+      max: number;
+      value: number[];
+    };
+
     beforeEach(() => {
       defaultProps = {
-        ...defaultProps,
+        "data-testid": testId,
+        min: 0,
+        max: 1,
         value: [0.25, 0.75],
-        multi: true,
       };
     });
 
     it("should render", () => {
-      render(<Slider {...defaultProps} />);
+      render(<MultiValueSlider {...defaultProps} />);
 
       expect(screen.getByTestId(testId)).toBeInTheDocument();
     });
 
     it("should render input fields with the provided values", () => {
-      render(<Slider {...defaultProps} />);
+      render(<MultiValueSlider {...defaultProps} />);
 
       const inputs: HTMLInputElement[] = within(
         screen.getByTestId(testId)
@@ -169,7 +180,11 @@ describe("Slider", () => {
       const minLabel = randomString();
       const maxLabel = randomString();
       render(
-        <Slider {...defaultProps} minLabel={minLabel} maxLabel={maxLabel} />
+        <MultiValueSlider
+          {...defaultProps}
+          minLabel={minLabel}
+          maxLabel={maxLabel}
+        />
       );
 
       const slider = screen.getByTestId(testId);
@@ -178,7 +193,7 @@ describe("Slider", () => {
     });
 
     it("should not render inputs when bare", () => {
-      render(<Slider {...defaultProps} bare />);
+      render(<MultiValueSlider {...defaultProps} bare />);
 
       expect(
         within(screen.getByTestId(testId)).queryByRole("textbox")
@@ -187,7 +202,7 @@ describe("Slider", () => {
 
     it("should emit onChange when inputs change", async () => {
       const onChange = jest.fn();
-      render(<Slider {...defaultProps} onChange={onChange} />);
+      render(<MultiValueSlider {...defaultProps} onChange={onChange} />);
 
       const slider = screen.getByTestId(testId);
       const inputs: HTMLInputElement[] = within(slider).getAllByRole("textbox");
@@ -214,7 +229,7 @@ describe("Slider", () => {
 
     it("should not emit onChange for invalid inputs", async () => {
       const onChange = jest.fn();
-      render(<Slider {...defaultProps} onChange={onChange} />);
+      render(<MultiValueSlider {...defaultProps} onChange={onChange} />);
 
       const slider = screen.getByTestId(testId);
       const inputs: HTMLInputElement[] = within(slider).getAllByRole("textbox");
@@ -244,7 +259,7 @@ describe("Slider", () => {
 
       beforeEach(() => {
         onChange = jest.fn();
-        render(<Slider {...defaultProps} onChange={onChange} />);
+        render(<MultiValueSlider {...defaultProps} onChange={onChange} />);
 
         knobs = within(screen.getByTestId(testId)).getAllByRole("slider");
         expect(knobs).toHaveLength(2);

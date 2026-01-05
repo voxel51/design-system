@@ -31,6 +31,22 @@ export interface SliderProps extends Omit<
   value?: number | number[];
 }
 
+export interface SingleValueSliderProps extends Omit<
+  SliderProps,
+  "multi" | "onChange" | "value"
+> {
+  onChange?: (value: number) => void;
+  value?: number;
+}
+
+export interface MultiValueSliderProps extends Omit<
+  SliderProps,
+  "multi" | "onChange" | "value"
+> {
+  onChange?: (value: number[]) => void;
+  value?: number[];
+}
+
 /**
  * Clamp a value to a given range.
  *
@@ -41,7 +57,7 @@ export interface SliderProps extends Omit<
 const clamp = (value: number, min: number, max: number): number =>
   Math.min(Math.max(value, min), max);
 
-export const Slider: FC<SliderProps> = ({
+export const BaseSlider: FC<SliderProps> = ({
   bare,
   className,
   labeled,
@@ -158,4 +174,36 @@ export const Slider: FC<SliderProps> = ({
   );
 };
 
-Slider.displayName = "Slider";
+export const SingleValueSlider: FC<SingleValueSliderProps> = ({
+  onChange,
+  max,
+  min,
+  ...props
+}) => (
+  <BaseSlider
+    min={min}
+    max={max}
+    {...props}
+    multi={false}
+    onChange={onChange as any}
+  />
+);
+
+export const MultiValueSlider: FC<MultiValueSliderProps> = ({
+  onChange,
+  max,
+  min,
+  ...props
+}) => (
+  <BaseSlider
+    min={min}
+    max={max}
+    {...props}
+    multi={true}
+    onChange={onChange as any}
+  />
+);
+
+BaseSlider.displayName = "BaseSlider";
+SingleValueSlider.displayName = "SingleValueSlider";
+MultiValueSlider.displayName = "MultiValueSlider";
