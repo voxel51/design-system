@@ -5,13 +5,7 @@ import { Field, Textarea as HeadlessTextarea } from "@headlessui/react";
 import clsx from "clsx";
 import { type FC, TextareaHTMLAttributes } from "react";
 
-type ModifiedTextAreaProps = Omit<
-  TextareaHTMLAttributes<HTMLTextAreaElement>,
-  "size" | "className"
->;
-
-export interface TextAreaProps extends ModifiedTextAreaProps {
-  // Sizing & Styling
+export interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   size?: Size;
   radius?: Radius;
   className?: string;
