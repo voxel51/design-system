@@ -1,8 +1,8 @@
-import { randomString } from "@/util/random";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { RichButton } from "@/components/RichButton/RichButton.tsx";
+import { randomString } from "@/util/random";
 
 const DummyIcon = () => {
   return (

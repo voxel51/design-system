@@ -1,9 +1,10 @@
+import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+
 import { ListItemProps } from "@/components/ListItem";
 import { RichList } from "@/components/RichList";
 import { Descriptor } from "@/types";
 import { randomString } from "@/util/random";
-import { render, screen, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 
 describe("RichList", () => {
   let testId: string;

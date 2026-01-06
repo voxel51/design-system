@@ -1,9 +1,11 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { ReactNode } from "react";
-import { Select } from "./Select";
+
 
 import { Descriptor } from "@/types";
 import { randomString } from "@/util/random";
+
+import { Select } from "./Select";
 
 describe("Select", () => {
   let testId: string;

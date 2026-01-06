@@ -1,8 +1,10 @@
-import { Size } from "@/types";
 import { RadioGroup } from "@headlessui/react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ReactNode } from "react";
+
+import { Size } from "@/types";
+
 import { Radio } from "./Radio";
 
 type RadioGroupWrapperProps = {

@@ -1,7 +1,9 @@
-import { Size } from "@/types";
-import { randomString } from "@/util/random";
 import { RadioGroup as HeadlessRadioGroup } from "@headlessui/react";
 import { FC, HTMLAttributes, useMemo } from "react";
+
+import { Size } from "@/types";
+import { randomString } from "@/util/random";
+
 import { Radio, RadioProps } from "./Radio";
 
 export interface RadioOption {

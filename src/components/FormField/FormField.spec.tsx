@@ -1,6 +1,7 @@
-import { randomString } from "@/util/random";
 import { render, screen, within } from "@testing-library/react";
 import type { ReactNode } from "react";
+
+import { randomString } from "@/util/random";
 
 import { FormField } from "./FormField";
 

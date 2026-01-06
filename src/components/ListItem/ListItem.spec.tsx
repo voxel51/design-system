@@ -1,6 +1,8 @@
-import { randomString } from "@/util/random";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+
+import { randomString } from "@/util/random";
+
 import { ListItem } from "./ListItem";
 
 describe("ListItem", () => {

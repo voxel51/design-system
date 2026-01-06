@@ -1,9 +1,11 @@
-import { textStyles } from "@/styles/text.ts";
-import { Size, TextColor, textColorClass, TextVariant } from "@/types";
-import { cn } from "@/util/classes";
 import { Field, Radio as HeadlessRadio, Label } from "@headlessui/react";
 import clsx from "clsx";
 import { type FC, InputHTMLAttributes } from "react";
+
+import { textStyles } from "@/styles/text.ts";
+import { Size, TextColor, textColorClass, TextVariant } from "@/types";
+import { cn } from "@/util/classes";
+
 import { RadioDotIcon } from "../Icons/RadioDot";
 
 type ModifiedRadioProps = Omit<
@@ -13,7 +15,6 @@ type ModifiedRadioProps = Omit<
 
 export interface RadioProps extends ModifiedRadioProps {
   value?: string;
-  onChange?: (checked: boolean) => void;
   label?: string;
   disabled?: boolean;
   size?: Size;
@@ -41,13 +42,11 @@ const dotSizeStyles: Partial<Record<Size, string>> = {
 
 export const Radio: FC<RadioProps> = ({
   value,
-  onChange = undefined,
   size = Size.Sm,
   className,
   labelClassName,
   label,
   disabled,
-  id,
   ...props
 }) => {
   return (

@@ -1,5 +1,7 @@
-import { randomString } from "@/util/random";
 import { render, screen, within } from "@testing-library/react";
+
+import { randomString } from "@/util/random";
+
 import { TextBadge } from "./TextBadge";
 
 describe("TextBadge", () => {
