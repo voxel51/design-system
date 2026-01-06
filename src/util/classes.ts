@@ -1,5 +1,5 @@
-import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
+import { twMerge } from "tailwind-merge";
 
 /**
  * Helper function which aggregates and deduplicates class names.

@@ -1,10 +1,19 @@
-import type { FC, HTMLAttributes, ReactNode } from "react";
-import { cn } from "@/util/classes.ts";
-import radiusStyles from "@/styles/radius.ts";
-import { Radius, TextColor, textColorClass } from "@/types";
-import { Text } from "@/components/Text";
-import { Clickable } from "@/components/Clickable";
 import clsx from "clsx";
+import type { FC, HTMLAttributes, ReactNode } from "react";
+
+import { Clickable } from "@/components/Clickable";
+import { Text } from "@/components/Text";
+import radiusStyles from "@/styles/radius";
+import {
+  BorderColor,
+  borderColorClass,
+  ElementState,
+  IconColor,
+  Radius,
+  TextColor,
+  textColorClass,
+} from "@/types";
+import { cn } from "@/util/classes";
 
 export interface RichButtonProps extends HTMLAttributes<HTMLDivElement> {
   active?: boolean;
@@ -28,14 +37,22 @@ export const RichButton: FC<RichButtonProps> = ({
       className={clsx(
         "border",
         active
-          ? "border-action-primary-primary"
-          : "border-content-border-secondary-primary",
-        !active && "hover:border-content-border-secondary-secondary",
+          ? borderColorClass(BorderColor.Active)
+          : borderColorClass(BorderColor.Default),
+        !active && borderColorClass(BorderColor.Hover, ElementState.Hover),
         "p-3",
         radiusStyles(Radius.Md),
         className
       )}
       onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick?.();
+        }
+      }}
+      role="button"
+      tabIndex={0}
       {...props}
     >
       <div className="flex flex-col">
@@ -45,8 +62,8 @@ export const RichButton: FC<RichButtonProps> = ({
               className={cn(
                 "size-5",
                 active
-                  ? textColorClass(TextColor.BrandPrimary)
-                  : textColorClass(TextColor.Primary)
+                  ? textColorClass(IconColor.Brand)
+                  : textColorClass(IconColor.Default)
               )}
             >
               <Icon />

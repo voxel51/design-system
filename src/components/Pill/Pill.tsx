@@ -1,11 +1,21 @@
-import radiusStyles from "@/styles/radius";
-import shadowStyles from "@/styles/shadow";
-import { BackgroundColor, Radius, Shadow, Size, TextColor } from "@/types";
-import { bgColorClass, textColorClass } from "@/types/color";
 import clsx from "clsx";
 import type { FC, HTMLAttributes } from "react";
 
-type PillSize = Exclude<Size, Size.Lg>;
+import radiusStyles from "@/styles/radius";
+import shadowStyles from "@/styles/shadow";
+import {
+  BackgroundColor,
+  Radius,
+  SemanticColor,
+  Shadow,
+  Size,
+  StatusColor,
+  TextColor,
+} from "@/types";
+import { bgColorClass, textColorClass } from "@/types/color";
+
+export type PillSize = Exclude<Size, Size.Lg>;
+export type PillColor = BackgroundColor | SemanticColor | StatusColor;
 
 export interface PillProps extends HTMLAttributes<HTMLSpanElement> {
   size?: PillSize;
@@ -13,7 +23,7 @@ export interface PillProps extends HTMLAttributes<HTMLSpanElement> {
   shadow?: Shadow;
   color?: TextColor;
   isStatus?: boolean;
-  backgroundColor?: BackgroundColor;
+  backgroundColor?: PillColor;
 }
 
 const sizeStyles: Record<PillSize, string> = {

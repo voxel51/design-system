@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
-import { Toggle } from "./Toggle";
 import userEvent from "@testing-library/user-event";
+
+import { Toggle } from "./Toggle";
 
 describe("Toggle", () => {
   const toggleLabel = "Toggle label";

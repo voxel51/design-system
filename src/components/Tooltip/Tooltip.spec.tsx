@@ -1,6 +1,7 @@
+import { fireEvent, render, screen, within } from "@testing-library/react";
+
 import { Tooltip } from "@/components/Tooltip";
 import { randomString } from "@/util/random";
-import { fireEvent, render, screen, within } from "@testing-library/react";
 
 describe("Tooltip", () => {
   let testId: string;

@@ -1,6 +1,8 @@
-import { Radius, Size } from "@/types";
 import { render, screen } from "@testing-library/react";
 import userEvent, { UserEvent } from "@testing-library/user-event";
+
+import { Radius, Size } from "@/types";
+
 import { Input, InputType } from "./Input";
 
 describe("Input", () => {

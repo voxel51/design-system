@@ -1,5 +1,6 @@
-import type { FC, HTMLAttributes, ReactNode } from "react";
 import { Description, Field, Label } from "@headlessui/react";
+import type { FC, HTMLAttributes, ReactNode } from "react";
+
 import { Stack } from "@/components/Stack";
 import { Text } from "@/components/Text";
 import { Orientation, Spacing, TextColor } from "@/types";
@@ -40,7 +41,7 @@ export const FormField: FC<FormFieldProps> = ({
 
         {control}
 
-        {error && <Text color={TextColor.SemanticDestructive}>{error}</Text>}
+        {error && <Text color={TextColor.Destructive}>{error}</Text>}
       </Stack>
     </Field>
   );

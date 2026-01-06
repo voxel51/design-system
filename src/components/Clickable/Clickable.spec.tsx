@@ -1,5 +1,6 @@
 import { randomString } from "@/util/random";
 import { render, screen } from "@testing-library/react";
+
 import { Clickable } from "./Clickable";
 
 describe("Clickable", () => {

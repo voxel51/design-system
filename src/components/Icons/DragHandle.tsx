@@ -1,6 +1,7 @@
-import { IconProps } from "@/components/Icons/types";
-import type { FC } from "react";
 import clsx from "clsx";
+import type { FC } from "react";
+
+import { IconProps } from "@/components/Icons/types";
 
 export const DragHandleIcon: FC<IconProps> = ({ className, ...props }) => {
   return (

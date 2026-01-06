@@ -1,11 +1,22 @@
-import radiusStyles from "@/styles/radius";
-import { Radius, Size, TextColor, textColorClass } from "@/types";
-import { cn } from "@/util/classes";
 import { Checkbox as HeadlessCheckbox, Field, Label } from "@headlessui/react";
 import clsx from "clsx";
 import { type FC, InputHTMLAttributes } from "react";
-import { CheckmarkIcon } from "../Icons/Checkmark";
-import { TEXT_STYLES } from "@/styles/text.ts";
+
+import { CheckmarkIcon } from "@/components/Icons/Checkmark";
+import radiusStyles from "@/styles/radius";
+import { TEXT_STYLES } from "@/styles/text";
+import {
+  ActionColor,
+  bgColorClass,
+  BorderColor,
+  borderColorClass,
+  ElementState,
+  Radius,
+  Size,
+  TextColor,
+  textColorClass,
+} from "@/types";
+import { cn } from "@/util/classes";
 
 type ModifiedCheckboxProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
@@ -57,7 +68,7 @@ export const Checkbox: FC<CheckboxProps> = ({
           "cursor-pointer",
           "appearance-none",
           "border",
-          "border-content-border-secondary-primary",
+          borderColorClass(BorderColor.Default),
           "group-hover:border-action-primary-primary",
           radiusStyles(radius),
           sizeStyles[size],
@@ -68,8 +79,8 @@ export const Checkbox: FC<CheckboxProps> = ({
           "focus:ring-offset-2",
           "disabled:opacity-50",
           "disabled:cursor-not-allowed",
-          "data-checked:bg-action-primary-primary",
-          "data-checked:border-action-primary-primary",
+          bgColorClass(ActionColor.PrimaryDefault, ElementState.Checked),
+          borderColorClass(BorderColor.Active, ElementState.Checked),
           className
         )}
         {...props}

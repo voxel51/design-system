@@ -1,5 +1,5 @@
-import type { FC, HTMLAttributes } from "react";
 import clsx from "clsx";
+import type { FC, HTMLAttributes } from "react";
 
 export const Clickable: FC<HTMLAttributes<HTMLSpanElement>> = ({
   children,

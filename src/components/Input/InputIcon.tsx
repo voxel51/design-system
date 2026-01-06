@@ -1,7 +1,9 @@
-import { Size } from "@/types";
-import { cn } from "@/util/classes";
 import { type FC } from "react";
-import { IconProps } from "../Icons/types";
+
+import { IconProps } from "@/components/Icons/types";
+import { Size, TextColor, textColorClass } from "@/types";
+import { cn } from "@/util/classes";
+
 import { iconPaddingStyles, iconSizeStyles } from "./styles";
 
 export interface InputIconProps {
@@ -15,7 +17,9 @@ export const InputIcon: FC<InputIconProps> = ({ Icon, size, hasText }) => {
     <span
       className={cn(
         "absolute left-0 flex items-center justify-center",
-        hasText ? "text-content-text-primary" : "text-content-text-secondary",
+        hasText
+          ? textColorClass(TextColor.Primary)
+          : textColorClass(TextColor.Secondary),
         iconPaddingStyles[size]
       )}
     >

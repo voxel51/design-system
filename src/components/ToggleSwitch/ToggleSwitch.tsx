@@ -1,9 +1,20 @@
-import { Descriptor, Size, TextVariant } from "@/types";
-import { cn } from "@/util/classes";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import clsx from "clsx";
 import type { FC, HTMLAttributes, ReactNode } from "react";
+
 import { textStyles } from "@/styles/text";
+import {
+  BackgroundColor,
+  bgColorClass,
+  BrandColor,
+  Descriptor,
+  ElementState,
+  Size,
+  TextColor,
+  textColorClass,
+  TextVariant,
+} from "@/types";
+import { cn } from "@/util/classes";
 
 export interface ToggleSwitchTab {
   label: ReactNode;
@@ -56,19 +67,20 @@ const tabVariantStyles: Record<ToggleSwitchVariant, string> = {
     "m-1",
     "py-1 px-1.5",
     "rounded-sm",
-    "data-[selected]:text-brand-accent"
+    textColorClass(BrandColor.Accent, ElementState.Selected)
   ),
   [ToggleSwitchVariant.Default]: clsx(
-    "data-[selected]:text-content-text-primary"
+    textColorClass(TextColor.Primary, ElementState.Selected)
   ),
-  [ToggleSwitchVariant.Full]: clsx("data-[selected]:text-content-text-primary"),
+  [ToggleSwitchVariant.Full]: clsx(
+    textColorClass(TextColor.Primary, ElementState.Selected)
+  ),
   [ToggleSwitchVariant.Borderless]: clsx(
     "bg-transparent",
     "hover:bg-transparent",
     "data-[selected]:bg-transparent",
-    "data-[selected]:text-content-text-primary",
-    "data-[selected]:border-b-2",
-    "data-[selected]:border-context-text-primary"
+    textColorClass(TextColor.Primary, ElementState.Selected),
+    "data-[selected]:border-b-2"
   ),
 };
 
@@ -76,7 +88,7 @@ const getTabBorderRadius = (
   variant: ToggleSwitchVariant,
   isFirst: boolean,
   isLast: boolean
-) => {
+): string => {
   if (
     variant === ToggleSwitchVariant.Soft ||
     variant === ToggleSwitchVariant.Borderless
@@ -88,7 +100,7 @@ const getTabBorderRadius = (
   return "";
 };
 
-const getTabStyles = (variant: ToggleSwitchVariant, size: ToggleSwitchSize) => {
+const getTabStyles = (variant: ToggleSwitchVariant, size: ToggleSwitchSize): string => {
   const classNames = [tabVariantStyles[variant], tabSizeStyles[size]];
 
   if (variant !== ToggleSwitchVariant.Soft) {
@@ -116,7 +128,8 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
       <TabList
         className={cn(
           "flex flex-nowrap items-center",
-          variant !== ToggleSwitchVariant.Borderless && "bg-content-bg-card-1",
+          variant !== ToggleSwitchVariant.Borderless &&
+            bgColorClass(BackgroundColor.Card1),
           "rounded-md",
           fullWidth ? "w-full" : "w-fit",
           tabListClassName
@@ -132,12 +145,12 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
                 "flex-1",
                 "flex items-center justify-center",
                 "font-medium",
-                "text-content-text-secondary",
+                textColorClass(TextColor.Secondary),
                 "outline-none",
                 "transition-colors",
-                "hover:bg-content-bg-card-2",
-                "hover:text-content-text-primary",
-                "data-[selected]:bg-content-bg-card-2",
+                bgColorClass(BackgroundColor.Card2, ElementState.Hover),
+                textColorClass(TextColor.Primary, ElementState.Hover),
+                bgColorClass(BackgroundColor.Card2, ElementState.Selected),
                 "data-[focus]:outline-none",
                 getTabBorderRadius(variant, isFirst, isLast),
                 getTabStyles(variant, size)

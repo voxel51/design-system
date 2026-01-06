@@ -28,9 +28,9 @@ export const textColor = (variant: Variant): TextColor | undefined => {
     case Variant.Secondary:
       return TextColor.Secondary;
     case Variant.Success:
-      return TextColor.SemanticSuccess;
+      return TextColor.Success;
     case Variant.Danger:
-      return TextColor.SemanticDestructive;
+      return TextColor.Destructive;
     default:
       return TextColor.Primary;
   }

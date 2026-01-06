@@ -1,5 +1,6 @@
-import { Size } from "@/types";
 import clsx from "clsx";
+
+import { Size } from "@/types";
 
 export const sizeStyles: Partial<Record<Size, string>> = {
   [Size.Sm]: clsx("py-1.75", "text-sm/5", "h-[2rem]"),

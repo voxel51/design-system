@@ -1,22 +1,24 @@
 import type { FC, HTMLAttributes } from "react";
+
 import { Text } from "@/components/Text";
 import { ToastContainer } from "@/components/ToastContainer";
+import radiusStyles from "@/styles/radius";
+import { textColor } from "@/styles/text";
 import {
   Anchor,
   BackgroundColor,
   bgColorClass,
+  BorderColor,
+  borderColorClass,
   Radius,
   Variant,
 } from "@/types";
-import { cn } from "@/util/classes.ts";
-import { textColor } from "@/styles/text";
-import radiusStyles from "@/styles/radius";
+import { cn } from "@/util/classes";
 
 export interface ActivityToastProps extends HTMLAttributes<HTMLDivElement> {
   anchor?: Anchor;
   icon?: FC;
   message?: string;
-  onClose?: () => void;
   open?: boolean;
   variant?: Variant;
 }
@@ -26,7 +28,6 @@ export const ActivityToast: FC<ActivityToastProps> = ({
   className,
   icon: Icon,
   message,
-  onClose,
   open,
   variant = Variant.Primary,
   ...props
@@ -38,7 +39,8 @@ export const ActivityToast: FC<ActivityToastProps> = ({
         "gap-x-sm",
         "items-center",
         "py-2 pr-4 pl-3",
-        "border border-content-border-secondary-primary",
+        "border",
+        borderColorClass(BorderColor.Default),
         bgColorClass(BackgroundColor.Card1),
         radiusStyles(Radius.Md),
         className
