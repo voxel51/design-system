@@ -1,10 +1,9 @@
-import radiusStyles from "@/styles/radius";
 import { textStyles } from "@/styles/text.ts";
-import { Radius, Size, TextColor, textColorClass, TextVariant } from "@/types";
+import { Size, TextColor, textColorClass, TextVariant } from "@/types";
 import { cn } from "@/util/classes";
-import { Field, Label } from "@headlessui/react";
+import { Field, Radio as HeadlessRadio, Label } from "@headlessui/react";
 import clsx from "clsx";
-import { ChangeEvent, type FC, InputHTMLAttributes, useId } from "react";
+import { type FC, InputHTMLAttributes } from "react";
 import { RadioDotIcon } from "../Icons/RadioDot";
 
 type ModifiedRadioProps = Omit<
@@ -14,12 +13,10 @@ type ModifiedRadioProps = Omit<
 
 export interface RadioProps extends ModifiedRadioProps {
   value?: string;
-  checked?: boolean;
   onChange?: (checked: boolean) => void;
   label?: string;
   disabled?: boolean;
   size?: Size;
-  radius?: Radius;
   className?: string;
   labelClassName?: string;
 }
@@ -44,10 +41,8 @@ const dotSizeStyles: Partial<Record<Size, string>> = {
 
 export const Radio: FC<RadioProps> = ({
   value,
-  checked = false,
   onChange = undefined,
   size = Size.Sm,
-  radius = Radius.Full,
   className,
   labelClassName,
   label,
@@ -55,46 +50,34 @@ export const Radio: FC<RadioProps> = ({
   id,
   ...props
 }) => {
-  const generatedId = useId();
-  const inputId = id || generatedId;
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (onChange) {
-      onChange(e.target.checked);
-    }
-  };
-
   return (
     <Field className="group flex items-center gap-2">
-      <input
-        type="radio"
-        id={inputId}
+      <HeadlessRadio
         value={value}
-        checked={checked}
-        onChange={handleChange}
         disabled={disabled}
         className={cn(
           "peer",
-          "cursor-pointer",
+          !disabled && "cursor-pointer",
           "appearance-none",
           "border",
           "border-content-text-tertiary",
-          radiusStyles(radius),
+          disabled && "opacity-50",
+          "rounded-full",
           sizeStyles[size],
-          // on focus
-          "focus:outline-none",
-          checked && "focus-0",
-          !checked && "focus:ring-2",
-          // on hover
-          !checked && "focus:ring-action-primary-primary",
-          !checked && "hover:border-action-primary-primary",
-          !checked && "hover:border-1",
-          // disabled styles
-          "disabled:opacity-50",
-          "disabled:cursor-not-allowed",
-          // checked styles
-          "checked:border-2",
-          "checked:border-action-primary-primary",
+          // on focus - unchecked
+          !disabled && "focus:outline-none",
+          !disabled && "focus:ring-2",
+          !disabled && "focus:ring-action-primary-primary",
+          // on hover - unchecked (only when not disabled)
+          !disabled && "hover:border-action-primary-primary",
+          !disabled && "hover:border-1",
+          // when hovering label, also hover radio (only when not disabled)
+          !disabled && "group-hover:border-action-primary-primary",
+          !disabled && "group-hover:border-1",
+          // checked styles (override base styles)
+          "data-[checked]:border-2",
+          "data-[checked]:border-action-primary-primary",
+          "data-[checked]:focus:ring-0",
           "relative",
           // for the dot
           "before:content-['']",
@@ -107,30 +90,30 @@ export const Radio: FC<RadioProps> = ({
           "before:rounded-full",
           "before:bg-action-primary-primary",
           "before:opacity-0",
-          "checked:before:opacity-100",
+          "data-[checked]:before:opacity-100",
           className
         )}
         {...props}
-      />
-      <div
-        className={cn(
-          "absolute",
-          "inset-0",
-          "flex",
-          "items-center",
-          "justify-center",
-          "pointer-events-none"
-        )}
       >
-        <RadioDotIcon />
-      </div>
+        <div
+          className={cn(
+            "absolute",
+            "inset-0",
+            "flex",
+            "items-center",
+            "justify-center",
+            "pointer-events-none"
+          )}
+        >
+          <RadioDotIcon />
+        </div>
+      </HeadlessRadio>
       {label && (
         <Label
-          htmlFor={inputId}
           className={cn(
-            textColorClass(TextColor.Primary),
+            textColorClass(disabled ? TextColor.Secondary : TextColor.Primary),
             textSizeStyles[size],
-            "cursor-pointer",
+            !disabled && "cursor-pointer",
             labelClassName
           )}
         >

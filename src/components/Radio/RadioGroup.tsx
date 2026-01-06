@@ -1,8 +1,8 @@
-import { Stack } from "@/components/Stack";
-import { Orientation, Radius, Size, Spacing } from "@/types";
+import { Size } from "@/types";
 import { randomString } from "@/util/random";
-import { FC, HTMLAttributes } from "react";
-import { Radio } from "./Radio";
+import { RadioGroup as HeadlessRadioGroup } from "@headlessui/react";
+import { FC, HTMLAttributes, useMemo } from "react";
+import { Radio, RadioProps } from "./Radio";
 
 export interface RadioOption {
   value: string;
@@ -14,36 +14,41 @@ export interface RadioGroupProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   "onChange"
 > {
+  className?: string;
+  defaultValue?: string;
   options: RadioOption[];
   value: string;
   onChange: (value: string) => void;
   name?: string;
   size?: Size;
-  radius?: Radius;
   disabled?: boolean;
-  orientation?: Orientation;
-  spacing?: Spacing;
+  radioProps?: RadioProps;
 }
 
 export const RadioGroup: FC<RadioGroupProps> = ({
   options,
   value,
+  defaultValue,
   onChange,
   name,
   size = Size.Sm,
-  radius = Radius.Full,
   disabled = false,
-  orientation = Orientation.Column,
-  spacing = Spacing.Md,
   className,
+  radioProps,
   ...props
 }) => {
-  const groupName = name || `radio-group-${randomString()}`;
+  const groupName = useMemo(
+    () => name || `radio-group-${randomString()}`,
+    [name]
+  );
 
   return (
-    <Stack
-      orientation={orientation}
-      spacing={spacing}
+    <HeadlessRadioGroup
+      value={value}
+      defaultValue={defaultValue}
+      onChange={onChange}
+      name={groupName}
+      disabled={disabled}
       className={className}
       {...props}
     >
@@ -51,16 +56,13 @@ export const RadioGroup: FC<RadioGroupProps> = ({
         <Radio
           key={option.value}
           value={option.value}
-          checked={value === option.value}
-          onChange={() => onChange(option.value)}
           label={option.label}
-          name={groupName}
           size={size}
-          radius={radius}
           disabled={disabled || option.disabled}
+          {...radioProps}
         />
       ))}
-    </Stack>
+    </HeadlessRadioGroup>
   );
 };
 
