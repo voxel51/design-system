@@ -10,6 +10,8 @@ export interface RadioOption {
   disabled?: boolean;
 }
 
+export type RadioGroupSize = Exclude<Size, Size.Xs>;
+
 export interface RadioGroupProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   "onChange"
@@ -20,7 +22,7 @@ export interface RadioGroupProps extends Omit<
   value: string;
   onChange: (value: string) => void;
   name?: string;
-  size?: Size;
+  size?: RadioGroupSize;
   disabled?: boolean;
   radioProps?: RadioProps;
 }
