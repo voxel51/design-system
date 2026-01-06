@@ -3,8 +3,6 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ListItem } from "./ListItem";
 
-import { ListItem } from "./ListItem";
-
 describe("ListItem", () => {
   let elementId: string;
 
