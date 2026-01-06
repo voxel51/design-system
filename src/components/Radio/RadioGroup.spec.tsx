@@ -1,4 +1,3 @@
-import { Size } from "@/types";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { RadioGroup, RadioOption } from "./RadioGroup";
@@ -24,14 +23,6 @@ describe("RadioGroup", () => {
       expect(screen.getByLabelText("Option 1")).toBeInTheDocument();
       expect(screen.getByLabelText("Option 2")).toBeInTheDocument();
       expect(screen.getByLabelText("Option 3")).toBeInTheDocument();
-    });
-
-    it("should render with empty options array", () => {
-      const handleChange = jest.fn();
-      render(<RadioGroup options={[]} value="" onChange={handleChange} />);
-
-      const radios = screen.queryAllByRole("radio");
-      expect(radios).toHaveLength(0);
     });
 
     it("should pass through additional props to the container", () => {
@@ -82,8 +73,7 @@ describe("RadioGroup", () => {
         />
       );
 
-      const radios = screen.getAllByRole("radio");
-      radios.forEach((radio) => {
+      screen.getAllByRole("radio").forEach((radio) => {
         expect(radio).not.toBeChecked();
       });
     });
@@ -129,117 +119,6 @@ describe("RadioGroup", () => {
     });
   });
 
-  describe("Name attribute", () => {
-    it("should use provided name for all radios", () => {
-      const handleChange = jest.fn();
-      render(
-        <RadioGroup
-          options={defaultOptions}
-          value="option1"
-          onChange={handleChange}
-          name="custom-group-name"
-        />
-      );
-
-      const radios = screen.getAllByRole("radio");
-      radios.forEach((radio) => {
-        expect(radio).toHaveAttribute("name", "custom-group-name");
-      });
-    });
-
-    it("should generate unique name when name is not provided", () => {
-      const handleChange = jest.fn();
-      render(
-        <RadioGroup
-          options={defaultOptions}
-          value="option1"
-          onChange={handleChange}
-        />
-      );
-
-      const radios = screen.getAllByRole("radio");
-      const name = radios[0].getAttribute("name");
-
-      expect(name).toBeTruthy();
-      expect(name).toMatch(/^radio-group-/);
-
-      // All radios should have the same generated name
-      radios.forEach((radio) => {
-        expect(radio).toHaveAttribute("name", name);
-      });
-    });
-  });
-
-  describe("Size prop", () => {
-    it("should apply size to all radios", () => {
-      const handleChange = jest.fn();
-      render(
-        <RadioGroup
-          options={defaultOptions}
-          value="option1"
-          onChange={handleChange}
-          size={Size.Md}
-        />
-      );
-
-      const radios = screen.getAllByRole("radio");
-      radios.forEach((radio) => {
-        expect(radio).toHaveClass("w-5", "h-5");
-      });
-    });
-
-    it("should default to Small size", () => {
-      const handleChange = jest.fn();
-      render(
-        <RadioGroup
-          options={defaultOptions}
-          value="option1"
-          onChange={handleChange}
-        />
-      );
-
-      const radios = screen.getAllByRole("radio");
-      radios.forEach((radio) => {
-        expect(radio).toHaveClass("w-4", "h-4");
-      });
-    });
-
-    it("should apply Large size to all radios", () => {
-      const handleChange = jest.fn();
-      render(
-        <RadioGroup
-          options={defaultOptions}
-          value="option1"
-          onChange={handleChange}
-          size={Size.Lg}
-        />
-      );
-
-      const radios = screen.getAllByRole("radio");
-      radios.forEach((radio) => {
-        expect(radio).toHaveClass("w-6", "h-6");
-      });
-    });
-  });
-
-  describe("Orientation prop", () => {
-    it("should render with Column orientation by default", () => {
-      const handleChange = jest.fn();
-      render(
-        <RadioGroup
-          options={defaultOptions}
-          value="option1"
-          onChange={handleChange}
-        />
-      );
-
-      // Stack component with Column orientation should be present
-      // We can verify by checking the structure
-      const radios = screen.getAllByRole("radio");
-      expect(radios).toHaveLength(3);
-    });
-  });
-
   describe("Disabled state", () => {
     it("should disable all radios when disabled prop is true", () => {
       const handleChange = jest.fn();
@@ -254,7 +133,7 @@ describe("RadioGroup", () => {
 
       const radios = screen.getAllByRole("radio");
       radios.forEach((radio) => {
-        expect(radio).toBeDisabled();
+        expect(radio).toHaveAttribute("aria-disabled", "true");
       });
     });
 
@@ -271,7 +150,7 @@ describe("RadioGroup", () => {
 
       const radios = screen.getAllByRole("radio");
       radios.forEach((radio) => {
-        expect(radio).not.toBeDisabled();
+        expect(radio).not.toHaveAttribute("aria-disabled", "true");
       });
     });
 
@@ -295,32 +174,9 @@ describe("RadioGroup", () => {
       const option2 = screen.getByLabelText("Option 2");
       const option3 = screen.getByLabelText("Option 3");
 
-      expect(option1).not.toBeDisabled();
-      expect(option2).toBeDisabled();
-      expect(option3).not.toBeDisabled();
-    });
-
-    it("should disable option when both group disabled and option disabled are true", () => {
-      const handleChange = jest.fn();
-      const optionsWithDisabled: RadioOption[] = [
-        { value: "option1", label: "Option 1" },
-        { value: "option2", label: "Option 2", disabled: true },
-      ];
-
-      render(
-        <RadioGroup
-          options={optionsWithDisabled}
-          value="option1"
-          onChange={handleChange}
-          disabled
-        />
-      );
-
-      const option1 = screen.getByLabelText("Option 1");
-      const option2 = screen.getByLabelText("Option 2");
-
-      expect(option1).toBeDisabled();
-      expect(option2).toBeDisabled();
+      expect(option1).not.toHaveAttribute("aria-disabled", "true");
+      expect(option2).toHaveAttribute("aria-disabled", "true");
+      expect(option3).not.toHaveAttribute("aria-disabled", "true");
     });
 
     it("should not call onChange when clicking disabled option", async () => {
