@@ -31,6 +31,7 @@
     "build": "tsc && vite build",
     "build:lib": "npm run prepublish && mkdir -p build/lib && npm pack --pack-destination build/lib/",
     "format": "prettier --write '**/*.{ts,tsx}'",
+    "format:check": "prettier --check '**/*.{ts,tsx}'",
     "generate-tailwind-theme": "tsx utils/generate-tailwind-theme.ts",
     "lint": "eslint src --max-warnings 0",
     "lint:fix": "eslint src --fix",
