@@ -16,7 +16,6 @@ import {
 import clsx from "clsx";
 import { FC, HTMLAttributes, useCallback, useMemo, useState } from "react";
 
-
 import { ListItemProps } from "@/components/ListItem";
 import { Descriptor } from "@/types";
 

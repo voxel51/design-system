@@ -79,9 +79,7 @@ describe("RichList", () => {
       { id: "item-2", data: { primaryContent: "Item 2" } },
     ];
 
-    render(
-      <RichList listItems={listItems} draggable data-testid={testId} />
-    );
+    render(<RichList listItems={listItems} draggable data-testid={testId} />);
 
     const element = screen.getByTestId(testId);
     expect(element).toBeInTheDocument();
@@ -113,9 +111,7 @@ describe("RichList", () => {
       { id: "item-2", data: { primaryContent: "Item 2", canDrag: false } },
     ];
 
-    render(
-      <RichList listItems={listItems} draggable data-testid={testId} />
-    );
+    render(<RichList listItems={listItems} draggable data-testid={testId} />);
 
     const element = screen.getByTestId(testId);
     // Only one drag handle should be present (item-1)

@@ -5,7 +5,6 @@ import { RichButtonProps } from "@/components/RichButton";
 import { RichButtonGroup } from "@/components/RichButtonGroup/RichButtonGroup.tsx";
 import { Descriptor } from "@/types";
 
-
 describe("RichButtonGroup", () => {
   let testId: string;
   let defaultProps: { "data-testid": string };

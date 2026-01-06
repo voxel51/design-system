@@ -100,7 +100,10 @@ const getTabBorderRadius = (
   return "";
 };
 
-const getTabStyles = (variant: ToggleSwitchVariant, size: ToggleSwitchSize): string => {
+const getTabStyles = (
+  variant: ToggleSwitchVariant,
+  size: ToggleSwitchSize
+): string => {
   const classNames = [tabVariantStyles[variant], tabSizeStyles[size]];
 
   if (variant !== ToggleSwitchVariant.Soft) {

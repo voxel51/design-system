@@ -16,7 +16,6 @@ import {
 } from "@/types";
 import { cn } from "@/util/classes";
 
-
 import { InputIcon } from "./InputIcon";
 import { paddingLeftStyles, sizeStyles } from "./styles";
 

@@ -16,7 +16,6 @@ import {
 } from "@/types";
 import { cn } from "@/util/classes";
 
-
 type ModifiedToggleProps = Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
   "size" | "onChange" | "checked" | "disabled" | "className" | "value"

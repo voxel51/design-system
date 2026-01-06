@@ -16,7 +16,6 @@ import { Descriptor, Radius } from "@/types";
 
 import { Option } from "./Option";
 
-
 export interface SelectProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   "onChange"
