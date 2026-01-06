@@ -1,12 +1,14 @@
 import { render, screen } from "@testing-library/react";
 
+import { randomString } from "@/util/random";
+
 import { Clickable } from "./Clickable";
 
 describe("Clickable", () => {
   let elementId: string;
 
   beforeEach(() => {
-    elementId = Math.random().toString(36).substring(2, 9);
+    elementId = randomString();
   });
 
   it("should render with children", () => {

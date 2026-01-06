@@ -1,6 +1,8 @@
 import { render, screen, within } from "@testing-library/react";
 
-import { DummyIcon, randomString } from "#/testing-utils";
+import { randomString } from "@/util/random";
+
+import { DummyIcon } from "#/testing-utils";
 
 import { ActivityToast } from "./ActivityToast";
 

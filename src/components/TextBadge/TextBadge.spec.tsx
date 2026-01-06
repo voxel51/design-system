@@ -1,5 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 
+import { randomString } from "@/util/random";
+
 import { TextBadge } from "./TextBadge";
 
 describe("TextBadge", () => {
@@ -7,7 +9,7 @@ describe("TextBadge", () => {
   let defaultProps: { "data-testid": string };
 
   beforeEach(() => {
-    testId = Math.random().toString(36).substring(2, 9);
+    testId = randomString();
     defaultProps = { "data-testid": testId };
   });
 
@@ -18,7 +20,7 @@ describe("TextBadge", () => {
   });
 
   it("should render children", () => {
-    const content = Math.random().toString(36).substring(2, 9);
+    const content = randomString();
     render(<TextBadge {...defaultProps}>{content}</TextBadge>);
 
     expect(

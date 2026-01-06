@@ -1,13 +1,15 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { randomString } from "@/util/random";
+
 import { ListItem } from "./ListItem";
 
 describe("ListItem", () => {
   let elementId: string;
 
   beforeEach(() => {
-    elementId = Math.random().toString(36).substring(2, 9);
+    elementId = randomString();
   });
 
   it("should render", () => {

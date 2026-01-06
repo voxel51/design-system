@@ -4,12 +4,13 @@ import userEvent from "@testing-library/user-event";
 import { ListItemProps } from "@/components/ListItem";
 import { RichList } from "@/components/RichList";
 import { Descriptor } from "@/types";
+import { randomString } from "@/util/random";
 
 describe("RichList", () => {
   let testId: string;
 
   beforeEach(() => {
-    testId = Math.random().toString(36).substring(2, 9);
+    testId = randomString();
   });
 
   it("should render", () => {
@@ -21,9 +22,9 @@ describe("RichList", () => {
     const listItems: Descriptor<ListItemProps>[] = new Array(5)
       .fill(0)
       .map((_) => ({
-        id: Math.random().toString(36).substring(2, 9),
+        id: randomString(),
         data: {
-          primaryContent: Math.random().toString(36).substring(2, 9),
+          primaryContent: randomString(),
         },
       }));
 
@@ -41,7 +42,7 @@ describe("RichList", () => {
 
   it("should invoke callback when an item is selected", async () => {
     const listItem: Descriptor<ListItemProps> = {
-      id: Math.random().toString(36).substring(2, 9),
+      id: randomString(),
       data: {
         canSelect: true,
       },
@@ -79,9 +80,7 @@ describe("RichList", () => {
       { id: "item-2", data: { primaryContent: "Item 2" } },
     ];
 
-    render(
-      <RichList listItems={listItems} draggable data-testid={testId} />
-    );
+    render(<RichList listItems={listItems} draggable data-testid={testId} />);
 
     const element = screen.getByTestId(testId);
     expect(element).toBeInTheDocument();
@@ -113,9 +112,7 @@ describe("RichList", () => {
       { id: "item-2", data: { primaryContent: "Item 2", canDrag: false } },
     ];
 
-    render(
-      <RichList listItems={listItems} draggable data-testid={testId} />
-    );
+    render(<RichList listItems={listItems} draggable data-testid={testId} />);
 
     const element = screen.getByTestId(testId);
     // Only one drag handle should be present (item-1)

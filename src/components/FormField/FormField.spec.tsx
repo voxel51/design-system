@@ -1,6 +1,8 @@
 import { render, screen, within } from "@testing-library/react";
 import type { ReactNode } from "react";
 
+import { randomString } from "@/util/random";
+
 import { FormField } from "./FormField";
 
 describe("FormField", () => {
@@ -8,7 +10,7 @@ describe("FormField", () => {
   let defaultProps: { "data-testid": string; control: ReactNode };
 
   beforeEach(() => {
-    testId = Math.random().toString(36).substring(2, 9);
+    testId = randomString();
     defaultProps = {
       "data-testid": testId,
       control: <input />,
@@ -22,7 +24,7 @@ describe("FormField", () => {
   });
 
   it("should render the provided control", () => {
-    const controlId = Math.random().toString(36).substring(2, 9);
+    const controlId = randomString();
     render(
       <FormField
         {...defaultProps}
@@ -35,7 +37,7 @@ describe("FormField", () => {
   });
 
   it("should render the provided label", () => {
-    const label = Math.random().toString(36).substring(2, 9);
+    const label = randomString();
     render(<FormField {...defaultProps} label={label} />);
 
     const field = screen.getByTestId(testId);
@@ -43,8 +45,8 @@ describe("FormField", () => {
   });
 
   it("should render the provided label and description", () => {
-    const label = Math.random().toString(36).substring(2, 9);
-    const description = Math.random().toString(36).substring(2, 9);
+    const label = randomString();
+    const description = randomString();
     render(
       <FormField {...defaultProps} label={label} description={description} />
     );
@@ -55,7 +57,7 @@ describe("FormField", () => {
   });
 
   it("should not render the provided description without a label", () => {
-    const description = Math.random().toString(36).substring(2, 9);
+    const description = randomString();
     render(<FormField {...defaultProps} description={description} />);
 
     const field = screen.getByTestId(testId);
@@ -63,7 +65,7 @@ describe("FormField", () => {
   });
 
   it("should render the provided error message", () => {
-    const error = Math.random().toString(36).substring(2, 9);
+    const error = randomString();
     render(<FormField {...defaultProps} error={error} />);
 
     const field = screen.getByTestId(testId);
