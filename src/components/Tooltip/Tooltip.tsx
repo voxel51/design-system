@@ -17,6 +17,7 @@ export interface TooltipProps extends Omit<
 > {
   anchor?: TooltipAnchor;
   content: ReactNode;
+  portal?: boolean;
 }
 
 const anchorStyles: Record<TooltipAnchor, string> = {
@@ -52,6 +53,7 @@ export const Tooltip: FC<TooltipProps> = ({
   content,
   children,
   className,
+  portal = false,
   ...props
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -71,6 +73,7 @@ export const Tooltip: FC<TooltipProps> = ({
           static
           anchor={anchor}
           className={cn(
+            portal && "z-[10000]",
             "relative",
             "py-0.75 px-2.5",
             "!overflow-visible",
