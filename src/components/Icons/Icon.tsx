@@ -61,7 +61,9 @@ import WorkspacesIcon from "@/img/Workspaces.svg?react";
 import { IconName } from "@/types/icons";
 import { Size } from "@/types/size";
 
-type SvgComponent = React.ComponentType<React.SVGProps<SVGSVGElement>>;
+type SvgComponent = React.FunctionComponent<
+  React.SVGProps<SVGSVGElement> & { title?: string }
+>;
 
 /**
  * To add a new icon:
