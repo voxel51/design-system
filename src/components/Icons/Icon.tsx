@@ -1,10 +1,8 @@
 import clsx from "clsx";
-import { type FC } from "react";
+import React, { type FC } from "react";
 
-import { Size } from "@/types/size";
-
-import AddIcon from "@/img/Add.svg?react";
 import AIIcon from "@/img/AI.svg?react";
+import AddIcon from "@/img/Add.svg?react";
 import ArrowDownIcon from "@/img/ArrowDown.svg?react";
 import ArrowLeftIcon from "@/img/ArrowLeft.svg?react";
 import ArrowRightIcon from "@/img/ArrowRight.svg?react";
@@ -61,6 +59,7 @@ import VALIcon from "@/img/VAL.svg?react";
 import WarningIcon from "@/img/Warning.svg?react";
 import WorkspacesIcon from "@/img/Workspaces.svg?react";
 import { IconName } from "@/types/icons";
+import { Size } from "@/types/size";
 
 type SvgComponent = React.ComponentType<React.SVGProps<SVGSVGElement>>;
 
