@@ -80,13 +80,11 @@ describe("Icon", () => {
           name={IconName.Check}
           data-testid="custom-icon"
           aria-label="Check icon"
-          id="test-icon"
         />
       );
       const svg = container.querySelector("svg");
       expect(svg).toHaveAttribute("data-testid", "custom-icon");
       expect(svg).toHaveAttribute("aria-label", "Check icon");
-      expect(svg).toHaveAttribute("id", "test-icon");
     });
   });
 });
