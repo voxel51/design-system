@@ -64,6 +64,12 @@ import { IconName } from "@/types/icons";
 
 type SvgComponent = React.ComponentType<React.SVGProps<SVGSVGElement>>;
 
+/**
+ * To add a new icon:
+ * 1. add the SVG file to the image directory,
+ * 2. create a enum value for the icon name
+ * 3. import the SVG file and add it to this map
+ */
 export const iconMap: Record<IconName, SvgComponent> = {
   [IconName.Add]: AddIcon,
   [IconName.AI]: AIIcon,
@@ -148,6 +154,10 @@ export const Icon: FC<IconProps> = ({
   style,
   ...props
 }) => {
+  // We are making a strong opinion here that we should treat the SVG
+  // as a square - the viewbox on the SVG will still handle the aspect
+  // ratio but it's possible that VERY rectangular SVGs will not behave
+  // as expected.
   const iconSize = size ? sizeMap[size] : undefined;
   const IconComponent = iconMap[name];
 
