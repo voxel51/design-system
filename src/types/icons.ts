@@ -57,3 +57,5 @@ export enum IconName {
   Warning = "Warning",
   Workspaces = "Workspaces",
 }
+
+export default IconName;

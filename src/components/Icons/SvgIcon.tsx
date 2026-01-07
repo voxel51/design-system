@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import type { FC } from "react";
+import { type FC } from "react";
 
 import { IconProps } from "@/components/Icons/types";
 import { Size } from "@/types/size";
@@ -125,10 +125,12 @@ export const iconMap: Record<IconName, SvgComponent> = {
   [IconName.Workspaces]: WorkspacesIcon,
 };
 
-const sizeMap: Partial<Record<Size, number>> = {
-  [Size.Sm]: 16,
-  [Size.Md]: 20,
-  [Size.Lg]: 24,
+type SVGIconSize = Exclude<Size, "Xs">;
+
+const sizeMap: Partial<Record<SVGIconSize, number>> = {
+  [Size.Sm]: 12,
+  [Size.Md]: 14,
+  [Size.Lg]: 16,
 };
 
 export interface SvgIconProps extends Omit<IconProps, "children"> {
@@ -146,14 +148,14 @@ export const SvgIcon: FC<SvgIconProps> = ({
   style,
   ...props
 }) => {
-  // we ignore height - let the browser calculate it based on viewbox
-  // and implicit aspect ratio
-  const width = sizeMap[size];
+  // we intentionally leave off height - let the SVG scale it
+  // it based on the viewbox it defines
+  const iconSize = sizeMap[size];
   const IconComponent = iconMap[name];
 
   return (
     <IconComponent
-      width={width}
+      width={iconSize}
       className={clsx(className)}
       style={{ color, ...style }}
       {...props}
