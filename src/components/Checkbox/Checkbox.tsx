@@ -89,7 +89,6 @@ export const Checkbox: FC<CheckboxProps> = ({
       >
         <Icon
           name={IconName.Check}
-          size={Size.Lg}
           color="var(--color-content-text-primary)"
           className={clsx(
             // scale to the size of the checkbox

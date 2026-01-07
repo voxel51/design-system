@@ -142,13 +142,13 @@ export interface IconProps {
 
 export const Icon: FC<IconProps> = ({
   name,
-  size = Size.Md,
+  size = undefined, // if no size specified, fill the parent container
   className,
   color,
   style,
   ...props
 }) => {
-  const iconSize = sizeMap[size];
+  const iconSize = size ? sizeMap[size] : undefined;
   const IconComponent = iconMap[name];
 
   return (
