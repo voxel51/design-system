@@ -1,9 +1,10 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import { resolve } from "path";
-import dts from "vite-plugin-dts";
 import tailwindcss from "@tailwindcss/postcss";
+import react from "@vitejs/plugin-react";
 import autoprefixer from "autoprefixer";
+import { resolve } from "path";
+import { defineConfig } from "vite";
+import dts from "vite-plugin-dts";
+import svgr from "vite-plugin-svgr";
 
 export default defineConfig({
   resolve: {
@@ -14,6 +15,11 @@ export default defineConfig({
   plugins: [
     react({
       jsxRuntime: "automatic",
+    }),
+    svgr({
+      svgrOptions: {
+        icon: true,
+      },
     }),
     dts({
       insertTypesEntry: true,

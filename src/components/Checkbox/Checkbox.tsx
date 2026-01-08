@@ -1,8 +1,8 @@
-import { Checkbox as HeadlessCheckbox, Field, Label } from "@headlessui/react";
+import { Field, Checkbox as HeadlessCheckbox, Label } from "@headlessui/react";
 import clsx from "clsx";
 import { type FC, InputHTMLAttributes } from "react";
 
-import { CheckmarkIcon } from "@/components/Icons/Checkmark";
+import { Icon } from "@/components/Icons/Icon";
 import radiusStyles from "@/styles/radius";
 import { TEXT_STYLES } from "@/styles/text";
 import {
@@ -11,6 +11,7 @@ import {
   BorderColor,
   borderColorClass,
   ElementState,
+  IconName,
   Radius,
   Size,
   TextColor,
@@ -65,6 +66,7 @@ export const Checkbox: FC<CheckboxProps> = ({
         onChange={onChange}
         className={cn(
           "group",
+          "relative",
           "cursor-pointer",
           "appearance-none",
           "border",
@@ -85,7 +87,14 @@ export const Checkbox: FC<CheckboxProps> = ({
         )}
         {...props}
       >
-        <CheckmarkIcon />
+        <Icon
+          name={IconName.Check}
+          color="var(--color-content-text-primary)"
+          className={clsx(
+            // scale to the size of the checkbox
+            "absolute inset-0 w-full h-full opacity-0 group-data-checked:opacity-100"
+          )}
+        />
       </HeadlessCheckbox>
       {label && (
         <Label

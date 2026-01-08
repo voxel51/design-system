@@ -135,6 +135,7 @@ dist
 # Generated files
 *.d.ts
 *.d.ts.map
+!vite.d.ts
 src/styles/tailwind.css
 
 .idea
