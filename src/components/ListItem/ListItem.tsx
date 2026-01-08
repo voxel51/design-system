@@ -24,7 +24,7 @@ export interface ListItemProps extends HTMLAttributes<HTMLDivElement> {
   primaryContent?: ReactNode;
   secondaryContent?: ReactNode;
   actions?: ReactNode;
-  expandedContent?: ReactNode;
+  additionalContent?: ReactNode;
 }
 
 export const ListItem: FC<ListItemProps> = ({
@@ -36,7 +36,7 @@ export const ListItem: FC<ListItemProps> = ({
   primaryContent = undefined,
   secondaryContent = undefined,
   actions = undefined,
-  expandedContent = undefined,
+  additionalContent = undefined,
   className,
   ...props
 }) => {
@@ -84,7 +84,7 @@ export const ListItem: FC<ListItemProps> = ({
 
         <span>{actions}</span>
       </div>
-      {expandedContent && (
+      {additionalContent && (
         <div
           className={clsx(
             "pr-3 pb-3 pl-2",
@@ -94,7 +94,7 @@ export const ListItem: FC<ListItemProps> = ({
             !canSelect && canDrag && "ml-6"
           )}
         >
-          {expandedContent}
+          {additionalContent}
         </div>
       )}
     </div>
