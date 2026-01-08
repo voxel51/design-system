@@ -24,6 +24,7 @@ export interface ListItemProps extends HTMLAttributes<HTMLDivElement> {
   primaryContent?: ReactNode;
   secondaryContent?: ReactNode;
   actions?: ReactNode;
+  additionalContent?: ReactNode;
 }
 
 export const ListItem: FC<ListItemProps> = ({
@@ -35,46 +36,67 @@ export const ListItem: FC<ListItemProps> = ({
   primaryContent = undefined,
   secondaryContent = undefined,
   actions = undefined,
+  additionalContent = undefined,
   className,
   ...props
 }) => {
   return (
     <div
       className={clsx(
-        "flex flex-nowrap items-center justify-between",
+        "flex flex-col",
         "w-full",
-        "gap-x-lg",
-        "py-3 pr-3 pl-2",
         bgColorClass(BackgroundColor.Card2),
         radiusStyles(Radius.Sm),
         className
       )}
       {...props}
     >
-      <div className={clsx("flex flex-nowrap items-center", "gap-x-md")}>
-        {canSelect && (
-          <Checkbox
-            checked={selected}
-            onChange={(checked) => onSelected?.(checked)}
-          />
+      <div
+        className={clsx(
+          "flex flex-nowrap items-center justify-between",
+          "w-full",
+          "gap-x-lg",
+          "py-3 pr-3 pl-2"
         )}
-        {canDrag && (
-          <span
-            className="flex align-items cursor-grab touch-none"
-            {...dragHandleListeners}
-          >
-            <DragHandleIcon
-              className={clsx("size-4", textColorClass(TextColor.Secondary))}
+      >
+        <div className={clsx("flex flex-nowrap items-center", "gap-x-md")}>
+          {canSelect && (
+            <Checkbox
+              checked={selected}
+              onChange={(checked) => onSelected?.(checked)}
             />
-          </span>
-        )}
-        <Text variant={TextVariant.Lg}>{primaryContent}</Text>
-        <Text variant={TextVariant.Md} color={TextColor.Secondary}>
-          {secondaryContent}
-        </Text>
-      </div>
+          )}
+          {canDrag && (
+            <span
+              className="flex align-items cursor-grab touch-none"
+              {...dragHandleListeners}
+            >
+              <DragHandleIcon
+                className={clsx("size-4", textColorClass(TextColor.Secondary))}
+              />
+            </span>
+          )}
+          <Text variant={TextVariant.Lg}>{primaryContent}</Text>
+          <Text variant={TextVariant.Md} color={TextColor.Secondary}>
+            {secondaryContent}
+          </Text>
+        </div>
 
-      <span>{actions}</span>
+        <span>{actions}</span>
+      </div>
+      {additionalContent && (
+        <div
+          className={clsx(
+            "pr-3 pb-3 pl-2",
+            // Align with primaryContent by adding margin for checkbox/drag handle
+            canSelect && canDrag && "ml-12",
+            canSelect && !canDrag && "ml-6",
+            !canSelect && canDrag && "ml-6"
+          )}
+        >
+          {additionalContent}
+        </div>
+      )}
     </div>
   );
 };
