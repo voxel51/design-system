@@ -3,3 +3,7 @@
 
 /* custom theme */
 @import "./tailwind.css";
+
+/* tell tailwind which files to scan for classes */
+@source "./color-classes.ts";
+@source "../**/*.{ts,tsx}";
