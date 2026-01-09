@@ -6,11 +6,8 @@ import { Icon } from "@/components/Icons/Icon";
 import radiusStyles from "@/styles/radius";
 import { TEXT_STYLES } from "@/styles/text";
 import {
-  ActionColor,
-  bgColorClass,
   BorderColor,
   borderColorClass,
-  ElementState,
   IconName,
   Radius,
   Size,
@@ -81,8 +78,9 @@ export const Checkbox: FC<CheckboxProps> = ({
           "focus:ring-offset-2",
           "disabled:opacity-50",
           "disabled:cursor-not-allowed",
-          bgColorClass(ActionColor.PrimaryDefault, ElementState.Checked),
-          borderColorClass(BorderColor.Active, ElementState.Checked),
+          // Use static strings for data-checked so Tailwind JIT can detect them
+          "data-checked:bg-action-primary-primary",
+          "data-checked:border-content-border-active",
           className
         )}
         {...props}

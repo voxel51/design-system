@@ -6,9 +6,7 @@ import { textStyles } from "@/styles/text";
 import {
   BackgroundColor,
   bgColorClass,
-  BrandColor,
   Descriptor,
-  ElementState,
   Size,
   TextColor,
   textColorClass,
@@ -67,20 +65,21 @@ const tabVariantStyles: Record<ToggleSwitchVariant, string> = {
     "m-1",
     "py-1 px-1.5",
     "rounded-sm",
-    textColorClass(BrandColor.Accent, ElementState.Selected)
+    // Use static string for data-selected so Tailwind JIT can detect it
+    "data-selected:text-brand-accent"
   ),
   [ToggleSwitchVariant.Default]: clsx(
-    textColorClass(TextColor.Primary, ElementState.Selected)
+    "data-selected:text-content-text-primary"
   ),
   [ToggleSwitchVariant.Full]: clsx(
-    textColorClass(TextColor.Primary, ElementState.Selected)
+    "data-selected:text-content-text-primary"
   ),
   [ToggleSwitchVariant.Borderless]: clsx(
     "bg-transparent",
     "hover:bg-transparent",
-    "data-[selected]:bg-transparent",
-    textColorClass(TextColor.Primary, ElementState.Selected),
-    "data-[selected]:border-b-2"
+    "data-selected:bg-transparent",
+    "data-selected:text-content-text-primary",
+    "data-selected:border-b-2"
   ),
 };
 
@@ -148,10 +147,11 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
                 textColorClass(TextColor.Secondary),
                 "outline-none",
                 "transition-colors",
-                bgColorClass(BackgroundColor.Card2, ElementState.Hover),
-                textColorClass(TextColor.Primary, ElementState.Hover),
-                bgColorClass(BackgroundColor.Card2, ElementState.Selected),
-                "data-[focus]:outline-none",
+                // Use static strings for state variants so Tailwind JIT can detect them
+                "hover:bg-content-bg-card-2",
+                "hover:text-content-text-primary",
+                "data-selected:bg-content-bg-card-2",
+                "data-focus:outline-none",
                 getTabBorderRadius(variant, isFirst, isLast),
                 getTabStyles(variant, size)
               )}
