@@ -44,9 +44,15 @@ function generateClasses(): Array<string> {
     classes.add(`bg-${color}`);
     classes.add(`bg-content-${color}`); // Add content- prefix version too
 
+    // Dark mode variants for theme-specific overrides
+    classes.add(`dark:bg-${color}`);
+    classes.add(`dark:bg-content-${color}`);
+
     // handle variable syntax
     allStates.forEach((state) => {
       classes.add(bgColorClass(color, state));
+      // Dark mode + state combinations
+      classes.add(`dark:${bgColorClass(color, state)}`);
     });
   });
 
@@ -66,11 +72,21 @@ function generateClasses(): Array<string> {
   allBorderColors.forEach((color) => {
     // Base state
     classes.add(`border-content-${color}`);
+    classes.add(`dark:border-content-${color}`);
 
     // handle variable syntax
     allStates.forEach((state) => {
       classes.add(borderColorClass(color, state));
+      classes.add(`dark:${borderColorClass(color, state)}`);
     });
+  });
+
+  // Additional border colors using background color tokens (for theme-specific borders)
+  allColors.forEach((color) => {
+    classes.add(`border-${color}`);
+    classes.add(`border-content-${color}`);
+    classes.add(`dark:border-${color}`);
+    classes.add(`dark:border-content-${color}`);
   });
 
   return Array.from(classes).sort();

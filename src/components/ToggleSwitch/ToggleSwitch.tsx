@@ -6,6 +6,8 @@ import { textStyles } from "@/styles/text";
 import {
   BackgroundColor,
   bgColorClass,
+  BorderColor,
+  borderColorClass,
   BrandColor,
   Descriptor,
   ElementState,
@@ -148,9 +150,17 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
                 textColorClass(TextColor.Secondary),
                 "outline-none",
                 "transition-colors",
+                // Border for unselected state (visible outline)
+                "border",
+                borderColorClass(BorderColor.Default),
+                "dark:border-content-bg-card-elevated",
+                // Hover state
                 bgColorClass(BackgroundColor.Card2, ElementState.Hover),
                 textColorClass(TextColor.Primary, ElementState.Hover),
+                // Selected state: lighter gray background, hide border
                 bgColorClass(BackgroundColor.Card2, ElementState.Selected),
+                `dark:${bgColorClass(BackgroundColor.CardElevated, ElementState.Selected)}`,
+                "data-[selected]:border-transparent",
                 "data-[focus]:outline-none",
                 getTabBorderRadius(variant, isFirst, isLast),
                 getTabStyles(variant, size)
