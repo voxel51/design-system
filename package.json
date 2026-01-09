@@ -31,7 +31,7 @@
     "build": "tsc && vite build",
     "build:lib": "npm run prepublish && mkdir -p build/lib && npm pack --pack-destination build/lib/",
     "format": "prettier --write '**/*.{ts,tsx}'",
-    "generate-tailwind-theme": "tsx utils/generate-tailwind-theme.ts",
+    "generate-tailwind-theme": "tsx utils/generate-color-classes.ts && tsx utils/generate-tailwind-theme.ts",
     "lint": "eslint src --max-warnings 0",
     "lint:fix": "eslint src --fix",
     "patch": "npm version --commit-hooks false --git-tag-version false patch",
@@ -95,3 +95,4 @@
     "react-is": "^18.0.0"
   }
 }
+
