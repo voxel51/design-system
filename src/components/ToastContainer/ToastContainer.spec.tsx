@@ -1,6 +1,8 @@
 import { render, screen, within } from "@testing-library/react";
 
-import { makeChild, randomString } from "#/testing-utils";
+import { randomString } from "@/util/random";
+
+import { makeChild } from "#/testing-utils";
 
 import { ToastContainer } from "./ToastContainer";
 

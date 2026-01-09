@@ -2,12 +2,14 @@ import { ComboboxOption } from "@headlessui/react";
 import clsx from "clsx";
 import type { FC, HTMLAttributes } from "react";
 
-import { CheckIcon } from "@/components/Icons/CheckIcon";
+import { Icon } from "@/components/Icons/Icon";
 import { Text } from "@/components/Text";
 import {
   BackgroundColor,
   bgColorClass,
   ElementState,
+  IconName,
+  Size,
   TextColor,
   textColorClass,
 } from "@/types";
@@ -44,7 +46,7 @@ export const Option: FC<OptionProps> = ({
           textColorClass(TextColor.Secondary)
         )}
       >
-        {selected && <CheckIcon />}
+        {selected && <Icon name={IconName.Check} size={Size.Sm} />}
       </span>
     </div>
   </ComboboxOption>

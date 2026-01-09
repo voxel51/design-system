@@ -3,6 +3,7 @@ export * from "./color";
 export * from "./descriptor";
 export * from "./element";
 export * from "./heading";
+export * from "./icons";
 export * from "./orientation";
 export * from "./radius";
 export * from "./shadow";

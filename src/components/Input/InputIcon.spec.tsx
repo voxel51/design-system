@@ -1,10 +1,17 @@
 import { render } from "@testing-library/react";
+import { type FC } from "react";
 
 import { Size, TextColor, textColorClass } from "@/types";
+import { IconName } from "@/types/icons";
 
-import { CheckmarkIcon } from "../Icons/Checkmark";
+import { Icon } from "../Icons/Icon";
+import { IconProps } from "../Icons/types";
 
 import { InputIcon } from "./InputIcon";
+
+const CheckmarkIcon: FC<IconProps> = (props) => (
+  <Icon name={IconName.Check} {...(props as any)} />
+);
 
 describe("InputIcon", () => {
   it("should render the icon", () => {

@@ -1,9 +1,9 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { ReactNode } from "react";
 
-import { Descriptor } from "@/types";
 
-import { randomString } from "#/testing-utils";
+import { Descriptor } from "@/types";
+import { randomString } from "@/util/random";
 
 import { Select } from "./Select";
 

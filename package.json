@@ -1,6 +1,6 @@
 {
   "name": "@voxel51/voodo",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Voxel51's official design ontology (VOODO) system",
   "type": "module",
   "author": "Voxel Engineering <engineering@voxel51.com>",
@@ -32,7 +32,7 @@
     "build:lib": "npm run prepublish && mkdir -p build/lib && npm pack --pack-destination build/lib/",
     "format": "prettier --write '**/*.{ts,tsx}'",
     "format:check": "prettier --check '**/*.{ts,tsx}'",
-    "generate-tailwind-theme": "tsx utils/generate-tailwind-theme.ts",
+    "generate-tailwind-theme": "tsx utils/generate-color-classes.ts && tsx utils/generate-tailwind-theme.ts",
     "lint": "eslint src --max-warnings 0",
     "lint:fix": "eslint src --fix",
     "patch": "npm version --commit-hooks false --git-tag-version false patch",
@@ -85,7 +85,8 @@
     "tsx": "^4.20.6",
     "typescript": "^5.6.2",
     "vite": "^7.1.7",
-    "vite-plugin-dts": "^4.5.4"
+    "vite-plugin-dts": "^4.5.4",
+    "vite-plugin-svgr": "^4.5.0"
   },
   "peerDependencies": {
     "@emotion/react": "^11.0.0",
@@ -95,3 +96,5 @@
     "react-is": "^18.0.0"
   }
 }
+
+

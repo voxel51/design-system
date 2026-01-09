@@ -1,8 +1,6 @@
-import type { FC } from "react";
 import { Descriptor } from "@/types";
-
-export const randomString = () =>
-  Math.random().toString(36).substring(2, 9).trim();
+import { randomString } from "@/util/random";
+import type { FC } from "react";
 
 export const makeChild = (): Descriptor<FC> => {
   const id = randomString();

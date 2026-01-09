@@ -1,13 +1,14 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
 
 import { Tooltip } from "@/components/Tooltip";
+import { randomString } from "@/util/random";
 
 describe("Tooltip", () => {
   let testId: string;
   let defaultProps: { "data-testid": string };
 
   beforeEach(() => {
-    testId = Math.random().toString(36).substring(2, 9);
+    testId = randomString();
     defaultProps = { "data-testid": testId };
   });
 
@@ -19,7 +20,7 @@ describe("Tooltip", () => {
   });
 
   it("should render children", () => {
-    const children = Math.random().toString(36).substring(2, 9);
+    const children = randomString();
 
     render(
       <Tooltip {...defaultProps} content="tooltip">
@@ -33,8 +34,8 @@ describe("Tooltip", () => {
   });
 
   it("should render tooltip on hover", () => {
-    const content = Math.random().toString(36).substring(2, 9);
-    const children = Math.random().toString(36).substring(2, 9);
+    const content = randomString();
+    const children = randomString();
 
     render(
       <Tooltip {...defaultProps} content={content}>

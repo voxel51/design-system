@@ -1,8 +1,7 @@
 import { render, screen } from "@testing-library/react";
 
 import { Spinner } from "@/components/Spinner/Spinner";
-
-import { randomString } from "#/testing-utils";
+import { randomString } from "@/util/random";
 
 describe("Spinner", () => {
   let testId: string;

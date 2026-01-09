@@ -4,13 +4,14 @@ import userEvent, { UserEvent } from "@testing-library/user-event";
 import { RichButtonProps } from "@/components/RichButton";
 import { RichButtonGroup } from "@/components/RichButtonGroup/RichButtonGroup.tsx";
 import { Descriptor } from "@/types";
+import { randomString } from "@/util/random";
 
 describe("RichButtonGroup", () => {
   let testId: string;
   let defaultProps: { "data-testid": string };
 
   beforeEach(() => {
-    testId = Math.random().toString(36).substring(2, 9);
+    testId = randomString();
     defaultProps = { "data-testid": testId };
   });
 
@@ -26,7 +27,7 @@ describe("RichButtonGroup", () => {
 
     beforeEach(() => {
       buttons = new Array(3).fill(0).map(() => {
-        const id = Math.random().toString(36).substring(2, 9);
+        const id = randomString();
         return {
           id,
           data: {
