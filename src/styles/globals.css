@@ -1,5 +1,7 @@
 /* tailwind base */
 @import "tailwindcss";
-
 /* custom theme */
 @import "./tailwind.css";
+
+@source "./color-classes.ts";
+@source "../**/*.{ts,tsx}";

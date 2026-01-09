@@ -1,4 +1,4 @@
-import { Field, Input as HeadlessInput } from "@headlessui/react";
+import { Input as HeadlessInput } from "@headlessui/react";
 import { type FC, InputHTMLAttributes } from "react";
 
 import { IconProps } from "@/components/Icons/types";
@@ -15,7 +15,6 @@ import {
   textColorClass,
 } from "@/types";
 import { cn } from "@/util/classes";
-
 
 import { InputIcon } from "./InputIcon";
 import { paddingLeftStyles, sizeStyles } from "./styles";
@@ -109,19 +108,17 @@ export const Input: FC<InputProps> = ({
   const hasText = Boolean(value && String(value).trim().length > 0);
 
   return (
-    <Field className="flex flex-col gap-1">
-      <div className={cn("relative", Icon && "flex items-center")}>
-        {Icon && <InputIcon Icon={Icon} size={size} hasText={hasText} />}
-        <HeadlessInput
-          className={inputClasses}
-          disabled={disabled}
-          type={type}
-          value={value}
-          onChange={onChange}
-          {...props}
-        />
-      </div>
-    </Field>
+    <div className={cn("relative", Icon && "flex items-center")}>
+      {Icon && <InputIcon Icon={Icon} size={size} hasText={hasText} />}
+      <HeadlessInput
+        className={inputClasses}
+        disabled={disabled}
+        type={type}
+        value={value}
+        onChange={onChange}
+        {...props}
+      />
+    </div>
   );
 };
 

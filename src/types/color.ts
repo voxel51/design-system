@@ -247,10 +247,10 @@ export const bgColorClass = (
     return backgroundColorMap[color];
   }
 
-  return withElementState(`bg-(${getColorCssVar(color)})`, elementState);
+  return withElementState(`bg-[var(${getColorCssVar(color)})]`, elementState);
 };
 
-const getColorCssVar = (color: Color | BorderColor): string => {
+export const getColorCssVar = (color: Color | BorderColor): string => {
   if (
     isEnumValue(color, BrandColor) ||
     isEnumValue(color, SemanticColor) ||
@@ -277,7 +277,10 @@ export const borderColorClass = (
     return borderColorMap[color];
   }
 
-  return withElementState(`border-(${getColorCssVar(color)})`, elementState);
+  return withElementState(
+    `border-[var(${getColorCssVar(color)})]`,
+    elementState
+  );
 };
 
 export const textColorClass = (
@@ -288,5 +291,5 @@ export const textColorClass = (
     return textColorMap[color];
   }
 
-  return withElementState(`text-(${getColorCssVar(color)})`, elementState);
+  return withElementState(`text-[var(${getColorCssVar(color)})]`, elementState);
 };
