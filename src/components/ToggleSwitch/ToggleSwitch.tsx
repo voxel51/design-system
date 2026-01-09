@@ -147,10 +147,17 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
                 textColorClass(TextColor.Secondary),
                 "outline-none",
                 "transition-colors",
+                // Border for unselected state
+                "border",
+                "border-content-border-default",
+                "dark:border-content-bg-card-elevated",
                 // Use static strings for state variants so Tailwind JIT can detect them
                 "hover:bg-content-bg-card-2",
                 "hover:text-content-text-primary",
+                // Selected state: lighter gray background for both themes
                 "data-selected:bg-content-bg-card-2",
+                "dark:data-selected:bg-content-bg-card-elevated",
+                "data-selected:border-transparent",
                 "data-focus:outline-none",
                 getTabBorderRadius(variant, isFirst, isLast),
                 getTabStyles(variant, size)
