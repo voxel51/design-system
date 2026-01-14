@@ -2,6 +2,7 @@ export * from "./ActivityToast";
 export * from "./Button";
 export * from "./Checkbox";
 export * from "./Clickable";
+export * from "./Datepicker";
 export * from "./FormField";
 export * from "./FormFieldGroup";
 export * from "./Heading";
