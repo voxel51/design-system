@@ -71,7 +71,7 @@ export const DatePicker: FC<DatePickerProps> = ({
             hasValue={hasValue}
           />
         }
-        {...props}
+        {...(props as any)} // eslint-disable-line
       />
     </Field>
   );
