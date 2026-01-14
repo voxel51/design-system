@@ -52,7 +52,7 @@ export const DatePicker: FC<DatePickerProps> = ({
     <Field className={cn("flex flex-col gap-1", className)}>
       <ReactDatePicker
         selected={selected}
-        onChange={onChange}
+        onChange={!disabled ? onChange : undefined}
         disabled={disabled}
         dateFormat={finalDateFormat}
         minDate={minDate}

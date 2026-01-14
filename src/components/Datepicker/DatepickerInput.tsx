@@ -109,7 +109,6 @@ export const DatepickerInput: FC<DatepickerInputProps> = ({
         type="text"
         value={value}
         onClick={onClick}
-        readOnly
         disabled={disabled}
         className={inputClasses}
       />
