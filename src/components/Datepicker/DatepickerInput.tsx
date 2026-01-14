@@ -17,9 +17,9 @@ import { cn } from "@/util/classes";
 
 import { paddingLeftStyles, sizeStyles } from "../Input/styles";
 
-import DatepickerIconButton from "./DatepickerIconButton";
+import DatepickerIconButton, { IconPosition } from "./DatepickerIconButton";
 
-export const datePickerInputStyle = ({
+const datePickerInputStyle = ({
   disabled,
   error,
   radius = Radius.Sm,
@@ -102,12 +102,11 @@ export const DatepickerInput: FC<DatepickerInputProps> = ({
         disabled={disabled}
         hasValue={hasValue}
         size={size}
-        position="left"
+        position={IconPosition.Leading}
         iconName={IconName.DateRange}
       />
       <input
         ref={inputRef}
-        type="text"
         value={value}
         onClick={onClick}
         disabled={disabled}
@@ -119,7 +118,7 @@ export const DatepickerInput: FC<DatepickerInputProps> = ({
         disabled={disabled}
         hasValue={hasValue}
         size={size}
-        position="right"
+        position={IconPosition.Trailing}
         iconName={IconName.CaretDown}
       />
     </div>

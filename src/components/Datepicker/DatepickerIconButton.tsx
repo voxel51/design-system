@@ -5,7 +5,13 @@ import { IconColor, Size, textColorClass } from "@/types";
 import { IconName } from "@/types/icons";
 import { cn } from "@/util/classes";
 
+import { Button } from "@headlessui/react";
 import { iconPaddingStyles, iconSizeStyles } from "../Input/styles";
+
+export enum IconPosition {
+  Leading = "leading",
+  Trailing = "trailing",
+}
 
 export interface DatepickerIconButtonProps {
   onClick: () => void;
@@ -14,7 +20,7 @@ export interface DatepickerIconButtonProps {
   size?: Size;
   ariaLabel?: string;
   iconName: IconName;
-  position?: "left" | "right";
+  position?: IconPosition;
 }
 
 export const DatepickerIconButton: FC<DatepickerIconButtonProps> = ({
@@ -23,14 +29,15 @@ export const DatepickerIconButton: FC<DatepickerIconButtonProps> = ({
   size = Size.Md,
   ariaLabel = "Open date picker",
   iconName,
-  position = "left",
+  position = IconPosition.Leading,
 }) => {
   const positionClasses =
-    position === "left" ? "absolute left-0" : "absolute right-0 pr-3";
+    position === IconPosition.Leading
+      ? "absolute left-0"
+      : "absolute right-0 pr-3";
 
   return (
-    <button
-      type="button"
+    <Button
       onClick={onClick}
       disabled={disabled}
       className={cn(
@@ -38,7 +45,7 @@ export const DatepickerIconButton: FC<DatepickerIconButtonProps> = ({
         "flex items-center justify-center",
         "cursor-pointer",
         "disabled:cursor-not-allowed",
-        position === "left" && iconPaddingStyles[size],
+        position === IconPosition.Leading && iconPaddingStyles[size],
         "z-10"
       )}
       aria-label={ariaLabel}
@@ -47,7 +54,7 @@ export const DatepickerIconButton: FC<DatepickerIconButtonProps> = ({
         name={iconName}
         className={cn(iconSizeStyles[size], textColorClass(IconColor.Disabled))}
       />
-    </button>
+    </Button>
   );
 };
 
