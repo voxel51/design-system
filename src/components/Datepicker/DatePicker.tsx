@@ -71,7 +71,7 @@ export const DatePicker: FC<DatePickerProps> = ({
             hasValue={hasValue}
           />
         }
-        {...(props as any)}
+        {...props}
       />
     </Field>
   );
