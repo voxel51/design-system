@@ -14,9 +14,9 @@ import {
 import { IconName } from "@/types/icons";
 import { cn } from "@/util/classes";
 
-import { paddingLeftStyles, sizeStyles } from "../Input/styles";
 import radiusStyles from "@/styles/radius";
-import { DatepickerIconButton } from "./DatepickerIconButton";
+import { paddingLeftStyles, sizeStyles } from "../Input/styles";
+import DatepickerIconButton from "./DatepickerIconButton";
 
 export const datePickerInputStyle = ({
   disabled,
@@ -126,5 +126,4 @@ export const DatepickerInput: FC<DatepickerInputProps> = ({
   );
 };
 
-DatepickerInput.displayName = "DatepickerInput";
-
+export default DatepickerInput;

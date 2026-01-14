@@ -1,5 +1,5 @@
 import { Field } from "@headlessui/react";
-import { type FC } from "react";
+import { useMemo, type FC } from "react";
 import type { DatePickerProps as ReactDatePickerProps } from "react-datepicker";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -8,7 +8,7 @@ import "./Datepicker.css";
 import { Radius, Size } from "@/types";
 import { cn } from "@/util/classes";
 
-import { DatepickerInput } from "./DatepickerInput";
+import DatepickerInput from "./DatepickerInput";
 
 export interface DatePickerProps extends Omit<
   ReactDatePickerProps,
@@ -41,12 +41,12 @@ export const DatePicker: FC<DatePickerProps> = ({
 }) => {
   const hasValue = Boolean(selected);
 
-  // Automatically add dot separator between date and time when showTimeSelect is true
-  const finalDateFormat =
-    dateFormat ??
-    (showTimeSelect || showTimeSelectOnly
-      ? "yyyy-MM-dd · HH:mm"
-      : "yyyy-MM-dd");
+  const finalDateFormat = useMemo(() => {
+    if (dateFormat) return dateFormat; // user provided date format
+    if (showTimeSelect && showTimeSelectOnly) return "HH:mm";
+    if (showTimeSelect) return "yyyy-MM-dd · HH:mm";
+    return "yyyy-MM-dd";
+  }, [dateFormat, showTimeSelect, showTimeSelectOnly]);
 
   return (
     <Field className={cn("flex flex-col gap-1", className)}>

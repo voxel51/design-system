@@ -51,4 +51,4 @@ export const DatepickerIconButton: FC<DatepickerIconButtonProps> = ({
   );
 };
 
-DatepickerIconButton.displayName = "DatepickerIconButton";
+export default DatepickerIconButton;
