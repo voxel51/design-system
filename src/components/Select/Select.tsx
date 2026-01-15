@@ -17,23 +17,31 @@ import { Descriptor, Radius } from "@/types";
 import { Option } from "./Option";
 
 
+export type AnchorPosition = "bottom" | "bottom start" | "bottom end" | "top" | "top start" | "top end";
+
 export interface SelectProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   "onChange"
 > {
+  anchor?: AnchorPosition;
   disabled?: boolean;
   exclusive?: boolean;
+  fullWidth?: boolean;
   onChange?: (value: string | string[] | null) => void;
   options?: Descriptor<{ label: string; content?: ReactNode }>[];
+  portal?: boolean;
   value?: string | string[];
 }
 
 export const Select: FC<SelectProps> = ({
+  anchor = "bottom start",
   className,
   disabled,
   exclusive,
+  fullWidth,
   onChange,
   options,
+  portal,
   value,
   ...props
 }) => {
@@ -56,9 +64,14 @@ export const Select: FC<SelectProps> = ({
         }
       }
 
+      // Close dropdown after selection in exclusive (single-select) mode
+      if (exclusive) {
+        setOpen(false);
+      }
+
       onChange?.(value);
     },
-    [onChange]
+    [onChange, exclusive]
   );
 
   const getDisplayValue = useCallback(
@@ -75,7 +88,7 @@ export const Select: FC<SelectProps> = ({
   );
 
   return (
-    <div className={className} {...props}>
+    <div className={clsx(className, fullWidth && "w-full")} {...props}>
       <Combobox
         disabled={disabled}
         value={value}
@@ -91,23 +104,35 @@ export const Select: FC<SelectProps> = ({
           // which causes the dropdown menu to be anchored in the wrong place.
           // Until we switch to react 19,
           // we'll just style this component using the same classes as the `Input` component.
-          className={inputStyle({ disabled })}
+          className={clsx(inputStyle({ disabled }), fullWidth && "w-full")}
         />
 
         <ComboboxOptions
           static={open}
-          anchor="bottom"
-          className={clsx("mt-1", radiusStyles(Radius.Md))}
+          anchor={anchor}
+          portal={portal}
+          className={clsx(
+            "mt-1",
+            fullWidth && "w-[var(--anchor-width)]",
+            radiusStyles(Radius.Md),
+            portal && "z-[10000]"
+          )}
         >
-          {options?.map((opt) => (
-            <Option
-              key={opt.id}
-              value={opt.id}
-              selected={(value ?? selectionState).includes(opt.id)}
-            >
-              <Text>{opt.data.content ?? opt.data.label}</Text>
-            </Option>
-          ))}
+          {options?.map((opt) => {
+            const currentValue = value ?? selectionState;
+            const isSelected = Array.isArray(currentValue)
+              ? currentValue.includes(opt.id)
+              : currentValue === opt.id;
+            return (
+              <Option
+                key={opt.id}
+                value={opt.id}
+                selected={isSelected}
+              >
+                <Text>{opt.data.content ?? opt.data.label}</Text>
+              </Option>
+            );
+          })}
         </ComboboxOptions>
       </Combobox>
     </div>
