@@ -1,3 +1,4 @@
+import { Button } from "@headlessui/react";
 import { type FC } from "react";
 
 import { Icon } from "@/components/Icons";
@@ -5,7 +6,6 @@ import { IconColor, Size, textColorClass } from "@/types";
 import { IconName } from "@/types/icons";
 import { cn } from "@/util/classes";
 
-import { Button } from "@headlessui/react";
 import { iconPaddingStyles, iconSizeStyles } from "../Input/styles";
 
 export enum IconPosition {
