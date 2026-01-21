@@ -17,23 +17,36 @@ import { Descriptor, Radius } from "@/types";
 import { Option } from "./Option";
 
 
+export enum SelectAnchor {
+  Bottom = "bottom",
+  BottomStart = "bottom start",
+  BottomEnd = "bottom end",
+  Top = "top",
+  TopStart = "top start",
+  TopEnd = "top end",
+}
+
 export interface SelectProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   "onChange"
 > {
+  anchor?: SelectAnchor;
   disabled?: boolean;
   exclusive?: boolean;
   onChange?: (value: string | string[] | null) => void;
   options?: Descriptor<{ label: string; content?: ReactNode }>[];
+  portal?: boolean;
   value?: string | string[];
 }
 
 export const Select: FC<SelectProps> = ({
+  anchor = SelectAnchor.BottomStart,
   className,
   disabled,
   exclusive,
   onChange,
   options,
+  portal,
   value,
   ...props
 }) => {
@@ -56,9 +69,14 @@ export const Select: FC<SelectProps> = ({
         }
       }
 
+      // Close dropdown after selection in exclusive (single-select) mode
+      if (exclusive) {
+        setOpen(false);
+      }
+
       onChange?.(value);
     },
-    [onChange]
+    [onChange, exclusive]
   );
 
   const getDisplayValue = useCallback(
@@ -75,7 +93,7 @@ export const Select: FC<SelectProps> = ({
   );
 
   return (
-    <div className={className} {...props}>
+    <div className={clsx(className, "w-full")} {...props}>
       <Combobox
         disabled={disabled}
         value={value}
@@ -91,23 +109,36 @@ export const Select: FC<SelectProps> = ({
           // which causes the dropdown menu to be anchored in the wrong place.
           // Until we switch to react 19,
           // we'll just style this component using the same classes as the `Input` component.
-          className={inputStyle({ disabled })}
+          className={clsx(inputStyle({ disabled }), "w-full")}
         />
 
         <ComboboxOptions
           static={open}
-          anchor="bottom"
-          className={clsx("mt-1", radiusStyles(Radius.Md))}
+          anchor={anchor}
+          portal={portal}
+          className={clsx(
+            "mt-1",
+            "w-[var(--anchor-width)]",
+            radiusStyles(Radius.Md),
+            portal && "z-above-modal"
+          )}
         >
-          {options?.map((opt) => (
-            <Option
-              key={opt.id}
-              value={opt.id}
-              selected={(value ?? selectionState).includes(opt.id)}
-            >
-              <Text>{opt.data.content ?? opt.data.label}</Text>
-            </Option>
-          ))}
+          {options?.map((opt) => {
+            // Support both single-select (string) and multi-select (string[]) modes
+            const currentValue = value ?? selectionState;
+            const isSelected = Array.isArray(currentValue)
+              ? currentValue.includes(opt.id)
+              : currentValue === opt.id;
+            return (
+              <Option
+                key={opt.id}
+                value={opt.id}
+                selected={isSelected}
+              >
+                <Text>{opt.data.content ?? opt.data.label}</Text>
+              </Option>
+            );
+          })}
         </ComboboxOptions>
       </Combobox>
     </div>
