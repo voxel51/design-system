@@ -4,6 +4,7 @@ import { FC, HTMLAttributes, MouseEvent, useCallback, useRef } from "react";
 import { SliderKnob } from "@/components/Slider/SliderKnob";
 import radiusStyles from "@/styles/radius";
 import { BackgroundColor, bgColorClass, BrandColor, Radius } from "@/types";
+import { isNullish } from "@/util/type-check";
 
 interface SliderBarProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
@@ -31,6 +32,7 @@ export const SliderBar: FC<SliderBarProps> = ({
   const values = Array.isArray(value) ? value : [min, value ?? max];
   const minValue = values[0];
   const maxValue = values[1];
+  const isUnset = isNullish(value);
 
   /**
    * Get the knob position in the range [0, 1] from the given value.
@@ -176,31 +178,35 @@ export const SliderBar: FC<SliderBarProps> = ({
       role="presentation"
       {...props}
     >
-      <div
-        className={clsx(
-          "absolute",
-          "h-2",
-          bgColorClass(BrandColor.Primary),
-          radiusStyles(Radius.Full)
-        )}
-        style={{
-          left: `${getKnobPosition(minValue) * 100}%`,
-          right: `${(1 - getKnobPosition(maxValue)) * 100}%`,
-        }}
-      />
+      {!isUnset && (
+        <>
+          <div
+            className={clsx(
+              "absolute",
+              "h-2",
+              bgColorClass(BrandColor.Primary),
+              radiusStyles(Radius.Full)
+            )}
+            style={{
+              left: `${getKnobPosition(minValue) * 100}%`,
+              right: `${(1 - getKnobPosition(maxValue)) * 100}%`,
+            }}
+          />
 
-      {multi && (
-        <SliderKnob
-          position={getKnobPosition(minValue)}
-          onDragStart={(e) => registerKnobDragHandlers(e, "min")}
-          value={minValue}
-        />
+          {multi && (
+            <SliderKnob
+              position={getKnobPosition(minValue)}
+              onDragStart={(e) => registerKnobDragHandlers(e, "min")}
+              value={minValue}
+            />
+          )}
+          <SliderKnob
+            position={getKnobPosition(maxValue)}
+            onDragStart={(e) => registerKnobDragHandlers(e, "max")}
+            value={maxValue}
+          />
+        </>
       )}
-      <SliderKnob
-        position={getKnobPosition(maxValue)}
-        onDragStart={(e) => registerKnobDragHandlers(e, "max")}
-        value={maxValue}
-      />
     </div>
   );
 };
