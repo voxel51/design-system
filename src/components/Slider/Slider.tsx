@@ -13,6 +13,7 @@ import { Input } from "@/components/Input";
 import { SliderBar } from "@/components/Slider/SliderBar";
 import { SliderLabels } from "@/components/Slider/SliderLabels";
 import { Stack } from "@/components/Stack";
+import { UnsetHint } from "@/components/UnsetHint";
 import { Orientation, Spacing } from "@/types";
 import { makeRangeValidator } from "@/util/validators";
 
@@ -32,6 +33,7 @@ export interface SliderProps extends Omit<
   onChange?: ChangeHandler;
   step?: number;
   value?: number | number[];
+  showUnsetHint?: boolean;
 }
 
 export interface SingleValueSliderProps extends Omit<
@@ -72,6 +74,7 @@ export const BaseSlider: FC<SliderProps> = ({
   onChange,
   step = 0.001,
   value,
+  showUnsetHint,
   ...props
 }) => {
   // track raw input values
@@ -129,6 +132,10 @@ export const BaseSlider: FC<SliderProps> = ({
     [isValidRange, maxValue, minValue, multi, onChange]
   );
 
+  const hint = bare
+    ? "Click on the slider to set a value"
+    : "Click on the slider or enter a number to set a value";
+
   return (
     <Stack
       orientation={Orientation.Column}
@@ -173,6 +180,7 @@ export const BaseSlider: FC<SliderProps> = ({
           />
         </div>
       )}
+      {showUnsetHint && <UnsetHint value={value} hint={hint} />}
     </Stack>
   );
 };
