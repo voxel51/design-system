@@ -17,16 +17,22 @@ import { Descriptor, Radius } from "@/types";
 import { Option } from "./Option";
 
 
-export type AnchorPosition = "bottom" | "bottom start" | "bottom end" | "top" | "top start" | "top end";
+export enum SelectAnchor {
+  Bottom = "bottom",
+  BottomStart = "bottom start",
+  BottomEnd = "bottom end",
+  Top = "top",
+  TopStart = "top start",
+  TopEnd = "top end",
+}
 
 export interface SelectProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   "onChange"
 > {
-  anchor?: AnchorPosition;
+  anchor?: SelectAnchor;
   disabled?: boolean;
   exclusive?: boolean;
-  fullWidth?: boolean;
   onChange?: (value: string | string[] | null) => void;
   options?: Descriptor<{ label: string; content?: ReactNode }>[];
   portal?: boolean;
@@ -34,11 +40,10 @@ export interface SelectProps extends Omit<
 }
 
 export const Select: FC<SelectProps> = ({
-  anchor = "bottom start",
+  anchor = SelectAnchor.BottomStart,
   className,
   disabled,
   exclusive,
-  fullWidth,
   onChange,
   options,
   portal,
@@ -88,7 +93,7 @@ export const Select: FC<SelectProps> = ({
   );
 
   return (
-    <div className={clsx(className, fullWidth && "w-full")} {...props}>
+    <div className={clsx(className, "w-full")} {...props}>
       <Combobox
         disabled={disabled}
         value={value}
@@ -104,7 +109,7 @@ export const Select: FC<SelectProps> = ({
           // which causes the dropdown menu to be anchored in the wrong place.
           // Until we switch to react 19,
           // we'll just style this component using the same classes as the `Input` component.
-          className={clsx(inputStyle({ disabled }), fullWidth && "w-full")}
+          className={clsx(inputStyle({ disabled }), "w-full")}
         />
 
         <ComboboxOptions
@@ -113,12 +118,13 @@ export const Select: FC<SelectProps> = ({
           portal={portal}
           className={clsx(
             "mt-1",
-            fullWidth && "w-[var(--anchor-width)]",
+            "w-[var(--anchor-width)]",
             radiusStyles(Radius.Md),
-            portal && "z-[10000]"
+            portal && "z-above-modal"
           )}
         >
           {options?.map((opt) => {
+            // Support both single-select (string) and multi-select (string[]) modes
             const currentValue = value ?? selectionState;
             const isSelected = Array.isArray(currentValue)
               ? currentValue.includes(opt.id)
