@@ -119,8 +119,8 @@ export const Select: FC<SelectProps> = ({
           className={clsx(
             "mt-1",
             "w-[var(--anchor-width)]",
-            radiusStyles(Radius.Md),
-            portal && "z-above-modal"
+            "z-[var(--z-above-modal)]",
+            radiusStyles(Radius.Md)
           )}
         >
           {options?.map((opt) => {
