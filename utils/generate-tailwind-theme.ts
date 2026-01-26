@@ -1,5 +1,5 @@
-import { default as tokens } from "../src/theme/tokens";
 import { writeFileSync } from "fs";
+import { default as tokens } from "../src/theme/tokens";
 
 /**
  * Generate a list of CSS variables from a (maybe) nested object.
