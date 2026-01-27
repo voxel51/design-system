@@ -21,7 +21,7 @@ export interface RadioGroupProps extends Omit<
   className?: string;
   defaultValue?: string;
   options: RadioOption[];
-  value: string;
+  value?: string;
   onChange: (value: string) => void;
   name?: string;
   size?: RadioGroupSize;

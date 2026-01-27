@@ -1,6 +1,7 @@
-import { Field, Label, Switch as HeadlessSwitch } from "@headlessui/react";
+import { Field, Switch as HeadlessSwitch, Label } from "@headlessui/react";
 import { ButtonHTMLAttributes, type FC } from "react";
 
+import { UnsetHint } from "@/components/UnsetHint";
 import radiusStyles from "@/styles/radius";
 import { TEXT_STYLES } from "@/styles/text";
 import {
@@ -15,7 +16,6 @@ import {
   TextVariant,
 } from "@/types";
 import { cn } from "@/util/classes";
-
 
 type ModifiedToggleProps = Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
@@ -32,6 +32,7 @@ export interface ToggleProps extends ModifiedToggleProps {
   size?: ToggleSize;
   className?: string;
   labelClassName?: string;
+  showUnsetHint?: boolean;
 }
 
 const trackSizeStyles: Record<ToggleSize, string> = {
@@ -70,13 +71,14 @@ const getThumbTranslateStyles = (size: Size): string => {
 };
 
 export const Toggle: FC<ToggleProps> = ({
-  checked = false,
+  checked,
   disabled = false,
-  onChange = undefined,
+  onChange,
   size = Size.Md,
   className,
   labelClassName,
   label,
+  showUnsetHint,
   ...props
 }) => {
   return (
@@ -141,6 +143,9 @@ export const Toggle: FC<ToggleProps> = ({
         >
           {label}
         </Label>
+      )}
+      {showUnsetHint && (
+        <UnsetHint value={checked} hint={"Click the toggle to set a value"} />
       )}
     </Field>
   );

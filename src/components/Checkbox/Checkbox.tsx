@@ -3,6 +3,7 @@ import clsx from "clsx";
 import { type FC, InputHTMLAttributes } from "react";
 
 import { Icon } from "@/components/Icons/Icon";
+import { UnsetHint } from "@/components/UnsetHint";
 import radiusStyles from "@/styles/radius";
 import { TEXT_STYLES } from "@/styles/text";
 import {
@@ -33,6 +34,7 @@ export interface CheckboxProps extends ModifiedCheckboxProps {
   radius?: Radius;
   className?: string;
   labelClassName?: string;
+  showUnsetHint?: boolean;
 }
 
 const sizeStyles: Record<Size, string> = {
@@ -50,13 +52,14 @@ const checkmarkSizeStyles: Record<Size, string> = {
 };
 
 export const Checkbox: FC<CheckboxProps> = ({
-  checked = false,
-  onChange = undefined,
+  checked,
+  onChange,
   size = Size.Md,
   radius = Radius.Xs,
   className,
   labelClassName,
   label,
+  showUnsetHint,
   ...props
 }) => {
   return (
@@ -107,6 +110,9 @@ export const Checkbox: FC<CheckboxProps> = ({
         >
           {label}
         </Label>
+      )}
+      {showUnsetHint && (
+        <UnsetHint value={checked} hint="Click the checkbox to set a value" />
       )}
     </Field>
   );
