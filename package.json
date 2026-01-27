@@ -1,6 +1,6 @@
 {
   "name": "@voxel51/voodo",
-  "version": "0.0.6",
+  "version": "0.0.9",
   "description": "Voxel51's official design ontology (VOODO) system",
   "type": "module",
   "author": "Voxel Engineering <engineering@voxel51.com>",
@@ -46,6 +46,7 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@headlessui/react": "^2.2.9",
     "clsx": "^2.1.1",
+    "date-fns-tz": "^3.2.0",
     "react-datepicker": "^9.1.0",
     "tailwind-merge": "^3.4.0"
   },
