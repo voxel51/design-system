@@ -27,7 +27,7 @@ export const ToastContainer: FC<ToastContainerProps> = ({
 }) => (
   <>
     {open && (
-      <div className={clsx("fixed", "z-100", anchorStyles[anchor])} {...props}>
+      <div className={clsx("fixed", "z-9999", anchorStyles[anchor])} {...props}>
         {children}
       </div>
     )}
