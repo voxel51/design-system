@@ -46,6 +46,7 @@ export enum IconName {
   Search = "Search",
   Settings = "Settings",
   Slider = "Slider",
+  Spinner = "Spinner",
   Tag = "Tag",
   Text = "Text",
   Toggle = "Toggle",

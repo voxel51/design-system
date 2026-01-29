@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import React, { type FC } from "react";
 
+import { Spinner } from "@/components/Spinner";
 import AIIcon from "@/img/AI.svg?react";
 import AddIcon from "@/img/Add.svg?react";
 import ArrowDownIcon from "@/img/ArrowDown.svg?react";
@@ -69,7 +70,10 @@ type SvgComponent = React.FC<React.SVGProps<SVGSVGElement>>;
  * 2. create a enum value for the icon name
  * 3. import the SVG file and add it to this map
  */
-export const iconMap: Record<IconName, SvgComponent> = {
+export const iconMap: Record<
+  Exclude<IconName, IconName.Spinner>,
+  SvgComponent
+> = {
   [IconName.Add]: AddIcon,
   [IconName.AI]: AIIcon,
   [IconName.ArrowDown]: ArrowDownIcon,
@@ -158,12 +162,13 @@ export const Icon: FC<IconProps> = ({
   // ratio but it's possible that VERY rectangular SVGs will not behave
   // as expected.
   const iconSize = size ? sizeMap[size] : undefined;
-  const IconComponent = iconMap[name];
+  const IconComponent = name === IconName.Spinner ? Spinner : iconMap[name];
 
   return (
     <IconComponent
       width={iconSize}
       height={iconSize}
+      size={size}
       className={clsx(className)}
       style={{ color, ...style }}
       {...props}
