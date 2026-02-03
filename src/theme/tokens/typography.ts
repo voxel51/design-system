@@ -3,14 +3,15 @@ export const typography = {
     sans: ["Palanquin", "sans-serif"],
     mono: ["monospace"],
   },
+  // Scale tuned for 14px root
   fontSize: {
-    xxs: "0.5625rem",
-    xs: "0.6875rem",
-    sm: "0.75rem",
-    md: "0.8125rem",
-    lg: "0.9375rem",
-    xl: "1.125rem",
-    xxl: "1.4375rem",
+    xxs: "0.6429rem",   // 9px
+    xs: "0.7857rem",    // 11px
+    sm: "0.8571rem",    // 12px
+    md: "0.9286rem",    // 13px
+    lg: "1.0714rem",    // 15px
+    xl: "1.2857rem",    // 18px
+    xxl: "1.6429rem",   // 23px
   },
   fontWeight: {
     light: 300,
