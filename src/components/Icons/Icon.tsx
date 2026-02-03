@@ -22,6 +22,7 @@ import DateRangeIcon from "@/img/DateRange.svg?react";
 import DeleteIcon from "@/img/Delete.svg?react";
 import DetectionIcon from "@/img/Detection.svg?react";
 import DragIcon from "@/img/Drag.svg?react";
+import DrawIcon from "@/img/Draw.svg?react";
 import EditIcon from "@/img/Edit.svg?react";
 import EmbeddingsIcon from "@/img/Embeddings.svg?react";
 import EnterIcon from "@/img/Enter.svg?react";
@@ -94,6 +95,7 @@ export const iconMap: Record<
   [IconName.Delete]: DeleteIcon,
   [IconName.Detection]: DetectionIcon,
   [IconName.Drag]: DragIcon,
+  [IconName.Draw]: DrawIcon,
   [IconName.Edit]: EditIcon,
   [IconName.Embeddings]: EmbeddingsIcon,
   [IconName.Enter]: EnterIcon,

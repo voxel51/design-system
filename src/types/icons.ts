@@ -16,6 +16,7 @@ export enum IconName {
   Close = "Close",
   Code = "Code",
   DateRange = "DateRange",
+  Draw = "Draw",
   Delete = "Delete",
   Detection = "Detection",
   Drag = "Drag",
