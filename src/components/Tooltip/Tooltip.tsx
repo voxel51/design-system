@@ -61,6 +61,7 @@ export const Tooltip: FC<TooltipProps> = ({
   return (
     <Popover className="relative" {...props}>
       <PopoverButton
+        as="div"
         onMouseEnter={() => setIsOpen(true)}
         onMouseLeave={() => setIsOpen(false)}
         className="focus:outline-none"
