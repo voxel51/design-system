@@ -3,6 +3,7 @@ export enum Variant {
   Secondary = "secondary",
   Success = "success",
   Danger = "danger",
+  Icon = "icon",
 }
 
 export default Variant;

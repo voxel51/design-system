@@ -17,6 +17,7 @@ export enum ActionColor {
   DangerHover = "action-danger-secondary",
   DangerFocus = "action-danger-tertiary",
   DangerText = "action-danger-text",
+  IconDefault = "action-icon-default",
 }
 
 export enum BackgroundColor {
@@ -40,6 +41,7 @@ export enum BorderColor {
   Success = "border-success",
   Warning = "border-warning",
   Disabled = "border-disabled",
+  CardElevated = "bg-card-elevated",
 }
 
 export enum BrandColor {
@@ -99,6 +101,7 @@ export type Color =
   | TextColor;
 
 const textColorMap: Record<Color, string> = {
+  [ActionColor.IconDefault]: "text-transparent",
   [ActionColor.PrimaryDefault]: "text-action-primary-primary",
   [ActionColor.PrimaryHover]: "text-action-primary-secondary",
   [ActionColor.PrimaryFocus]: "text-action-primary-tertiary",
@@ -163,6 +166,7 @@ const textColorMap: Record<Color, string> = {
 };
 
 const backgroundColorMap: Record<Color, string> = {
+  [ActionColor.IconDefault]: "bg-transparent",
   [ActionColor.PrimaryDefault]: "bg-action-primary-primary",
   [ActionColor.PrimaryHover]: "bg-action-primary-secondary",
   [ActionColor.PrimaryFocus]: "bg-action-primary-tertiary",
@@ -227,6 +231,7 @@ const backgroundColorMap: Record<Color, string> = {
 };
 
 const borderColorMap: Record<BorderColor, string> = {
+  [BorderColor.CardElevated]: "border-content-bg-card-elevated",
   [BorderColor.Active]: "border-content-border-active",
   [BorderColor.Default]: "border-content-border-default",
   [BorderColor.Disabled]: "border-content-border-disabled",

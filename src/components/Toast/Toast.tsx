@@ -36,6 +36,7 @@ const variantStyles: Record<Variant, string> = {
   [Variant.Secondary]: textColorClass(TextColor.Secondary),
   [Variant.Success]: textColorClass(IconColor.Success),
   [Variant.Danger]: textColorClass(IconColor.Destructive),
+  [Variant.Icon]: textColorClass(TextColor.Primary),
 };
 
 export const Toast: FC<ToastProps> = ({

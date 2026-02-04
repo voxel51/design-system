@@ -5,6 +5,7 @@ import type { ButtonHTMLAttributes, FC } from "react";
 import radiusStyles from "@/styles/radius";
 import {
   ActionColor,
+  BackgroundColor,
   bgColorClass,
   BorderColor,
   borderColorClass,
@@ -35,14 +36,13 @@ const variantStyles: Record<Variant, string> = {
   ),
   [Variant.Secondary]: clsx(
     "border-1",
-    bgColorClass(ActionColor.SecondaryDefault),
+    "bg-transparent",
     borderColorClass(BorderColor.Default),
-    bgColorClass(ActionColor.SecondaryHover, ElementState.Hover),
-    borderColorClass(BorderColor.Hover, ElementState.Hover),
-    bgColorClass(ActionColor.SecondaryFocus, ElementState.Active),
+    borderColorClass(BorderColor.Focus, ElementState.Hover),  // design calls for focus color on hover
     borderColorClass(BorderColor.Focus, ElementState.Active),
+    borderColorClass(BorderColor.Disabled, ElementState.Disabled),
+    bgColorClass(ActionColor.SecondaryFocus, ElementState.Active),
     textColorClass(ActionColor.SecondaryText),
-    borderColorClass(BorderColor.Disabled, ElementState.Disabled)
   ),
   [Variant.Success]: clsx(
     bgColorClass(ActionColor.SuccessDefault),
@@ -55,6 +55,11 @@ const variantStyles: Record<Variant, string> = {
     bgColorClass(ActionColor.DangerHover, ElementState.Hover),
     bgColorClass(ActionColor.DangerFocus, ElementState.Active),
     textColorClass(ActionColor.DangerText)
+  ),
+  [Variant.Icon]: clsx(
+    "bg-transparent",
+    bgColorClass(BackgroundColor.CardElevated, ElementState.Hover),
+    textColorClass(ActionColor.IconDefault),
   ),
 };
 
@@ -84,6 +89,7 @@ export const Button: FC<ButtonProps> = ({
     <HeadlessButton
       className={cn(
         "inline-flex items-center justify-center",
+        borderless && "aspect-square min-w-0 shrink-0",  // circular
         borderless ? radiusStyles(Radius.Full) : radiusStyles(Radius.Sm),
         "font-medium",
         "transition-colors",
