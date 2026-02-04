@@ -3,7 +3,8 @@ import clsx from "clsx";
 import { FC, HTMLAttributes, ReactNode, useState } from "react";
 
 import radiusStyles from "@/styles/radius";
-import { Anchor, BackgroundColor, bgColorClass, Radius } from "@/types";
+import shadowStyles from "@/styles/shadow";
+import { Anchor, BackgroundColor, bgColorClass, Radius, Shadow } from "@/types";
 import { cn } from "@/util/classes";
 
 export type TooltipAnchor = Extract<
@@ -18,6 +19,8 @@ export interface TooltipProps extends Omit<
   anchor?: TooltipAnchor;
   content: ReactNode;
   portal?: boolean;
+  /** Elevation / drop shadow. Use Shadow.Xs through Shadow.Xl. */
+  shadow?: Shadow;
 }
 
 const anchorStyles: Record<TooltipAnchor, string> = {
@@ -54,6 +57,7 @@ export const Tooltip: FC<TooltipProps> = ({
   children,
   className,
   portal = false,
+  shadow = Shadow.Lg,
   ...props
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -80,6 +84,7 @@ export const Tooltip: FC<TooltipProps> = ({
             "!overflow-visible",
             bgColorClass(BackgroundColor.Card2),
             radiusStyles(Radius.Sm),
+            shadowStyles(shadow),
             anchorStyles[anchor],
             className
           )}
