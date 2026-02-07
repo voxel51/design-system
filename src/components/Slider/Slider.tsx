@@ -115,7 +115,7 @@ export const BaseSlider: FC<SliderProps> = ({
         setMaxValue(clamp(transientValue, min, max).toString());
       }
     }
-  }, [transientValue]);
+  }, [max, min, transientValue]);
 
   // debounce onChange events to prevent excessive updates when e.g. dragging the slider
   const debouncedOnChange = useDebouncedCallback(
