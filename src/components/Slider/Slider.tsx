@@ -15,6 +15,7 @@ import { SliderLabels } from "@/components/Slider/SliderLabels";
 import { Stack } from "@/components/Stack";
 import { UnsetHint } from "@/components/UnsetHint";
 import { Orientation, Spacing } from "@/types";
+import { useDebouncedCallback } from "@/util/useDebouncedCallback.ts";
 import { makeRangeValidator } from "@/util/validators";
 
 type ChangeHandler = (value: number | number[]) => void;
@@ -77,7 +78,10 @@ export const BaseSlider: FC<SliderProps> = ({
   showUnsetHint,
   ...props
 }) => {
-  // track raw input values
+  // transient state
+  const [transientValue, setTransientValue] = useState<
+    number | number[] | undefined
+  >(value);
   const [minValue, setMinValue] = useState<string>(() =>
     Array.isArray(value) ? value[0].toString() : min.toString()
   );
@@ -95,18 +99,38 @@ export const BaseSlider: FC<SliderProps> = ({
     [max, min]
   );
 
-  // synchronize inputs with changes in controlled value
+  // synchronize transient state with changes in controlled value
   useEffect(() => {
-    if (value !== null && value !== undefined) {
-      if (Array.isArray(value)) {
-        setMinValue(clamp(value[0], min, max).toString());
-        setMaxValue(clamp(value[1], min, max).toString());
+    setTransientValue(value);
+  }, [value]);
+
+  // synchronize inputs with changes in transient state
+  useEffect(() => {
+    if (transientValue !== null && transientValue !== undefined) {
+      if (Array.isArray(transientValue)) {
+        setMinValue(clamp(transientValue[0], min, max).toString());
+        setMaxValue(clamp(transientValue[1], min, max).toString());
       } else {
         setMinValue(min.toString());
-        setMaxValue(clamp(value, min, max).toString());
+        setMaxValue(clamp(transientValue, min, max).toString());
       }
     }
-  }, [max, min, value]);
+  }, [transientValue]);
+
+  // debounce onChange events to prevent excessive updates when e.g. dragging the slider
+  const debouncedOnChange = useDebouncedCallback(
+    useCallback((value: number | number[]) => onChange?.(value), [onChange]),
+    300
+  );
+
+  const handleChange = useCallback(
+    (value: number | number[]) => {
+      // update transient value to provide responsive slider while debouncing onChange emission
+      setTransientValue(value);
+      debouncedOnChange(value);
+    },
+    [debouncedOnChange]
+  );
 
   const handleMinInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -114,10 +138,10 @@ export const BaseSlider: FC<SliderProps> = ({
 
       const v = Number.parseFloat(e.target.value);
       if (isValidRange(v, maxValue) && v !== Number.parseFloat(minValue)) {
-        onChange?.([v, Number.parseFloat(maxValue)]);
+        handleChange([v, Number.parseFloat(maxValue)]);
       }
     },
-    [isValidRange, maxValue, minValue, onChange]
+    [handleChange, isValidRange, maxValue, minValue]
   );
 
   const handleMaxInputChange = useCallback(
@@ -126,10 +150,10 @@ export const BaseSlider: FC<SliderProps> = ({
 
       const v = Number.parseFloat(e.target.value);
       if (isValidRange(minValue, v) && v !== Number.parseFloat(maxValue)) {
-        onChange?.(multi ? [Number.parseFloat(minValue), v] : v);
+        handleChange(multi ? [Number.parseFloat(minValue), v] : v);
       }
     },
-    [isValidRange, maxValue, minValue, multi, onChange]
+    [handleChange, isValidRange, maxValue, minValue, multi]
   );
 
   const hint = bare
@@ -143,15 +167,15 @@ export const BaseSlider: FC<SliderProps> = ({
       className={className}
       {...props}
     >
-      {labeled && <SliderLabels min={min} max={max} value={value} />}
+      {labeled && <SliderLabels min={min} max={max} value={transientValue} />}
 
       <SliderBar
         min={min}
         max={max}
         multi={multi}
         step={step}
-        value={value}
-        onChange={onChange}
+        value={transientValue}
+        onChange={handleChange}
       />
 
       {!bare && (
