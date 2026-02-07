@@ -167,7 +167,14 @@ export const BaseSlider: FC<SliderProps> = ({
       className={className}
       {...props}
     >
-      {labeled && <SliderLabels min={min} max={max} value={transientValue} />}
+      {labeled && (
+        <SliderLabels
+          min={min}
+          max={max}
+          precision={step}
+          value={transientValue}
+        />
+      )}
 
       <SliderBar
         min={min}
