@@ -12,8 +12,9 @@ import {
   ElementState,
   Radius,
   Size,
+  TextColor,
   textColorClass,
-  Variant,
+  Variant
 } from "@/types";
 import { cn } from "@/util/classes";
 
@@ -31,8 +32,7 @@ const variantStyles: Record<Variant, string> = {
   [Variant.Primary]: clsx(
     bgColorClass(ActionColor.PrimaryDefault),
     bgColorClass(ActionColor.PrimaryHover, ElementState.Hover),
-    bgColorClass(ActionColor.PrimaryFocus, ElementState.Active),
-    textColorClass(ActionColor.PrimaryText)
+    bgColorClass(ActionColor.PrimaryFocus, ElementState.Active)
   ),
   [Variant.Secondary]: clsx(
     "border-1",
@@ -41,25 +41,39 @@ const variantStyles: Record<Variant, string> = {
     borderColorClass(BorderColor.Focus, ElementState.Hover),  // design calls for focus color on hover
     borderColorClass(BorderColor.Focus, ElementState.Active),
     borderColorClass(BorderColor.Disabled, ElementState.Disabled),
-    bgColorClass(ActionColor.SecondaryFocus, ElementState.Active),
-    textColorClass(ActionColor.SecondaryText),
+    bgColorClass(ActionColor.SecondaryFocus, ElementState.Active)
   ),
   [Variant.Success]: clsx(
     bgColorClass(ActionColor.SuccessDefault),
     bgColorClass(ActionColor.SuccessHover, ElementState.Hover),
-    bgColorClass(ActionColor.SuccessFocus, ElementState.Active),
-    textColorClass(ActionColor.SuccessText)
+    bgColorClass(ActionColor.SuccessFocus, ElementState.Active)
   ),
   [Variant.Danger]: clsx(
     bgColorClass(ActionColor.DangerDefault),
     bgColorClass(ActionColor.DangerHover, ElementState.Hover),
-    bgColorClass(ActionColor.DangerFocus, ElementState.Active),
-    textColorClass(ActionColor.DangerText)
+    bgColorClass(ActionColor.DangerFocus, ElementState.Active)
   ),
   [Variant.Icon]: clsx(
     "bg-transparent",
+    bgColorClass(BackgroundColor.CardElevated, ElementState.Hover)
+  ),
+  [Variant.Borderless]: clsx(
+    "bg-transparent",
+    "border-0",
     bgColorClass(BackgroundColor.CardElevated, ElementState.Hover),
-    textColorClass(ActionColor.IconDefault),
+    radiusStyles(Radius.Full),
+  ),
+};
+
+const variantTextStyles: Record<Variant, string> = {
+  [Variant.Primary]: textColorClass(ActionColor.PrimaryText),
+  [Variant.Secondary]: textColorClass(ActionColor.SecondaryText),
+  [Variant.Success]: textColorClass(ActionColor.SuccessText),
+  [Variant.Danger]: textColorClass(ActionColor.DangerText),
+  [Variant.Icon]: textColorClass(ActionColor.IconDefault),
+  [Variant.Borderless]: clsx(
+    textColorClass(TextColor.Secondary),
+    textColorClass(ActionColor.PrimaryText, ElementState.Hover)
   ),
 };
 
@@ -102,7 +116,7 @@ export const Button: FC<ButtonProps> = ({
       )}
       {...props}
     >
-      <div className="flex flex-nowrap items-center justify-center gap-x-sm">
+      <div className={clsx("flex flex-nowrap items-center justify-center gap-x-sm", variantTextStyles[variant])}>
         {LeadingIcon && (
           <span className={clsx(iconStyles[size])}>
             <LeadingIcon />

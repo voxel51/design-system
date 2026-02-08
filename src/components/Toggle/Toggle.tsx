@@ -99,12 +99,11 @@ export const Toggle: FC<ToggleProps> = ({
           "transition-colors",
           // when hovered
           "hover:bg-[#999999]", // TODO - current scheme doesn't have a light grey
-          // when focused
           "focus:outline-none",
-          "focus:ring-1",
-          "focus:ring-action-primary-primary",
-          "focus:ring-offset-2",
-          // when disabled
+          "focus:ring-0",
+          "focus-visible:outline-none",
+          "focus-visible:ring-0",
+            // when disabled
           "disabled:opacity-50",
           "disabled:cursor-not-allowed",
           // when checked
@@ -119,6 +118,10 @@ export const Toggle: FC<ToggleProps> = ({
         <span
           className={cn(
             "pointer-events-none",
+            // center the thumb vertically
+            "absolute",
+            "top-1/2",
+            "-translate-y-1/2",
             "inline-block",
             "rounded-full",
             "bg-content-bg-card-1",
