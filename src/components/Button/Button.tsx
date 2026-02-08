@@ -54,6 +54,7 @@ const variantStyles: Record<Variant, string> = {
     bgColorClass(ActionColor.DangerFocus, ElementState.Active)
   ),
   [Variant.Icon]: clsx(
+    "px-2.5 py-2.5",
     "bg-transparent",
     bgColorClass(BackgroundColor.CardElevated, ElementState.Hover)
   ),
@@ -109,8 +110,8 @@ export const Button: FC<ButtonProps> = ({
         "transition-colors",
         "hover:cursor-pointer",
         "disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none",
-        variantStyles[variant],
         sizeStyles[size],
+        variantStyles[variant],
         borderless && "border-0",
         className
       )}
