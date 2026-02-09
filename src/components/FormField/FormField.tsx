@@ -28,7 +28,7 @@ export const FormField: FC<FormFieldProps> = ({
         {label && (
           <Stack orientation={Orientation.Row} spacing={Spacing.Sm}>
             <Label>
-              <Text color={TextColor.Secondary}>{label}</Text>
+              <Text color={TextColor.Primary}>{label}</Text>
             </Label>
 
             {description && (

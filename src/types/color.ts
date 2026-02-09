@@ -21,6 +21,7 @@ export enum ActionColor {
 }
 
 export enum BackgroundColor {
+  Transparent = "bg-transparent",
   Background = "bg-background",
   Card1 = "bg-card-1",
   Card2 = "bg-card-2",
@@ -101,6 +102,7 @@ export type Color =
   | TextColor;
 
 const textColorMap: Record<Color, string> = {
+
   [ActionColor.IconDefault]: "text-transparent",
   [ActionColor.PrimaryDefault]: "text-action-primary-primary",
   [ActionColor.PrimaryHover]: "text-action-primary-secondary",
@@ -126,6 +128,7 @@ const textColorMap: Record<Color, string> = {
   [BackgroundColor.Muted]: "text-content-bg-muted",
   [BackgroundColor.Popover]: "text-content-bg-popover",
   [BackgroundColor.Secondary]: "text-content-bg-secondary",
+  [BackgroundColor.Transparent]: "text-transparent",
 
   [BrandColor.Accent]: "text-brand-accent",
   [BrandColor.Primary]: "text-brand-primary",
@@ -166,6 +169,7 @@ const textColorMap: Record<Color, string> = {
 };
 
 const backgroundColorMap: Record<Color, string> = {
+  [BackgroundColor.Transparent]: "bg-transparent",
   [ActionColor.IconDefault]: "bg-transparent",
   [ActionColor.PrimaryDefault]: "bg-action-primary-primary",
   [ActionColor.PrimaryHover]: "bg-action-primary-secondary",
