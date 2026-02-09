@@ -4,6 +4,7 @@ export enum Variant {
   Success = "success",
   Danger = "danger",
   Icon = "icon",
+  Borderless = "borderless",
 }
 
 export default Variant;

@@ -16,9 +16,9 @@ export const colors = {
       bg: {
         background: "#18191A",
         card: {
-          1: "#1E1F20",
-          2: "#232526",
-          elevated: "#2F3234",
+          1: "#0D0D0D",
+          2: "#262626",
+          elevated: "#333333",
         },
         muted: "#1F2021",
         popover: "#141618",
@@ -37,16 +37,16 @@ export const colors = {
         warning: "#FCCB58",
       },
       border: {
-        default: "#2F3234",
+        default: "#404040",
         strong: "#3E4244",
-        hover: "#4A4C4E",
-        focus: "#6E6C6A",
+        hover: "#555555",
+        focus: "#B3B3B3",
         subtle: "#1E1F20",
         active: "#FF6D04",
         error: "#FF6767",
         success: "#7AB87C",
         warning: "#FCCB58",
-        disabled: "#1E1F20",
+        disabled: "#808080",
       },
       status: {
         approved: "#7AB87C",

@@ -18,6 +18,8 @@ import {
 } from "@/types";
 import { cn } from "@/util/classes";
 
+type ToastVariant = Exclude<Variant, Variant.Borderless>;
+
 export interface ToastProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   "title"
@@ -28,10 +30,10 @@ export interface ToastProps extends Omit<
   icon?: FC;
   open?: boolean;
   title?: ReactNode;
-  variant?: Variant;
+  variant?: ToastVariant;
 }
 
-const variantStyles: Record<Variant, string> = {
+const variantStyles: Record<ToastVariant, string> = {
   [Variant.Primary]: textColorClass(TextColor.Primary),
   [Variant.Secondary]: textColorClass(TextColor.Secondary),
   [Variant.Success]: textColorClass(IconColor.Success),

@@ -58,7 +58,7 @@ export const inputStyle = ({
 }): string =>
   cn(
     "w-full",
-    bgColorClass(BackgroundColor.Background),
+    bgColorClass(BackgroundColor.Transparent),
     textColorClass(TextColor.Primary),
     "placeholder:text-content-text-tertiary",
     "transition-colors",
