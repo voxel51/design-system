@@ -12,9 +12,9 @@ import {
 import { inputStyle } from "@/components/Input";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
+import shadowStyles from "@/styles/shadow";
 import { Descriptor, Radius, Shadow } from "@/types";
 
-import shadowStyles from "@/styles/shadow";
 import { Option } from "./Option";
 
 
