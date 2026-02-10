@@ -13,7 +13,8 @@ import {
 import { inputStyle } from "@/components/Input";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
-import { Descriptor, Radius } from "@/types";
+import shadowStyles from "@/styles/shadow";
+import { Descriptor, Radius, Shadow } from "@/types";
 
 import { Option } from "./Option";
 
@@ -110,6 +111,7 @@ export const Select: FC<SelectProps> = ({
         onClose={() => setQuery("")}
       >
         <ComboboxInput
+          autoComplete="off" // interferes with dropdown menu
           displayValue={getDisplayValue}
           onChange={(e) => setQuery(e.target.value)}
           // We'd normally prefer to use `as={Input}`,
@@ -127,7 +129,8 @@ export const Select: FC<SelectProps> = ({
             "mt-1",
             "w-[var(--anchor-width)]",
             portal && "z-[var(--z-above-modal)]",
-            radiusStyles(Radius.Md)
+            radiusStyles(Radius.Md),
+            shadowStyles(Shadow.Md)
           )}
         >
           {filteredOptions?.map((opt) => {
@@ -141,6 +144,7 @@ export const Select: FC<SelectProps> = ({
                 key={opt.id}
                 value={opt.id}
                 selected={isSelected}
+                className={clsx("cursor-pointer")}
               >
                 <Text>{opt.data.content ?? opt.data.label}</Text>
               </Option>
