@@ -4,10 +4,12 @@ import type { FC, HTMLAttributes } from "react";
 import { Text } from "@/components/Text";
 import { TextVariant } from "@/types";
 import { cn } from "@/util/classes";
+import { truncate } from "@/util/math";
 
 interface SliderLabelProps extends HTMLAttributes<HTMLDivElement> {
   min: number;
   max: number;
+  precision: number;
   value?: number | number[];
 }
 
@@ -24,13 +26,19 @@ const getRelativeValue = (value: number, min: number, max: number): number =>
 const KnobLabel: FC<{
   max: number;
   min: number;
+  precision: number;
   value: number;
   threshold?: number;
-}> = ({ max, min, value, threshold = 0.1 }) => {
+}> = ({ max, min, precision, value, threshold = 0.1 }) => {
   const relativeValue = getRelativeValue(value, min, max);
 
   // don't display the knob label if we're too close to the start/end
   if (relativeValue < threshold || 1 - relativeValue < threshold) {
+    return null;
+  }
+
+  const displayValue = truncate(value, precision);
+  if (!Number.isFinite(displayValue)) {
     return null;
   }
 
@@ -40,7 +48,7 @@ const KnobLabel: FC<{
       style={{ left: `${relativeValue * 100}%` }}
       variant={TextVariant.Sm}
     >
-      {value}
+      {displayValue}
     </Text>
   );
 };
@@ -49,6 +57,7 @@ export const SliderLabels: FC<SliderLabelProps> = ({
   className,
   max,
   min,
+  precision,
   value,
   ...props
 }) => {
@@ -62,17 +71,27 @@ export const SliderLabels: FC<SliderLabelProps> = ({
       )}
       {...props}
     >
-      <Text variant={TextVariant.Sm}>{min}</Text>
-      <Text variant={TextVariant.Sm}>{max}</Text>
+      <Text variant={TextVariant.Sm}>{truncate(min, precision)}</Text>
+      <Text variant={TextVariant.Sm}>{truncate(max, precision)}</Text>
 
       {value !== undefined &&
         (Array.isArray(value) ? (
           <>
-            <KnobLabel max={max} min={min} value={value[0]} />
-            <KnobLabel max={max} min={min} value={value[1]} />
+            <KnobLabel
+              max={max}
+              min={min}
+              precision={precision}
+              value={value[0]}
+            />
+            <KnobLabel
+              max={max}
+              min={min}
+              precision={precision}
+              value={value[1]}
+            />
           </>
         ) : (
-          <KnobLabel max={max} min={min} value={value} />
+          <KnobLabel max={max} min={min} precision={precision} value={value} />
         ))}
     </div>
   );

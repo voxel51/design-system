@@ -4,6 +4,7 @@ import { FC, HTMLAttributes, MouseEvent, useCallback, useRef } from "react";
 import { SliderKnob } from "@/components/Slider/SliderKnob";
 import radiusStyles from "@/styles/radius";
 import { BackgroundColor, bgColorClass, BrandColor, Radius } from "@/types";
+import { cleanFloat } from "@/util/math";
 import { isNullish } from "@/util/type-check";
 
 interface SliderBarProps extends Omit<
@@ -81,7 +82,7 @@ export const SliderBar: FC<SliderBarProps> = ({
       }
 
       const relativePosition = getRelativeX(mouseX);
-      const newValue = getKnobValue(relativePosition);
+      const newValue = cleanFloat(getKnobValue(relativePosition));
 
       if (multi) {
         if (knob === "min") {
