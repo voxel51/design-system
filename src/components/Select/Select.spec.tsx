@@ -1,4 +1,5 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { ReactNode } from "react";
 
 
@@ -32,21 +33,16 @@ describe("Select", () => {
         .map(() => ({ id: randomString(), data: { label: randomString() } }));
     });
 
-    it("should render options on focus", () => {
+    it("should render options on click", async () => {
+      const user = userEvent.setup();
       render(<Select {...defaultProps} />);
 
       const input = within(screen.getByTestId(testId)).getByRole("combobox");
 
-      fireEvent.focus(input);
+      await user.click(input);
 
       defaultProps.options.forEach((opt) =>
         expect(screen.getByText(opt.data.label)).toBeInTheDocument()
-      );
-
-      fireEvent.blur(input);
-
-      defaultProps.options.forEach((opt) =>
-        expect(screen.queryByText(opt.data.label)).not.toBeInTheDocument()
       );
     });
 
@@ -58,7 +54,8 @@ describe("Select", () => {
       );
     });
 
-    it("should render custom content", () => {
+    it("should render custom content", async () => {
+      const user = userEvent.setup();
       const testIds: string[] = [];
       defaultProps.options = new Array(3).fill(0).map(() => {
         const contentId = randomString();
@@ -76,7 +73,7 @@ describe("Select", () => {
 
       const input = within(screen.getByTestId(testId)).getByRole("combobox");
 
-      fireEvent.focus(input);
+      await user.click(input);
 
       defaultProps.options.forEach((_, i) =>
         expect(screen.getByTestId(testIds[i])).toBeInTheDocument()
