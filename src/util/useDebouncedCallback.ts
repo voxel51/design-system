@@ -5,7 +5,7 @@ import { useEffect, useMemo } from "react";
  * Re-definition of lodash's DebouncedFunc;
  * this type is not included in the lodash.debounce package.
  */
-interface DebouncedFunc<T extends (...args: any[]) => any> {
+interface DebouncedFunc<T extends (...args: Parameters<T>) => ReturnType<T>> {
   (...args: Parameters<T>): ReturnType<T> | undefined;
   cancel(): void;
   flush(): ReturnType<T> | undefined;
@@ -31,7 +31,9 @@ interface DebouncedFunc<T extends (...args: any[]) => any> {
  * @param callback Callback to debounce; this is expected to be a stable ref
  * @param delay Debounce delay
  */
-export const useDebouncedCallback = <T extends (...args: any[]) => any>(
+export const useDebouncedCallback = <
+  T extends (...args: Parameters<T>) => ReturnType<T>,
+>(
   callback: T,
   delay: number
 ): DebouncedFunc<T> => {
