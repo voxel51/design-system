@@ -58,7 +58,7 @@ export const Select: FC<SelectProps> = ({
     () =>
       query
         ? options?.filter((opt) =>
-            opt.data.label.toLowerCase().includes(query.toLowerCase())
+            opt.data.label.trim().toLowerCase().includes(query.toLowerCase())
           )
         : options,
     [options, query]
