@@ -11,7 +11,7 @@ import { MultiValueSlider, SingleValueSlider } from "@/components/Slider";
 import { randomString } from "@/util/random";
 
 describe("Slider", () => {
-  const expectedDebounceTime = 300;
+  const expectedDebounceDelay = 300;
   let testId: string;
 
   beforeEach(() => {
@@ -26,13 +26,20 @@ describe("Slider", () => {
   describe("with a single value", () => {
     let defaultProps: {
       "data-testid": string;
+      debounceDelay: number;
       min: number;
       max: number;
       value: number;
     };
 
     beforeEach(() => {
-      defaultProps = { "data-testid": testId, min: 0, max: 1, value: 0.5 };
+      defaultProps = {
+        "data-testid": testId,
+        debounceDelay: expectedDebounceDelay,
+        min: 0,
+        max: 1,
+        value: 0.5,
+      };
     });
 
     it("should render", () => {
@@ -101,7 +108,7 @@ describe("Slider", () => {
 
       expect(onChange).not.toHaveBeenCalled();
 
-      jest.advanceTimersByTime(expectedDebounceTime);
+      jest.advanceTimersByTime(defaultProps.debounceDelay);
 
       expect(onChange).toHaveBeenCalledTimes(1);
       expect(onChange).toHaveBeenCalledWith(newValue);
@@ -181,7 +188,7 @@ describe("Slider", () => {
 
         expect(onChange).not.toHaveBeenCalled();
 
-        jest.advanceTimersByTime(expectedDebounceTime);
+        jest.advanceTimersByTime(defaultProps.debounceDelay);
 
         expect(onChange).toHaveBeenCalledTimes(1);
         expect(onChange).toHaveBeenCalledWith(
@@ -207,6 +214,7 @@ describe("Slider", () => {
   describe("with multiple values", () => {
     let defaultProps: {
       "data-testid": string;
+      debounceDelay: number;
       min: number;
       max: number;
       value: number[];
@@ -215,6 +223,7 @@ describe("Slider", () => {
     beforeEach(() => {
       defaultProps = {
         "data-testid": testId,
+        debounceDelay: expectedDebounceDelay,
         min: 0,
         max: 1,
         value: [0.25, 0.75],
@@ -319,7 +328,7 @@ describe("Slider", () => {
 
       expect(onChange).not.toHaveBeenCalled();
 
-      jest.advanceTimersByTime(expectedDebounceTime);
+      jest.advanceTimersByTime(defaultProps.debounceDelay);
 
       expect(onChange).toHaveBeenCalledTimes(1);
       expect(onChange).toHaveBeenCalledWith([
@@ -414,7 +423,7 @@ describe("Slider", () => {
 
         expect(onChange).not.toHaveBeenCalled();
 
-        jest.advanceTimersByTime(expectedDebounceTime);
+        jest.advanceTimersByTime(defaultProps.debounceDelay);
 
         expect(onChange).toHaveBeenCalledTimes(1);
         expect(onChange).toHaveBeenCalledWith([
@@ -455,7 +464,7 @@ describe("Slider", () => {
 
         expect(onChange).not.toHaveBeenCalled();
 
-        jest.advanceTimersByTime(expectedDebounceTime);
+        jest.advanceTimersByTime(defaultProps.debounceDelay);
 
         expect(onChange).toHaveBeenCalledTimes(1);
         expect(onChange).toHaveBeenCalledWith([
@@ -493,7 +502,7 @@ describe("Slider", () => {
 
           expect(onChange).not.toHaveBeenCalled();
 
-          jest.advanceTimersByTime(expectedDebounceTime);
+          jest.advanceTimersByTime(defaultProps.debounceDelay);
 
           expect(onChange).toHaveBeenCalledTimes(1);
           expect(onChange).toHaveBeenCalledWith([
@@ -530,7 +539,7 @@ describe("Slider", () => {
 
           expect(onChange).not.toHaveBeenCalled();
 
-          jest.advanceTimersByTime(expectedDebounceTime);
+          jest.advanceTimersByTime(defaultProps.debounceDelay);
 
           expect(onChange).toHaveBeenCalledTimes(1);
           expect(onChange).toHaveBeenCalledWith([

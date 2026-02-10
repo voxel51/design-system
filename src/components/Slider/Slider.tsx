@@ -25,6 +25,7 @@ export interface SliderProps extends Omit<
   "onChange"
 > {
   bare?: boolean;
+  debounceDelay?: number;
   labeled?: boolean;
   min: number;
   minLabel?: ReactNode;
@@ -32,9 +33,9 @@ export interface SliderProps extends Omit<
   maxLabel?: ReactNode;
   multi?: boolean;
   onChange?: ChangeHandler;
+  showUnsetHint?: boolean;
   step?: number;
   value?: number | number[];
-  showUnsetHint?: boolean;
 }
 
 export interface SingleValueSliderProps extends Omit<
@@ -66,6 +67,7 @@ const clamp = (value: number, min: number, max: number): number =>
 export const BaseSlider: FC<SliderProps> = ({
   bare,
   className,
+  debounceDelay = 200,
   labeled,
   max,
   maxLabel,
@@ -120,7 +122,7 @@ export const BaseSlider: FC<SliderProps> = ({
   // debounce onChange events to prevent excessive updates when e.g. dragging the slider
   const debouncedOnChange = useDebouncedCallback(
     useCallback((value: number | number[]) => onChange?.(value), [onChange]),
-    300
+    debounceDelay
   );
 
   const handleChange = useCallback(
