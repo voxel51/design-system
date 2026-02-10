@@ -6,6 +6,7 @@ import {
   ReactNode,
   useCallback,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
@@ -50,8 +51,18 @@ export const Select: FC<SelectProps> = ({
   value,
   ...props
 }) => {
-  const [open, setOpen] = useState<boolean>(false);
+  const [query, setQuery] = useState("");
   const [selectionState, setSelectionState] = useState<string[]>(() => []);
+
+  const filteredOptions = useMemo(
+    () =>
+      query
+        ? options?.filter((opt) =>
+            opt.data.label.toLowerCase().includes(query.toLowerCase())
+          )
+        : options,
+    [options, query]
+  );
 
   useEffect(() => {
     if (value && value.length > 0) {
@@ -69,14 +80,10 @@ export const Select: FC<SelectProps> = ({
         }
       }
 
-      // Close dropdown after selection in exclusive (single-select) mode
-      if (exclusive) {
-        setOpen(false);
-      }
-
+      setQuery("");
       onChange?.(value);
     },
-    [onChange, exclusive]
+    [onChange]
   );
 
   const getDisplayValue = useCallback(
@@ -99,11 +106,12 @@ export const Select: FC<SelectProps> = ({
         value={value}
         onChange={handleChange}
         multiple={!exclusive}
+        immediate
+        onClose={() => setQuery("")}
       >
         <ComboboxInput
           displayValue={getDisplayValue}
-          onFocus={() => setOpen(true)}
-          onBlur={() => setOpen(false)}
+          onChange={(e) => setQuery(e.target.value)}
           // We'd normally prefer to use `as={Input}`,
           // but ref forwarding doesn't work here properly in react 18,
           // which causes the dropdown menu to be anchored in the wrong place.
@@ -113,7 +121,6 @@ export const Select: FC<SelectProps> = ({
         />
 
         <ComboboxOptions
-          static={open}
           anchor={anchor}
           portal={portal}
           className={clsx(
@@ -123,7 +130,7 @@ export const Select: FC<SelectProps> = ({
             radiusStyles(Radius.Md)
           )}
         >
-          {options?.map((opt) => {
+          {filteredOptions?.map((opt) => {
             // Support both single-select (string) and multi-select (string[]) modes
             const currentValue = value ?? selectionState;
             const isSelected = Array.isArray(currentValue)
