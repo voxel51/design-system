@@ -103,7 +103,7 @@ export type Color =
 
 const textColorMap: Record<Color, string> = {
 
-  [ActionColor.IconDefault]: "text-transparent",
+  [ActionColor.IconDefault]: "text-content-text-secondary",
   [ActionColor.PrimaryDefault]: "text-action-primary-primary",
   [ActionColor.PrimaryHover]: "text-action-primary-secondary",
   [ActionColor.PrimaryFocus]: "text-action-primary-tertiary",
