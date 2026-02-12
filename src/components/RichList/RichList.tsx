@@ -14,8 +14,14 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import clsx from "clsx";
-import { FC, HTMLAttributes, useCallback, useMemo, useState } from "react";
-
+import {
+  FC,
+  HTMLAttributes,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 import { ListItemProps } from "@/components/ListItem";
 import { Descriptor } from "@/types";
@@ -27,6 +33,7 @@ export interface RichListProps extends HTMLAttributes<HTMLDivElement> {
   draggable?: boolean;
   onSelected?: (selectedItems: string[]) => void;
   onOrderChange?: (newItems: Descriptor<ListItemProps>[]) => void;
+  selected?: string[];
 }
 
 export const RichList: FC<RichListProps> = ({
@@ -35,10 +42,13 @@ export const RichList: FC<RichListProps> = ({
   draggable = false,
   onSelected,
   onOrderChange,
+  selected,
   ...props
 }) => {
-  // selected contains the ID for each selected element in the list
-  const [selected, setSelected] = useState<string[]>(() => []);
+  // transientSelected contains the ID for each selected element in the list
+  const [transientSelected, setTransientSelected] = useState<string[]>(
+    () => []
+  );
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -46,25 +56,32 @@ export const RichList: FC<RichListProps> = ({
     })
   );
 
+  // allow for controlled selection behavior
+  useEffect(() => {
+    setTransientSelected([...(selected ?? [])]);
+  }, [selected]);
+
   const onSelect = useCallback(
     (itemId: string, isSelected: boolean) => {
-      if (selected.includes(itemId)) {
+      if (transientSelected.includes(itemId)) {
         if (!isSelected) {
           // remove element
-          const newSelectionState = selected.filter((v) => v !== itemId);
-          setSelected(newSelectionState);
+          const newSelectionState = transientSelected.filter(
+            (v) => v !== itemId
+          );
+          setTransientSelected(newSelectionState);
           onSelected?.(newSelectionState);
         }
       } else {
         if (isSelected) {
           // add element
-          const newSelectionState = [...selected, itemId];
-          setSelected(newSelectionState);
+          const newSelectionState = [...transientSelected, itemId];
+          setTransientSelected(newSelectionState);
           onSelected?.(newSelectionState);
         }
       }
     },
-    [selected, onSelected]
+    [transientSelected, onSelected]
   );
 
   const handleDragEnd = (event: DragEndEvent): void => {
@@ -88,11 +105,11 @@ export const RichList: FC<RichListProps> = ({
           data-testid={descriptor.id}
           {...descriptor.data}
           canDrag={draggable && descriptor.data.canDrag !== false}
-          selected={selected.includes(descriptor.id)}
+          selected={transientSelected.includes(descriptor.id)}
           onSelected={(isSelected) => onSelect(descriptor.id, isSelected)}
         />
       )),
-    [listItems, draggable, selected, onSelect]
+    [listItems, draggable, onSelect, transientSelected]
   );
 
   return (
