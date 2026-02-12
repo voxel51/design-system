@@ -7,8 +7,11 @@ import { cn } from "@/util/classes";
 import { truncate } from "@/util/math";
 
 interface SliderLabelProps extends HTMLAttributes<HTMLDivElement> {
+  knobLabel?: boolean;
   min: number;
+  minLabel?: boolean;
   max: number;
+  maxLabel?: boolean;
   precision: number;
   value?: number | number[];
 }
@@ -55,8 +58,11 @@ const KnobLabel: FC<{
 
 export const SliderLabels: FC<SliderLabelProps> = ({
   className,
+  knobLabel,
   max,
+  maxLabel,
   min,
+  minLabel,
   precision,
   value,
   ...props
@@ -71,10 +77,15 @@ export const SliderLabels: FC<SliderLabelProps> = ({
       )}
       {...props}
     >
-      <Text variant={TextVariant.Sm}>{truncate(min, precision)}</Text>
-      <Text variant={TextVariant.Sm}>{truncate(max, precision)}</Text>
+      {minLabel && (
+        <Text variant={TextVariant.Sm}>{truncate(min, precision)}</Text>
+      )}
+      {maxLabel && (
+        <Text variant={TextVariant.Sm}>{truncate(max, precision)}</Text>
+      )}
 
       {value !== undefined &&
+        knobLabel &&
         (Array.isArray(value) ? (
           <>
             <KnobLabel

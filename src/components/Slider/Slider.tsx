@@ -27,6 +27,7 @@ export interface SliderProps extends Omit<
   bare?: boolean;
   debounceDelay?: number;
   labeled?: boolean;
+  knobLabel?: boolean;
   min: number;
   minLabel?: ReactNode;
   max: number;
@@ -69,6 +70,7 @@ export const BaseSlider: FC<SliderProps> = ({
   className,
   debounceDelay = 200,
   labeled,
+  knobLabel,
   max,
   maxLabel,
   min,
@@ -169,10 +171,13 @@ export const BaseSlider: FC<SliderProps> = ({
       className={className}
       {...props}
     >
-      {labeled && (
+      {(labeled || knobLabel) && (
         <SliderLabels
+          knobLabel={knobLabel}
           min={min}
+          minLabel={labeled} // todo - dedicated prop
           max={max}
+          maxLabel={labeled} // todo - dedicated prop
           precision={step}
           value={transientValue}
         />
