@@ -34,6 +34,37 @@ export interface RadioGroupProps extends Omit<
  *
  * This component operates exclusively as a controlled component. See `value` and `onChange` for controlled behavior.
  *
+ * @example
+ * ```tsx
+ * const MyComponent = () => {
+ *   const [value, setValue] = useState<string | null>(null);
+ *
+ *   const onChange = useCallback((selectedValue: string) => {
+ *       setValue(selectedValue);
+ *     },
+ *     [setValue]
+ *   );
+ *
+ *   const options: RadioOption[] = useMemo(() => {
+ *       return [
+ *         {value: "car", label: "Car"},
+ *         {value: "truck", label: "Truck"},
+ *         {value: "bus", label: "Bus"},
+ *       ];
+ *     },
+ *     []
+ *   );
+ *
+ *   return (
+ *     <RadioGroup
+ *       value={value}
+ *       onChange={onChange}
+ *       options={options}
+ *     />
+ *   );
+ * };
+ * ```
+ *
  * @param options List of {@link RadioOption}s to display. Each option will correspond to a {@link Radio} component.
  * @param value The value of the group.
  * @param defaultValue The default value to use when no selection has been made.

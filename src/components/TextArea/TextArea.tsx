@@ -39,6 +39,24 @@ const resizeStyles: Record<ResizeBehavior, string> = {
 /**
  * A textarea component.
  *
+ * @example
+ * ```tsx
+ * const MyComponent = () => {
+ *   const [value, setValue] = useState<string>("");
+ *
+ *   const onChange = useCallback((newValue: string) => setValue(newValue), [setValue]);
+ *
+ *   return (
+ *     <TextArea
+ *       onChange={onChange}
+ *       resize={ResizeBehavior.None}
+ *       rows={10}
+ *       value={value}
+ *     />
+ *   );
+ * };
+ * ```
+ *
  * @param size The size of the textarea; this controls the size of the text itself and container padding.
  *  See {@link Size}.
  * @param radius The border radius to apply to the textarea. See {@link Radius}.

@@ -20,6 +20,11 @@ const sizeStyles: Record<Size, string> = {
  *
  * Note that this component is also available via the {@link Icon} component with {@link IconName.Spinner}.
  *
+ * @example
+ * ```tsx
+ * <Spinner size={Size.Md} />
+ * ```
+ *
  * @param className `class` overrides to apply to the component.
  * @param size Size of the component. See {@link Size}.
  * @param props Additional HTML properties to apply to the component.

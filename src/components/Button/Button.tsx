@@ -93,6 +93,13 @@ const iconStyles: Record<ButtonSize, string> = {
 /**
  * A basic button component.
  *
+ * @example
+ * ```tsx
+ *   <Button onClick={() => alert("Button clicked")}>
+ *     Click me
+ *   </Button>
+ * ```
+ *
  * @param variant The button variant; this controls the general styling of the button. See {@link Variant}.
  * @param size The size of the button; this controls both the text size and the button size. See {@link Size}.
  * @param borderless Boolean controlling whether the button should be "borderless," removing any borders and

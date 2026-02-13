@@ -15,6 +15,13 @@ export interface TextProps extends HTMLAttributes<HTMLSpanElement> {
  *
  * All text in the app should be wrapped in this component to ensure compatibility with theme changes.
  *
+ * @example
+ * ```tsx
+ * <Text>
+ *   Some text
+ * </Text>
+ * ```
+ *
  * @param variant The variant of the text; this controls the size and related styling of the text. See {@link Variant}.
  * @param color The color of the text. See {@link TextColor}.
  * @param children The content wrapped by this component.

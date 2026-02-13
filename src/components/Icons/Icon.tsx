@@ -154,6 +154,11 @@ export interface IconProps {
 /**
  * An generic icon component which will take the form of the icon specified by `name`.
  *
+ * @example
+ * ```tsx
+ * <Icon name={IconName.Edit} size={Size.Md} />
+ * ```
+ *
  * @param name Icon to display. See {@link IconName}.
  * @param size The size of the icon. See {@link Size}.
  * @param className `class` overrides to apply to the component.

@@ -30,6 +30,16 @@ export interface ActivityToastProps extends HTMLAttributes<HTMLDivElement> {
  *
  * See also {@link Toast}.
  *
+ * @example
+ * ```tsx
+ * <ActivityToast
+ *   open={true}
+ *   icon={() => <Icon name={IconName.Check}/>}
+ *   message={"Operation successful"}
+ *   variant={Variant.Success}
+ * />
+ * ```
+ *
  * @param anchor Position within the viewport to anchor the notification.
  *  Options include all cardinal directions as well as all four corners.
  * @param className `class` overrides to apply to the component.

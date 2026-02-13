@@ -97,6 +97,29 @@ export const inputStyle = ({
  *
  * This component operates exclusively as a controlled component. See `value` and `onChange` for controlled behavior.
  *
+ * @example
+ * ```tsx
+ * const MyComponent = () => {
+ *   const [value, setValue] = useState<string>("");
+ *   const [error, setError] = useState<string | null>(null);
+ *
+ *   const onChange = useCallback((newValue: string) => {
+ *       setValue(newValue);
+ *       if (newValue.length < 5) {
+ *         setError("Value must be at least 5 characters");
+ *       } else {
+ *         setError(null);
+ *       }
+ *     },
+ *     [setError, setValue]
+ *   );
+ *
+ *   return (
+ *     <Input value={value} onChange={onChange} error={!!error} />
+ *   );
+ * };
+ * ```
+ *
  * @param size The size of the input. See {@link Size}.
  * @param radius The border radius of the input. See {@link Radius}.
  * @param type The type of the input. This should adhere to the standard HTML `input` types.

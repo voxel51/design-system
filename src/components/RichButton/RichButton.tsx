@@ -28,6 +28,23 @@ export interface RichButtonProps extends HTMLAttributes<HTMLDivElement> {
  *
  * This component operates exclusively as a controlled component. See `active` and `onClick` for controlled behavior.
  *
+ * @example
+ * ```tsx
+ * const MyComponent = () => {
+ *   const [active, setActive] = useState<boolean>(false);
+ *
+ *   const onClick = useCallback(() => setActive(prev => !prev), [setActive]);
+ *
+ *   return (
+ *     <RichButton
+ *       label="Detection"
+ *       description="Create a new detection"
+ *       onClick={onClick}
+ *     />
+ *   );
+ * };
+ * ```
+ *
  * @param active If `true`, renders the component in its active state.
  * @param description Content to display as the description of the component. This is the component's secondary content.
  * @param icon Icon reference ({@link FC}) to display in the component. See {@link Icon}.

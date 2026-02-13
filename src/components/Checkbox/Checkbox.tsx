@@ -56,6 +56,21 @@ const checkmarkSizeStyles: Record<Size, string> = {
  *
  * This component operates exclusively as a controlled component. See `checked` and `onChange` for controls.
  *
+ * @example
+ * ```tsx
+ * const MyComponent = () => {
+ *   const [checked, setChecked] = useState<boolean>(false);
+ *
+ *   return (
+ *     <Checkbox
+ *       checked={checked}
+ *       onChange={(newValue: boolean) => setChecked(newValue)}
+ *       label={"Create new dataset"}
+ *     />
+ *   );
+ * };
+ * ```
+ *
  * @param checked `checked` state of the checkbox.
  * @param onChange Change handler for when the checked state changes.
  * @param size Size of the checkbox; this controls both the checkbox itself and the associated label. See {@link Size}.

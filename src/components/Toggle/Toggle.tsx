@@ -73,6 +73,25 @@ const getThumbTranslateStyles = (size: Size): string => {
 /**
  * A component supporting a boolean toggle.
  *
+ * This component operates exclusively as a controlled component. See `value` and `onChange` for controlled behavior.
+ *
+ * @example
+ * ```tsx
+ * const MyComponent = () => {
+ *   const [enabled, setEnabled] = useState<boolean>(false);
+ *
+ *   const onChange = useCallback((status: boolean) => setEnabled(status), [setEnabled]);
+ *
+ *   return (
+ *     <Toggle
+ *       checked={enabled}
+ *       onChange={onChange}
+ *       label="Run with debug enabled"
+ *     />
+ *   );
+ * };
+ * ```
+ *
  * @param checked If `true`, renders the toggle in the "active" state.
  * @param disabled If `true`, disables the toggle.
  * @param onChange Callback triggered when the toggle value changes.

@@ -6,6 +6,13 @@ import type { FC, HTMLAttributes } from "react";
  *
  * Clickable components have their cursor set to the `pointer` cursor option when hovering.
  *
+ * @example
+ * ```tsx
+ * <Clickable onClick={() => deleteEntry()}}>
+ *   <Icon name={IconName.Delete} />
+ * </Clickable>
+ * ```
+ *
  * @param children Content wrapped by this component.
  * @param className `class` overrides to apply to the component.
  * @param props Additional HTML properties to apply to the component.

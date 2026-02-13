@@ -46,6 +46,59 @@ export interface SelectProps extends Omit<
  * This component operates as both a controlled and uncontrolled component.
  * See `value` and `onChange` for controlled behavior.
  *
+ * @example
+ * ```tsx
+ * // Single selection
+ * const MyComponent = () => {
+ *   const [value, setValue] = useState<string | null>(null);
+ *
+ *   const onChange = useCallback((selected: string) => setValue(selected), [setSelected]);
+ *
+ *   const options: Descriptor<{label: string, content: ReactNode}>[] = useMemo(() => [
+ *       {id: "id-a", data: {label: "A", content: "Option A"}},
+ *       {id: "id-b", data: {label: "B", content: "Option B"}},
+ *       {id: "id-c", data: {label: "C", content: "Option C"}},
+ *     ],
+ *     []
+ *   );
+ *
+ *   return (
+ *     <Select
+ *       exclusive={true}
+ *       value={value}
+ *       onChange={onChange}
+ *       options={options}
+ *     />
+ *   );
+ * };
+ * ```
+ *
+ * @example
+ * ```tsx
+ * // Multiple selection
+ * const MyComponent = () => {
+ *   const [value, setValue] = useState<string[]>(() => []);
+ *
+ *   const onChange = useCallback((selected: string[]) => setValue(selected), [setSelected]);
+ *
+ *   const options: Descriptor<{label: string, content: ReactNode}>[] = useMemo(() => [
+ *       {id: "id-a", data: {label: "A", content: "Option A"}},
+ *       {id: "id-b", data: {label: "B", content: "Option B"}},
+ *       {id: "id-c", data: {label: "C", content: "Option C"}},
+ *     ],
+ *     []
+ *   );
+ *
+ *   return (
+ *     <Select
+ *       value={value}
+ *       onChange={onChange}
+ *       options={options}
+ *     />
+ *   );
+ * };
+ * ```
+ *
  * @param anchor Relative position to place the dropdown menu when focusing the component. See {@link SelectAnchor}.
  * @param className `class` overrides to apply to the component.
  * @param disabled If `true`, disables the component.

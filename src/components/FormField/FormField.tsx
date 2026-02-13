@@ -22,6 +22,34 @@ export interface FormFieldProps extends HTMLAttributes<HTMLDivElement> {
  *
  * See also {@link FormFieldGroup}.
  *
+ * @example
+ * ```tsx
+ * const MyComponent = () => {
+ *   const [value, setValue] = useState<string>("");
+ *   const [error, setError] = useState<string | null>(null);
+ *
+ *   const onChange = useCallback((newValue: string) => {
+ *       setValue(newValue);
+ *       if (newValue.length < 5) {
+ *         setError("Name must be at least 5 characters");
+ *       } else {
+ *         setError(null);
+ *       }
+ *     },
+ *     [setError, setValue]
+ *   );
+ *
+ *   return (
+ *     <FormField
+ *       control={<Input value={value} onChange={onChange} />}
+ *       label={"Dataset name"}
+ *       description={"Name of the dataset to create"}
+ *       error={error}
+ *     />
+ *   );
+ * };
+ * ```
+ *
  * @param control The form control to use in this field. This can be any component.
  * @param label Optional label to display for the form field.
  * @param description Optional description to display for the form field.

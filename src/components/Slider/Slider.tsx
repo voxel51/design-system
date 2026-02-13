@@ -274,6 +274,24 @@ export const BaseSlider: FC<SliderProps> = ({
  * See also {@link BaseSlider}.
  * See also {@link MultiValueSlider}.
  *
+ * @example
+ * ```tsx
+ * const MyComponent = () => {
+ *   const [value, setValue] = useState<number>(0.5);
+ *
+ *   const onChange = useCallback((newValue: number) => setValue(newValue), [setValue]);
+ *
+ *   return (
+ *     <SingleValueSlider
+ *       min={0}
+ *       max={1}
+ *       onChange={onChange}
+ *       value={value}
+ *     />
+ *   );
+ * };
+ * ```
+ *
  * @param onChange Callback triggered when the slider value changes.
  *   This change can be triggered in three ways:
  *    - The user modifies the value in the minimum or maximum input field.
@@ -303,6 +321,24 @@ export const SingleValueSlider: FC<SingleValueSliderProps> = ({
  *
  * See also {@link BaseSlider}.
  * See also {@link SingleValueSlider}.
+ *
+ * @example
+ * ```tsx
+ * const MyComponent = () => {
+ *   const [value, setValue] = useState<number[]>(() => [0.25, 0.75]);
+ *
+ *   const onChange = useCallback((newValue: number[]) => setValue(newValue), [setValue]);
+ *
+ *   return (
+ *     <MultiValueSlider
+ *       min={0}
+ *       max={1}
+ *       onChange={onChange}
+ *       value={value}
+ *     />
+ *   );
+ * };
+ * ```
  *
  * @param onChange Callback triggered when the slider value changes.
  *   This change can be triggered in three ways:

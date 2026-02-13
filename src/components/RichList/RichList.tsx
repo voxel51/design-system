@@ -42,6 +42,55 @@ export interface RichListProps extends HTMLAttributes<HTMLDivElement> {
  * This component operates as both a controlled and uncontrolled component.
  * See `selected`/`onSelected` and `listItems`/`onOrderChange` for controlled behavior.
  *
+ * @example
+ * ```tsx
+ * const MyComponent = ({openSettings}: {openSettings: (id: string) => void}) => {
+ *   const items: Descriptor<ListItemProps>[] = useMemo(() => [
+ *       {
+ *         id: "1",
+ *         data: {
+ *           primaryContent: "First Item",
+ *           secondaryContent: "First item description"
+ *           actions: (
+ *             <Clickable onClick={() => openSettings("1")}>
+ *               <Icon name={IconName.Settings} />
+ *             </Clickable>
+ *           )
+ *         },
+ *       },
+ *       {
+ *         id: "2",
+ *         data: {
+ *           primaryContent: "Second Item",
+ *           secondaryContent: "Second item description"
+ *           actions: (
+ *            <Clickable onClick={() => openSettings("2")}>
+ *               <Icon name={IconName.Settings} />
+ *             </Clickable>
+ *           )
+ *         },
+ *       {
+ *         id: "3",
+ *         data: {
+ *           primaryContent: "Third Item",
+ *           secondaryContent: "Third item description"
+ *           actions: (
+ *            <Clickable onClick={() => openSettings("3")}>
+ *               <Icon name={IconName.Settings} />
+ *             </Clickable>
+ *           )
+ *         },
+ *       },
+ *     ],
+ *     []
+ *   );
+ *
+ *   return (
+ *     <RichList listItems={items} />
+ *   );
+ * };
+ * ```
+ *
  * @param className `class` overrides to apply to the list's container.
  * @param listItems List of component descriptors which will be used to create {@link ListItem} child components.
  *  The order of this list dictates the order of the children from top to bottom.

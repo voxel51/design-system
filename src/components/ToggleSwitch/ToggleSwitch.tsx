@@ -135,6 +135,27 @@ const getTabTextColorClass = (selected: boolean): string => {
  *
  * This component enforces mutual exclusivity in active tabs, and only the content for the active tab is visible.
  *
+ * @example
+ * ```tsx
+ * const MyComponent = () => {
+ *   const tabs: Descriptor<ToggleSwitchTab>[] = useMemo(() => [
+ *       {id: "1", data: {label: "Tab 1", content: "Tab 1 content"}}
+ *       {id: "2", data: {label: "Tab 2", content: "Tab 2 content"}}
+ *       {id: "3", data: {label: "Tab 3", content: "Tab 3 content"}}
+ *     ],
+ *     []
+ *   );
+ *
+ *   return (
+ *     <ToggleSwitch
+ *       tabs={tabs}
+ *       defaultIndex={0}
+ *       onChange={(activeIndex: number) => console.log(`Switched to tab index ${activeIndex}`)}
+ *     />
+ *   );
+ * };
+ * ```
+ *
  * @param tabs List of component descriptors which will be used to create {@link ToggleSwitchTab} children.
  * @param variant Variant of the tabs.
  *  The variants have the following behaviors:

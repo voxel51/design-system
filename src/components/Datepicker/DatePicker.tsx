@@ -25,6 +25,30 @@ export interface DatePickerProps extends Omit<
 /**
  * A datepicker component which allows selecting a date, time, or date-time using a calendar-like interface.
  *
+ * @example
+ * ```tsx
+ * const MyComponent = ({disabled, dateOnly}: {disabled: boolean, dateOnly: boolean}) => {
+ *   const [value, setValue] = useState<Date | null>(null);
+ *
+ *   const onChange = useCallback((date: Date | null) => {
+ *     if (date && !Number.isNaN(date.getTime())) {
+ *       console.log("valid date set", date);
+ *     }
+ *
+ *     setValue(date);
+ *   }, [setValue]);
+ *
+ *   return (
+ *     <DatePicker
+ *       disabled={disabled}
+ *       selected={value}
+ *       showTimeSelect={!dateOnly}
+ *       onChange={onChange}
+ *     />
+ *   );
+ * };
+ * ```
+ *
  * @param size Size of the datepicker input. See {@link Size}.
  * @param radius Border radius of the datepicker input. See {@link Radius}.
  * @param className `class` overrides to apply to the component.

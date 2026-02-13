@@ -43,6 +43,11 @@ const dotSizeStyles: Partial<Record<Size, string>> = {
 /**
  * A basic radio component.
  *
+ * @example
+ * ```tsx
+ * <Radio value="car" label="Car" />
+ * ```
+ *
  * @param value The value of the radio element.
  * @param size The size of the radio element. See {@link Size}.
  * @param className `class` overrides to apply to the radio.

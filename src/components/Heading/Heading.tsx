@@ -28,6 +28,13 @@ const variantStyles: Record<HeadingLevel, string> = {
  *
  * This component leverages standard heading tags `h1`, `h2`, etc.
  *
+ * @example
+ * ```tsx
+ * <Heading level={HeadingLevel.H2}>
+ *   Heading content here
+ * </Heading>
+ * ```
+ *
  * @param level Heading level to use. See {@link HeadingLevel}.
  * @param className `class` overrides to apply to the component.
  * @param children The content of the heading.

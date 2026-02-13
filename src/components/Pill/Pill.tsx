@@ -35,6 +35,13 @@ const sizeStyles: Record<PillSize, string> = {
 /**
  * A basic pill component.
  *
+ * @example
+ * ```tsx
+ * <Pill isStatus={true}>
+ *   Success
+ * </Pill>
+ * ```
+ *
  * @param size The size of the pill. See {@link Size}.
  * @param radius The border radius of the pill. See {@link Radius}.
  * @param shadow Optional drop shadow to apply to the pill. See {@link Shadow}.

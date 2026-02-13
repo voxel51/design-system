@@ -12,6 +12,13 @@ export interface TextBadgeProps extends HTMLAttributes<HTMLSpanElement> {
  *
  * This component is an alias for {@link Text} with {@link TextVariant.Label}.
  *
+ * @example
+ * ```tsx
+ * <TextBadge color={TextColor.Success}>
+ *   completed
+ * </TextBadge>
+ * ```
+ *
  * @param color Color of the content. See {@link Color}.
  * @param children Content wrapped by this component.
  * @param props Additional HTML properties to apply to the component.
