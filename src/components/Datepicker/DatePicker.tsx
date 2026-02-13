@@ -22,6 +22,32 @@ export interface DatePickerProps extends Omit<
   selected?: Date | null;
 }
 
+/**
+ * A datepicker component which allows selecting a date, time, or date-time using a calendar-like interface.
+ *
+ * @param size Size of the datepicker input. See {@link Size}.
+ * @param radius Border radius of the datepicker input. See {@link Radius}.
+ * @param className `class` overrides to apply to the component.
+ * @param disabled If `true`, disables the datepicker input and interaction.
+ * @param selected The controlled value of the datepicker.
+ * @param error If `true`, displays an error state in the datepicker input.
+ * @param dateFormat The format to use for displaying the value.
+ *  If not specified, the following formats are used in order of precedence:
+ *    - `HH:mm` if `showTimeSelectOnly` is `true`
+ *    - `yyyy-MM-dd · HH:mm` if `showTimeSelect` is `true`
+ *    - `yyyy-MM-dd`
+ * @param onChange Callback triggered when the user changes the date/time value.
+ * @param minDate Optional minimum date; dates before this will be disabled.
+ * @param maxDate Optional maximum date; dates after this will be disabled.
+ * @param placeholderText Optional placeholder text when no value is present.
+ * @param showTimeSelect If `true`, allows the user to select a time value in addition to date.
+ * @param showTimeSelectOnly If `true`, allows the user to select *only* a time value (no date).
+ *  Note that when setting this value to `true`, `showTimeSelect` should also be set to `true`.
+ * @param timeIntervals Optional time interval (in minutes) to apply to time selection.
+ *  Time selection will be limited to times with these increments.
+ *  If not provided, a default value of `30` is used.
+ * @param props Additional HTML properties to apply to the component.
+ */
 export const DatePicker: FC<DatePickerProps> = ({
   size = Size.Md,
   radius = Radius.Sm,

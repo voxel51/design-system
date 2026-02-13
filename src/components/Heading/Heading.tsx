@@ -23,6 +23,16 @@ const variantStyles: Record<HeadingLevel, string> = {
   h4: clsx(textStyles(TextVariant.Md)),
 };
 
+/**
+ * A basic heading component.
+ *
+ * This component leverages standard heading tags `h1`, `h2`, etc.
+ *
+ * @param level Heading level to use. See {@link HeadingLevel}.
+ * @param className `class` overrides to apply to the component.
+ * @param children The content of the heading.
+ * @param props Additional HTML properties to apply to the component.
+ */
 export const Heading: FC<HeadingProps> = ({
   level = HeadingLevel.H1,
   className,

@@ -29,6 +29,23 @@ export interface RadioGroupProps extends Omit<
   radioProps?: RadioProps;
 }
 
+/**
+ * A group of radio controls; supports selection via one-of semantics.
+ *
+ * This component operates exclusively as a controlled component. See `value` and `onChange` for controlled behavior.
+ *
+ * @param options List of {@link RadioOption}s to display. Each option will correspond to a {@link Radio} component.
+ * @param value The value of the group.
+ * @param defaultValue The default value to use when no selection has been made.
+ * @param onChange Callback triggered when the selection value changes.
+ * @param name Optional name of the radio group.
+ * @param size The size of the radio group; this property will be forwarded to the wrapped {@link Radio} components.
+ *  See {@link Size}.
+ * @param disabled If `true`, disables the radio group.
+ * @param className `class` overrides to apply to the radio group.
+ * @param radioProps Additional HTML properties to apply to each of the wrapped {@link Radio} components.
+ * @param props Additional HTML properties to apply to the component.
+ */
 export const RadioGroup: FC<RadioGroupProps> = ({
   options,
   value,

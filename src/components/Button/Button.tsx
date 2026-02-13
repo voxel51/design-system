@@ -14,7 +14,7 @@ import {
   Size,
   TextColor,
   textColorClass,
-  Variant
+  Variant,
 } from "@/types";
 import { cn } from "@/util/classes";
 
@@ -38,7 +38,7 @@ const variantStyles: Record<Variant, string> = {
     "border-1",
     "bg-transparent",
     borderColorClass(BorderColor.Default),
-    borderColorClass(BorderColor.Focus, ElementState.Hover),  // design calls for focus color on hover
+    borderColorClass(BorderColor.Focus, ElementState.Hover), // design calls for focus color on hover
     borderColorClass(BorderColor.Focus, ElementState.Active),
     borderColorClass(BorderColor.Disabled, ElementState.Disabled),
     bgColorClass(ActionColor.SecondaryFocus, ElementState.Active)
@@ -62,7 +62,7 @@ const variantStyles: Record<Variant, string> = {
     "bg-transparent",
     "border-0",
     bgColorClass(BackgroundColor.CardElevated, ElementState.Hover),
-    radiusStyles(Radius.Full),
+    radiusStyles(Radius.Full)
   ),
 };
 
@@ -90,6 +90,19 @@ const iconStyles: Record<ButtonSize, string> = {
   [Size.Md]: clsx("w-5 h-5", "leading-none"),
 };
 
+/**
+ * A basic button component.
+ *
+ * @param variant The button variant; this controls the general styling of the button. See {@link Variant}.
+ * @param size The size of the button; this controls both the text size and the button size. See {@link Size}.
+ * @param borderless Boolean controlling whether the button should be "borderless," removing any borders and
+ *  rounding the corners.
+ * @param leadingIcon Optional reference ({@link FC}) to an icon which prefixes the button's content. See {@link Icon}.
+ * @param trailingIcon Optional reference ({@link FC}) to an icon which postfixes the button's content. See {@link Icon}.
+ * @param className `class` overrides to apply to the component.
+ * @param children Button content.
+ * @param props Additional HTML properties to apply to the component.
+ */
 export const Button: FC<ButtonProps> = ({
   variant = Variant.Primary,
   size = Size.Md,
@@ -104,7 +117,7 @@ export const Button: FC<ButtonProps> = ({
     <HeadlessButton
       className={cn(
         "inline-flex items-center justify-center",
-        borderless && "aspect-square min-w-0 shrink-0",  // circular
+        borderless && "aspect-square min-w-0 shrink-0", // circular
         borderless ? radiusStyles(Radius.Full) : radiusStyles(Radius.Sm),
         "font-medium",
         "transition-colors",
@@ -117,7 +130,12 @@ export const Button: FC<ButtonProps> = ({
       )}
       {...props}
     >
-      <div className={clsx("flex flex-nowrap items-center justify-center gap-x-sm", variantTextStyles[variant])}>
+      <div
+        className={clsx(
+          "flex flex-nowrap items-center justify-center gap-x-sm",
+          variantTextStyles[variant]
+        )}
+      >
         {LeadingIcon && (
           <span className={clsx(iconStyles[size])}>
             <LeadingIcon />

@@ -17,6 +17,15 @@ const spacingStyles: Record<Spacing, string> = {
   [Spacing.Xl]: "gap-xl",
 };
 
+/**
+ * A layout component which organizes children into a vertical or horizontal stack.
+ *
+ * @param orientation Orientation of the stack. See {@link Orientation}.
+ * @param spacing Spacing between child components in the stack. See {@link Spacing}.
+ * @param children Content which is wrapped by this component.
+ * @param className `class` overrides to apply to the component.
+ * @param props Additional HTML properties to apply to the component.
+ */
 export const Stack: FC<StackProps> = ({
   orientation = Orientation.Row,
   spacing = Spacing.None,

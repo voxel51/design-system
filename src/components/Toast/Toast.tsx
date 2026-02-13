@@ -41,6 +41,21 @@ const variantStyles: Record<ToastVariant, string> = {
   [Variant.Icon]: textColorClass(TextColor.Primary),
 };
 
+/**
+ * A toast component with opinionated slots for content.
+ *
+ * See also {@link ActivityToast}.
+ *
+ * @param action Optional content to display in the "action" slot; this is typically something like a button/CTA.
+ * @param anchor The location in the viewport to anchor the toast. See {@link Anchor}.
+ * @param className `class` overrides to apply to the component.
+ * @param description Optional content to display in the "description" slot; this should be considered secondary content.
+ * @param icon An optional reference ({@link FC}) to an icon to display in the "icon" slot.
+ * @param open If `true`, the toast will be visible; otherwise it will be hidden.
+ * @param title Optional content to display in the "title" slot; this should be considered the primary content.
+ * @param variant The variant of the toast; this controls general styling. See {@link Variant}.
+ * @param props Additional HTML properties to apply to the component.
+ */
 export const Toast: FC<ToastProps> = ({
   action,
   anchor = Anchor.Bottom,

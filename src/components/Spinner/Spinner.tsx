@@ -15,6 +15,15 @@ const sizeStyles: Record<Size, string> = {
   [Size.Lg]: "size-6",
 };
 
+/**
+ * An animated spinner component.
+ *
+ * Note that this component is also available via the {@link Icon} component with {@link IconName.Spinner}.
+ *
+ * @param className `class` overrides to apply to the component.
+ * @param size Size of the component. See {@link Size}.
+ * @param props Additional HTML properties to apply to the component.
+ */
 export const Spinner: FC<SpinnerProps> = ({
   className,
   size = Size.Md,

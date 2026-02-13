@@ -13,6 +13,23 @@ export interface FormFieldProps extends HTMLAttributes<HTMLDivElement> {
   error?: ReactNode;
 }
 
+/**
+ * A component which represents a composite form field, consisting of a label, form control, description,
+ * and error message.
+ *
+ * This component applies standard form best-practices to the contained elements, such as ensuring the label and form
+ * control are properly linked.
+ *
+ * See also {@link FormFieldGroup}.
+ *
+ * @param control The form control to use in this field. This can be any component.
+ * @param label Optional label to display for the form field.
+ * @param description Optional description to display for the form field.
+ * @param disabled If `true`, disables the form field.
+ * @param error Optional error message to display for the form field.
+ * @param className `class` overrides to apply to the field container.
+ * @param props Additional HTML properties to apply to the field container.
+ */
 export const FormField: FC<FormFieldProps> = ({
   control,
   label,

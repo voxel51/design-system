@@ -40,6 +40,17 @@ const dotSizeStyles: Partial<Record<Size, string>> = {
   [Size.Lg]: clsx("before:w-2 before:h-2"),
 };
 
+/**
+ * A basic radio component.
+ *
+ * @param value The value of the radio element.
+ * @param size The size of the radio element. See {@link Size}.
+ * @param className `class` overrides to apply to the radio.
+ * @param labelClassName `class` overrides to apply to the radio's label.
+ * @param label Label to display for the radio element.
+ * @param disabled If `true`, disables the radio element.
+ * @param props Additional HTML properties to apply to the radio.
+ */
 export const Radio: FC<RadioProps> = ({
   value,
   size = Size.Sm,

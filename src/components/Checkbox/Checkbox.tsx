@@ -51,6 +51,21 @@ const checkmarkSizeStyles: Record<Size, string> = {
   [Size.Lg]: clsx("checked:after:text-lg"),
 };
 
+/**
+ * A basic checkbox component.
+ *
+ * This component operates exclusively as a controlled component. See `checked` and `onChange` for controls.
+ *
+ * @param checked `checked` state of the checkbox.
+ * @param onChange Change handler for when the checked state changes.
+ * @param size Size of the checkbox; this controls both the checkbox itself and the associated label. See {@link Size}.
+ * @param radius Border radius of the checkbox; this controls the styling of the checkbox itself. See {@link Radius}.
+ * @param className `class` overrides to apply to the checkbox.
+ * @param labelClassName `class` overrides for custom styling of the checkbox's label.
+ * @param label Label to display alongside the checkbox.
+ * @param showUnsetHint If `true`, displays a hint to the user for checkbox interaction.
+ * @param props Additional HTML properties to apply to the checkbox.
+ */
 export const Checkbox: FC<CheckboxProps> = ({
   checked,
   onChange,

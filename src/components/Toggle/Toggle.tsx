@@ -70,6 +70,19 @@ const getThumbTranslateStyles = (size: Size): string => {
   }
 };
 
+/**
+ * A component supporting a boolean toggle.
+ *
+ * @param checked If `true`, renders the toggle in the "active" state.
+ * @param disabled If `true`, disables the toggle.
+ * @param onChange Callback triggered when the toggle value changes.
+ * @param size Size of the toggle. See {@link Size}.
+ * @param className `class` overrides to apply to the component.
+ * @param labelClassName `class` overrides to apply to the toggle's label.
+ * @param label Optional label for the toggle.
+ * @param showUnsetHint If `true`, displays a hint to the user to initialize the toggle's value.
+ * @param props Additional HTML properties to apply to the component.
+ */
 export const Toggle: FC<ToggleProps> = ({
   checked,
   disabled = false,
@@ -103,7 +116,7 @@ export const Toggle: FC<ToggleProps> = ({
           "focus:ring-0",
           "focus-visible:outline-none",
           "focus-visible:ring-0",
-            // when disabled
+          // when disabled
           "disabled:opacity-50",
           "disabled:cursor-not-allowed",
           // when checked

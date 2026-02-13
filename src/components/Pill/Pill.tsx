@@ -32,6 +32,19 @@ const sizeStyles: Record<PillSize, string> = {
   [Size.Md]: clsx("px-4 py-2", "text-md/5"),
 };
 
+/**
+ * A basic pill component.
+ *
+ * @param size The size of the pill. See {@link Size}.
+ * @param radius The border radius of the pill. See {@link Radius}.
+ * @param shadow Optional drop shadow to apply to the pill. See {@link Shadow}.
+ * @param color Text color of the pill. See {@link TextColor}.
+ * @param backgroundColor Background color of the pill. See {@link BackgroundColor}.
+ * @param isStatus If `true`, prefixes the content with a bullet-like icon.
+ * @param className `class` overrides to apply to the component.
+ * @param children Content of the pill.
+ * @param props Additional HTML properties to apply to the component.
+ */
 export const Pill: FC<PillProps> = ({
   size = Size.Sm,
   radius = Radius.Full,

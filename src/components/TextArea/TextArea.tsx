@@ -6,13 +6,20 @@ import radiusStyles from "@/styles/radius";
 import { Radius, Size } from "@/types";
 import { cn } from "@/util/classes";
 
+export enum ResizeBehavior {
+  None = "None",
+  Vertical = "Vertical",
+  Horizontal = "Horizontal",
+  BiDirectional = "BiDirectional",
+}
+
 export interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   size?: Size;
   radius?: Radius;
   className?: string;
   containerClassName?: string;
   error?: boolean;
-  resize?: "none" | "vertical" | "horizontal" | "both";
+  resize?: ResizeBehavior;
 }
 
 const sizeStyles: Record<Size, string> = {
@@ -22,18 +29,32 @@ const sizeStyles: Record<Size, string> = {
   [Size.Lg]: clsx("px-4 py-3", "text-lg/9"),
 };
 
-const resizeStyles: Record<NonNullable<TextAreaProps["resize"]>, string> = {
-  none: "resize-none",
-  vertical: "resize-y",
-  horizontal: "resize-x",
-  both: "resize",
+const resizeStyles: Record<ResizeBehavior, string> = {
+  [ResizeBehavior.None]: "resize-none",
+  [ResizeBehavior.Vertical]: "resize-y",
+  [ResizeBehavior.Horizontal]: "resize-x",
+  [ResizeBehavior.BiDirectional]: "resize",
 };
 
+/**
+ * A textarea component.
+ *
+ * @param size The size of the textarea; this controls the size of the text itself and container padding.
+ *  See {@link Size}.
+ * @param radius The border radius to apply to the textarea. See {@link Radius}.
+ * @param error If `true`, renders the textarea in an error state.
+ * @param resize Resize behavior. See {@link ResizeBehavior}.
+ * @param rows The number of text rows to display in the textarea.
+ * @param className `class` overrides to apply to the component.
+ * @param containerClassName `class` overrides to apply to the component's container.
+ * @param disabled If `true`, disables the textarea.
+ * @param props Additional HTML properties to apply to the component.
+ */
 export const TextArea: FC<TextAreaProps> = ({
   size = Size.Md,
   radius = Radius.Sm,
   error = false,
-  resize = "vertical",
+  resize = ResizeBehavior.Vertical,
   rows = 3,
   className,
   containerClassName,

@@ -23,6 +23,19 @@ export interface RichButtonProps extends HTMLAttributes<HTMLDivElement> {
   onClick?: () => void;
 }
 
+/**
+ * A component which supports a toggled "active" state with rich content.
+ *
+ * This component operates exclusively as a controlled component. See `active` and `onClick` for controlled behavior.
+ *
+ * @param active If `true`, renders the component in its active state.
+ * @param description Content to display as the description of the component. This is the component's secondary content.
+ * @param icon Icon reference ({@link FC}) to display in the component. See {@link Icon}.
+ * @param label Content to display as the label of the component. This is the component's primary content.
+ * @param onClick Callback triggered when the component is clicked.
+ * @param className `class` overrides to apply to the component.
+ * @param props Additional HTML properties to apply to the component.
+ */
 export const RichButton: FC<RichButtonProps> = ({
   active,
   description,
