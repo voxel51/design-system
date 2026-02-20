@@ -10,11 +10,13 @@ import {
   useState,
 } from "react";
 
+import { Icon } from "@/components/Icons";
 import { inputStyle } from "@/components/Input";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
-import { Descriptor, Radius, Shadow } from "@/types";
+import { Descriptor, Radius, Shadow, Size, TextColor, textColorClass } from "@/types";
+import { IconName } from "@/types/icons";
 
 import { Option } from "./Option";
 
@@ -180,17 +182,28 @@ export const Select: FC<SelectProps> = ({
         immediate
         onClose={() => setQuery("")}
       >
-        <ComboboxInput
-          autoComplete="off" // interferes with dropdown menu
-          displayValue={getDisplayValue}
-          onChange={(e) => setQuery(e.target.value)}
-          // We'd normally prefer to use `as={Input}`,
-          // but ref forwarding doesn't work here properly in react 18,
-          // which causes the dropdown menu to be anchored in the wrong place.
-          // Until we switch to react 19,
-          // we'll just style this component using the same classes as the `Input` component.
-          className={clsx(inputStyle({ disabled }), "w-full")}
-        />
+        <div className="relative flex items-center">
+          <ComboboxInput
+            autoComplete="off" // interferes with dropdown menu
+            displayValue={getDisplayValue}
+            onChange={(e) => setQuery(e.target.value)}
+            // We'd normally prefer to use `as={Input}`,
+            // but ref forwarding doesn't work here properly in react 18,
+            // which causes the dropdown menu to be anchored in the wrong place.
+            // Until we switch to react 19,
+            // we'll just style this component using the same classes as the `Input` component.
+            className={clsx(inputStyle({ disabled }), "w-full pr-8 cursor-pointer")}
+          />
+          <span
+            className={clsx(
+              "pointer-events-none absolute right-2.5 flex items-center",
+              disabled && "opacity-50"
+            )}
+            aria-hidden
+          >
+            <Icon name={IconName.CaretDown} size={Size.Sm} className={textColorClass(TextColor.Secondary)} />
+          </span>
+        </div>
 
         <ComboboxOptions
           anchor={anchor}
