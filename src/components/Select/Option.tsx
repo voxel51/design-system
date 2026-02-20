@@ -20,6 +20,16 @@ export interface OptionProps extends HTMLAttributes<HTMLDivElement> {
   selected?: boolean;
 }
 
+/**
+ * A selectable option.
+ *
+ * @param children The content to render in the list option.
+ * @param selected If `true`, the list option is rendered with a selected state.
+ * @param value The value of the list option.
+ * @param props Additional HTML properties to apply to the component.
+ *
+ * @internal For use by {@link Select}.
+ */
 export const Option: FC<OptionProps> = ({
   children,
   selected,
