@@ -65,6 +65,51 @@ export interface MultiValueSliderProps extends Omit<
 const clamp = (value: number, min: number, max: number): number =>
   Math.min(Math.max(value, min), max);
 
+/**
+ * A basic slider component.
+ *
+ * This component renders a slider with one or more draggable knobs, optional numeric inputs, and optional labels.
+ *
+ * This component operates as both a controlled and uncontrolled component.
+ * See `value` and `onChange` for controlled behavior.
+ *
+ * @param bare If `true`, prevents rendering of value inputs; instead only renders the slider itself.
+ * @param className `class` overrides to apply to the component.
+ * @param debounceDelay Time in milliseconds to debounce `onChange` events.
+ *  Set this to `0` for a fully-responsive slider.
+ *  Note that internal state updates are *not* debounced, so this value does not affect slider responsiveness.
+ * @param labeled If `true`, displays labels for `min` and `max` slider endpoints.
+ * @param knobLabel If `true`, displays labels above all slider knobs.
+ * @param max Maximum slider value
+ * @param maxLabel Optional label to display for maximum numeric input.
+ * @param min Minimum slider value.
+ * @param minLabel Optional label to display for minimum numeric input.
+ * @param multi Controls whether the slider supports setting multiple values.
+ *  If `true`:
+ *    - The slider will render two draggable knobs; one for a "low" value and one for a "high" value.
+ *    - `value` must be of the form `[low, high]`.
+ *    - `onChange` will emit values of the form `[low, high]`.
+ *    - See {@link MultiValueSlider} as a type-safe alias for this configuration.
+ *  If `false`:
+ *    - The slider will render a single draggable knob.
+ *    - `value` must be a single numeric value.
+ *    - `onChange` will emit a single numeric value.
+ *    - See {@link SingleValueSlider} as a type-safe alias for this configuration.
+ * @param onChange Callback triggered when values change.
+ *  This change can be triggered in three ways:
+ *    - The user modifies the value in the minimum or maximum input field.
+ *    - The user drags a slider knob.
+ *    - The user clicks on the slider track.
+ *  If `multi` is `true`, this callback emits a value of the form `[low, high]`;
+ *  otherwise, this callback emits a single numeric value.
+ * @param step Numeric step size for slider increments.
+ * @param value The controlled value of the slider.
+ *  If `multi` is `true`, this must be of the form `[low, high]`;
+ *  otherwise, this must be a single numeric value.
+ *  In all cases, `min <= value <= max`.
+ * @param showUnsetHint If `true`, shows a hint to the user to initialize the slider's value.
+ * @param props Additional HTML properties to apply to the component.
+ */
 export const BaseSlider: FC<SliderProps> = ({
   bare,
   className,
@@ -223,6 +268,39 @@ export const BaseSlider: FC<SliderProps> = ({
   );
 };
 
+/**
+ * A slider supporting selection of a single value.
+ *
+ * See also {@link BaseSlider}.
+ * See also {@link MultiValueSlider}.
+ *
+ * @example
+ * ```tsx
+ * const MyComponent = () => {
+ *   const [value, setValue] = useState<number>(0.5);
+ *
+ *   const onChange = useCallback((newValue: number) => setValue(newValue), [setValue]);
+ *
+ *   return (
+ *     <SingleValueSlider
+ *       min={0}
+ *       max={1}
+ *       onChange={onChange}
+ *       value={value}
+ *     />
+ *   );
+ * };
+ * ```
+ *
+ * @param onChange Callback triggered when the slider value changes.
+ *   This change can be triggered in three ways:
+ *    - The user modifies the value in the minimum or maximum input field.
+ *    - The user drags a slider knob.
+ *    - The user clicks on the slider track.
+ * @param max Maximum value of the slider
+ * @param min Minimum value of the slider
+ * @param props See {@link BaseSlider} for all available properties.
+ */
 export const SingleValueSlider: FC<SingleValueSliderProps> = ({
   onChange,
   max,
@@ -238,6 +316,39 @@ export const SingleValueSlider: FC<SingleValueSliderProps> = ({
   />
 );
 
+/**
+ * A slider supporting selection of a "low" value and a "high" value.
+ *
+ * See also {@link BaseSlider}.
+ * See also {@link SingleValueSlider}.
+ *
+ * @example
+ * ```tsx
+ * const MyComponent = () => {
+ *   const [value, setValue] = useState<number[]>(() => [0.25, 0.75]);
+ *
+ *   const onChange = useCallback((newValue: number[]) => setValue(newValue), [setValue]);
+ *
+ *   return (
+ *     <MultiValueSlider
+ *       min={0}
+ *       max={1}
+ *       onChange={onChange}
+ *       value={value}
+ *     />
+ *   );
+ * };
+ * ```
+ *
+ * @param onChange Callback triggered when the slider value changes.
+ *   This change can be triggered in three ways:
+ *    - The user modifies the value in the minimum or maximum input field.
+ *    - The user drags a slider knob.
+ *    - The user clicks on the slider track.
+ * @param max Maximum value of the slider
+ * @param min Minimum value of the slider
+ * @param props See {@link BaseSlider} for all available properties.
+ */
 export const MultiValueSlider: FC<MultiValueSliderProps> = ({
   onChange,
   max,

@@ -36,6 +36,72 @@ export interface RichListProps extends HTMLAttributes<HTMLDivElement> {
   selected?: string[];
 }
 
+/**
+ * A list-like component which renders a group of {@link ListItem} children.
+ *
+ * This component operates as both a controlled and uncontrolled component.
+ * See `selected`/`onSelected` and `listItems`/`onOrderChange` for controlled behavior.
+ *
+ * @example
+ * ```tsx
+ * const MyComponent = ({openSettings}: {openSettings: (id: string) => void}) => {
+ *   const items: Descriptor<ListItemProps>[] = useMemo(() => [
+ *       {
+ *         id: "1",
+ *         data: {
+ *           primaryContent: "First Item",
+ *           secondaryContent: "First item description"
+ *           actions: (
+ *             <Clickable onClick={() => openSettings("1")}>
+ *               <Icon name={IconName.Settings} />
+ *             </Clickable>
+ *           )
+ *         },
+ *       },
+ *       {
+ *         id: "2",
+ *         data: {
+ *           primaryContent: "Second Item",
+ *           secondaryContent: "Second item description"
+ *           actions: (
+ *            <Clickable onClick={() => openSettings("2")}>
+ *               <Icon name={IconName.Settings} />
+ *             </Clickable>
+ *           )
+ *         },
+ *       {
+ *         id: "3",
+ *         data: {
+ *           primaryContent: "Third Item",
+ *           secondaryContent: "Third item description"
+ *           actions: (
+ *            <Clickable onClick={() => openSettings("3")}>
+ *               <Icon name={IconName.Settings} />
+ *             </Clickable>
+ *           )
+ *         },
+ *       },
+ *     ],
+ *     []
+ *   );
+ *
+ *   return (
+ *     <RichList listItems={items} />
+ *   );
+ * };
+ * ```
+ *
+ * @param className `class` overrides to apply to the list's container.
+ * @param listItems List of component descriptors which will be used to create {@link ListItem} child components.
+ *  The order of this list dictates the order of the children from top to bottom.
+ * @param draggable If `true`, allows reordering of children via dragging {@link ListItem} components.
+ * @param onSelected Callback triggered when selection state changes.
+ *  This callback includes a list of currently-selected descriptor IDs.
+ * @param onOrderChange Callback triggered when {@link ListItem} ordering changes.
+ *  This callback includes the descriptors in order from top to bottom.
+ * @param selected List of descriptor IDs which should be selected; this allows for controlled selection behavior.
+ * @param props Additional HTML properties to apply to the component.
+ */
 export const RichList: FC<RichListProps> = ({
   className,
   listItems,

@@ -23,6 +23,18 @@ export interface DatepickerIconButtonProps {
   position?: IconPosition;
 }
 
+/**
+ * An interactable icon to display within the datepicker input.
+ *
+ * @param onClick Callback triggered when the icon is clicked.
+ * @param disabled If `true`, disables interaction with the icon.
+ * @param size Size of the icon. See {@link Size}.
+ * @param ariaLabel Optional aria label for the icon; only used for accessibility.
+ * @param iconName Name of the icon. See {@link IconName}.
+ * @param position The position of the icon. See {@link IconPosition}.
+ *
+ * @internal For use by {@link DatepickerInput}.
+ */
 export const DatepickerIconButton: FC<DatepickerIconButtonProps> = ({
   onClick,
   disabled,
