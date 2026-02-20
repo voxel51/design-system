@@ -14,8 +14,14 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import clsx from "clsx";
-import { FC, HTMLAttributes, useCallback, useMemo, useState } from "react";
-
+import {
+  FC,
+  HTMLAttributes,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 import { ListItemProps } from "@/components/ListItem";
 import { Descriptor } from "@/types";
@@ -27,18 +33,88 @@ export interface RichListProps extends HTMLAttributes<HTMLDivElement> {
   draggable?: boolean;
   onSelected?: (selectedItems: string[]) => void;
   onOrderChange?: (newItems: Descriptor<ListItemProps>[]) => void;
+  selected?: string[];
 }
 
+/**
+ * A list-like component which renders a group of {@link ListItem} children.
+ *
+ * This component operates as both a controlled and uncontrolled component.
+ * See `selected`/`onSelected` and `listItems`/`onOrderChange` for controlled behavior.
+ *
+ * @example
+ * ```tsx
+ * const MyComponent = ({openSettings}: {openSettings: (id: string) => void}) => {
+ *   const items: Descriptor<ListItemProps>[] = useMemo(() => [
+ *       {
+ *         id: "1",
+ *         data: {
+ *           primaryContent: "First Item",
+ *           secondaryContent: "First item description"
+ *           actions: (
+ *             <Clickable onClick={() => openSettings("1")}>
+ *               <Icon name={IconName.Settings} />
+ *             </Clickable>
+ *           )
+ *         },
+ *       },
+ *       {
+ *         id: "2",
+ *         data: {
+ *           primaryContent: "Second Item",
+ *           secondaryContent: "Second item description"
+ *           actions: (
+ *            <Clickable onClick={() => openSettings("2")}>
+ *               <Icon name={IconName.Settings} />
+ *             </Clickable>
+ *           )
+ *         },
+ *       {
+ *         id: "3",
+ *         data: {
+ *           primaryContent: "Third Item",
+ *           secondaryContent: "Third item description"
+ *           actions: (
+ *            <Clickable onClick={() => openSettings("3")}>
+ *               <Icon name={IconName.Settings} />
+ *             </Clickable>
+ *           )
+ *         },
+ *       },
+ *     ],
+ *     []
+ *   );
+ *
+ *   return (
+ *     <RichList listItems={items} />
+ *   );
+ * };
+ * ```
+ *
+ * @param className `class` overrides to apply to the list's container.
+ * @param listItems List of component descriptors which will be used to create {@link ListItem} child components.
+ *  The order of this list dictates the order of the children from top to bottom.
+ * @param draggable If `true`, allows reordering of children via dragging {@link ListItem} components.
+ * @param onSelected Callback triggered when selection state changes.
+ *  This callback includes a list of currently-selected descriptor IDs.
+ * @param onOrderChange Callback triggered when {@link ListItem} ordering changes.
+ *  This callback includes the descriptors in order from top to bottom.
+ * @param selected List of descriptor IDs which should be selected; this allows for controlled selection behavior.
+ * @param props Additional HTML properties to apply to the component.
+ */
 export const RichList: FC<RichListProps> = ({
   className,
   listItems,
   draggable = false,
   onSelected,
   onOrderChange,
+  selected,
   ...props
 }) => {
-  // selected contains the ID for each selected element in the list
-  const [selected, setSelected] = useState<string[]>(() => []);
+  // transientSelected contains the ID for each selected element in the list
+  const [transientSelected, setTransientSelected] = useState<string[]>(
+    () => []
+  );
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -46,25 +122,32 @@ export const RichList: FC<RichListProps> = ({
     })
   );
 
+  // allow for controlled selection behavior
+  useEffect(() => {
+    setTransientSelected([...(selected ?? [])]);
+  }, [selected]);
+
   const onSelect = useCallback(
     (itemId: string, isSelected: boolean) => {
-      if (selected.includes(itemId)) {
+      if (transientSelected.includes(itemId)) {
         if (!isSelected) {
           // remove element
-          const newSelectionState = selected.filter((v) => v !== itemId);
-          setSelected(newSelectionState);
+          const newSelectionState = transientSelected.filter(
+            (v) => v !== itemId
+          );
+          setTransientSelected(newSelectionState);
           onSelected?.(newSelectionState);
         }
       } else {
         if (isSelected) {
           // add element
-          const newSelectionState = [...selected, itemId];
-          setSelected(newSelectionState);
+          const newSelectionState = [...transientSelected, itemId];
+          setTransientSelected(newSelectionState);
           onSelected?.(newSelectionState);
         }
       }
     },
-    [selected, onSelected]
+    [transientSelected, onSelected]
   );
 
   const handleDragEnd = (event: DragEndEvent): void => {
@@ -88,11 +171,11 @@ export const RichList: FC<RichListProps> = ({
           data-testid={descriptor.id}
           {...descriptor.data}
           canDrag={draggable && descriptor.data.canDrag !== false}
-          selected={selected.includes(descriptor.id)}
+          selected={transientSelected.includes(descriptor.id)}
           onSelected={(isSelected) => onSelect(descriptor.id, isSelected)}
         />
       )),
-    [listItems, draggable, selected, onSelect]
+    [listItems, draggable, onSelect, transientSelected]
   );
 
   return (

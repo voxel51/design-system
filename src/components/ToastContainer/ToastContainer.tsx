@@ -19,6 +19,14 @@ const anchorStyles: Record<Anchor, string> = {
   [Anchor.Left]: "left-4 top-1/2 -translate-y-1/2",
 };
 
+/**
+ * A layout component which acts as a container for toast-like components.
+ *
+ * @param anchor The location in the viewport to anchor the toast. See {@link Anchor}.
+ * @param children Content wrapped by this component.
+ * @param open If `true`, this component and its children will be rendered; otherwise it will be hidden.
+ * @param props Additional HTML properties to apply to the component.
+ */
 export const ToastContainer: FC<ToastContainerProps> = ({
   anchor = Anchor.Bottom,
   children,
