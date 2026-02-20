@@ -1,26 +1,45 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { MultiValueSlider, SingleValueSlider } from "@/components/Slider";
 import { randomString } from "@/util/random";
 
 describe("Slider", () => {
+  const expectedDebounceDelay = 300;
   let testId: string;
 
   beforeEach(() => {
     testId = randomString();
   });
 
+  afterEach(() => {
+    // clear any tests which use fake timers
+    jest.useRealTimers();
+  });
+
   describe("with a single value", () => {
     let defaultProps: {
       "data-testid": string;
+      debounceDelay: number;
       min: number;
       max: number;
       value: number;
     };
 
     beforeEach(() => {
-      defaultProps = { "data-testid": testId, min: 0, max: 1, value: 0.5 };
+      defaultProps = {
+        "data-testid": testId,
+        debounceDelay: expectedDebounceDelay,
+        min: 0,
+        max: 1,
+        value: 0.5,
+      };
     });
 
     it("should render", () => {
@@ -67,7 +86,32 @@ describe("Slider", () => {
       await user.clear(input);
       await user.type(input, newValue.toString());
 
-      expect(onChange).toHaveBeenLastCalledWith(newValue);
+      await waitFor(() => expect(onChange).toHaveBeenLastCalledWith(newValue));
+    });
+
+    it("should debounce onChange emission when inputs change", async () => {
+      jest.useFakeTimers();
+
+      const onChange = jest.fn();
+      render(<SingleValueSlider {...defaultProps} onChange={onChange} />);
+
+      const input = within(screen.getByTestId(testId)).getByRole("textbox");
+
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+      const newValue = 0.25;
+      await user.clear(input);
+
+      const newValueString = newValue.toString();
+      for (let i = 0; i < newValueString.length; i++) {
+        await user.type(input, newValueString[i]);
+      }
+
+      expect(onChange).not.toHaveBeenCalled();
+
+      jest.advanceTimersByTime(defaultProps.debounceDelay);
+
+      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenCalledWith(newValue);
     });
 
     it("should not emit onChange for invalid inputs", async () => {
@@ -113,7 +157,7 @@ describe("Slider", () => {
         });
       });
 
-      it("should emit onChange when dragging the slider knob", () => {
+      it("should emit onChange when dragging the slider knob", async () => {
         const relativeTarget = 0.75;
         fireEvent.mouseDown(knob);
         fireEvent.mouseMove(document, {
@@ -121,19 +165,47 @@ describe("Slider", () => {
         });
         fireEvent.mouseUp(document);
 
-        expect(onChange).toHaveBeenLastCalledWith(
+        await waitFor(() =>
+          expect(onChange).toHaveBeenLastCalledWith(
+            expect.closeTo(defaultProps.max * relativeTarget, 5)
+          )
+        );
+      });
+
+      it("should debounce onChange when dragging the slider knob", () => {
+        jest.useFakeTimers();
+
+        const relativeTarget = 0.75;
+        const steps = [1, 1 - (1 - relativeTarget) / 2, relativeTarget];
+
+        fireEvent.mouseDown(knob);
+        for (let i = 0; i < steps.length; i++) {
+          fireEvent.mouseMove(document, {
+            clientX: Math.round(mockTrackWidth * relativeTarget),
+          });
+        }
+        fireEvent.mouseUp(document);
+
+        expect(onChange).not.toHaveBeenCalled();
+
+        jest.advanceTimersByTime(defaultProps.debounceDelay);
+
+        expect(onChange).toHaveBeenCalledTimes(1);
+        expect(onChange).toHaveBeenCalledWith(
           expect.closeTo(defaultProps.max * relativeTarget, 5)
         );
       });
 
-      it("should emit onChange when clicking the slider track", () => {
+      it("should emit onChange when clicking the slider track", async () => {
         const relativeTarget = 0.75;
         fireEvent.click(track!, {
           clientX: Math.round(mockTrackWidth * relativeTarget),
         });
 
-        expect(onChange).toHaveBeenLastCalledWith(
-          expect.closeTo(defaultProps.max * relativeTarget, 5)
+        await waitFor(() =>
+          expect(onChange).toHaveBeenLastCalledWith(
+            expect.closeTo(defaultProps.max * relativeTarget, 5)
+          )
         );
       });
     });
@@ -142,6 +214,7 @@ describe("Slider", () => {
   describe("with multiple values", () => {
     let defaultProps: {
       "data-testid": string;
+      debounceDelay: number;
       min: number;
       max: number;
       value: number[];
@@ -150,6 +223,7 @@ describe("Slider", () => {
     beforeEach(() => {
       defaultProps = {
         "data-testid": testId,
+        debounceDelay: expectedDebounceDelay,
         min: 0,
         max: 1,
         value: [0.25, 0.75],
@@ -217,15 +291,50 @@ describe("Slider", () => {
       await user.clear(minInput);
       await user.type(minInput, newMin.toString());
 
-      expect(onChange).toHaveBeenLastCalledWith([
-        newMin,
-        (defaultProps.value as number[])[1],
-      ]);
+      await waitFor(() =>
+        expect(onChange).toHaveBeenLastCalledWith([
+          newMin,
+          (defaultProps.value as number[])[1],
+        ])
+      );
 
       await user.clear(maxInput);
       await user.type(maxInput, newMax.toString());
 
-      expect(onChange).toHaveBeenLastCalledWith([newMin, newMax]);
+      await waitFor(() =>
+        expect(onChange).toHaveBeenLastCalledWith([newMin, newMax])
+      );
+    });
+
+    it("should debounce onChange emission when inputs change", async () => {
+      jest.useFakeTimers();
+
+      const onChange = jest.fn();
+      render(<MultiValueSlider {...defaultProps} onChange={onChange} />);
+
+      const slider = screen.getByTestId(testId);
+      const inputs: HTMLInputElement[] = within(slider).getAllByRole("textbox");
+      expect(inputs).toHaveLength(2);
+      const [minInput] = inputs;
+
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+      const newMin = 0.1;
+      await user.clear(minInput);
+
+      const newMinString = newMin.toString();
+      for (let i = 0; i < newMinString.length; i++) {
+        await user.type(minInput, newMinString[i]);
+      }
+
+      expect(onChange).not.toHaveBeenCalled();
+
+      jest.advanceTimersByTime(defaultProps.debounceDelay);
+
+      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenCalledWith([
+        newMin,
+        (defaultProps.value as number[])[1],
+      ]);
     });
 
     it("should not emit onChange for invalid inputs", async () => {
@@ -282,8 +391,7 @@ describe("Slider", () => {
         });
       });
 
-      it("should emit onChange when dragging the slider knobs", () => {
-        // update minimum value
+      it("should emit onChange when dragging the min slider knob", async () => {
         const minRelativeTarget = 0.1;
         fireEvent.mouseDown(knobs[0]);
         fireEvent.mouseMove(document, {
@@ -291,12 +399,40 @@ describe("Slider", () => {
         });
         fireEvent.mouseUp(document);
 
-        expect(onChange).toHaveBeenLastCalledWith([
+        await waitFor(() =>
+          expect(onChange).toHaveBeenLastCalledWith([
+            defaultProps.max * minRelativeTarget,
+            (defaultProps.value as number[])[1],
+          ])
+        );
+      });
+
+      it("should debounce onChange when dragging the min slider knob", () => {
+        jest.useFakeTimers();
+
+        const minRelativeTarget = 0.1;
+        const steps = [0, minRelativeTarget / 2, minRelativeTarget];
+
+        fireEvent.mouseDown(knobs[0]);
+        for (let i = 0; i < steps.length; i++) {
+          fireEvent.mouseMove(document, {
+            clientX: Math.round(mockTrackWidth * steps[i]),
+          });
+        }
+        fireEvent.mouseUp(document);
+
+        expect(onChange).not.toHaveBeenCalled();
+
+        jest.advanceTimersByTime(defaultProps.debounceDelay);
+
+        expect(onChange).toHaveBeenCalledTimes(1);
+        expect(onChange).toHaveBeenCalledWith([
           defaultProps.max * minRelativeTarget,
           (defaultProps.value as number[])[1],
         ]);
+      });
 
-        // update maximum value
+      it("should emit onChange when dragging the max slider knob", async () => {
         const maxRelativeTarget = 0.9;
         fireEvent.mouseDown(knobs[1]);
         fireEvent.mouseMove(document, {
@@ -304,34 +440,113 @@ describe("Slider", () => {
         });
         fireEvent.mouseUp(document);
 
-        expect(onChange).toHaveBeenLastCalledWith([
+        await waitFor(() =>
+          expect(onChange).toHaveBeenLastCalledWith([
+            (defaultProps.value as number[])[0],
+            defaultProps.max * maxRelativeTarget,
+          ])
+        );
+      });
+
+      it("should debounce onChange when dragging the max slider knob", () => {
+        jest.useFakeTimers();
+
+        const maxRelativeTarget = 0.9;
+        const steps = [1, 1 - (1 - maxRelativeTarget) / 2, maxRelativeTarget];
+
+        fireEvent.mouseDown(knobs[1]);
+        for (let i = 0; i < steps.length; i++) {
+          fireEvent.mouseMove(document, {
+            clientX: Math.round(mockTrackWidth * steps[i]),
+          });
+        }
+        fireEvent.mouseUp(document);
+
+        expect(onChange).not.toHaveBeenCalled();
+
+        jest.advanceTimersByTime(defaultProps.debounceDelay);
+
+        expect(onChange).toHaveBeenCalledTimes(1);
+        expect(onChange).toHaveBeenCalledWith([
           (defaultProps.value as number[])[0],
           defaultProps.max * maxRelativeTarget,
         ]);
       });
 
-      it("should emit onChange when clicking the slider track", () => {
-        // update minimum value
-        const minRelativeTarget = 0.1;
-        fireEvent.click(track!, {
-          clientX: Math.round(mockTrackWidth * minRelativeTarget),
+      describe("when clicking the slider track", () => {
+        it("should emit onChange when clicking near the min knob", async () => {
+          const minRelativeTarget = 0.1;
+          fireEvent.click(track!, {
+            clientX: Math.round(mockTrackWidth * minRelativeTarget),
+          });
+
+          await waitFor(() =>
+            expect(onChange).toHaveBeenLastCalledWith([
+              defaultProps.max * minRelativeTarget,
+              (defaultProps.value as number[])[1],
+            ])
+          );
         });
 
-        expect(onChange).toHaveBeenLastCalledWith([
-          defaultProps.max * minRelativeTarget,
-          (defaultProps.value as number[])[1],
-        ]);
+        it("should debounce onChange when clicking near the min knob", () => {
+          jest.useFakeTimers();
 
-        // update maximum value
-        const maxRelativeTarget = 0.9;
-        fireEvent.click(track!, {
-          clientX: Math.round(mockTrackWidth * maxRelativeTarget),
+          const minRelativeTarget = 0.1;
+          const steps = [0, minRelativeTarget / 2, minRelativeTarget];
+
+          steps.forEach((step) =>
+            fireEvent.click(track!, {
+              clientX: Math.round(mockTrackWidth * step),
+            })
+          );
+
+          expect(onChange).not.toHaveBeenCalled();
+
+          jest.advanceTimersByTime(defaultProps.debounceDelay);
+
+          expect(onChange).toHaveBeenCalledTimes(1);
+          expect(onChange).toHaveBeenCalledWith([
+            defaultProps.max * minRelativeTarget,
+            (defaultProps.value as number[])[1],
+          ]);
         });
 
-        expect(onChange).toHaveBeenLastCalledWith([
-          (defaultProps.value as number[])[0],
-          defaultProps.max * maxRelativeTarget,
-        ]);
+        it("should emit onChange when clicking near the max knob", async () => {
+          const maxRelativeTarget = 0.9;
+          fireEvent.click(track!, {
+            clientX: Math.round(mockTrackWidth * maxRelativeTarget),
+          });
+
+          await waitFor(() =>
+            expect(onChange).toHaveBeenLastCalledWith([
+              (defaultProps.value as number[])[0],
+              defaultProps.max * maxRelativeTarget,
+            ])
+          );
+        });
+
+        it("should debounce onChange when clicking near the max knob", () => {
+          jest.useFakeTimers();
+
+          const maxRelativeTarget = 0.9;
+          const steps = [1, 1 - (1 - maxRelativeTarget) / 2, maxRelativeTarget];
+
+          steps.forEach((step) =>
+            fireEvent.click(track!, {
+              clientX: Math.round(mockTrackWidth * step),
+            })
+          );
+
+          expect(onChange).not.toHaveBeenCalled();
+
+          jest.advanceTimersByTime(defaultProps.debounceDelay);
+
+          expect(onChange).toHaveBeenCalledTimes(1);
+          expect(onChange).toHaveBeenCalledWith([
+            (defaultProps.value as number[])[0],
+            defaultProps.max * maxRelativeTarget,
+          ]);
+        });
       });
     });
   });

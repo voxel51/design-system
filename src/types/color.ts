@@ -17,9 +17,11 @@ export enum ActionColor {
   DangerHover = "action-danger-secondary",
   DangerFocus = "action-danger-tertiary",
   DangerText = "action-danger-text",
+  IconDefault = "action-icon-default",
 }
 
 export enum BackgroundColor {
+  Transparent = "bg-transparent",
   Background = "bg-background",
   Card1 = "bg-card-1",
   Card2 = "bg-card-2",
@@ -40,6 +42,7 @@ export enum BorderColor {
   Success = "border-success",
   Warning = "border-warning",
   Disabled = "border-disabled",
+  CardElevated = "bg-card-elevated",
 }
 
 export enum BrandColor {
@@ -99,6 +102,8 @@ export type Color =
   | TextColor;
 
 const textColorMap: Record<Color, string> = {
+
+  [ActionColor.IconDefault]: "text-content-text-secondary",
   [ActionColor.PrimaryDefault]: "text-action-primary-primary",
   [ActionColor.PrimaryHover]: "text-action-primary-secondary",
   [ActionColor.PrimaryFocus]: "text-action-primary-tertiary",
@@ -123,6 +128,7 @@ const textColorMap: Record<Color, string> = {
   [BackgroundColor.Muted]: "text-content-bg-muted",
   [BackgroundColor.Popover]: "text-content-bg-popover",
   [BackgroundColor.Secondary]: "text-content-bg-secondary",
+  [BackgroundColor.Transparent]: "text-transparent",
 
   [BrandColor.Accent]: "text-brand-accent",
   [BrandColor.Primary]: "text-brand-primary",
@@ -163,6 +169,8 @@ const textColorMap: Record<Color, string> = {
 };
 
 const backgroundColorMap: Record<Color, string> = {
+  [BackgroundColor.Transparent]: "bg-transparent",
+  [ActionColor.IconDefault]: "bg-transparent",
   [ActionColor.PrimaryDefault]: "bg-action-primary-primary",
   [ActionColor.PrimaryHover]: "bg-action-primary-secondary",
   [ActionColor.PrimaryFocus]: "bg-action-primary-tertiary",
@@ -227,6 +235,7 @@ const backgroundColorMap: Record<Color, string> = {
 };
 
 const borderColorMap: Record<BorderColor, string> = {
+  [BorderColor.CardElevated]: "border-content-bg-card-elevated",
   [BorderColor.Active]: "border-content-border-active",
   [BorderColor.Default]: "border-content-border-default",
   [BorderColor.Disabled]: "border-content-border-disabled",

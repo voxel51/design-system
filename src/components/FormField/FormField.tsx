@@ -13,6 +13,51 @@ export interface FormFieldProps extends HTMLAttributes<HTMLDivElement> {
   error?: ReactNode;
 }
 
+/**
+ * A component which represents a composite form field, consisting of a label, form control, description,
+ * and error message.
+ *
+ * This component applies standard form best-practices to the contained elements, such as ensuring the label and form
+ * control are properly linked.
+ *
+ * See also {@link FormFieldGroup}.
+ *
+ * @example
+ * ```tsx
+ * const MyComponent = () => {
+ *   const [value, setValue] = useState<string>("");
+ *   const [error, setError] = useState<string | null>(null);
+ *
+ *   const onChange = useCallback((newValue: string) => {
+ *       setValue(newValue);
+ *       if (newValue.length < 5) {
+ *         setError("Name must be at least 5 characters");
+ *       } else {
+ *         setError(null);
+ *       }
+ *     },
+ *     [setError, setValue]
+ *   );
+ *
+ *   return (
+ *     <FormField
+ *       control={<Input value={value} onChange={onChange} />}
+ *       label={"Dataset name"}
+ *       description={"Name of the dataset to create"}
+ *       error={error}
+ *     />
+ *   );
+ * };
+ * ```
+ *
+ * @param control The form control to use in this field. This can be any component.
+ * @param label Optional label to display for the form field.
+ * @param description Optional description to display for the form field.
+ * @param disabled If `true`, disables the form field.
+ * @param error Optional error message to display for the form field.
+ * @param className `class` overrides to apply to the field container.
+ * @param props Additional HTML properties to apply to the field container.
+ */
 export const FormField: FC<FormFieldProps> = ({
   control,
   label,
@@ -28,7 +73,7 @@ export const FormField: FC<FormFieldProps> = ({
         {label && (
           <Stack orientation={Orientation.Row} spacing={Spacing.Sm}>
             <Label>
-              <Text>{label}</Text>
+              <Text color={TextColor.Primary}>{label}</Text>
             </Label>
 
             {description && (

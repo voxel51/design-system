@@ -27,6 +27,25 @@ export interface ListItemProps extends HTMLAttributes<HTMLDivElement> {
   additionalContent?: ReactNode;
 }
 
+/**
+ * An item to be displayed in a list.
+ *
+ * @param canSelect If `true`, the component will include a {@link Checkbox} to enable selection.
+ * @param selected Controls the selection state of the list item. If `canSelect` is not truthy, this has no effect.
+ * @param onSelected Callback triggered when this item is selected.
+ * @param canDrag If `true`, displays a {@link DragHandleIcon} to allow dragging this component.
+ * @param dragHandleListeners Optional mapping of `listenerId: listener` for drag events.
+ * @param primaryContent Primary content to display in the list item.
+ * @param secondaryContent Secondary content to display in the list item.
+ * @param actions Content to display as "actions" for the list item.
+ *  This content will be pushed to the trailing edge of the list item.
+ * @param additionalContent Additional content to display in the list item.
+ *  This content will be placed between the `secondaryContent` and the `actions.
+ * @param className `class` overrides to apply to the component.
+ * @param props Additional HTML properties to apply to the component.
+ *
+ * @internal For use by the {@link RichList} component.
+ */
 export const ListItem: FC<ListItemProps> = ({
   canSelect = false,
   selected = false,
@@ -56,7 +75,7 @@ export const ListItem: FC<ListItemProps> = ({
           "flex flex-nowrap items-center justify-between",
           "w-full",
           "gap-x-lg",
-          "py-3 pr-3 pl-2"
+          "py-3 px-[14px]"
         )}
       >
         <div className={clsx("flex flex-nowrap items-center", "gap-x-md")}>
@@ -87,7 +106,7 @@ export const ListItem: FC<ListItemProps> = ({
       {additionalContent && (
         <div
           className={clsx(
-            "pr-3 pb-3 pl-2",
+            "px-md pb-3",
             // Align with primaryContent by adding margin for checkbox/drag handle
             canSelect && canDrag && "ml-12",
             canSelect && !canDrag && "ml-6",

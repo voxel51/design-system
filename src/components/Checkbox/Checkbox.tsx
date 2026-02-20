@@ -3,6 +3,7 @@ import clsx from "clsx";
 import { type FC, InputHTMLAttributes } from "react";
 
 import { Icon } from "@/components/Icons/Icon";
+import { UnsetHint } from "@/components/UnsetHint";
 import radiusStyles from "@/styles/radius";
 import { TEXT_STYLES } from "@/styles/text";
 import {
@@ -33,6 +34,7 @@ export interface CheckboxProps extends ModifiedCheckboxProps {
   radius?: Radius;
   className?: string;
   labelClassName?: string;
+  showUnsetHint?: boolean;
 }
 
 const sizeStyles: Record<Size, string> = {
@@ -49,14 +51,45 @@ const checkmarkSizeStyles: Record<Size, string> = {
   [Size.Lg]: clsx("checked:after:text-lg"),
 };
 
+/**
+ * A basic checkbox component.
+ *
+ * This component operates exclusively as a controlled component. See `checked` and `onChange` for controls.
+ *
+ * @example
+ * ```tsx
+ * const MyComponent = () => {
+ *   const [checked, setChecked] = useState<boolean>(false);
+ *
+ *   return (
+ *     <Checkbox
+ *       checked={checked}
+ *       onChange={(newValue: boolean) => setChecked(newValue)}
+ *       label={"Create new dataset"}
+ *     />
+ *   );
+ * };
+ * ```
+ *
+ * @param checked `checked` state of the checkbox.
+ * @param onChange Change handler for when the checked state changes.
+ * @param size Size of the checkbox; this controls both the checkbox itself and the associated label. See {@link Size}.
+ * @param radius Border radius of the checkbox; this controls the styling of the checkbox itself. See {@link Radius}.
+ * @param className `class` overrides to apply to the checkbox.
+ * @param labelClassName `class` overrides for custom styling of the checkbox's label.
+ * @param label Label to display alongside the checkbox.
+ * @param showUnsetHint If `true`, displays a hint to the user for checkbox interaction.
+ * @param props Additional HTML properties to apply to the checkbox.
+ */
 export const Checkbox: FC<CheckboxProps> = ({
-  checked = false,
-  onChange = undefined,
+  checked,
+  onChange,
   size = Size.Md,
   radius = Radius.Xs,
   className,
   labelClassName,
   label,
+  showUnsetHint,
   ...props
 }) => {
   return (
@@ -75,10 +108,6 @@ export const Checkbox: FC<CheckboxProps> = ({
           radiusStyles(radius),
           sizeStyles[size],
           checkmarkSizeStyles[size],
-          "focus:outline-none",
-          "focus:ring-2",
-          "focus:ring-action-primary-primary",
-          "focus:ring-offset-2",
           "disabled:opacity-50",
           "disabled:cursor-not-allowed",
           bgColorClass(ActionColor.PrimaryDefault, ElementState.Checked),
@@ -107,6 +136,9 @@ export const Checkbox: FC<CheckboxProps> = ({
         >
           {label}
         </Label>
+      )}
+      {showUnsetHint && (
+        <UnsetHint value={checked} hint="Click the checkbox to set a value" />
       )}
     </Field>
   );

@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import React, { type FC } from "react";
 
+import { Spinner } from "@/components/Spinner";
 import AIIcon from "@/img/AI.svg?react";
 import AddIcon from "@/img/Add.svg?react";
 import ArrowDownIcon from "@/img/ArrowDown.svg?react";
@@ -21,6 +22,7 @@ import DateRangeIcon from "@/img/DateRange.svg?react";
 import DeleteIcon from "@/img/Delete.svg?react";
 import DetectionIcon from "@/img/Detection.svg?react";
 import DragIcon from "@/img/Drag.svg?react";
+import DrawIcon from "@/img/Draw.svg?react";
 import EditIcon from "@/img/Edit.svg?react";
 import EmbeddingsIcon from "@/img/Embeddings.svg?react";
 import EnterIcon from "@/img/Enter.svg?react";
@@ -69,7 +71,10 @@ type SvgComponent = React.FC<React.SVGProps<SVGSVGElement>>;
  * 2. create a enum value for the icon name
  * 3. import the SVG file and add it to this map
  */
-export const iconMap: Record<IconName, SvgComponent> = {
+export const iconMap: Record<
+  Exclude<IconName, IconName.Spinner>,
+  SvgComponent
+> = {
   [IconName.Add]: AddIcon,
   [IconName.AI]: AIIcon,
   [IconName.ArrowDown]: ArrowDownIcon,
@@ -90,6 +95,7 @@ export const iconMap: Record<IconName, SvgComponent> = {
   [IconName.Delete]: DeleteIcon,
   [IconName.Detection]: DetectionIcon,
   [IconName.Drag]: DragIcon,
+  [IconName.Draw]: DrawIcon,
   [IconName.Edit]: EditIcon,
   [IconName.Embeddings]: EmbeddingsIcon,
   [IconName.Enter]: EnterIcon,
@@ -145,6 +151,21 @@ export interface IconProps {
   style?: React.CSSProperties;
 }
 
+/**
+ * An generic icon component which will take the form of the icon specified by `name`.
+ *
+ * @example
+ * ```tsx
+ * <Icon name={IconName.Edit} size={Size.Md} />
+ * ```
+ *
+ * @param name Icon to display. See {@link IconName}.
+ * @param size The size of the icon. See {@link Size}.
+ * @param className `class` overrides to apply to the component.
+ * @param color Color of the icon. By default, the icon inherits the text color of its container.
+ * @param style `style` overrides to apply to the icon.
+ * @param props Additional HTML properties to apply to the component.
+ */
 export const Icon: FC<IconProps> = ({
   name,
   size = undefined, // if no size specified, fill the parent container
@@ -158,12 +179,13 @@ export const Icon: FC<IconProps> = ({
   // ratio but it's possible that VERY rectangular SVGs will not behave
   // as expected.
   const iconSize = size ? sizeMap[size] : undefined;
-  const IconComponent = iconMap[name];
+  const IconComponent = name === IconName.Spinner ? Spinner : iconMap[name];
 
   return (
     <IconComponent
       width={iconSize}
       height={iconSize}
+      size={size}
       className={clsx(className)}
       style={{ color, ...style }}
       {...props}

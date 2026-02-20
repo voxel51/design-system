@@ -6,6 +6,8 @@ import { textStyles } from "@/styles/text";
 import {
   BackgroundColor,
   bgColorClass,
+  BorderColor,
+  borderColorClass,
   BrandColor,
   Descriptor,
   ElementState,
@@ -69,9 +71,7 @@ const tabVariantStyles: Record<ToggleSwitchVariant, string> = {
     "rounded-sm",
     textColorClass(BrandColor.Accent, ElementState.Selected)
   ),
-  [ToggleSwitchVariant.Default]: clsx(
-    textColorClass(TextColor.Primary, ElementState.Selected)
-  ),
+  [ToggleSwitchVariant.Default]: clsx(),
   [ToggleSwitchVariant.Full]: clsx(
     textColorClass(TextColor.Primary, ElementState.Selected)
   ),
@@ -115,6 +115,66 @@ const getTabStyles = (
   return clsx(...classNames);
 };
 
+const getTabListBorderStyles = (variant: ToggleSwitchVariant): string[] => {
+  if (variant === ToggleSwitchVariant.Borderless) return [];
+  if (variant === ToggleSwitchVariant.Soft) return [];
+  return ["border", borderColorClass(BorderColor.CardElevated)];
+};
+
+const getTabTextColorClass = (selected: boolean): string => {
+  if (selected) return textColorClass(TextColor.Primary, ElementState.Selected);
+  return cn(
+    // TODO - this is a hack. But it might be the least bad option.
+    // override global FO css that targets <button>; secondary only when not hovered
+    "!text-content-text-secondary hover:!text-content-text-primary"
+  );
+};
+
+/**
+ * A component which supports rendering a tabbed content container.
+ *
+ * This component enforces mutual exclusivity in active tabs, and only the content for the active tab is visible.
+ *
+ * @example
+ * ```tsx
+ * const MyComponent = () => {
+ *   const tabs: Descriptor<ToggleSwitchTab>[] = useMemo(() => [
+ *       {id: "1", data: {label: "Tab 1", content: "Tab 1 content"}}
+ *       {id: "2", data: {label: "Tab 2", content: "Tab 2 content"}}
+ *       {id: "3", data: {label: "Tab 3", content: "Tab 3 content"}}
+ *     ],
+ *     []
+ *   );
+ *
+ *   return (
+ *     <ToggleSwitch
+ *       tabs={tabs}
+ *       defaultIndex={0}
+ *       onChange={(activeIndex: number) => console.log(`Switched to tab index ${activeIndex}`)}
+ *     />
+ *   );
+ * };
+ * ```
+ *
+ * @param tabs List of component descriptors which will be used to create {@link ToggleSwitchTab} children.
+ * @param variant Variant of the tabs.
+ *  The variants have the following behaviors:
+ *    - {@link ToggleSwitchVariant.Default} - tabs are bordered and have visible boundaries;
+ *      the active tab has a distinct background from inactive tabs.
+ *    - {@link ToggleSwitchVariant.Soft} - tabs are not bordered;
+ *      the active tab has a distinct background and is highlighted in an accent color.
+ *    - {@link ToggleSwitchVariant.Full} - similar to {@link ToggleSwitchVariant.Default} and expands to fill
+ *      its container.
+ *    - {@link ToggleSwitchVariant.Borderless} - tabs are not bordered; the active tab has a bottom border.
+ *  See {@link ToggleSwitchVariant}.
+ * @param defaultIndex The index of the tab which should be considered active when the component first renders.
+ * @param onChange Callback triggered when the active tab changes.
+ * @param size Size of the tabs; this controls the text size and padding. See {@link Size}.
+ * @param fullWidth If `true`, the tab group will fill the width of their container.
+ * @param tabListClassName `class` overrides to apply to the tabs.
+ * @param tabPanelClassName `class` overrides to apply to the active content container.
+ * @param props Additional HTML properties to apply to the tab group.
+ */
 export const ToggleSwitch: FC<ToggleSwitchProps> = ({
   tabs,
   variant = ToggleSwitchVariant.Default,
@@ -130,11 +190,11 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
     <TabGroup defaultIndex={defaultIndex} onChange={onChange} {...props}>
       <TabList
         className={cn(
+          "toggle-switch-tab-list",
           "flex flex-nowrap items-center",
-          variant !== ToggleSwitchVariant.Borderless &&
-            bgColorClass(BackgroundColor.Card1),
           "rounded-md",
           fullWidth ? "w-full" : "w-fit",
+          ...getTabListBorderStyles(variant),
           tabListClassName
         )}
       >
@@ -143,21 +203,25 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
           const isLast = index === tabs.length - 1;
           return (
             <Tab
-              className={cn(
-                "cursor-pointer",
-                "flex-1",
-                "flex items-center justify-center",
-                "font-medium",
-                textColorClass(TextColor.Secondary),
-                "outline-none",
-                "transition-colors",
-                bgColorClass(BackgroundColor.Card2, ElementState.Hover),
-                textColorClass(TextColor.Primary, ElementState.Hover),
-                bgColorClass(BackgroundColor.Card2, ElementState.Selected),
-                "data-[focus]:outline-none",
-                getTabBorderRadius(variant, isFirst, isLast),
-                getTabStyles(variant, size)
-              )}
+              className={({ selected }) =>
+                cn(
+                  "cursor-pointer",
+                  "flex-1",
+                  "flex items-center justify-center",
+                  "font-medium",
+                  "outline-none",
+                  "transition-colors",
+                  "bg-transparent",
+                  bgColorClass(
+                    BackgroundColor.CardElevated,
+                    ElementState.Selected
+                  ),
+                  getTabTextColorClass(selected),
+                  "data-[focus]:outline-none",
+                  getTabBorderRadius(variant, isFirst, isLast),
+                  getTabStyles(variant, size)
+                )
+              }
               key={id}
             >
               {data.label}

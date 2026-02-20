@@ -3,7 +3,8 @@ import clsx from "clsx";
 import { FC, HTMLAttributes, ReactNode, useState } from "react";
 
 import radiusStyles from "@/styles/radius";
-import { Anchor, BackgroundColor, bgColorClass, Radius } from "@/types";
+import shadowStyles from "@/styles/shadow";
+import { Anchor, BackgroundColor, bgColorClass, Radius, Shadow } from "@/types";
 import { cn } from "@/util/classes";
 
 export type TooltipAnchor = Extract<
@@ -18,6 +19,8 @@ export interface TooltipProps extends Omit<
   anchor?: TooltipAnchor;
   content: ReactNode;
   portal?: boolean;
+  /** Elevation / drop shadow. Use Shadow.Xs through Shadow.Xl. */
+  shadow?: Shadow;
 }
 
 const anchorStyles: Record<TooltipAnchor, string> = {
@@ -48,12 +51,31 @@ const RotatedSquare: FC<{ anchor: TooltipAnchor }> = ({ anchor }) => {
   );
 };
 
+/**
+ * A tooltip which appears when hovering over the wrapped content.
+ *
+ * @example
+ * ```tsx
+ * <Tooltip content={<Text>Tooltip content goes here</Text>}>
+ *   <Text>Hover this text to see the tooltip</Text>
+ * </Tooltip>
+ * ```
+ *
+ * @param anchor Position to anchor the tooltip relative to its content. See {@link Anchor}.
+ * @param content The content of the tooltip.
+ * @param children The content which this component wraps; this acts as the element anchor and the hover trigger.
+ * @param className `class` overrides to apply to the component.
+ * @param portal If `true`, applies a high z-index to ensure visibility in stacked contexts.
+ * @param shadow The shadow to apply to the tooltip. See {@link Shadow}.
+ * @param props Additional HTML properties to apply to the component.
+ */
 export const Tooltip: FC<TooltipProps> = ({
   anchor = Anchor.Top,
   content,
   children,
   className,
   portal = false,
+  shadow = Shadow.Lg,
   ...props
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -61,6 +83,7 @@ export const Tooltip: FC<TooltipProps> = ({
   return (
     <Popover className="relative" {...props}>
       <PopoverButton
+        as="div"
         onMouseEnter={() => setIsOpen(true)}
         onMouseLeave={() => setIsOpen(false)}
         className="focus:outline-none"
@@ -79,6 +102,7 @@ export const Tooltip: FC<TooltipProps> = ({
             "!overflow-visible",
             bgColorClass(BackgroundColor.Card2),
             radiusStyles(Radius.Sm),
+            shadowStyles(shadow),
             anchorStyles[anchor],
             className
           )}

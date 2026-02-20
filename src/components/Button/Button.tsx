@@ -5,12 +5,14 @@ import type { ButtonHTMLAttributes, FC } from "react";
 import radiusStyles from "@/styles/radius";
 import {
   ActionColor,
+  BackgroundColor,
   bgColorClass,
   BorderColor,
   borderColorClass,
   ElementState,
   Radius,
   Size,
+  TextColor,
   textColorClass,
   Variant,
 } from "@/types";
@@ -30,31 +32,49 @@ const variantStyles: Record<Variant, string> = {
   [Variant.Primary]: clsx(
     bgColorClass(ActionColor.PrimaryDefault),
     bgColorClass(ActionColor.PrimaryHover, ElementState.Hover),
-    bgColorClass(ActionColor.PrimaryFocus, ElementState.Active),
-    textColorClass(ActionColor.PrimaryText)
+    bgColorClass(ActionColor.PrimaryFocus, ElementState.Active)
   ),
   [Variant.Secondary]: clsx(
     "border-1",
-    bgColorClass(ActionColor.SecondaryDefault),
+    "bg-transparent",
     borderColorClass(BorderColor.Default),
-    bgColorClass(ActionColor.SecondaryHover, ElementState.Hover),
-    borderColorClass(BorderColor.Hover, ElementState.Hover),
-    bgColorClass(ActionColor.SecondaryFocus, ElementState.Active),
+    borderColorClass(BorderColor.Focus, ElementState.Hover), // design calls for focus color on hover
     borderColorClass(BorderColor.Focus, ElementState.Active),
-    textColorClass(ActionColor.SecondaryText),
-    borderColorClass(BorderColor.Disabled, ElementState.Disabled)
+    borderColorClass(BorderColor.Disabled, ElementState.Disabled),
+    bgColorClass(ActionColor.SecondaryFocus, ElementState.Active)
   ),
   [Variant.Success]: clsx(
     bgColorClass(ActionColor.SuccessDefault),
     bgColorClass(ActionColor.SuccessHover, ElementState.Hover),
-    bgColorClass(ActionColor.SuccessFocus, ElementState.Active),
-    textColorClass(ActionColor.SuccessText)
+    bgColorClass(ActionColor.SuccessFocus, ElementState.Active)
   ),
   [Variant.Danger]: clsx(
     bgColorClass(ActionColor.DangerDefault),
     bgColorClass(ActionColor.DangerHover, ElementState.Hover),
-    bgColorClass(ActionColor.DangerFocus, ElementState.Active),
-    textColorClass(ActionColor.DangerText)
+    bgColorClass(ActionColor.DangerFocus, ElementState.Active)
+  ),
+  [Variant.Icon]: clsx(
+    "px-2.5 py-2.5",
+    "bg-transparent",
+    bgColorClass(BackgroundColor.CardElevated, ElementState.Hover)
+  ),
+  [Variant.Borderless]: clsx(
+    "bg-transparent",
+    "border-0",
+    bgColorClass(BackgroundColor.CardElevated, ElementState.Hover),
+    radiusStyles(Radius.Full)
+  ),
+};
+
+const variantTextStyles: Record<Variant, string> = {
+  [Variant.Primary]: textColorClass(ActionColor.PrimaryText),
+  [Variant.Secondary]: textColorClass(ActionColor.SecondaryText),
+  [Variant.Success]: textColorClass(ActionColor.SuccessText),
+  [Variant.Danger]: textColorClass(ActionColor.DangerText),
+  [Variant.Icon]: textColorClass(ActionColor.IconDefault),
+  [Variant.Borderless]: clsx(
+    textColorClass(TextColor.Secondary),
+    textColorClass(ActionColor.PrimaryText, ElementState.Hover)
   ),
 };
 
@@ -70,6 +90,26 @@ const iconStyles: Record<ButtonSize, string> = {
   [Size.Md]: clsx("w-5 h-5", "leading-none"),
 };
 
+/**
+ * A basic button component.
+ *
+ * @example
+ * ```tsx
+ *   <Button onClick={() => alert("Button clicked")}>
+ *     Click me
+ *   </Button>
+ * ```
+ *
+ * @param variant The button variant; this controls the general styling of the button. See {@link Variant}.
+ * @param size The size of the button; this controls both the text size and the button size. See {@link Size}.
+ * @param borderless Boolean controlling whether the button should be "borderless," removing any borders and
+ *  rounding the corners.
+ * @param leadingIcon Optional reference ({@link FC}) to an icon which prefixes the button's content. See {@link Icon}.
+ * @param trailingIcon Optional reference ({@link FC}) to an icon which postfixes the button's content. See {@link Icon}.
+ * @param className `class` overrides to apply to the component.
+ * @param children Button content.
+ * @param props Additional HTML properties to apply to the component.
+ */
 export const Button: FC<ButtonProps> = ({
   variant = Variant.Primary,
   size = Size.Md,
@@ -84,19 +124,25 @@ export const Button: FC<ButtonProps> = ({
     <HeadlessButton
       className={cn(
         "inline-flex items-center justify-center",
+        borderless && "aspect-square min-w-0 shrink-0", // circular
         borderless ? radiusStyles(Radius.Full) : radiusStyles(Radius.Sm),
         "font-medium",
         "transition-colors",
         "hover:cursor-pointer",
         "disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none",
-        variantStyles[variant],
         sizeStyles[size],
+        variantStyles[variant],
         borderless && "border-0",
         className
       )}
       {...props}
     >
-      <div className="flex flex-nowrap items-center justify-center gap-x-sm">
+      <div
+        className={clsx(
+          "flex flex-nowrap items-center justify-center gap-x-sm",
+          variantTextStyles[variant]
+        )}
+      >
         {LeadingIcon && (
           <span className={clsx(iconStyles[size])}>
             <LeadingIcon />
