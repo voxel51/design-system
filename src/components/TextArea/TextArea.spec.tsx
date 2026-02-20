@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 
 import { Radius, Size } from "@/types";
 
-import { TextArea } from "./TextArea";
+import { ResizeBehavior, TextArea } from "./TextArea";
 
 describe("TextArea", () => {
   // Basic Rendering
@@ -100,7 +100,9 @@ describe("TextArea", () => {
 
   // Resize Behavior
   it("should apply resize-none class when resize is none", () => {
-    render(<TextArea resize="none" data-testid="resize-textarea" />);
+    render(
+      <TextArea resize={ResizeBehavior.None} data-testid="resize-textarea" />
+    );
     const textarea = screen.getByTestId("resize-textarea");
     expect(textarea).toHaveClass("resize-none");
   });

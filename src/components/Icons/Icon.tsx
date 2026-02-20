@@ -151,6 +151,21 @@ export interface IconProps {
   style?: React.CSSProperties;
 }
 
+/**
+ * An generic icon component which will take the form of the icon specified by `name`.
+ *
+ * @example
+ * ```tsx
+ * <Icon name={IconName.Edit} size={Size.Md} />
+ * ```
+ *
+ * @param name Icon to display. See {@link IconName}.
+ * @param size The size of the icon. See {@link Size}.
+ * @param className `class` overrides to apply to the component.
+ * @param color Color of the icon. By default, the icon inherits the text color of its container.
+ * @param style `style` overrides to apply to the icon.
+ * @param props Additional HTML properties to apply to the component.
+ */
 export const Icon: FC<IconProps> = ({
   name,
   size = undefined, // if no size specified, fill the parent container

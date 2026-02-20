@@ -23,6 +23,32 @@ export interface ActivityToastProps extends HTMLAttributes<HTMLDivElement> {
   variant?: Variant;
 }
 
+/**
+ * A component which renders simple toast-style notifications.
+ *
+ * This component is best suited for non-interactive, ephemeral notifications.
+ *
+ * See also {@link Toast}.
+ *
+ * @example
+ * ```tsx
+ * <ActivityToast
+ *   open={true}
+ *   icon={() => <Icon name={IconName.Check}/>}
+ *   message={"Operation successful"}
+ *   variant={Variant.Success}
+ * />
+ * ```
+ *
+ * @param anchor Position within the viewport to anchor the notification.
+ *  Options include all cardinal directions as well as all four corners.
+ * @param className `class` overrides to apply to the component.
+ * @param icon Reference (`FC`) to an icon to render which prefixes the toast message. See {@link Icon}.
+ * @param message Message to include in the toast.
+ * @param open Boolean controlling whether the toast is visible.
+ * @param variant The toast variant; this controls the general styling of the toast. See {@link Variant}.
+ * @param props Additional HTML properties to apply to the component.
+ */
 export const ActivityToast: FC<ActivityToastProps> = ({
   anchor = Anchor.BottomRight,
   className,

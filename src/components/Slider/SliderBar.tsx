@@ -19,6 +19,24 @@ interface SliderBarProps extends Omit<
   value?: number | number[];
 }
 
+/**
+ * Component which renders the bar and knobs to form the basis of a slider.
+ *
+ * This component operates as both a controlled and uncontrolled component.
+ * See `value` and `onChange` for controlled behavior.
+ *
+ * @param max Maximum allowed value.
+ * @param min Minimum allowed value.
+ * @param multi If `true`, provides knob controls for both a "low" and a "high value.
+ * @param onChange Callback triggered when slider values change.
+ *  If `multi` is `true`, emits a value of the form [low, high]; otherwise, emits a single value.
+ * @param step Step size of the slider; moving a knob will modify the current value by a minimum of this size.
+ * @param value Value of the slider.
+ *  If `multi` is true, this must be a value of the form [low, high]; otherwise, this is a single numeric value.
+ * @param props Additional HTML properties to apply to the component.
+ *
+ * @internal For use by {@link Slider}.
+ */
 export const SliderBar: FC<SliderBarProps> = ({
   max,
   min,

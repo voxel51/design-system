@@ -66,6 +66,21 @@ export interface DatepickerInputProps {
   hasValue?: boolean;
 }
 
+/**
+ * An input component supporting dates and date-times.
+ *
+ * This component operates exclusively as a controlled component. See `value` and `onChange` for controlled behavior.
+ *
+ * @param value The text representation of the date.
+ * @param onClick Callback triggered when the input is clicked.
+ * @param disabled If `true`, disables the input.
+ * @param error If `true`, renders the input in an error state.
+ * @param size The size of the input; this controls the size of the text and the input's padding. See {@link Size}.
+ * @param radius The border radius of the input. See {@link Radius}.
+ * @param hasValue Unused
+ *
+ * @internal For use by {@link DatePicker}.
+ */
 export const DatepickerInput: FC<DatepickerInputProps> = ({
   value,
   onClick,
