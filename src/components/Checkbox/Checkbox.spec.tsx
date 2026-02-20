@@ -5,7 +5,6 @@ import { Size } from "@/types";
 
 import { Checkbox } from "./Checkbox";
 
-
 describe("Checkbox", () => {
   const checkboxLabel = "Checkbox label";
 
