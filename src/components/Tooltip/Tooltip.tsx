@@ -51,6 +51,24 @@ const RotatedSquare: FC<{ anchor: TooltipAnchor }> = ({ anchor }) => {
   );
 };
 
+/**
+ * A tooltip which appears when hovering over the wrapped content.
+ *
+ * @example
+ * ```tsx
+ * <Tooltip content={<Text>Tooltip content goes here</Text>}>
+ *   <Text>Hover this text to see the tooltip</Text>
+ * </Tooltip>
+ * ```
+ *
+ * @param anchor Position to anchor the tooltip relative to its content. See {@link Anchor}.
+ * @param content The content of the tooltip.
+ * @param children The content which this component wraps; this acts as the element anchor and the hover trigger.
+ * @param className `class` overrides to apply to the component.
+ * @param portal If `true`, applies a high z-index to ensure visibility in stacked contexts.
+ * @param shadow The shadow to apply to the tooltip. See {@link Shadow}.
+ * @param props Additional HTML properties to apply to the component.
+ */
 export const Tooltip: FC<TooltipProps> = ({
   anchor = Anchor.Top,
   content,
