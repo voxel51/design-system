@@ -72,6 +72,7 @@ export const RichButton: FC<RichButtonProps> = ({
           ? borderColorClass(BorderColor.Active)
           : borderColorClass(BorderColor.Default),
         !active && borderColorClass(BorderColor.Hover, ElementState.Hover),
+        active && "data:active",
         "p-3",
         radiusStyles(Radius.Md),
         className
