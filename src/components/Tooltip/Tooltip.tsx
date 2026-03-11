@@ -11,7 +11,7 @@ import {
   Radius,
   Shadow,
   ZIndex,
-  zIndexClass,
+  zIndexStyles,
 } from "@/types";
 import { cn } from "@/util/classes";
 
@@ -104,7 +104,7 @@ export const Tooltip: FC<TooltipProps> = ({
           static
           anchor={anchor}
           className={cn(
-            portal && zIndexClass(ZIndex.AboveModal),
+            portal && zIndexStyles(ZIndex.AboveModal),
             "relative",
             "py-0.75 px-2.5",
             "!overflow-visible",

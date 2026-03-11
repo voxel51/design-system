@@ -31,11 +31,8 @@ export const Z_INDEX_VALUES: Record<ZIndex, number | "auto"> = {
  * Returns the Tailwind z-index class for the given z-index.
  * Default uses "z-auto"; others use the theme CSS variable (e.g. z-[var(--z-above-modal)]).
  */
-export function zIndexClass(zIndex: ZIndex): string {
-  if (
-    zIndex === ZIndex.Default ||
-    Z_INDEX_VALUES[zIndex] === "auto"
-  ) {
+export function zIndexStyles(zIndex: ZIndex): string {
+  if (zIndex === ZIndex.Default) {
     return "z-auto";
   }
   const varName = `--z-${zIndex}`;

@@ -23,7 +23,7 @@ import {
   TextColor,
   textColorClass,
   ZIndex,
-  zIndexClass,
+  zIndexStyles,
 } from "@/types";
 import { IconName } from "@/types/icons";
 
@@ -64,10 +64,10 @@ export interface SelectProps extends Omit<
  */
 function getZIndexClass(zIndex?: ZIndex, portal?: boolean): string | undefined {
   if (portal) {
-    return zIndexClass(ZIndex.AboveModal);
+    return zIndexStyles(ZIndex.AboveModal);
   }
   if (zIndex) {
-    return zIndexClass(zIndex);
+    return zIndexStyles(zIndex);
   }
   return undefined;
 }
@@ -158,7 +158,6 @@ export const Select: FC<SelectProps> = ({
 }) => {
   const [query, setQuery] = useState("");
   const [selectionState, setSelectionState] = useState<string[]>(() => []);
-  const zIndexClass = getZIndexClass(zIndex, portal);
 
   const filteredOptions = useMemo(
     () =>
@@ -251,7 +250,7 @@ export const Select: FC<SelectProps> = ({
           className={clsx(
             "mt-1",
             "w-[var(--anchor-width)]",
-            zIndexClass,
+            getZIndexClass(zIndex, portal),
             radiusStyles(Radius.Md),
             shadowStyles(Shadow.Md)
           )}
