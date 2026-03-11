@@ -1,4 +1,6 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+
 import { Toggle } from "./Toggle";
 
 describe("Toggle", () => {
@@ -35,15 +37,21 @@ describe("Toggle", () => {
     expect(toggle).toHaveAttribute("aria-checked", "true");
   });
 
-  it("should handle click events", () => {
+  it("should handle click events", async () => {
     const handleChange = jest.fn();
     render(
-      <Toggle onChange={handleChange} label={toggleLabel} data-testid="clickable-toggle" />
+      <Toggle
+        onChange={handleChange}
+        label={toggleLabel}
+        data-testid="clickable-toggle"
+      />
     );
 
     const toggle = screen.getByTestId("clickable-toggle");
-    toggle.click();
+    const user = userEvent.setup();
+
+    await user.click(toggle);
+
     expect(handleChange).toHaveBeenCalledTimes(1);
   });
 });
-

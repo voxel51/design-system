@@ -5,7 +5,9 @@ module.exports = {
   roots: ["<rootDir>/src"],
   testMatch: ["**/__tests__/**/*.ts?(x)", "**/?(*.)+(spec|test).ts?(x)"],
   moduleNameMapper: {
+    "^@/(.*)\\.svg\\?react$": "<rootDir>/src/__mocks__/svgMock.tsx",
     "^@/(.*)$": "<rootDir>/src/$1",
+    "^#/(.*)$": "<rootDir>/utils/$1",
     "\\.(css|less|scss|sass)$": "identity-obj-proxy",
   },
   setupFilesAfterEnv: ["<rootDir>/src/setupTests.ts"],

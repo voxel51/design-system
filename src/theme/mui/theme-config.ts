@@ -1,7 +1,8 @@
 import type { ThemeOptions, PaletteMode } from "@mui/material";
+
+import { getComponentThemeConfig } from "@/theme/mui/components";
 import { colors } from "@/theme/tokens/colors";
 import { typography } from "@/theme/tokens/typography";
-import { getComponentThemeConfig } from "@/theme/mui/components";
 
 /**
  * Create a theme configuration object compatible with Material UI's createTheme.

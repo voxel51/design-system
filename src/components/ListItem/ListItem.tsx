@@ -1,63 +1,121 @@
-import type { FC, HTMLAttributes, ReactNode } from "react";
+import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import clsx from "clsx";
+import type { FC, HTMLAttributes, ReactNode } from "react";
+
+import { Checkbox } from "@/components/Checkbox";
 import { DragHandleIcon } from "@/components/Icons/DragHandle";
 import { Text } from "@/components/Text";
-import { TextColor, TextVariant } from "@/types";
+import radiusStyles from "@/styles/radius";
+import {
+  BackgroundColor,
+  bgColorClass,
+  Radius,
+  TextColor,
+  textColorClass,
+  TextVariant,
+} from "@/types";
 
 export interface ListItemProps extends HTMLAttributes<HTMLDivElement> {
   canSelect?: boolean;
   selected?: boolean;
   onSelected?: (selected: boolean) => void;
   canDrag?: boolean;
+  dragHandleListeners?: SyntheticListenerMap;
   primaryContent?: ReactNode;
   secondaryContent?: ReactNode;
   actions?: ReactNode;
+  additionalContent?: ReactNode;
 }
 
+/**
+ * An item to be displayed in a list.
+ *
+ * @param canSelect If `true`, the component will include a {@link Checkbox} to enable selection.
+ * @param selected Controls the selection state of the list item. If `canSelect` is not truthy, this has no effect.
+ * @param onSelected Callback triggered when this item is selected.
+ * @param canDrag If `true`, displays a {@link DragHandleIcon} to allow dragging this component.
+ * @param dragHandleListeners Optional mapping of `listenerId: listener` for drag events.
+ * @param primaryContent Primary content to display in the list item.
+ * @param secondaryContent Secondary content to display in the list item.
+ * @param actions Content to display as "actions" for the list item.
+ *  This content will be pushed to the trailing edge of the list item.
+ * @param additionalContent Additional content to display in the list item.
+ *  This content will be placed between the `secondaryContent` and the `actions.
+ * @param className `class` overrides to apply to the component.
+ * @param props Additional HTML properties to apply to the component.
+ *
+ * @internal For use by the {@link RichList} component.
+ */
 export const ListItem: FC<ListItemProps> = ({
   canSelect = false,
   selected = false,
   onSelected = undefined,
   canDrag = false,
+  dragHandleListeners,
   primaryContent = undefined,
   secondaryContent = undefined,
   actions = undefined,
+  additionalContent = undefined,
   className,
   ...props
 }) => {
   return (
     <div
       className={clsx(
-        "flex flex-nowrap items-center justify-between",
-        "gap-x-lg",
-        "py-3 pr-3 pl-2",
-        "bg-content-bg-card-2",
-        "rounded-sm",
+        "flex flex-col",
         "w-full",
+        bgColorClass(BackgroundColor.Card2),
+        radiusStyles(Radius.Sm),
         className
       )}
       {...props}
     >
-      <div className={clsx("flex flex-nowrap items-center", "gap-x-md")}>
-        {canSelect && (
-          <input
-            type="checkbox"
-            checked={selected}
-            onChange={(e) => onSelected?.(e.target.checked)}
-          /> // todo replace with checkbox when available
+      <div
+        className={clsx(
+          "flex flex-nowrap items-center justify-between",
+          "w-full",
+          "gap-x-lg",
+          "py-3 px-[14px]"
         )}
-        {canDrag && (
-          <span className="flex align-items cursor-grab">
-            <DragHandleIcon className="size-4 text-content-text-secondary" />
-          </span>
-        )}
-        <Text variant={TextVariant.Lg}>{primaryContent}</Text>
-        <Text variant={TextVariant.Md} color={TextColor.Secondary}>
-          {secondaryContent}
-        </Text>
-      </div>
+      >
+        <div className={clsx("flex flex-nowrap items-center", "gap-x-md")}>
+          {canSelect && (
+            <Checkbox
+              checked={selected}
+              onChange={(checked) => onSelected?.(checked)}
+            />
+          )}
+          {canDrag && (
+            <span
+              className="flex align-items cursor-grab touch-none"
+              {...dragHandleListeners}
+            >
+              <DragHandleIcon
+                className={clsx("size-4", textColorClass(TextColor.Secondary))}
+              />
+            </span>
+          )}
+          <Text variant={TextVariant.Lg}>{primaryContent}</Text>
+          <Text variant={TextVariant.Md} color={TextColor.Secondary}>
+            {secondaryContent}
+          </Text>
+        </div>
 
-      <span>{actions}</span>
+        <span>{actions}</span>
+      </div>
+      {additionalContent && (
+        <div
+          className={clsx(
+            "px-md pb-3",
+            // Align with primaryContent by adding margin for checkbox/drag handle
+            canSelect && canDrag && "ml-12",
+            canSelect && !canDrag && "ml-6",
+            !canSelect && canDrag && "ml-6"
+          )}
+        >
+          {additionalContent}
+        </div>
+      )}
     </div>
   );
 };

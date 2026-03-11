@@ -1,36 +1,51 @@
-import radiusStyles from "@/styles/radius";
-import { TEXT_STYLES } from "@/styles/text";
-import { Radius, Size, TextColor, TextVariant } from "@/types";
-import { cn } from "@/util/classes";
 import { Field, Switch as HeadlessSwitch, Label } from "@headlessui/react";
 import { ButtonHTMLAttributes, type FC } from "react";
+
+import { UnsetHint } from "@/components/UnsetHint";
+import radiusStyles from "@/styles/radius";
+import { TEXT_STYLES } from "@/styles/text";
+import {
+  BackgroundColor,
+  bgColorClass,
+  BorderColor,
+  borderColorClass,
+  Radius,
+  Size,
+  TextColor,
+  textColorClass,
+  TextVariant,
+} from "@/types";
+import { cn } from "@/util/classes";
 
 type ModifiedToggleProps = Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
   "size" | "onChange" | "checked" | "disabled" | "className" | "value"
 >;
 
+type ToggleSize = Extract<Size, Size.Sm | Size.Md>;
+
 export interface ToggleProps extends ModifiedToggleProps {
   checked?: boolean;
   onChange?: (checked: boolean) => void;
   label?: string;
   disabled?: boolean;
-  size?: Size.Sm | Size.Md;
+  size?: ToggleSize;
   className?: string;
   labelClassName?: string;
+  showUnsetHint?: boolean;
 }
 
-const trackSizeStyles: Partial<Record<Size, string>> = {
+const trackSizeStyles: Record<ToggleSize, string> = {
   [Size.Sm]: cn("w-8 h-4"),
   [Size.Md]: cn("w-9 h-5"),
 };
 
-const thumbSizeStyles: Partial<Record<Size, string>> = {
+const thumbSizeStyles: Record<ToggleSize, string> = {
   [Size.Sm]: cn("w-3 h-3"),
   [Size.Md]: cn("w-4 h-4"),
 };
 
-const textStyles: Partial<Record<Size, string>> = {
+const textStyles: Record<ToggleSize, string> = {
   [Size.Sm]: TEXT_STYLES[TextVariant.Sm],
   [Size.Md]: TEXT_STYLES[TextVariant.Md],
 };
@@ -55,14 +70,47 @@ const getThumbTranslateStyles = (size: Size): string => {
   }
 };
 
+/**
+ * A component supporting a boolean toggle.
+ *
+ * This component operates exclusively as a controlled component. See `value` and `onChange` for controlled behavior.
+ *
+ * @example
+ * ```tsx
+ * const MyComponent = () => {
+ *   const [enabled, setEnabled] = useState<boolean>(false);
+ *
+ *   const onChange = useCallback((status: boolean) => setEnabled(status), [setEnabled]);
+ *
+ *   return (
+ *     <Toggle
+ *       checked={enabled}
+ *       onChange={onChange}
+ *       label="Run with debug enabled"
+ *     />
+ *   );
+ * };
+ * ```
+ *
+ * @param checked If `true`, renders the toggle in the "active" state.
+ * @param disabled If `true`, disables the toggle.
+ * @param onChange Callback triggered when the toggle value changes.
+ * @param size Size of the toggle. See {@link Size}.
+ * @param className `class` overrides to apply to the component.
+ * @param labelClassName `class` overrides to apply to the toggle's label.
+ * @param label Optional label for the toggle.
+ * @param showUnsetHint If `true`, displays a hint to the user to initialize the toggle's value.
+ * @param props Additional HTML properties to apply to the component.
+ */
 export const Toggle: FC<ToggleProps> = ({
-  checked = false,
+  checked,
   disabled = false,
-  onChange = undefined,
+  onChange,
   size = Size.Md,
   className,
   labelClassName,
   label,
+  showUnsetHint,
   ...props
 }) => {
   return (
@@ -77,17 +125,16 @@ export const Toggle: FC<ToggleProps> = ({
           "inline-flex",
           "cursor-pointer",
           "items-center",
-          "bg-content-bg-card-elevated", // TODO - evaluate if this intent is correct
+          bgColorClass(BackgroundColor.CardElevated),
           "border",
-          "border-content-border-secondary-primary",
+          borderColorClass(BorderColor.Default),
           "transition-colors",
           // when hovered
           "hover:bg-[#999999]", // TODO - current scheme doesn't have a light grey
-          // when focused
           "focus:outline-none",
-          "focus:ring-1",
-          "focus:ring-action-primary-primary",
-          "focus:ring-offset-2",
+          "focus:ring-0",
+          "focus-visible:outline-none",
+          "focus-visible:ring-0",
           // when disabled
           "disabled:opacity-50",
           "disabled:cursor-not-allowed",
@@ -103,6 +150,10 @@ export const Toggle: FC<ToggleProps> = ({
         <span
           className={cn(
             "pointer-events-none",
+            // center the thumb vertically
+            "absolute",
+            "top-1/2",
+            "-translate-y-1/2",
             "inline-block",
             "rounded-full",
             "bg-content-bg-card-1",
@@ -119,7 +170,7 @@ export const Toggle: FC<ToggleProps> = ({
       {label && (
         <Label
           className={cn(
-            TextColor.Muted,
+            textColorClass(TextColor.Muted),
             textStyles[size],
             "cursor-pointer",
             labelClassName
@@ -127,6 +178,9 @@ export const Toggle: FC<ToggleProps> = ({
         >
           {label}
         </Label>
+      )}
+      {showUnsetHint && (
+        <UnsetHint value={checked} hint={"Click the toggle to set a value"} />
       )}
     </Field>
   );

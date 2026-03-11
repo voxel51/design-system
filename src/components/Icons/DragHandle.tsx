@@ -1,7 +1,16 @@
-import { IconProps } from "@/components/Icons/types";
-import type { FC } from "react";
 import clsx from "clsx";
+import type { FC } from "react";
 
+import { IconProps } from "@/components/Icons/types";
+
+/**
+ * A drag-handle icon.
+ *
+ * @param className `class` overrides to apply to the component.
+ * @param props Additional HTML properties to apply to the component.
+ *
+ * @internal For use by the {@link ListItem} component.
+ */
 export const DragHandleIcon: FC<IconProps> = ({ className, ...props }) => {
   return (
     <svg
