@@ -3,14 +3,18 @@
 This library acts as both a design system and a component library for Voxel51's
 front-end applications.
 
-Note: this library is currently in a pre-release state and may have frequent breaking changes.
-This library will adhere to semantic versioning best-practices starting with version 1.0.0.
+Note: this library is currently in a pre-release state and may have frequent
+breaking changes. This library will adhere to semantic versioning
+best-practices starting with version 1.0.0.
 
 ## Development
 
 ### Viewing Components
 
-To view and interact with VOODO components in a live environment, use the [design-system-documentation](https://github.com/voxel51/design-system-documentation) repository. Follow the setup instructions there to run the documentation webapp locally.
+To view and interact with VOODO components in a live environment, use the
+[design-system-documentation](https://github.com/voxel51/design-system-documentation)
+repository. Follow the setup instructions there to run the documentation webapp
+locally.
 
 ### Local Development
 
@@ -29,8 +33,6 @@ npm link
 # Run in watch mode (rebuilds on file changes)
 npm run dev
 ```
-```shell
-```
 
 ## Installation
 
@@ -42,7 +44,8 @@ npm i @voxel51/voodo
 
 ### Using components
 
-This library exports a number of React components which are consistent with VOODO's look and feel.
+This library exports a number of React components which are consistent with
+VOODO's look and feel.
 
 ```typescript jsx
 import { Button } from "@voxel51/voodo";
@@ -56,18 +59,19 @@ export const Component = () => {
 };
 ```
 
-Note that you'll need to import this library's theme somewhere in your application for the components
-to be styled correctly. See [CSS Themes](#css-themes).
+Note that you'll need to import this library's theme somewhere in your
+application for the components to be styled correctly. See
+[CSS Themes](#css-themes).
 
 ### Theming
 
 #### CSS Themes
 
-This library is based on Tailwind and exports a set of CSS variables which capture
-the relevant colors, spacing, typography, etc.
+This library is based on Tailwind and exports a set of CSS variables which
+capture the relevant colors, spacing, typography, etc.
 
-To consume the CSS variables, simply include the following line somewhere in your
-application.
+To consume the CSS variables, simply include the following line somewhere in
+your application.
 
 ```typescript
 import "@voxel51/voodo/theme.css";
@@ -75,8 +79,8 @@ import "@voxel51/voodo/theme.css";
 
 #### Usage with MUI
 
-This library also exports theme configuration (in the form of a Material `ThemeConfig`)
-which can be used to generate an MUI theme.
+This library also exports theme configuration (in the form of a Material
+`ThemeConfig`) which can be used to generate an MUI theme.
 
 ```typescript jsx
 
@@ -112,23 +116,28 @@ function App() {
 
 ## Contributing
 
-This library is based on [HeadlessUI](https://headlessui.com/) and [Tailwind](https://tailwindcss.com/). 
-Components should be minimal, intentional, and adhere strictly to the Voxel51's internal design guidelines.
+This library is based on [HeadlessUI](https://headlessui.com/) and
+[Tailwind](https://tailwindcss.com/). Components should be minimal,
+intentional, and adhere strictly to the Voxel51's internal design guidelines.
 
 General rules of thumb:
- - Prefer explicit behavior over implicit
- - Provide configurability where appropriate
-   - Ensure top-level properties adhere to design guidelines
-   - Allow for property overrides
- - Prefer small, composable components
+
+- Prefer explicit behavior over implicit
+- Provide configurability where appropriate
+    - Ensure top-level properties adhere to design guidelines
+    - Allow for property overrides
+- Prefer small, composable components
 
 ## Publishing
 
-This library is published to NPM via GitHub Actions workflows.
-Releases are triggered by tagging a commit with a `v<version>` tag, where `<version>`
-should match the `version` property in `package.json`. For example, the initial release has the tag `v0.0.1`.
+This library is published to NPM via GitHub Actions workflows. Releases are
+triggered by tagging a commit with a `v<version>` tag, where `<version>` should
+match the `version` property in `package.json`. For example, the initial
+release has the tag `v0.0.1`.
 
-Once a release is tagged and published, the `version` property in `package.json` should receive a patch bump.
+Once a release is tagged and published, the `version` property in
+`package.json` should receive a patch bump.
 
-This library is currently in a pre-release state, with versions matching `0.x.y`.
-Standard semantic versioning will be enforced starting with version `1.0.0`.
+This library is currently in a pre-release state, with versions matching
+`0.x.y`. Standard semantic versioning will be enforced starting with version
+`1.0.0`.
