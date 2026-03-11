@@ -27,3 +27,4 @@ export * from "./Toggle";
 export * from "./ToggleSwitch";
 export * from "./Tooltip";
 export * from "./UnsetHint";
+export * from "./Divider";
