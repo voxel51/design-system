@@ -66,7 +66,9 @@ describe("Tooltip", () => {
       </Tooltip>
     );
 
-    fireEvent.mouseEnter(within(screen.getByTestId(testId)).getByText(children));
+    fireEvent.mouseEnter(
+      within(screen.getByTestId(testId)).getByText(children)
+    );
 
     const tooltipContent = screen.getByText(content);
     const tooltipPanel = tooltipContent.parentElement;
