@@ -27,6 +27,7 @@ const sizeStyles: Record<Size, string> = {
   [Size.Sm]: clsx("px-3 py-2", "text-sm/6"),
   [Size.Md]: clsx("px-3.5 py-2.5", "text-md/7"),
   [Size.Lg]: clsx("px-4 py-3", "text-lg/9"),
+  [Size.Xl]: clsx("px-4.5 py-3.5", "text-xl/10"),
 };
 
 const resizeStyles: Record<ResizeBehavior, string> = {

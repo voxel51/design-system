@@ -3,11 +3,11 @@ import type { FC, HTMLAttributes } from "react";
 
 import { textStyles } from "@/styles/text";
 import { IconColor, TextColor, TextVariant } from "@/types";
-import { textColorClass } from "@/types/color";
+import { BrandColor, textColorClass } from "@/types/color";
 
 export interface TextProps extends HTMLAttributes<HTMLSpanElement> {
   variant?: TextVariant;
-  color?: TextColor | IconColor;
+  color?: TextColor | IconColor | BrandColor;
 }
 
 /**

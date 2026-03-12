@@ -1,5 +1,6 @@
 import { render } from "@testing-library/react";
 
+import { IconColor } from "@/types";
 import { IconName } from "@/types/icons";
 import { Size } from "@/types/size";
 
@@ -43,22 +44,20 @@ describe("Icon", () => {
 
   describe("color prop", () => {
     it("should apply color to the style attribute", () => {
-      const color = "#ff0000";
       const { container } = render(
-        <Icon name={IconName.Check} color={color} />
+        <Icon name={IconName.Check} color={IconColor.Destructive} />
       );
       const svg = container.querySelector("svg");
-      expect(svg).toHaveStyle({ color });
+      expect(svg).toHaveClass("text-content-icon-destructive");
     });
 
     it("should handle CSS color names", () => {
-      const color = "red";
       const { container } = render(
-        <Icon name={IconName.Check} color={color} />
+        <Icon name={IconName.Check} color={IconColor.Destructive} />
       );
       const svg = container.querySelector("svg");
       // Browser normalizes CSS color names to RGB
-      expect(svg).toHaveStyle({ color: "rgb(255, 0, 0)" });
+      expect(svg).toHaveClass("text-content-icon-destructive");
     });
   });
 

@@ -1,8 +1,10 @@
 export * from "./ActivityToast";
 export * from "./Button";
+export * from "./Card";
 export * from "./Checkbox";
 export * from "./Clickable";
 export * from "./Datepicker";
+export * from "./Divider";
 export * from "./FormField";
 export * from "./FormFieldGroup";
 export * from "./Heading";
@@ -27,4 +29,3 @@ export * from "./Toggle";
 export * from "./ToggleSwitch";
 export * from "./Tooltip";
 export * from "./UnsetHint";
-export * from "./Divider";
