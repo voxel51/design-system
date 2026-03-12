@@ -14,7 +14,7 @@ import {
 } from "@/types";
 import { bgColorClass, textColorClass } from "@/types/color";
 
-export type PillSize = Exclude<Size, Size.Lg>;
+export type PillSize = Exclude<Size, Size.Lg | Size.Xl>;
 export type PillColor = BackgroundColor | SemanticColor | StatusColor;
 
 export interface PillProps extends HTMLAttributes<HTMLSpanElement> {

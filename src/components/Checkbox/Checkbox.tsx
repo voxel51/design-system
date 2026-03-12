@@ -42,6 +42,7 @@ const sizeStyles: Record<Size, string> = {
   [Size.Sm]: clsx("w-4 h-4"),
   [Size.Md]: clsx("w-5 h-5"),
   [Size.Lg]: clsx("w-6 h-6"),
+  [Size.Xl]: clsx("w-7 h-7"),
 };
 
 const checkmarkSizeStyles: Record<Size, string> = {
@@ -49,6 +50,7 @@ const checkmarkSizeStyles: Record<Size, string> = {
   [Size.Sm]: clsx("checked:after:text-sm"),
   [Size.Md]: clsx("checked:after:text-base"),
   [Size.Lg]: clsx("checked:after:text-lg"),
+  [Size.Xl]: clsx("checked:after:text-xl"),
 };
 
 /**
@@ -118,7 +120,7 @@ export const Checkbox: FC<CheckboxProps> = ({
       >
         <Icon
           name={IconName.Check}
-          color="var(--color-content-text-primary)"
+          color={TextColor.Primary}
           className={clsx(
             // scale to the size of the checkbox
             "absolute inset-0 w-full h-full opacity-0 group-data-checked:opacity-100"
