@@ -2,6 +2,7 @@ import clsx from "clsx";
 import type { FC, HTMLAttributes, ReactNode } from "react";
 
 import { Clickable } from "@/components/Clickable";
+import { IconWrapper } from "@/components/Icons";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
 import {
@@ -9,6 +10,7 @@ import {
   borderColorClass,
   ElementState,
   IconColor,
+  IconName,
   Radius,
   TextColor,
   textColorClass,
@@ -18,7 +20,7 @@ import { cn } from "@/util/classes";
 export interface RichButtonProps extends HTMLAttributes<HTMLDivElement> {
   active?: boolean;
   description?: ReactNode;
-  icon?: FC;
+  icon?: FC | IconName;
   label?: ReactNode;
   onClick?: () => void;
 }
@@ -47,7 +49,7 @@ export interface RichButtonProps extends HTMLAttributes<HTMLDivElement> {
  *
  * @param active If `true`, renders the component in its active state.
  * @param description Content to display as the description of the component. This is the component's secondary content.
- * @param icon Icon reference ({@link FC}) to display in the component. See {@link Icon}.
+ * @param icon Icon reference ({@link FC}) or an {@link IconName} to display in the component. See {@link Icon}.
  * @param label Content to display as the label of the component. This is the component's primary content.
  * @param onClick Callback triggered when the component is clicked.
  * @param className `class` overrides to apply to the component.
@@ -56,7 +58,7 @@ export interface RichButtonProps extends HTMLAttributes<HTMLDivElement> {
 export const RichButton: FC<RichButtonProps> = ({
   active,
   description,
-  icon: Icon,
+  icon,
   label,
   onClick,
   className,
@@ -87,18 +89,15 @@ export const RichButton: FC<RichButtonProps> = ({
     >
       <div className="flex flex-col">
         <span className="flex gap-x-md items-center">
-          {Icon && (
-            <span
-              className={cn(
-                "size-5",
-                active
-                  ? textColorClass(IconColor.Brand)
-                  : textColorClass(IconColor.Default)
-              )}
-            >
-              <Icon />
-            </span>
-          )}
+          <IconWrapper
+            content={icon}
+            className={cn(
+              "size-5",
+              active
+                ? textColorClass(IconColor.Brand)
+                : textColorClass(IconColor.Default)
+            )}
+          />
           {label && <Text>{label}</Text>}
         </span>
 
