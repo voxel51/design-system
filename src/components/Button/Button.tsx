@@ -1,8 +1,8 @@
 import { Button as HeadlessButton } from "@headlessui/react";
 import clsx from "clsx";
-import { ButtonHTMLAttributes, FC, Fragment } from "react";
+import { ButtonHTMLAttributes, FC } from "react";
 
-import { Icon } from "@/components/Icons";
+import { IconWrapper } from "@/components/Icons";
 import radiusStyles from "@/styles/radius";
 import {
   ActionColor,
@@ -145,41 +145,21 @@ export const Button: FC<ButtonProps> = ({
           variantTextStyles[variant]
         )}
       >
-        <IconWrapper size={size} content={leadingIcon} />
+        <IconWrapper
+          content={leadingIcon}
+          size={size}
+          className={clsx(iconStyles[size], "flex justify-center items-center")}
+        />
 
         {children}
 
-        <IconWrapper size={size} content={trailingIcon} />
+        <IconWrapper
+          content={trailingIcon}
+          size={size}
+          className={clsx(iconStyles[size], "flex justify-center items-center")}
+        />
       </div>
     </HeadlessButton>
-  );
-};
-
-/**
- * Helper component which resolves {@link FC} | {@link IconName} | ``undefined`` to an FC.
- *
- * Wraps content in a fixed-sized span to constraint icon bounds.
- *
- * @param content Icon {@link FC}, icon name, or undefined
- * @param size Button size; forwarded to the icon
- */
-const IconWrapper: FC<{
-  content?: FC | IconName;
-  size: ButtonSize;
-}> = ({ content, size }) => {
-  const Content =
-    typeof content === "string"
-      ? () => <Icon name={content} size={size} />
-      : (content as FC);
-
-  return content ? (
-    <span
-      className={clsx(iconStyles[size], "flex justify-center items-center")}
-    >
-      <Content />
-    </span>
-  ) : (
-    <Fragment />
   );
 };
 
