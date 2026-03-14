@@ -1,6 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import userEvent, { UserEvent } from "@testing-library/user-event";
 
+import { IconName } from "@/types";
+
 import { Button } from "./Button";
 
 const DummyIcon = () => {
@@ -30,7 +32,7 @@ describe("Button", () => {
     expect(screen.getByText(buttonText)).toBeInTheDocument();
   });
 
-  it("should render with a leading icon", () => {
+  it("should render with an FC leading icon", () => {
     render(<Button leadingIcon={DummyIcon}>{buttonText}</Button>);
 
     expect(screen.getByText(buttonText)).toBeInTheDocument();
@@ -41,8 +43,30 @@ describe("Button", () => {
     );
   });
 
-  it("should render with a trailing icon", () => {
+  it("should render with a string leading icon", () => {
+    render(<Button leadingIcon={IconName.Add}>{buttonText}</Button>);
+
+    expect(screen.getByText(buttonText)).toBeInTheDocument();
+    const innerHtml = screen.getByRole("button").innerHTML;
+    expect(innerHtml).toContain("<svg");
+    expect(innerHtml.indexOf("<svg")).toBeLessThan(
+      innerHtml.indexOf(buttonText)
+    );
+  });
+
+  it("should render with an FC trailing icon", () => {
     render(<Button trailingIcon={DummyIcon}>{buttonText}</Button>);
+
+    expect(screen.getByText(buttonText)).toBeInTheDocument();
+    const innerHtml = screen.getByRole("button").innerHTML;
+    expect(innerHtml).toContain("<svg");
+    expect(innerHtml.indexOf("<svg")).toBeGreaterThan(
+      innerHtml.indexOf(buttonText)
+    );
+  });
+
+  it("should render with a string trailing icon", () => {
+    render(<Button trailingIcon={IconName.Add}>{buttonText}</Button>);
 
     expect(screen.getByText(buttonText)).toBeInTheDocument();
     const innerHtml = screen.getByRole("button").innerHTML;
