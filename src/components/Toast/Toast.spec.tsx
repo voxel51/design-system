@@ -1,5 +1,6 @@
 import { render, screen, within } from "@testing-library/react";
 
+import { IconName } from "@/types";
 import { randomString } from "@/util/random";
 
 import { DummyIcon, makeChild } from "#/testing-utils";
@@ -27,12 +28,18 @@ describe("Toast", () => {
     expect(screen.queryByTestId(testId)).not.toBeInTheDocument();
   });
 
-  it("should render an icon if provided", () => {
+  it("should render an FC icon if provided", () => {
     render(<Toast {...defaultProps} icon={DummyIcon} />);
 
     const toast = screen.getByTestId(testId);
-    const innerHtml = toast.innerHTML;
-    expect(innerHtml).toContain("<svg");
+    expect(toast.innerHTML).toContain("<svg");
+  });
+
+  it("should render a string icon if provided", () => {
+    render(<Toast {...defaultProps} icon={IconName.Add} />);
+
+    const toast = screen.getByTestId(testId);
+    expect(toast.innerHTML).toContain("<svg");
   });
 
   it("should render a title", () => {
