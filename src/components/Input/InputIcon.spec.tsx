@@ -14,12 +14,18 @@ const CheckmarkIcon: FC<IconProps> = (props) => (
 );
 
 describe("InputIcon", () => {
-  it("should render the icon", () => {
+  it("should render an FC icon", () => {
     const { container } = render(
       <InputIcon Icon={CheckmarkIcon} size={Size.Md} />
     );
-    const svg = container.querySelector("svg");
-    expect(svg).toBeInTheDocument();
+    expect(container.querySelector("svg")).toBeInTheDocument();
+  });
+
+  it("should render a string icon", () => {
+    const { container } = render(
+      <InputIcon Icon={IconName.Check} size={Size.Md} />
+    );
+    expect(container.querySelector("svg")).toBeInTheDocument();
   });
 
   it("should apply correct styling when hasText is true", () => {
