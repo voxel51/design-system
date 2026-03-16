@@ -13,6 +13,7 @@ import {
   borderColorClass,
   IconName,
   Radius,
+  textColorClass,
   Variant,
 } from "@/types";
 import { cn } from "@/util/classes";
@@ -77,7 +78,7 @@ export const ActivityToast: FC<ActivityToastProps> = ({
     >
       <IconWrapper
         content={icon}
-        className={cn("size-5", textColor(variant))}
+        className={cn("size-5", textColorClass(textColor(variant)!))}
       />
 
       {message && <Text color={textColor(variant)}>{message}</Text>}
