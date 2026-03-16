@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import type { FC, HTMLAttributes, ReactNode } from "react";
 
+import { Stack } from "@/components/Stack";
 import { Text } from "@/components/Text";
 import { ToastContainer } from "@/components/ToastContainer";
 import radiusStyles from "@/styles/radius";
@@ -10,8 +11,10 @@ import {
   BackgroundColor,
   bgColorClass,
   IconColor,
+  Orientation,
   Radius,
   Shadow,
+  Spacing,
   TextColor,
   textColorClass,
   Variant,
@@ -89,39 +92,36 @@ export const Toast: FC<ToastProps> = ({
   variant = Variant.Primary,
   ...props
 }) => {
+  const ToastCard = (
+    <Stack
+      spacing={Spacing.Xl}
+      className={cn(
+        "p-4",
+        radiusStyles(Radius.Md),
+        bgColorClass(BackgroundColor.Card2),
+        shadowStyles(Shadow.Md),
+        className
+      )}
+      {...props}
+    >
+      <Stack orientation={Orientation.Column}>
+        <Stack spacing={Spacing.Sm} className={cn("items-center")}>
+          {Icon && (
+            <span className={clsx("size-5", variantStyles[variant])}>
+              <Icon />
+            </span>
+          )}
+          {title && <Text className="font-semibold">{title}</Text>}
+        </Stack>
+        {description && <Text color={TextColor.Secondary}>{description}</Text>}
+      </Stack>
+      {action && <Stack className={cn("items-center")}>{action}</Stack>}
+    </Stack>
+  );
+
   return (
     <ToastContainer open={open} anchor={anchor}>
-      <div
-        className={cn(
-          "flex flex-nowrap",
-          "gap-x-md",
-          "p-4",
-          radiusStyles(Radius.Md),
-          bgColorClass(BackgroundColor.Card2),
-          shadowStyles(Shadow.Md),
-          className
-        )}
-        {...props}
-      >
-        {Icon && (
-          <span className={clsx("size-5", variantStyles[variant])}>
-            <Icon />
-          </span>
-        )}
-
-        <div className="flex items-center gap-x-xl">
-          <div className="flex flex-col">
-            {title && <Text className="font-semibold">{title}</Text>}
-            {description && (
-              <Text color={TextColor.Secondary}>{description}</Text>
-            )}
-          </div>
-
-          {action && (
-            <div className="flex items-center justify-center">{action}</div>
-          )}
-        </div>
-      </div>
+      {ToastCard}
     </ToastContainer>
   );
 };
