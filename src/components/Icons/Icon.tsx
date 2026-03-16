@@ -16,6 +16,7 @@ import ChevronBottomIcon from "@/img/ChevronBottom.svg?react";
 import ChevronLeftIcon from "@/img/ChevronLeft.svg?react";
 import ChevronRightIcon from "@/img/ChevronRight.svg?react";
 import ChevronTopIcon from "@/img/ChevronTop.svg?react";
+import CircleIcon from "@/img/Circle.svg?react";
 import CloseIcon from "@/img/Close.svg?react";
 import CodeIcon from "@/img/Code.svg?react";
 import DateRangeIcon from "@/img/DateRange.svg?react";
@@ -90,6 +91,7 @@ export const iconMap: Record<
   [IconName.ChevronLeft]: ChevronLeftIcon,
   [IconName.ChevronRight]: ChevronRightIcon,
   [IconName.ChevronTop]: ChevronTopIcon,
+  [IconName.Circle]: CircleIcon,
   [IconName.Close]: CloseIcon,
   [IconName.Code]: CodeIcon,
   [IconName.DateRange]: DateRangeIcon,
