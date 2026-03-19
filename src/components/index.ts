@@ -21,6 +21,7 @@ export * from "./Select";
 export * from "./Slider";
 export * from "./Spinner";
 export * from "./Stack";
+export * from "./Table";
 export * from "./Text";
 export * from "./TextArea";
 export * from "./TextBadge";
