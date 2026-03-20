@@ -1,20 +1,24 @@
 import clsx from "clsx";
 import type { FC, HTMLAttributes } from "react";
 
+import { Icon } from "@/components/Icons";
+import { Stack } from "@/components/Stack";
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
 import {
   BackgroundColor,
+  IconName,
   Radius,
   SemanticColor,
   Shadow,
   Size,
+  Spacing,
   StatusColor,
   TextColor,
 } from "@/types";
 import { bgColorClass, textColorClass } from "@/types/color";
 
-export type PillSize = Exclude<Size, Size.Lg>;
+export type PillSize = Exclude<Size, Size.Lg | Size.Xl>;
 export type PillColor = BackgroundColor | SemanticColor | StatusColor;
 
 export interface PillProps extends HTMLAttributes<HTMLSpanElement> {
@@ -24,6 +28,7 @@ export interface PillProps extends HTMLAttributes<HTMLSpanElement> {
   color?: TextColor;
   isStatus?: boolean;
   backgroundColor?: PillColor;
+  icon?: IconName;
 }
 
 const sizeStyles: Record<PillSize, string> = {
@@ -58,15 +63,17 @@ export const Pill: FC<PillProps> = ({
   shadow = undefined,
   color = TextColor.Muted,
   backgroundColor = BackgroundColor.Muted,
+  icon,
   isStatus = false,
   className,
   children,
   ...props
 }) => {
   return (
-    <span
+    <Stack
+      spacing={Spacing.Xs}
       className={clsx(
-        "inline-flex items-center justify-center",
+        "items-center",
         "font-small",
         textColorClass(color),
         bgColorClass(backgroundColor),
@@ -77,20 +84,19 @@ export const Pill: FC<PillProps> = ({
       )}
       {...props}
     >
-      {isStatus && ( // TODO: change this to an icon
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="5"
-          height="5"
-          viewBox="0 0 5 5"
-          fill="none"
-          className="mr-1"
-        >
-          <circle cx="2.5" cy="2.5" r="2.5" fill="currentColor" />
-        </svg>
+      {isStatus && (
+        <div>
+          <Icon
+            size={Size.Xs}
+            name={IconName.Circle}
+            color={color}
+            style={{ minWidth: 10 }}
+          />
+        </div>
       )}
-      {children}
-    </span>
+      <div>{icon && <Icon size={size} name={icon} color={color} />}</div>
+      <div>{children}</div>
+    </Stack>
   );
 };
 

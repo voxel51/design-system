@@ -30,7 +30,7 @@ export enum ToggleSwitchVariant {
   Borderless = "borderless",
 }
 
-export type ToggleSwitchSize = Exclude<Size, Size.Lg>;
+export type ToggleSwitchSize = Exclude<Size, Size.Lg | Size.Xl>;
 
 export interface ToggleSwitchProps extends Omit<
   HTMLAttributes<HTMLDivElement>,

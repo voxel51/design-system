@@ -20,7 +20,7 @@ import {
 } from "@/types";
 import { cn } from "@/util/classes";
 
-type ButtonSize = Exclude<Size, Size.Lg>;
+type ButtonSize = Exclude<Size, Size.Lg | Size.Xl>;
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;

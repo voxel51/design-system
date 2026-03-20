@@ -13,6 +13,7 @@ const sizeStyles: Record<Size, string> = {
   [Size.Sm]: "size-4",
   [Size.Md]: "size-5",
   [Size.Lg]: "size-6",
+  [Size.Xl]: "size-7",
 };
 
 /**

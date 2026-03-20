@@ -2,6 +2,7 @@ import clsx from "clsx";
 import type { FC, HTMLAttributes, ReactNode } from "react";
 
 import { IconWrapper } from "@/components/Icons";
+import { Stack } from "@/components/Stack";
 import { Text } from "@/components/Text";
 import { ToastContainer } from "@/components/ToastContainer";
 import radiusStyles from "@/styles/radius";
@@ -12,8 +13,10 @@ import {
   bgColorClass,
   IconColor,
   IconName,
+  Orientation,
   Radius,
   Shadow,
+  Spacing,
   TextColor,
   textColorClass,
   Variant,
@@ -58,7 +61,7 @@ const variantStyles: Record<ToastVariant, string> = {
  *       open={open}
  *       title="Message sent"
  *       description="You will be notified when the recipient opens your message"
- *       icon={() => <Icon name={IconName.Check} />}
+ *       icon={IconName.Check}
  *       action={
  *         <Button onClick={() => setOpen(false)}>
  *           Close
@@ -91,38 +94,35 @@ export const Toast: FC<ToastProps> = ({
   variant = Variant.Primary,
   ...props
 }) => {
+  const toastContent = (
+    <Stack
+      spacing={Spacing.Xl}
+      className={cn(
+        "p-4",
+        radiusStyles(Radius.Md),
+        bgColorClass(BackgroundColor.Card2),
+        shadowStyles(Shadow.Md),
+        className
+      )}
+      {...props}
+    >
+      <Stack orientation={Orientation.Column}>
+        <Stack spacing={Spacing.Sm} className={cn("items-center")}>
+          <IconWrapper
+            content={icon}
+            className={clsx("size-5", variantStyles[variant])}
+          />
+          {title && <Text className="font-semibold">{title}</Text>}
+        </Stack>
+        {description && <Text color={TextColor.Secondary}>{description}</Text>}
+      </Stack>
+      {action && <Stack className={cn("items-center")}>{action}</Stack>}
+    </Stack>
+  );
+
   return (
     <ToastContainer open={open} anchor={anchor}>
-      <div
-        className={cn(
-          "flex flex-nowrap",
-          "gap-x-md",
-          "p-4",
-          radiusStyles(Radius.Md),
-          bgColorClass(BackgroundColor.Card2),
-          shadowStyles(Shadow.Md),
-          className
-        )}
-        {...props}
-      >
-        <IconWrapper
-          content={icon}
-          className={clsx("size-5", variantStyles[variant])}
-        />
-
-        <div className="flex items-center gap-x-xl">
-          <div className="flex flex-col">
-            {title && <Text className="font-semibold">{title}</Text>}
-            {description && (
-              <Text color={TextColor.Secondary}>{description}</Text>
-            )}
-          </div>
-
-          {action && (
-            <div className="flex items-center justify-center">{action}</div>
-          )}
-        </div>
-      </div>
+      {toastContent}
     </ToastContainer>
   );
 };

@@ -3,6 +3,7 @@ export enum Size {
   Sm = "sm",
   Md = "md",
   Lg = "lg",
+  Xl = "xl",
 }
 
 export default Size;

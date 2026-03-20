@@ -16,6 +16,7 @@ import ChevronBottomIcon from "@/img/ChevronBottom.svg?react";
 import ChevronLeftIcon from "@/img/ChevronLeft.svg?react";
 import ChevronRightIcon from "@/img/ChevronRight.svg?react";
 import ChevronTopIcon from "@/img/ChevronTop.svg?react";
+import CircleIcon from "@/img/Circle.svg?react";
 import CloseIcon from "@/img/Close.svg?react";
 import CodeIcon from "@/img/Code.svg?react";
 import DateRangeIcon from "@/img/DateRange.svg?react";
@@ -60,6 +61,7 @@ import UnsupportedIcon from "@/img/Unsupported.svg?react";
 import VALIcon from "@/img/VAL.svg?react";
 import WarningIcon from "@/img/Warning.svg?react";
 import WorkspacesIcon from "@/img/Workspaces.svg?react";
+import { BrandColor, IconColor, TextColor, textColorClass } from "@/types";
 import { IconName } from "@/types/icons";
 import { Size } from "@/types/size";
 
@@ -89,6 +91,7 @@ export const iconMap: Record<
   [IconName.ChevronLeft]: ChevronLeftIcon,
   [IconName.ChevronRight]: ChevronRightIcon,
   [IconName.ChevronTop]: ChevronTopIcon,
+  [IconName.Circle]: CircleIcon,
   [IconName.Close]: CloseIcon,
   [IconName.Code]: CodeIcon,
   [IconName.DateRange]: DateRangeIcon,
@@ -141,13 +144,14 @@ const sizeMap: Partial<Record<IconSize, number>> = {
   [Size.Sm]: 12,
   [Size.Md]: 14,
   [Size.Lg]: 16,
+  [Size.Xl]: 18,
 };
 
 export interface IconProps {
   name: IconName;
   size?: Size;
   className?: string;
-  color?: string;
+  color?: TextColor | IconColor | BrandColor;
   style?: React.CSSProperties;
 }
 
@@ -171,7 +175,6 @@ export const Icon: FC<IconProps> = ({
   size = undefined, // if no size specified, fill the parent container
   className,
   color,
-  style,
   ...props
 }) => {
   // We are making a strong opinion here that we should treat the SVG
@@ -186,8 +189,7 @@ export const Icon: FC<IconProps> = ({
       width={iconSize}
       height={iconSize}
       size={size}
-      className={clsx(className)}
-      style={{ color, ...style }}
+      className={clsx(color && textColorClass(color), className)}
       {...props}
     />
   );
