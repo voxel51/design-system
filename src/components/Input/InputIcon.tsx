@@ -1,14 +1,13 @@
 import { type FC } from "react";
 
-import { Icon } from "@/components/Icons";
-import { IconProps } from "@/components/Icons/types";
+import { IconWrapper } from "@/components/Icons";
 import { IconName, Size, TextColor, textColorClass } from "@/types";
 import { cn } from "@/util/classes";
 
-import { iconPaddingStyles, iconSizeStyles } from "./styles";
+import { iconPaddingStyles } from "./styles";
 
 export interface InputIconProps {
-  Icon: FC<IconProps> | IconName;
+  icon: FC | IconName;
   size: Size;
   hasText?: boolean;
 }
@@ -22,16 +21,7 @@ export interface InputIconProps {
  *
  * @internal For use by {@link Input}.
  */
-export const InputIcon: FC<InputIconProps> = ({
-  Icon: icon,
-  size,
-  hasText,
-}) => {
-  const ResolvedIcon: FC<IconProps> =
-    typeof icon === "string"
-      ? (props) => <Icon name={icon} {...props} />
-      : icon;
-
+export const InputIcon: FC<InputIconProps> = ({ icon, size, hasText }) => {
   return (
     <span
       className={cn(
@@ -42,7 +32,7 @@ export const InputIcon: FC<InputIconProps> = ({
         iconPaddingStyles[size]
       )}
     >
-      <ResolvedIcon className={cn(iconSizeStyles[size])} />
+      <IconWrapper size={size} content={icon} />
     </span>
   );
 };

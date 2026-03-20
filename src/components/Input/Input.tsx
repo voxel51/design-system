@@ -161,7 +161,7 @@ export const Input: FC<InputProps> = ({
   return (
     <Field className="flex flex-col gap-1">
       <div className={cn("relative", icon && "flex items-center")}>
-        {icon && <InputIcon Icon={icon} size={size} hasText={hasText} />}
+        {icon && <InputIcon icon={icon} size={size} hasText={hasText} />}
         <HeadlessInput
           className={inputClasses}
           disabled={disabled}
