@@ -1,6 +1,7 @@
 import type { FC, HTMLAttributes } from "react";
 
 import radiusStyles from "@/styles/radius";
+import { textStyles } from "@/styles/text";
 import {
   BackgroundColor,
   bgColorClass,
@@ -9,6 +10,7 @@ import {
   Radius,
   TextColor,
   textColorClass,
+  TextVariant,
 } from "@/types";
 import { cn } from "@/util/classes";
 
@@ -37,7 +39,6 @@ export const TableRow: FC<HTMLAttributes<HTMLTableRowElement>> = ({
   className,
   ...props
 }) => {
-  // no border for
   return (
     <tr
       className={cn(
@@ -86,8 +87,9 @@ export const TableCell: FC<HTMLAttributes<HTMLTableCellElement>> = ({
   return (
     <td
       className={cn(
-        "px-6 py-3 text-left font-normal text-content-text-primary text-md/7",
+        "px-6 py-3 text-left font-normal",
         textColorClass(TextColor.Primary),
+        textStyles(TextVariant.Md),
         className
       )}
       {...props}
@@ -105,8 +107,9 @@ export const TableHead: FC<HTMLAttributes<HTMLTableCellElement>> = ({
   return (
     <th
       className={cn(
-        "px-6 py-3 text-left font-normal text-content-text-primary text-md/7",
+        "px-6 py-3 text-left font-normal",
         textColorClass(TextColor.Secondary),
+        textStyles(TextVariant.Md),
         className
       )}
       {...props}

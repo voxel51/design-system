@@ -1,5 +1,16 @@
 import { render, screen } from "@testing-library/react";
 
+import radiusStyles from "@/styles/radius";
+import { textStyles } from "@/styles/text";
+import {
+  BackgroundColor,
+  bgColorClass,
+  Radius,
+  TextColor,
+  textColorClass,
+  TextVariant,
+} from "@/types";
+
 import {
   Table,
   TableBody,
@@ -16,58 +27,77 @@ describe("Table", () => {
   });
 
   it("should render table with appropriate elements", () => {
+    const headerLabel = "column label";
+    const cellValue = "cell value";
+
     render(
       <Table>
         <TableHeader>
-          <TableHead>Column label</TableHead>
+          <TableRow>
+            <TableHead>{headerLabel}</TableHead>
+          </TableRow>
         </TableHeader>
         <TableBody>
           <TableRow>
-            <TableCell>Cell value</TableCell>
+            <TableCell>{cellValue}</TableCell>
           </TableRow>
         </TableBody>
       </Table>
     );
-    expect(screen.getByText("Column label")).toBeInTheDocument();
+
+    expect(screen.getByText(headerLabel)).toBeInTheDocument();
     expect(screen.getByRole("columnheader")).toBeInTheDocument();
-    expect(screen.getByText("Cell value")).toBeInTheDocument();
+    expect(screen.getByText(cellValue)).toBeInTheDocument();
     const rowGroups = screen.getAllByRole("rowgroup");
     expect(rowGroups).toHaveLength(2);
-    expect(screen.getByRole("row")).toBeInTheDocument();
+    expect(screen.getAllByRole("row")).toHaveLength(2);
     expect(screen.getByRole("cell")).toBeInTheDocument();
   });
 
   it("should render table with appropriate className", () => {
+    const headerLabel = "column label";
+    const cellValue = "cell value";
+    const className = "test-class";
+
     render(
-      <Table className="test-class">
+      <Table className={className}>
         <TableHeader>
-          <TableHead>Column label</TableHead>
+          <TableRow>
+            <TableHead>{headerLabel}</TableHead>
+          </TableRow>
         </TableHeader>
         <TableBody>
           <TableRow>
-            <TableCell>Cell value</TableCell>
+            <TableCell>{cellValue}</TableCell>
           </TableRow>
         </TableBody>
       </Table>
     );
-    expect(screen.getByRole("table")).toHaveClass("test-class");
+
+    expect(screen.getByRole("table")).toHaveClass(className);
     expect(screen.getByRole("table")).toHaveClass("w-full");
     expect(screen.getByRole("table")).toHaveClass("border-collapse");
-    expect(screen.getByRole("table")).toHaveClass("bg-content-bg-card-1");
-    expect(screen.getByRole("table")).toHaveClass("rounded-md");
+    expect(screen.getByRole("table")).toHaveClass(
+      bgColorClass(BackgroundColor.Card1)
+    );
+    expect(screen.getByRole("table")).toHaveClass(radiusStyles(Radius.Md));
     expect(screen.getByRole("columnheader")).toHaveClass("px-6");
     expect(screen.getByRole("columnheader")).toHaveClass("py-3");
     expect(screen.getByRole("columnheader")).toHaveClass("text-left");
     expect(screen.getByRole("columnheader")).toHaveClass("font-normal");
     expect(screen.getByRole("columnheader")).toHaveClass(
-      "text-content-text-secondary"
+      textColorClass(TextColor.Secondary)
     );
-    expect(screen.getByRole("columnheader")).toHaveClass("text-md/7");
+    expect(screen.getByRole("columnheader")).toHaveClass(
+      textStyles(TextVariant.Md)!
+    );
     expect(screen.getByRole("cell")).toHaveClass("px-6");
     expect(screen.getByRole("cell")).toHaveClass("py-3");
     expect(screen.getByRole("cell")).toHaveClass("text-left");
     expect(screen.getByRole("cell")).toHaveClass("font-normal");
-    expect(screen.getByRole("cell")).toHaveClass("text-content-text-primary");
-    expect(screen.getByRole("cell")).toHaveClass("text-md/7");
+    expect(screen.getByRole("cell")).toHaveClass(
+      textColorClass(TextColor.Primary)
+    );
+    expect(screen.getByRole("cell")).toHaveClass(textStyles(TextVariant.Md)!);
   });
 });
