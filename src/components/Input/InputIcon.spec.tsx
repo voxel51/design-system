@@ -14,17 +14,23 @@ const CheckmarkIcon: FC<IconProps> = (props) => (
 );
 
 describe("InputIcon", () => {
-  it("should render the icon", () => {
+  it("should render an FC icon", () => {
     const { container } = render(
-      <InputIcon Icon={CheckmarkIcon} size={Size.Md} />
+      <InputIcon icon={CheckmarkIcon} size={Size.Md} />
     );
-    const svg = container.querySelector("svg");
-    expect(svg).toBeInTheDocument();
+    expect(container.querySelector("svg")).toBeInTheDocument();
+  });
+
+  it("should render a string icon", () => {
+    const { container } = render(
+      <InputIcon icon={IconName.Check} size={Size.Md} />
+    );
+    expect(container.querySelector("svg")).toBeInTheDocument();
   });
 
   it("should apply correct styling when hasText is true", () => {
     const { container } = render(
-      <InputIcon Icon={CheckmarkIcon} size={Size.Md} hasText={true} />
+      <InputIcon icon={CheckmarkIcon} size={Size.Md} hasText={true} />
     );
     const span = container.querySelector("span");
     expect(span).toHaveClass(textColorClass(TextColor.Primary));
@@ -33,7 +39,7 @@ describe("InputIcon", () => {
 
   it("should apply correct styling when hasText is false", () => {
     const { container } = render(
-      <InputIcon Icon={CheckmarkIcon} size={Size.Md} hasText={false} />
+      <InputIcon icon={CheckmarkIcon} size={Size.Md} hasText={false} />
     );
     const span = container.querySelector("span");
     expect(span).toHaveClass(textColorClass(TextColor.Secondary));

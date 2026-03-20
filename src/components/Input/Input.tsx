@@ -9,6 +9,7 @@ import {
   BorderColor,
   borderColorClass,
   ElementState,
+  IconName,
   Radius,
   Size,
   TextColor,
@@ -40,7 +41,7 @@ export interface InputProps extends ModifiedInputProps {
   className?: string;
   type?: InputType;
   error?: boolean;
-  icon?: FC<IconProps>;
+  icon?: FC<IconProps> | IconName;
 }
 
 /**
@@ -128,7 +129,7 @@ export const inputStyle = ({
  * @param value The controlled value of the input.
  * @param onChange Callback triggered when the input value changes.
  * @param error If `true`, formats the input to appear in an error state.
- * @param icon Optional reference ({@link FC}) to an icon to prefix the input's value. See {@link Icon}.
+ * @param icon Optional reference ({@link FC}) to an icon or an {@link IconName} to prefix the input's value. See {@link Icon}.
  * @param props Additional HTML properties to apply to the component.
  */
 export const Input: FC<InputProps> = ({
@@ -140,14 +141,14 @@ export const Input: FC<InputProps> = ({
   value,
   onChange,
   error,
-  icon: Icon,
+  icon,
   ...props
 }) => {
   const inputClasses = cn(
     inputStyle({
       disabled,
       error,
-      icon: !!Icon,
+      icon: !!icon,
       radius,
       size,
     }),
@@ -159,8 +160,8 @@ export const Input: FC<InputProps> = ({
 
   return (
     <Field className="flex flex-col gap-1">
-      <div className={cn("relative", Icon && "flex items-center")}>
-        {Icon && <InputIcon Icon={Icon} size={size} hasText={hasText} />}
+      <div className={cn("relative", icon && "flex items-center")}>
+        {icon && <InputIcon icon={icon} size={size} hasText={hasText} />}
         <HeadlessInput
           className={inputClasses}
           disabled={disabled}

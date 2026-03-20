@@ -1,9 +1,17 @@
 import { render, screen } from "@testing-library/react";
 import userEvent, { UserEvent } from "@testing-library/user-event";
+import { type FC } from "react";
 
-import { Radius, Size } from "@/types";
+import { IconName, Radius, Size } from "@/types";
+
+import { Icon } from "../Icons/Icon";
+import { IconProps } from "../Icons/types";
 
 import { Input, InputType } from "./Input";
+
+const CheckmarkIcon: FC<IconProps> = (props) => (
+  <Icon name={IconName.Check} {...(props as any)} />
+);
 
 describe("Input", () => {
   it("should render an input element", () => {
@@ -82,6 +90,16 @@ describe("Input", () => {
       const input = screen.getByTestId("input");
       expect(input.className).toContain("rounded-lg");
     });
+  });
+
+  it("should render an FC icon if provided", () => {
+    const { container } = render(<Input icon={CheckmarkIcon} />);
+    expect(container.querySelector("svg")).toBeInTheDocument();
+  });
+
+  it("should render a string icon if provided", () => {
+    const { container } = render(<Input icon={IconName.Check} />);
+    expect(container.querySelector("svg")).toBeInTheDocument();
   });
 
   it("should pass through additional props", () => {
