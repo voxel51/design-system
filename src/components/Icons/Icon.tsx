@@ -19,6 +19,7 @@ import ChevronTopIcon from "@/img/ChevronTop.svg?react";
 import CircleIcon from "@/img/Circle.svg?react";
 import CloseIcon from "@/img/Close.svg?react";
 import CodeIcon from "@/img/Code.svg?react";
+import ContentCopyIcon from "@/img/ContentCopy.svg?react";
 import DateRangeIcon from "@/img/DateRange.svg?react";
 import DeleteIcon from "@/img/Delete.svg?react";
 import DetectionIcon from "@/img/Detection.svg?react";
@@ -32,6 +33,8 @@ import ExitWorkspaceIcon from "@/img/ExitWorkspace.svg?react";
 import ExternalLinkIcon from "@/img/ExternalLink.svg?react";
 import FineTuneIcon from "@/img/FineTune.svg?react";
 import FullscreenIcon from "@/img/Fullscreen.svg?react";
+import GridViewIcon from "@/img/GridView.svg?react";
+import ImageSearchIcon from "@/img/ImageSearch.svg?react";
 import InfoIcon from "@/img/Info.svg?react";
 import InspectIcon from "@/img/Inspect.svg?react";
 import JSONIcon from "@/img/JSON.svg?react";
@@ -95,6 +98,7 @@ export const iconMap: Record<
   [IconName.Circle]: CircleIcon,
   [IconName.Close]: CloseIcon,
   [IconName.Code]: CodeIcon,
+  [IconName.ContentCopy]: ContentCopyIcon,
   [IconName.DateRange]: DateRangeIcon,
   [IconName.Delete]: DeleteIcon,
   [IconName.Detection]: DetectionIcon,
@@ -108,6 +112,8 @@ export const iconMap: Record<
   [IconName.ExternalLink]: ExternalLinkIcon,
   [IconName.FineTune]: FineTuneIcon,
   [IconName.Fullscreen]: FullscreenIcon,
+  [IconName.GridView]: GridViewIcon,
+  [IconName.ImageSearch]: ImageSearchIcon,
   [IconName.Info]: InfoIcon,
   [IconName.Inspect]: InspectIcon,
   [IconName.JSON]: JSONIcon,
