@@ -6,8 +6,10 @@ import { Icon } from "@/components/Icons";
 import { Stack } from "@/components/Stack";
 import { Text } from "@/components/Text";
 import {
+  Align,
   BrandColor,
   IconName,
+  Justify,
   Orientation,
   Shadow,
   Size,
@@ -65,7 +67,9 @@ export const RichCard: FC<RichCardProps> = ({
       <Stack
         orientation={compact ? Orientation.Row : Orientation.Column}
         spacing={compact ? Spacing.Lg : Spacing.Md}
-        className={cn("items-start w-full justify-between")}
+        align={Align.Start}
+        justify={Justify.Between}
+        className={cn("w-full")}
       >
         <Stack
           orientation={Orientation.Column}
@@ -73,7 +77,7 @@ export const RichCard: FC<RichCardProps> = ({
         >
           <Stack
             spacing={compact ? Spacing.Sm : Spacing.Md}
-            className={cn("items-center")}
+            align={Align.Center}
           >
             {icon && !compact && (
               <Card
