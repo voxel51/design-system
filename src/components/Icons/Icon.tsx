@@ -42,6 +42,7 @@ import MoreHorizontalIcon from "@/img/MoreHorizontal.svg?react";
 import MoreVerticalIcon from "@/img/MoreVertical.svg?react";
 import MoveIcon from "@/img/Move.svg?react";
 import NotesIcon from "@/img/Notes.svg?react";
+import OrchestratorIcon from "@/img/Orchestrator.svg?react";
 import PinIcon from "@/img/Pin.svg?react";
 import PolylineIcon from "@/img/Polyline.svg?react";
 import RadioIcon from "@/img/Radio.svg?react";
@@ -117,6 +118,7 @@ export const iconMap: Record<
   [IconName.MoreVertical]: MoreVerticalIcon,
   [IconName.Move]: MoveIcon,
   [IconName.Notes]: NotesIcon,
+  [IconName.Orchestrator]: OrchestratorIcon,
   [IconName.Pin]: PinIcon,
   [IconName.Polyline]: PolylineIcon,
   [IconName.Radio]: RadioIcon,

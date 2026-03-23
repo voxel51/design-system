@@ -39,6 +39,7 @@ export enum IconName {
   MoreVertical = "MoreVertical",
   Move = "Move",
   Notes = "Notes",
+  Orchestrator = "Orchestrator",
   Pin = "Pin",
   Polyline = "Polyline",
   Radio = "Radio",

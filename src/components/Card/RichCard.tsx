@@ -12,6 +12,7 @@ import {
   Size,
   Spacing,
   TextColor,
+  textColorClass,
   TextVariant,
 } from "@/types";
 import { cn } from "@/util/classes";
@@ -57,7 +58,7 @@ export const RichCard: FC<RichCardProps> = ({
       <Stack
         orientation={compact ? Orientation.Row : Orientation.Column}
         spacing={compact ? Spacing.Lg : Spacing.Md}
-        className={cn("items-center")}
+        className={cn("items-start w-full justify-between")}
       >
         <Stack
           orientation={Orientation.Column}
@@ -68,7 +69,11 @@ export const RichCard: FC<RichCardProps> = ({
             className={cn("items-center")}
           >
             {icon && !compact && (
-              <Card compact background={CardBackground.Elevated}>
+              <Card
+                compact
+                background={CardBackground.Elevated}
+                className={cn("shadow-none")}
+              >
                 <Icon name={icon} size={Size.Xl} color={BrandColor.Accent} />
               </Card>
             )}
@@ -110,9 +115,9 @@ export const Description: FC<{ text: string | string[] }> = ({ text }) => {
   }
 
   return (
-    <ul>
+    <ul className="list-disc list-inside mx-2 marker:text-xs">
       {text.map((line) => (
-        <li key={line}>
+        <li key={line} className={textColorClass(TextColor.Secondary)}>
           <Text color={TextColor.Secondary}>{line}</Text>
         </li>
       ))}
