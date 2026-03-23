@@ -24,7 +24,7 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
   border?: boolean;
   className?: string;
   compact?: boolean;
-  shadow?: boolean;
+  shadow?: Shadow;
   outlined?: boolean;
 }
 
@@ -43,6 +43,7 @@ export const Card: FC<CardProps> = ({
   compact,
   background = CardBackground.Primary,
   outlined,
+  shadow = Shadow.Md,
   ...props
 }) => {
   const backgroundColor = bgColorMap[background];
@@ -50,7 +51,7 @@ export const Card: FC<CardProps> = ({
   return (
     <div
       className={cn(
-        outlined ? "border-1" : shadowStyles(Shadow.Md),
+        outlined ? "border-1" : shadowStyles(shadow),
         outlined && borderColorClass(BorderColor.Default),
         bgColorClass(backgroundColor),
         compact ? "p-2.5" : "p-5",

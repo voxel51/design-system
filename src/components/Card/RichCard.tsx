@@ -9,6 +9,7 @@ import {
   BrandColor,
   IconName,
   Orientation,
+  Shadow,
   Size,
   Spacing,
   TextColor,
@@ -72,7 +73,7 @@ export const RichCard: FC<RichCardProps> = ({
               <Card
                 compact
                 background={CardBackground.Elevated}
-                className={cn("shadow-none")}
+                shadow={Shadow.None}
               >
                 <Icon name={icon} size={Size.Xl} color={BrandColor.Accent} />
               </Card>
