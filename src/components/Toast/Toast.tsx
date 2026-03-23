@@ -8,6 +8,7 @@ import { ToastContainer } from "@/components/ToastContainer";
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
 import {
+  Align,
   Anchor,
   BackgroundColor,
   bgColorClass,
@@ -107,7 +108,7 @@ export const Toast: FC<ToastProps> = ({
       {...props}
     >
       <Stack orientation={Orientation.Column}>
-        <Stack spacing={Spacing.Sm} className={cn("items-center")}>
+        <Stack spacing={Spacing.Sm} align={Align.Center}>
           <IconWrapper
             content={icon}
             className={clsx("size-5", variantStyles[variant])}
@@ -116,7 +117,7 @@ export const Toast: FC<ToastProps> = ({
         </Stack>
         {description && <Text color={TextColor.Secondary}>{description}</Text>}
       </Stack>
-      {action && <Stack className={cn("items-center")}>{action}</Stack>}
+      {action && <Stack align={Align.Center}>{action}</Stack>}
     </Stack>
   );
 

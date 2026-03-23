@@ -7,6 +7,7 @@ import radiusStyles from "@/styles/radius";
 import {
   BackgroundColor,
   bgColorClass,
+  Align,
   BrandColor,
   IconName,
   Orientation,
@@ -43,8 +44,9 @@ export const EmptyState: FC<EmptyStateProps> = ({
   return (
     <Stack
       orientation={Orientation.Column}
+      align={Align.Center}
       className={cn(
-        "items-center text-center p-10",
+        "text-center p-10",
         radiusStyles(Radius.Md),
         bgColorClass(BackgroundColor.Card1),
         className
