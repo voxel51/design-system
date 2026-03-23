@@ -35,7 +35,23 @@ const bgColorMap: Record<CardBackground, Color> = {
 };
 
 /**
- * A basic card to display to the user.
+ * A styled container component with configurable background, shadow, and padding.
+ *
+ * @example
+ * ```tsx
+ * <Card background={CardBackground.Secondary} compact>
+ *   Card content here
+ * </Card>
+ * ```
+ *
+ * @param background The background color variant. Defaults to {@link CardBackground.Primary}.
+ * @param border Whether to render a border around the card.
+ * @param className Additional CSS class names to apply to the card.
+ * @param compact When true, reduces internal padding.
+ * @param shadow The shadow depth applied to the card. Defaults to {@link Shadow.Md}.
+ * @param outlined When true, replaces the shadow with a border outline.
+ * @param children The content of the card.
+ * @param props Additional HTML properties to apply to the card.
  */
 export const Card: FC<CardProps> = ({
   children,

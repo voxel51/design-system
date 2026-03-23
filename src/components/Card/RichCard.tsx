@@ -28,21 +28,27 @@ export interface RichCardProps extends CardProps {
 }
 
 /**
- * RichCard is a card component that can display an icon, title, description,
- * and badge. It is designed to be used in situations where you want to provide
- * more information than a standard card, such as in a dashboard or a list of
- * items.
+ * A card component that displays an icon, title, description, and badge.
+ * Designed for richer content such as dashboards or item lists.
  *
- * @argument badge A small badge that can be used to display additional
- * information, such as a status or a count.
- * @argument description A description of the card. It can be a string or an
- * array of strings. If it is an array of strings, each string will be
- * displayed as a separate line.
- * @argument icon The name of the icon to display in the card. See {@link IconName}.
- * @argument title The title of the card.
- * @argument children The content to display inside the card, below the description.
- * @argument props Additional HTML properties to apply to the card.
- * @returns A RichCard component.
+ * @example
+ * ```tsx
+ * <RichCard
+ *   icon={IconName.Star}
+ *   title="Getting Started"
+ *   description="Follow these steps to set up your workspace."
+ *   badge="New"
+ * />
+ * ```
+ *
+ * @param badge A small badge for supplementary info such as status or count.
+ * @param compact When true, uses a horizontal layout with tighter spacing.
+ * @param description Body text. Pass an array of strings to render a bulleted list.
+ * @param icon The icon to display beside the title. See {@link IconName}.
+ * @param title The card heading.
+ * @param action A React node (e.g. a button) rendered in the action slot.
+ * @param children Content displayed inside the card, below the description.
+ * @param props Additional HTML properties to apply to the card.
  */
 export const RichCard: FC<RichCardProps> = ({
   children,
@@ -110,6 +116,12 @@ export const RichCard: FC<RichCardProps> = ({
   );
 };
 
+/**
+ * Renders card body text. A plain string is displayed as a single paragraph;
+ * an array of strings is rendered as a bulleted list.
+ *
+ * @param text The description content.
+ */
 export const Description: FC<{ text: string | string[] }> = ({ text }) => {
   if (typeof text === "string") {
     return <Text color={TextColor.Secondary}>{text}</Text>;
