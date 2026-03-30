@@ -67,16 +67,8 @@ export interface ToolbarProps {
   visible?: boolean;
 }
 
-// ---------------------------------------------------------------------------
-// Defaults
-// ---------------------------------------------------------------------------
-
 const DEFAULT_X_OFFSET = 20;
 const DEFAULT_Y_OFFSET = 20;
-
-// ---------------------------------------------------------------------------
-// Component
-// ---------------------------------------------------------------------------
 
 export const Toolbar = ({
   children,
@@ -187,6 +179,28 @@ export const Toolbar = ({
       : "self-stretch px-1 py-2"
   );
 
+  const containerClass = cn(
+    "group absolute flex select-none",
+    orientation === Orientation.Column ? "flex-col" : "flex-row",
+    !isCollapsed && "min-w-9",
+    portal && "!fixed",
+    "border",
+    borderColorClass(BorderColor.Strong),
+    "rounded-md",
+    "backdrop-blur-sm",
+    "shadow-md data-dragging:shadow-xl",
+    "transition-[opacity,box-shadow] data-dragging:transition-none",
+    className
+  );
+
+  const containerStyle: React.CSSProperties = {
+    left: position.x,
+    top: position.y,
+    zIndex,
+    backgroundColor: `color-mix(in srgb, var(${getColorCssVar(BackgroundColor.Card2)}) 85%, transparent)`,
+    ...style,
+  };
+
   const toolbar = (
     <OrientationContext.Provider value={orientation}>
       <div
@@ -197,24 +211,8 @@ export const Toolbar = ({
           orientation === Orientation.Column ? "vertical" : "horizontal"
         }
         data-dragging={isDragging || undefined}
-        className={cn(
-          "group absolute flex select-none",
-          !isCollapsed && "min-w-9",
-          portal && "!fixed",
-          "border",
-          borderColorClass(BorderColor.Strong),
-          "backdrop-blur-sm",
-          "rounded-md",
-          className
-        )}
-        style={{
-          left: position.x,
-          top: position.y,
-          zIndex,
-          flexDirection: orientation === Orientation.Column ? "column" : "row",
-          backgroundColor: `color-mix(in srgb, var(${getColorCssVar(BackgroundColor.Card2)}) 85%, transparent)`,
-          ...style,
-        }}
+        className={containerClass}
+        style={containerStyle}
         onPointerDown={(e) => e.stopPropagation()}
         onClick={(e) => e.stopPropagation()}
       >
