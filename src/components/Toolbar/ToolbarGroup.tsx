@@ -1,7 +1,7 @@
 /**
  * Copyright 2017-2026, Voxel51, Inc.
  *
- * A labelled group of `ToolbarAction` items within a `Toolbar`.
+ * A labeled group of `ToolbarAction` items within a `Toolbar`.
  */
 
 import { useContext } from "react";
@@ -20,7 +20,7 @@ export interface ToolbarGroupProps {
 }
 
 /**
- * A labelled group of `ToolbarAction` items within a `Toolbar`.
+ * A labeled group of `ToolbarAction` items within a `Toolbar`.
  *
  * Reads orientation from `OrientationContext` — no need to pass it explicitly.
  * A divider is automatically rendered after each group; the last group's divider is hidden.
@@ -52,7 +52,10 @@ export const ToolbarGroup = ({
       align={Align.Center}
       spacing={Spacing.Xs}
       aria-label={ariaLabel}
-      className={cn("group/toolbar-group", orientation !== Orientation.Column && "self-stretch")}
+      className={cn(
+        "group/toolbar-group",
+        orientation !== Orientation.Column && "self-stretch"
+      )}
     >
       {label && (
         <Text
@@ -69,7 +72,9 @@ export const ToolbarGroup = ({
       {children}
       <div
         className={cn(
-          orientation === Orientation.Column ? "h-px w-full my-0.5" : "w-px self-stretch mx-0.5",
+          orientation === Orientation.Column
+            ? "h-px w-full my-0.5"
+            : "w-px self-stretch mx-0.5",
           "bg-[var(--color-content-border-strong)]",
           "group-last/toolbar-group:hidden"
         )}
