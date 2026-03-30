@@ -1,5 +1,7 @@
 import { createContext } from "react";
 
-export type Orientation = "horizontal" | "vertical";
+import { Orientation } from "@/types";
 
-export const OrientationContext = createContext<Orientation>("vertical");
+export { Orientation };
+
+export const OrientationContext = createContext<Orientation>(Orientation.Column);

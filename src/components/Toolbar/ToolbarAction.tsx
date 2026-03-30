@@ -48,7 +48,7 @@ export const ToolbarAction = ({
         // icon color — scoped to svg to override global `button { color: ... }` rule
         active
           ? "[&_svg]:text-[var(--color-content-icon-brand-accent)]"
-          : "[&_svg]:text-[var(--color-content-text-muted)]",
+          : "[&_svg]:text-[var(--color-content-icon-default)]",
         // background
         active ? "bg-[rgba(255,153,80,0.2)]" : "bg-transparent",
         // hover (only when not disabled and not active)
@@ -58,7 +58,7 @@ export const ToolbarAction = ({
           bgColorClass(ActionColor.SecondaryHover, ElementState.Hover),
         !disabled &&
           !active &&
-          "hover:[&_svg]:text-[var(--color-content-text-primary)]",
+          "hover:[&_svg]:text-[var(--color-content-icon-emphasis)]",
         // focus ring — use CSS var directly so Tailwind JIT can see the full class
         "outline-none",
         "data-[focus]:ring-2",

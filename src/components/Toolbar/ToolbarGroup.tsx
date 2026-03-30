@@ -9,7 +9,7 @@ import { useContext } from "react";
 import { TextColor, textColorClass } from "@/types";
 import { cn } from "@/util/classes";
 
-import { OrientationContext } from "./context";
+import { Orientation, OrientationContext } from "./context";
 
 export interface ToolbarGroupProps {
   children: React.ReactNode;
@@ -25,7 +25,7 @@ export const ToolbarGroup = ({
   "aria-label": ariaLabel,
 }: ToolbarGroupProps) => {
   const orientation = useContext(OrientationContext);
-  const isVertical = orientation === "vertical";
+  const isVertical = orientation === Orientation.Column;
 
   return (
     <div
