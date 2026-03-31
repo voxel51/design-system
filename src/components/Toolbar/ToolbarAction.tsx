@@ -5,11 +5,15 @@
  */
 
 import { Button } from "@headlessui/react";
+import { ComponentPropsWithoutRef, forwardRef } from "react";
 
 import { ActionColor, bgColorClass, ElementState } from "@/types";
 import { cn } from "@/util/classes";
 
-export interface ToolbarActionProps {
+export interface ToolbarActionProps extends Omit<
+  ComponentPropsWithoutRef<"button">,
+  "onClick"
+> {
   children: React.ReactNode;
   active?: boolean;
   disabled?: boolean;
@@ -52,47 +56,55 @@ export interface ToolbarActionProps {
  * </ToolbarAction>
  * ```
  */
-export const ToolbarAction = ({
-  children,
-  active = false,
-  disabled = false,
-  "aria-label": ariaLabel,
-  className,
-  onClick,
-}: ToolbarActionProps) => {
-  const isInteractive = !disabled && !active;
+export const ToolbarAction = forwardRef<HTMLButtonElement, ToolbarActionProps>(
+  (
+    {
+      children,
+      active = false,
+      disabled = false,
+      "aria-label": ariaLabel,
+      className,
+      onClick,
+      ...rest
+    },
+    ref
+  ) => {
+    const isInteractive = !disabled && !active;
 
-  const toolbarActionClass = cn(
-    "size-10 flex items-center justify-center",
-    "rounded transition-all",
-    active
-      ? "[--toolbar-action-icon-color:var(--color-content-icon-brand-accent)]"
-      : "[--toolbar-action-icon-color:var(--color-content-icon-default)]",
-    active
-      ? "bg-[color-mix(in_srgb,var(--color-content-icon-brand-accent)_20%,transparent)]"
-      : "bg-transparent",
-    "data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed",
-    isInteractive &&
-      bgColorClass(ActionColor.SecondaryHover, ElementState.Hover),
-    isInteractive &&
-      "hover:[--toolbar-action-icon-color:var(--color-content-icon-emphasis)]",
-    "outline-none",
-    "data-[focus]:ring-2",
-    "data-[focus]:ring-[var(--color-content-border-focus)]",
-    "data-[focus]:ring-offset-1",
-    className
-  );
-  return (
-    <Button
-      disabled={disabled}
-      aria-pressed={active}
-      aria-label={ariaLabel}
-      onClick={onClick}
-      className={toolbarActionClass}
-    >
-      {children}
-    </Button>
-  );
-};
+    const toolbarActionClass = cn(
+      "size-10 flex items-center justify-center",
+      "rounded transition-all",
+      active
+        ? "[--toolbar-action-icon-color:var(--color-content-icon-brand-accent)]"
+        : "[--toolbar-action-icon-color:var(--color-content-icon-default)]",
+      active
+        ? "bg-[color-mix(in_srgb,var(--color-content-icon-brand-accent)_20%,transparent)]"
+        : "bg-transparent",
+      "data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed",
+      isInteractive &&
+        bgColorClass(ActionColor.SecondaryHover, ElementState.Hover),
+      isInteractive &&
+        "hover:[--toolbar-action-icon-color:var(--color-content-icon-emphasis)]",
+      "outline-none",
+      "data-[focus]:ring-2",
+      "data-[focus]:ring-[var(--color-content-border-focus)]",
+      "data-[focus]:ring-offset-1",
+      className
+    );
+    return (
+      <Button
+        ref={ref}
+        disabled={disabled}
+        aria-pressed={active}
+        aria-label={ariaLabel}
+        onClick={onClick}
+        className={toolbarActionClass}
+        {...rest}
+      >
+        {children}
+      </Button>
+    );
+  }
+);
 
 ToolbarAction.displayName = "ToolbarAction";
