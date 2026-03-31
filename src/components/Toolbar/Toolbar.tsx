@@ -89,6 +89,7 @@ export const Toolbar = ({
   const [position, setPosition] = useState({ x: xOffset, y: yOffset });
   const [isDragging, setIsDragging] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [collapsedSize, setCollapsedSize] = useState<number | null>(null);
   const dragStartRef = useRef({
     clientX: 0,
     clientY: 0,
@@ -154,8 +155,20 @@ export const Toolbar = ({
   }, []);
 
   const handleDragHandleDoubleClick = useCallback(() => {
-    setIsCollapsed((prev) => !prev);
-  }, []);
+    setIsCollapsed((prev) => {
+      if (!prev) {
+        const el = containerRef.current;
+        setCollapsedSize(
+          orientation === Orientation.Column
+            ? (el?.offsetWidth ?? null)
+            : (el?.offsetHeight ?? null)
+        );
+      } else {
+        setCollapsedSize(null);
+      }
+      return !prev;
+    });
+  }, [orientation]);
 
   useEffect(() => {
     if (!isDragging) return;
@@ -175,14 +188,13 @@ export const Toolbar = ({
     "cursor-grab group-data-dragging:cursor-grabbing",
     "rounded-md",
     orientation === Orientation.Column
-      ? "w-full py-1 px-3 [&_svg]:rotate-90"
-      : "self-stretch px-1 py-2"
+      ? "self-stretch py-2 px-1 [&_svg]:rotate-90"
+      : "self-stretch px-2 py-1.5"
   );
 
   const containerClass = cn(
     "group absolute flex select-none",
     orientation === Orientation.Column ? "flex-col" : "flex-row",
-    !isCollapsed && "min-w-9",
     portal && "!fixed",
     "border",
     borderColorClass(BorderColor.Strong),
@@ -198,6 +210,11 @@ export const Toolbar = ({
     top: position.y,
     zIndex,
     backgroundColor: `color-mix(in srgb, var(${getColorCssVar(BackgroundColor.Card2)}) 85%, transparent)`,
+    ...(isCollapsed && collapsedSize !== null
+      ? orientation === Orientation.Column
+        ? { width: collapsedSize }
+        : { height: collapsedSize }
+      : {}),
     ...style,
   };
 
