@@ -56,7 +56,6 @@ export const ToolbarAction = ({
   children,
   active = false,
   disabled = false,
-  title,
   "aria-label": ariaLabel,
   className,
   onClick,
@@ -88,7 +87,6 @@ export const ToolbarAction = ({
       disabled={disabled}
       aria-pressed={active}
       aria-label={ariaLabel}
-      title={title}
       onClick={onClick}
       className={toolbarActionClass}
     >
