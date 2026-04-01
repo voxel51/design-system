@@ -310,7 +310,11 @@ describe("ToolbarAction", () => {
 
   it("forwards native button props via ...rest", () => {
     render(
-      <ToolbarAction aria-label="Test action" data-testid="action-rest-test" tabIndex={-1}>
+      <ToolbarAction
+        aria-label="Test action"
+        data-testid="action-rest-test"
+        tabIndex={-1}
+      >
         <TestIcon />
       </ToolbarAction>
     );
