@@ -19,7 +19,14 @@
  * ```
  */
 
-import React, { useCallback, useState } from "react";
+import {
+  useCallback,
+  useState,
+  CSSProperties,
+  RefObject,
+  ReactNode,
+  ReactElement,
+} from "react";
 
 import { DragHandleIcon } from "@/components/Icons";
 import { Stack } from "@/components/Stack";
@@ -42,7 +49,7 @@ import { useDraggable } from "@/util/useDraggable";
 import { OrientationContext } from "./context";
 
 export interface ToolbarProps {
-  children: React.ReactNode;
+  children: ReactNode;
   /** Layout direction for groups and actions. Default `Orientation.Column`. */
   orientation?: Orientation;
   /** Lock horizontal (x-axis) movement. Default `false`. */
@@ -60,7 +67,7 @@ export interface ToolbarProps {
   /** Additional class name. */
   className?: string;
   /** Additional inline styles on the outer container. */
-  style?: React.CSSProperties;
+  style?: CSSProperties;
   /** Whether the toolbar is visible. Default `true`. */
   visible?: boolean;
 }
@@ -80,7 +87,7 @@ export const Toolbar = ({
   className,
   style,
   visible = true,
-}: ToolbarProps): React.ReactElement | null => {
+}: ToolbarProps): ReactElement | null => {
   const canDrag = !(lockX && lockY);
 
   const { position, isDragging, containerRef, handleDragStart } = useDraggable({
@@ -136,7 +143,7 @@ export const Toolbar = ({
     className
   );
 
-  const containerStyle: React.CSSProperties = {
+  const containerStyle: CSSProperties = {
     left: position.x,
     top: position.y,
     backgroundColor: `color-mix(in srgb, var(${getColorCssVar(BackgroundColor.Card2)}) 85%, transparent)`,
@@ -151,7 +158,7 @@ export const Toolbar = ({
   const toolbar = (
     <OrientationContext.Provider value={orientation}>
       <div
-        ref={containerRef as React.RefObject<HTMLDivElement>}
+        ref={containerRef as RefObject<HTMLDivElement>}
         role="toolbar"
         aria-label={ariaLabel}
         aria-orientation={

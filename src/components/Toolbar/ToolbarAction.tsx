@@ -5,7 +5,12 @@
  */
 
 import { Button } from "@headlessui/react";
-import React, { ComponentPropsWithoutRef, forwardRef } from "react";
+import {
+  ComponentPropsWithoutRef,
+  forwardRef,
+  ReactNode,
+  MouseEvent,
+} from "react";
 
 import { ActionColor, bgColorClass, ElementState } from "@/types";
 import { cn } from "@/util/classes";
@@ -14,13 +19,13 @@ export interface ToolbarActionProps extends Omit<
   ComponentPropsWithoutRef<"button">,
   "onClick"
 > {
-  children: React.ReactNode;
+  children: ReactNode;
   active?: boolean;
   disabled?: boolean;
   title?: string;
   "aria-label"?: string;
   className?: string;
-  onClick?: (e: React.MouseEvent) => void;
+  onClick?: (e: MouseEvent) => void;
 }
 
 /**

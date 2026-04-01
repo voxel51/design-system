@@ -4,7 +4,7 @@
  * A group of `ToolbarAction` items within a `Toolbar`.
  */
 
-import React, { useContext } from "react";
+import { useContext, ReactNode, ReactElement } from "react";
 
 import { Stack } from "@/components/Stack";
 import { Align, Orientation, Spacing } from "@/types";
@@ -13,7 +13,7 @@ import { cn } from "@/util/classes";
 import { OrientationContext } from "./context";
 
 export interface ToolbarGroupProps {
-  children: React.ReactNode;
+  children: ReactNode;
   "aria-label"?: string;
 }
 
@@ -38,7 +38,7 @@ export interface ToolbarGroupProps {
 export const ToolbarGroup = ({
   children,
   "aria-label": ariaLabel,
-}: ToolbarGroupProps): React.ReactElement => {
+}: ToolbarGroupProps): ReactElement => {
   const orientation = useContext(OrientationContext);
 
   return (
