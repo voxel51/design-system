@@ -189,7 +189,9 @@ export const Toolbar = ({
     "rounded-md",
     orientation === Orientation.Column
       ? "self-stretch py-2 px-1 [&_svg]:rotate-90"
-      : "self-stretch px-2 py-1.5"
+      : "self-stretch px-2 py-1.5",
+    !isCollapsed && orientation === Orientation.Column && "pb-0",
+    !isCollapsed && orientation === Orientation.Row && "pr-0"
   );
 
   const containerClass = cn(
