@@ -7,10 +7,10 @@
 import { useContext } from "react";
 
 import { Stack } from "@/components/Stack";
-import { Align, Spacing } from "@/types";
+import { Align, Orientation, Spacing } from "@/types";
 import { cn } from "@/util/classes";
 
-import { Orientation, OrientationContext } from "./context";
+import { OrientationContext } from "./context";
 
 export interface ToolbarGroupProps {
   children: React.ReactNode;

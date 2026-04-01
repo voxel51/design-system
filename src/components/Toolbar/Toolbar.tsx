@@ -31,12 +31,13 @@ import {
   borderColorClass,
   getColorCssVar,
   IconColor,
+  Orientation,
   Spacing,
   textColorClass,
 } from "@/types";
 import { cn } from "@/util/classes";
 
-import { Orientation, OrientationContext } from "./context";
+import { OrientationContext } from "./context";
 
 export interface ToolbarProps {
   children: React.ReactNode;
