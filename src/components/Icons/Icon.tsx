@@ -16,8 +16,10 @@ import ChevronBottomIcon from "@/img/ChevronBottom.svg?react";
 import ChevronLeftIcon from "@/img/ChevronLeft.svg?react";
 import ChevronRightIcon from "@/img/ChevronRight.svg?react";
 import ChevronTopIcon from "@/img/ChevronTop.svg?react";
+import CircleIcon from "@/img/Circle.svg?react";
 import CloseIcon from "@/img/Close.svg?react";
 import CodeIcon from "@/img/Code.svg?react";
+import ContentCopyIcon from "@/img/ContentCopy.svg?react";
 import DateRangeIcon from "@/img/DateRange.svg?react";
 import DeleteIcon from "@/img/Delete.svg?react";
 import DetectionIcon from "@/img/Detection.svg?react";
@@ -31,6 +33,8 @@ import ExitWorkspaceIcon from "@/img/ExitWorkspace.svg?react";
 import ExternalLinkIcon from "@/img/ExternalLink.svg?react";
 import FineTuneIcon from "@/img/FineTune.svg?react";
 import FullscreenIcon from "@/img/Fullscreen.svg?react";
+import GridViewIcon from "@/img/GridView.svg?react";
+import ImageSearchIcon from "@/img/ImageSearch.svg?react";
 import InfoIcon from "@/img/Info.svg?react";
 import InspectIcon from "@/img/Inspect.svg?react";
 import JSONIcon from "@/img/JSON.svg?react";
@@ -41,6 +45,7 @@ import MoreHorizontalIcon from "@/img/MoreHorizontal.svg?react";
 import MoreVerticalIcon from "@/img/MoreVertical.svg?react";
 import MoveIcon from "@/img/Move.svg?react";
 import NotesIcon from "@/img/Notes.svg?react";
+import OrchestratorIcon from "@/img/Orchestrator.svg?react";
 import PinIcon from "@/img/Pin.svg?react";
 import PolylineIcon from "@/img/Polyline.svg?react";
 import RadioIcon from "@/img/Radio.svg?react";
@@ -60,6 +65,7 @@ import UnsupportedIcon from "@/img/Unsupported.svg?react";
 import VALIcon from "@/img/VAL.svg?react";
 import WarningIcon from "@/img/Warning.svg?react";
 import WorkspacesIcon from "@/img/Workspaces.svg?react";
+import { BrandColor, IconColor, TextColor, textColorClass } from "@/types";
 import { IconName } from "@/types/icons";
 import { Size } from "@/types/size";
 
@@ -89,8 +95,10 @@ export const iconMap: Record<
   [IconName.ChevronLeft]: ChevronLeftIcon,
   [IconName.ChevronRight]: ChevronRightIcon,
   [IconName.ChevronTop]: ChevronTopIcon,
+  [IconName.Circle]: CircleIcon,
   [IconName.Close]: CloseIcon,
   [IconName.Code]: CodeIcon,
+  [IconName.ContentCopy]: ContentCopyIcon,
   [IconName.DateRange]: DateRangeIcon,
   [IconName.Delete]: DeleteIcon,
   [IconName.Detection]: DetectionIcon,
@@ -104,6 +112,8 @@ export const iconMap: Record<
   [IconName.ExternalLink]: ExternalLinkIcon,
   [IconName.FineTune]: FineTuneIcon,
   [IconName.Fullscreen]: FullscreenIcon,
+  [IconName.GridView]: GridViewIcon,
+  [IconName.ImageSearch]: ImageSearchIcon,
   [IconName.Info]: InfoIcon,
   [IconName.Inspect]: InspectIcon,
   [IconName.JSON]: JSONIcon,
@@ -114,6 +124,7 @@ export const iconMap: Record<
   [IconName.MoreVertical]: MoreVerticalIcon,
   [IconName.Move]: MoveIcon,
   [IconName.Notes]: NotesIcon,
+  [IconName.Orchestrator]: OrchestratorIcon,
   [IconName.Pin]: PinIcon,
   [IconName.Polyline]: PolylineIcon,
   [IconName.Radio]: RadioIcon,
@@ -141,13 +152,14 @@ const sizeMap: Partial<Record<IconSize, number>> = {
   [Size.Sm]: 12,
   [Size.Md]: 14,
   [Size.Lg]: 16,
+  [Size.Xl]: 18,
 };
 
 export interface IconProps {
   name: IconName;
   size?: Size;
   className?: string;
-  color?: string;
+  color?: TextColor | IconColor | BrandColor;
   style?: React.CSSProperties;
 }
 
@@ -171,7 +183,6 @@ export const Icon: FC<IconProps> = ({
   size = undefined, // if no size specified, fill the parent container
   className,
   color,
-  style,
   ...props
 }) => {
   // We are making a strong opinion here that we should treat the SVG
@@ -186,8 +197,7 @@ export const Icon: FC<IconProps> = ({
       width={iconSize}
       height={iconSize}
       size={size}
-      className={clsx(className)}
-      style={{ color, ...style }}
+      className={clsx(color && textColorClass(color), className)}
       {...props}
     />
   );

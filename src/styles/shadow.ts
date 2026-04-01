@@ -1,6 +1,7 @@
 import Shadow from "@/types/shadow";
 
 export const SHADOW_STYLES: Record<Shadow, string> = {
+  [Shadow.None]: "shadow-none",
   [Shadow.Xs]: "shadow-xs",
   [Shadow.Sm]: "shadow-sm",
   [Shadow.Md]: "shadow-md",

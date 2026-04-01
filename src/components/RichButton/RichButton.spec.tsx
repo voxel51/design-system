@@ -2,6 +2,7 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { RichButton } from "@/components/RichButton/RichButton.tsx";
+import { IconName } from "@/types";
 import { randomString } from "@/util/random";
 
 const DummyIcon = () => {
@@ -38,12 +39,16 @@ describe("RichButton", () => {
     expect(screen.getByTestId(testId)).toBeInTheDocument();
   });
 
-  it("should render a provided icon", () => {
+  it("should render a provided FC icon", () => {
     render(<RichButton {...defaultProps} icon={DummyIcon} />);
 
-    const button = screen.getByTestId(testId);
-    const innerHtml = button.innerHTML;
-    expect(innerHtml).toContain("<svg");
+    expect(screen.getByTestId(testId).innerHTML).toContain("<svg");
+  });
+
+  it("should render a provided string icon", () => {
+    render(<RichButton {...defaultProps} icon={IconName.Add} />);
+
+    expect(screen.getByTestId(testId).innerHTML).toContain("<svg");
   });
 
   it("should render a provided label", () => {

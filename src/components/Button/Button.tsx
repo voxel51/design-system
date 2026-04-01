@@ -1,7 +1,8 @@
 import { Button as HeadlessButton } from "@headlessui/react";
 import clsx from "clsx";
-import type { ButtonHTMLAttributes, FC } from "react";
+import { ButtonHTMLAttributes, FC } from "react";
 
+import { IconWrapper } from "@/components/Icons";
 import radiusStyles from "@/styles/radius";
 import {
   ActionColor,
@@ -10,6 +11,7 @@ import {
   BorderColor,
   borderColorClass,
   ElementState,
+  IconName,
   Radius,
   Size,
   TextColor,
@@ -18,13 +20,13 @@ import {
 } from "@/types";
 import { cn } from "@/util/classes";
 
-type ButtonSize = Exclude<Size, Size.Lg>;
+type ButtonSize = Exclude<Size, Size.Lg | Size.Xl>;
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
   size?: ButtonSize;
-  leadingIcon?: FC;
-  trailingIcon?: FC;
+  leadingIcon?: FC | IconName;
+  trailingIcon?: FC | IconName;
   borderless?: boolean;
 }
 
@@ -104,8 +106,8 @@ const iconStyles: Record<ButtonSize, string> = {
  * @param size The size of the button; this controls both the text size and the button size. See {@link Size}.
  * @param borderless Boolean controlling whether the button should be "borderless," removing any borders and
  *  rounding the corners.
- * @param leadingIcon Optional reference ({@link FC}) to an icon which prefixes the button's content. See {@link Icon}.
- * @param trailingIcon Optional reference ({@link FC}) to an icon which postfixes the button's content. See {@link Icon}.
+ * @param leadingIcon Optional reference ({@link FC}) to an icon or an {@link IconName} which prefixes the button's content. See {@link Icon}.
+ * @param trailingIcon Optional reference ({@link FC}) to an icon or an {@link IconName} which postfixes the button's content. See {@link Icon}.
  * @param className `class` overrides to apply to the component.
  * @param children Button content.
  * @param props Additional HTML properties to apply to the component.
@@ -114,8 +116,8 @@ export const Button: FC<ButtonProps> = ({
   variant = Variant.Primary,
   size = Size.Md,
   borderless = false,
-  leadingIcon: LeadingIcon,
-  trailingIcon: TrailingIcon,
+  leadingIcon,
+  trailingIcon,
   className,
   children,
   ...props
@@ -143,19 +145,19 @@ export const Button: FC<ButtonProps> = ({
           variantTextStyles[variant]
         )}
       >
-        {LeadingIcon && (
-          <span className={clsx(iconStyles[size])}>
-            <LeadingIcon />
-          </span>
-        )}
+        <IconWrapper
+          content={leadingIcon}
+          size={size}
+          className={clsx(iconStyles[size], "flex justify-center items-center")}
+        />
 
         {children}
 
-        {TrailingIcon && (
-          <span className={clsx(iconStyles[size])}>
-            <TrailingIcon />
-          </span>
-        )}
+        <IconWrapper
+          content={trailingIcon}
+          size={size}
+          className={clsx(iconStyles[size], "flex justify-center items-center")}
+        />
       </div>
     </HeadlessButton>
   );

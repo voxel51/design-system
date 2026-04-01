@@ -1,4 +1,5 @@
 export enum Shadow {
+  None = "none",
   Xl = "xl",
   Lg = "lg",
   Md = "md",

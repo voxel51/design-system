@@ -1,5 +1,6 @@
 import type { FC, HTMLAttributes } from "react";
 
+import { IconWrapper } from "@/components/Icons";
 import { Text } from "@/components/Text";
 import { ToastContainer } from "@/components/ToastContainer";
 import radiusStyles from "@/styles/radius";
@@ -10,14 +11,16 @@ import {
   bgColorClass,
   BorderColor,
   borderColorClass,
+  IconName,
   Radius,
+  textColorClass,
   Variant,
 } from "@/types";
 import { cn } from "@/util/classes";
 
 export interface ActivityToastProps extends HTMLAttributes<HTMLDivElement> {
   anchor?: Anchor;
-  icon?: FC;
+  icon?: FC | IconName;
   message?: string;
   open?: boolean;
   variant?: Variant;
@@ -43,7 +46,7 @@ export interface ActivityToastProps extends HTMLAttributes<HTMLDivElement> {
  * @param anchor Position within the viewport to anchor the notification.
  *  Options include all cardinal directions as well as all four corners.
  * @param className `class` overrides to apply to the component.
- * @param icon Reference (`FC`) to an icon to render which prefixes the toast message. See {@link Icon}.
+ * @param icon Reference (`FC`) to an icon or an {@link IconName} to render which prefixes the toast message. See {@link Icon}.
  * @param message Message to include in the toast.
  * @param open Boolean controlling whether the toast is visible.
  * @param variant The toast variant; this controls the general styling of the toast. See {@link Variant}.
@@ -52,7 +55,7 @@ export interface ActivityToastProps extends HTMLAttributes<HTMLDivElement> {
 export const ActivityToast: FC<ActivityToastProps> = ({
   anchor = Anchor.BottomRight,
   className,
-  icon: Icon,
+  icon,
   message,
   open,
   variant = Variant.Primary,
@@ -73,11 +76,10 @@ export const ActivityToast: FC<ActivityToastProps> = ({
       )}
       {...props}
     >
-      {Icon && (
-        <Text className="size-5" color={textColor(variant)}>
-          <Icon />
-        </Text>
-      )}
+      <IconWrapper
+        content={icon}
+        className={cn("size-5", textColorClass(textColor(variant)!))}
+      />
 
       {message && <Text color={textColor(variant)}>{message}</Text>}
     </div>

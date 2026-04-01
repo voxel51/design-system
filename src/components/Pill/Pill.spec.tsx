@@ -23,14 +23,11 @@ describe("Pill", () => {
   });
 
   it("should render status icon when isStatus is true", () => {
-    render(<Pill isStatus={true}>{pillText}</Pill>);
+    const { container } = render(<Pill isStatus={true}>{pillText}</Pill>);
 
-    const pill = screen.getByText(pillText);
-    const svg = pill.querySelector("svg");
-    const circle = pill.querySelector("circle");
+    const svg = container.querySelector("svg");
 
     expect(svg).toBeInTheDocument();
-    expect(circle).toBeInTheDocument();
   });
 
   it("should not render status icon when isStatus is false", () => {

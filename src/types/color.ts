@@ -58,6 +58,7 @@ export enum IconColor {
   Disabled = "icon-disabled",
   Decorative = "icon-decorative",
   Brand = "icon-brand",
+  BrandAccent = "icon-brand-accent",
   Success = "icon-success",
   Destructive = "icon-destructive",
   Warning = "icon-warning",
@@ -133,6 +134,7 @@ const textColorMap: Record<Color, string> = {
   [BrandColor.Primary]: "text-brand-primary",
 
   [IconColor.Brand]: "text-content-icon-brand",
+  [IconColor.BrandAccent]: "text-content-icon-brand-accent",
   [IconColor.Decorative]: "text-content-icon-decorative",
   [IconColor.Default]: "text-content-icon-default",
   [IconColor.Destructive]: "text-content-icon-destructive",
@@ -199,6 +201,7 @@ const backgroundColorMap: Record<Color, string> = {
   [BrandColor.Primary]: "bg-brand-primary",
 
   [IconColor.Brand]: "bg-content-icon-brand",
+  [IconColor.BrandAccent]: "bg-content-icon-brand-accent",
   [IconColor.Decorative]: "bg-content-icon-decorative",
   [IconColor.Default]: "bg-content-icon-default",
   [IconColor.Destructive]: "bg-content-icon-destructive",
