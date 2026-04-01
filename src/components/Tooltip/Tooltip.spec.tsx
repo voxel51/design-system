@@ -54,4 +54,24 @@ describe("Tooltip", () => {
 
     expect(screen.queryByText(content)).not.toBeInTheDocument();
   });
+
+  it("should apply above-modal z-index to tooltip panel when portal is true", () => {
+    const content = randomString();
+    const children = randomString();
+    const aboveModalZIndexClass = "z-[var(--z-above-modal)]";
+
+    render(
+      <Tooltip {...defaultProps} content={content} portal>
+        {children}
+      </Tooltip>
+    );
+
+    fireEvent.mouseEnter(
+      within(screen.getByTestId(testId)).getByText(children)
+    );
+
+    const tooltipContent = screen.getByText(content);
+    const tooltipPanel = tooltipContent.parentElement;
+    expect(tooltipPanel).toHaveClass(aboveModalZIndexClass);
+  });
 });

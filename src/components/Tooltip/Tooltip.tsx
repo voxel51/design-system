@@ -4,7 +4,15 @@ import { FC, HTMLAttributes, ReactNode, useState } from "react";
 
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
-import { Anchor, BackgroundColor, bgColorClass, Radius, Shadow } from "@/types";
+import {
+  Anchor,
+  BackgroundColor,
+  bgColorClass,
+  Radius,
+  Shadow,
+  ZIndex,
+  zIndexStyles,
+} from "@/types";
 import { cn } from "@/util/classes";
 
 export type TooltipAnchor = Extract<
@@ -19,7 +27,7 @@ export interface TooltipProps extends Omit<
   anchor?: TooltipAnchor;
   content: ReactNode;
   portal?: boolean;
-  /** Elevation / drop shadow. Use Shadow.Xs through Shadow.Xl. */
+  /** Drop shadow. Use Shadow.Xs through Shadow.Xl. */
   shadow?: Shadow;
 }
 
@@ -96,7 +104,7 @@ export const Tooltip: FC<TooltipProps> = ({
           static
           anchor={anchor}
           className={cn(
-            portal && "z-[10000]",
+            portal && zIndexStyles(ZIndex.AboveModal),
             "relative",
             "py-0.75 px-2.5",
             "!overflow-visible",
