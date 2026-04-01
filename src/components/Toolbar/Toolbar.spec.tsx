@@ -12,10 +12,6 @@ import { Toolbar } from "./Toolbar";
 import { ToolbarAction } from "./ToolbarAction";
 import { ToolbarGroup } from "./ToolbarGroup";
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
 const TestIcon = () => <svg data-testid="icon" />;
 
 function renderToolbar(
@@ -31,10 +27,6 @@ function renderToolbar(
     </Toolbar>
   );
 }
-
-// ---------------------------------------------------------------------------
-// Toolbar
-// ---------------------------------------------------------------------------
 
 describe("Toolbar", () => {
   it("renders with role='toolbar'", () => {
@@ -325,10 +317,6 @@ describe("ToolbarAction", () => {
     expect(screen.getByRole("button")).toHaveAttribute("tabindex", "5");
   });
 });
-
-// ---------------------------------------------------------------------------
-// ToolbarGroup
-// ---------------------------------------------------------------------------
 
 describe("ToolbarGroup", () => {
   it("renders with role='group'", () => {
