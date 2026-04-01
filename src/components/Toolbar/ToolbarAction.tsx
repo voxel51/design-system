@@ -56,6 +56,36 @@ export interface ToolbarActionProps extends Omit<
  * </ToolbarAction>
  * ```
  */
+const toolbarActionClass = (
+  active: boolean,
+  isInteractive: boolean,
+  className?: string
+) =>
+  cn(
+    "size-10 flex items-center justify-center",
+    "rounded transition-all",
+    active
+      ? cn(
+          "[--toolbar-action-icon-color:var(--color-content-icon-brand-accent)]",
+          "bg-[color-mix(in_srgb,var(--color-content-icon-brand-accent)_20%,transparent)]"
+        )
+      : cn(
+          "[--toolbar-action-icon-color:var(--color-content-icon-default)]",
+          "bg-transparent"
+        ),
+    "data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed",
+    isInteractive &&
+      cn(
+        bgColorClass(ActionColor.SecondaryHover, ElementState.Hover),
+        "hover:[--toolbar-action-icon-color:var(--color-content-icon-emphasis)]"
+      ),
+    "outline-none",
+    "data-[focus]:ring-2",
+    "data-[focus]:ring-[var(--color-content-border-focus)]",
+    "data-[focus]:ring-offset-1",
+    className
+  );
+
 export const ToolbarAction = forwardRef<HTMLButtonElement, ToolbarActionProps>(
   (
     {
@@ -70,27 +100,6 @@ export const ToolbarAction = forwardRef<HTMLButtonElement, ToolbarActionProps>(
     ref
   ) => {
     const isInteractive = !disabled && !active;
-
-    const toolbarActionClass = cn(
-      "size-10 flex items-center justify-center",
-      "rounded transition-all",
-      active
-        ? "[--toolbar-action-icon-color:var(--color-content-icon-brand-accent)]"
-        : "[--toolbar-action-icon-color:var(--color-content-icon-default)]",
-      active
-        ? "bg-[color-mix(in_srgb,var(--color-content-icon-brand-accent)_20%,transparent)]"
-        : "bg-transparent",
-      "data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed",
-      isInteractive &&
-        bgColorClass(ActionColor.SecondaryHover, ElementState.Hover),
-      isInteractive &&
-        "hover:[--toolbar-action-icon-color:var(--color-content-icon-emphasis)]",
-      "outline-none",
-      "data-[focus]:ring-2",
-      "data-[focus]:ring-[var(--color-content-border-focus)]",
-      "data-[focus]:ring-offset-1",
-      className
-    );
     return (
       <Button
         ref={ref}
@@ -98,7 +107,7 @@ export const ToolbarAction = forwardRef<HTMLButtonElement, ToolbarActionProps>(
         aria-pressed={active}
         aria-label={ariaLabel}
         onClick={onClick}
-        className={toolbarActionClass}
+        className={toolbarActionClass(active, isInteractive, className)}
         {...rest}
       >
         {children}
