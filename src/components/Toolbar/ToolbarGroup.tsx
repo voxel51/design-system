@@ -4,7 +4,7 @@
  * A group of `ToolbarAction` items within a `Toolbar`.
  */
 
-import { useContext } from "react";
+import React, { useContext } from "react";
 
 import { Stack } from "@/components/Stack";
 import { Align, Orientation, Spacing } from "@/types";

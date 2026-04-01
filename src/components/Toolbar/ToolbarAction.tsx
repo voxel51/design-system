@@ -5,7 +5,7 @@
  */
 
 import { Button } from "@headlessui/react";
-import { ComponentPropsWithoutRef, forwardRef } from "react";
+import React, { ComponentPropsWithoutRef, forwardRef } from "react";
 
 import { ActionColor, bgColorClass, ElementState } from "@/types";
 import { cn } from "@/util/classes";
