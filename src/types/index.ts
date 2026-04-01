@@ -1,6 +1,7 @@
 export * from "./align";
 export * from "./anchor";
 export * from "./color";
+export * from "./zIndex";
 export * from "./descriptor";
 export * from "./element";
 export * from "./heading";

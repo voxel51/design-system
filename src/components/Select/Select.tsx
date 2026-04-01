@@ -22,6 +22,8 @@ import {
   Size,
   TextColor,
   textColorClass,
+  ZIndex,
+  zIndexStyles,
 } from "@/types";
 import { IconName } from "@/types/icons";
 
@@ -45,8 +47,29 @@ export interface SelectProps extends Omit<
   exclusive?: boolean;
   onChange?: (value: string | string[] | null) => void;
   options?: Descriptor<{ label: string; content?: ReactNode }>[];
+  zIndex?: ZIndex;
   portal?: boolean;
   value?: string | string[];
+}
+
+/**
+ * Returns the appropriate z-index utility class for the select options dropdown.
+ *
+ * When `portal` is `true`, this always uses z-index above modal content to
+ * ensure the dropdown overlays other layered UI. Otherwise, it uses the provided
+ * `zIndex` level or leaves the z-index unset.
+ *
+ * @param zIndex Z-index level for the dropdown options list.
+ * @param portal If `true`, forces z-index above modal layers for portal rendering.
+ */
+function getZIndexClass(zIndex?: ZIndex, portal?: boolean): string | undefined {
+  if (portal) {
+    return zIndexStyles(ZIndex.AboveModal);
+  }
+  if (zIndex) {
+    return zIndexStyles(zIndex);
+  }
+  return undefined;
 }
 
 /**
@@ -116,7 +139,8 @@ export interface SelectProps extends Omit<
  * @param onChange Callback triggered when selection state changes.
  *  The callback includes a list of selected option values.
  * @param options List of component descriptors which will be used to create {@link Option} child components.
- * @param portal If `true`, ensures a large z-index to supported layered components.
+ * @param zIndex Z-index level for the dropdown.
+ * @param portal If `true`, ensures a high z-index for layered components (equivalent to above-modal when zIndex is not set).
  * @param value List of values for selected options; this property allows for controlled selection.
  * @param props Additional HTML properties to apply to the component.
  */
@@ -124,6 +148,7 @@ export const Select: FC<SelectProps> = ({
   anchor = SelectAnchor.BottomStart,
   className,
   disabled,
+  zIndex,
   exclusive,
   onChange,
   options,
@@ -225,7 +250,7 @@ export const Select: FC<SelectProps> = ({
           className={clsx(
             "mt-1",
             "w-[var(--anchor-width)]",
-            portal && "z-[var(--z-above-modal)]",
+            getZIndexClass(zIndex, portal),
             radiusStyles(Radius.Md),
             shadowStyles(Shadow.Md)
           )}

@@ -69,7 +69,7 @@ export const RichCard: FC<RichCardProps> = ({
         spacing={compact ? Spacing.Lg : Spacing.Md}
         align={Align.Start}
         justify={Justify.Between}
-        className={cn("w-full")}
+        className={cn("w-full h-full")}
       >
         <Stack
           orientation={Orientation.Column}
