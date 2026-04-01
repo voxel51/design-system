@@ -33,6 +33,8 @@ import {
   Orientation,
   Spacing,
   textColorClass,
+  ZIndex,
+  zIndexStyles,
 } from "@/types";
 import { cn } from "@/util/classes";
 import { useDraggable } from "@/util/useDraggable";
@@ -51,8 +53,8 @@ export interface ToolbarProps {
   xOffset?: number;
   /** Initial pixel offset from the top edge of the parent container.*/
   yOffset?: number;
-  /** CSS `z-index`. Default `10005`. */
-  zIndex?: number;
+  /** Stacking layer for the toolbar. Default `ZIndex.High`. */
+  zIndex?: ZIndex;
   /** Accessible label for the toolbar landmark. */
   "aria-label"?: string;
   /** Additional class name. */
@@ -73,7 +75,7 @@ export const Toolbar = ({
   lockY = false,
   xOffset = DEFAULT_X_OFFSET,
   yOffset = DEFAULT_Y_OFFSET,
-  zIndex = 10005,
+  zIndex = ZIndex.AboveModal,
   "aria-label": ariaLabel,
   className,
   style,
@@ -124,6 +126,7 @@ export const Toolbar = ({
   const containerClass = cn(
     "group absolute flex select-none",
     orientation === Orientation.Column ? "flex-col" : "flex-row",
+    zIndexStyles(zIndex),
     "border",
     borderColorClass(BorderColor.Strong),
     "rounded-md",
@@ -136,7 +139,6 @@ export const Toolbar = ({
   const containerStyle: React.CSSProperties = {
     left: position.x,
     top: position.y,
-    zIndex,
     backgroundColor: `color-mix(in srgb, var(${getColorCssVar(BackgroundColor.Card2)}) 85%, transparent)`,
     ...(isCollapsed && collapsedSize !== null
       ? orientation === Orientation.Column
