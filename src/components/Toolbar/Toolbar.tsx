@@ -19,7 +19,7 @@
  * ```
  */
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { DragHandleIcon } from "@/components/Icons";
@@ -36,6 +36,7 @@ import {
   textColorClass,
 } from "@/types";
 import { cn } from "@/util/classes";
+import { useDraggable } from "@/util/useDraggable";
 
 import { OrientationContext } from "./context";
 
@@ -87,73 +88,16 @@ export const Toolbar = ({
 }: ToolbarProps): React.ReactElement | null => {
   const canDrag = !(lockX && lockY);
 
-  const [position, setPosition] = useState({ x: xOffset, y: yOffset });
-  const [isDragging, setIsDragging] = useState(false);
+  const { position, isDragging, containerRef, handleDragStart } = useDraggable({
+    initialX: xOffset,
+    initialY: yOffset,
+    lockX,
+    lockY,
+    portal,
+  });
+
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [collapsedSize, setCollapsedSize] = useState<number | null>(null);
-  const dragStartRef = useRef({
-    clientX: 0,
-    clientY: 0,
-    pos: { x: xOffset, y: yOffset },
-  });
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const handleDragStart = useCallback(
-    (e: React.MouseEvent) => {
-      if (!canDrag) return;
-      e.preventDefault();
-      e.stopPropagation();
-      setIsDragging(true);
-      dragStartRef.current = {
-        clientX: e.clientX,
-        clientY: e.clientY,
-        pos: position,
-      };
-    },
-    [canDrag, position]
-  );
-
-  const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
-      const el = containerRef.current;
-      const fallback = {
-        clientWidth: window.innerWidth,
-        clientHeight: window.innerHeight,
-      };
-      const parent = portal ? fallback : (el?.parentElement ?? fallback);
-
-      const toolbarW = el?.offsetWidth ?? 0;
-      const toolbarH = el?.offsetHeight ?? 0;
-      const { clientX, clientY, pos } = dragStartRef.current;
-
-      const nextX = lockX
-        ? pos.x
-        : Math.max(
-            0,
-            Math.min(
-              parent.clientWidth - toolbarW,
-              pos.x + (e.clientX - clientX)
-            )
-          );
-
-      const nextY = lockY
-        ? pos.y
-        : Math.max(
-            0,
-            Math.min(
-              parent.clientHeight - toolbarH,
-              pos.y + (e.clientY - clientY)
-            )
-          );
-
-      setPosition({ x: nextX, y: nextY });
-    },
-    [lockX, lockY, portal]
-  );
-
-  const handleMouseUp = useCallback(() => {
-    setIsDragging(false);
-  }, []);
 
   const handleDragHandleDoubleClick = useCallback(() => {
     setIsCollapsed((prev) => {
@@ -170,16 +114,6 @@ export const Toolbar = ({
       return !prev;
     });
   }, [orientation]);
-
-  useEffect(() => {
-    if (!isDragging) return;
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, [isDragging, handleMouseMove, handleMouseUp]);
 
   if (!visible) return null;
 
@@ -224,7 +158,7 @@ export const Toolbar = ({
   const toolbar = (
     <OrientationContext.Provider value={orientation}>
       <div
-        ref={containerRef}
+        ref={containerRef as React.RefObject<HTMLDivElement>}
         role="toolbar"
         aria-label={ariaLabel}
         aria-orientation={
