@@ -135,7 +135,7 @@ describe("Toolbar", () => {
   it("stops propagation of click events", () => {
     const parentClick = jest.fn();
     render(
-      <div onClick={parentClick} onKeyDown={parentClick}>
+      <div role="presentation" onClick={parentClick} onKeyDown={parentClick}>
         <Toolbar aria-label="Test toolbar">
           <ToolbarGroup>
             <ToolbarAction aria-label="Action">
@@ -310,11 +310,13 @@ describe("ToolbarAction", () => {
 
   it("forwards native button props via ...rest", () => {
     render(
-      <ToolbarAction aria-label="Test action" tabIndex={5}>
+      <ToolbarAction aria-label="Test action" data-testid="action-rest-test" tabIndex={-1}>
         <TestIcon />
       </ToolbarAction>
     );
-    expect(screen.getByRole("button")).toHaveAttribute("tabindex", "5");
+    const button = screen.getByRole("button");
+    expect(button).toHaveAttribute("data-testid", "action-rest-test");
+    expect(button).toHaveAttribute("tabindex", "-1");
   });
 });
 

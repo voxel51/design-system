@@ -38,7 +38,7 @@ export interface ToolbarGroupProps {
 export const ToolbarGroup = ({
   children,
   "aria-label": ariaLabel,
-}: ToolbarGroupProps) => {
+}: ToolbarGroupProps): React.ReactElement => {
   const orientation = useContext(OrientationContext);
 
   return (

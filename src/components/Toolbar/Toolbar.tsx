@@ -84,7 +84,7 @@ export const Toolbar = ({
   className,
   style,
   visible = true,
-}: ToolbarProps) => {
+}: ToolbarProps): React.ReactElement | null => {
   const canDrag = !(lockX && lockY);
 
   const [position, setPosition] = useState({ x: xOffset, y: yOffset });
