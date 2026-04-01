@@ -60,7 +60,7 @@ const toolbarActionClass = (
   active: boolean,
   isInteractive: boolean,
   className?: string
-) =>
+): string =>
   cn(
     "size-10 flex items-center justify-center",
     "rounded transition-all",

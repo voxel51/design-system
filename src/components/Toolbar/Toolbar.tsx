@@ -107,7 +107,7 @@ export const Toolbar = ({
       }
       return !prev;
     });
-  }, [orientation]);
+  }, [containerRef, orientation]);
 
   if (!visible) return null;
 

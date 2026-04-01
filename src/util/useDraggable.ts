@@ -25,7 +25,7 @@
  * ```
  */
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 export interface UseDraggableOptions {
   /** Initial pixel offset from the left edge of the bounding container. Default `0`. */
