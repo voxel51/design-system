@@ -39,11 +39,14 @@ export const TableRow: FC<HTMLAttributes<HTMLTableRowElement>> = ({
   className,
   ...props
 }) => {
+  const isClickable = typeof props.onClick === "function";
   return (
     <tr
       className={cn(
         "border-b last:border-0",
         borderColorClass(BorderColor.CardElevated),
+        isClickable &&
+          `hover:cursor-pointer hover:bg-[var(--color-content-bg-card-2)]`,
         className
       )}
       {...props}
