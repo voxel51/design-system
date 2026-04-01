@@ -135,7 +135,7 @@ describe("Toolbar", () => {
   it("stops propagation of click events", () => {
     const parentClick = jest.fn();
     render(
-      <div onClick={parentClick}>
+      <div onClick={parentClick} onKeyDown={parentClick}>
         <Toolbar aria-label="Test toolbar">
           <ToolbarGroup>
             <ToolbarAction aria-label="Action">

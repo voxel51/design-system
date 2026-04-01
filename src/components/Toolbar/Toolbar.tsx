@@ -235,11 +235,20 @@ export const Toolbar = ({
         style={containerStyle}
         onPointerDown={(e) => e.stopPropagation()}
         onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
       >
         {canDrag && (
           <div
+            role="button"
+            tabIndex={0}
+            aria-label="Drag to reposition toolbar"
             onMouseDown={handleDragStart}
             onDoubleClick={handleDragHandleDoubleClick}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                handleDragHandleDoubleClick();
+              }
+            }}
             className={dragHandleClass}
           >
             <DragHandleIcon />
