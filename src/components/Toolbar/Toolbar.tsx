@@ -20,7 +20,6 @@
  */
 
 import React, { useCallback, useState } from "react";
-import { createPortal } from "react-dom";
 
 import { DragHandleIcon } from "@/components/Icons";
 import { Stack } from "@/components/Stack";
@@ -52,11 +51,6 @@ export interface ToolbarProps {
   xOffset?: number;
   /** Initial pixel offset from the top edge of the parent container.*/
   yOffset?: number;
-  /**
-   * When `true`, renders the toolbar into `document.body` via a React Portal
-   * and uses `position: fixed`. Default `false`.
-   */
-  portal?: boolean;
   /** CSS `z-index`. Default `10005`. */
   zIndex?: number;
   /** Accessible label for the toolbar landmark. */
@@ -79,7 +73,6 @@ export const Toolbar = ({
   lockY = false,
   xOffset = DEFAULT_X_OFFSET,
   yOffset = DEFAULT_Y_OFFSET,
-  portal = false,
   zIndex = 10005,
   "aria-label": ariaLabel,
   className,
@@ -93,7 +86,6 @@ export const Toolbar = ({
     initialY: yOffset,
     lockX,
     lockY,
-    portal,
   });
 
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -132,7 +124,6 @@ export const Toolbar = ({
   const containerClass = cn(
     "group absolute flex select-none",
     orientation === Orientation.Column ? "flex-col" : "flex-row",
-    portal && "!fixed",
     "border",
     borderColorClass(BorderColor.Strong),
     "rounded-md",
@@ -202,7 +193,7 @@ export const Toolbar = ({
     </OrientationContext.Provider>
   );
 
-  return portal ? createPortal(toolbar, document.body) : toolbar;
+  return toolbar;
 };
 
 Toolbar.displayName = "Toolbar";
