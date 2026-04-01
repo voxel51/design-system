@@ -125,13 +125,6 @@ describe("Toolbar", () => {
     expect(toolbar).toHaveStyle({ left: "50px", top: "100px" });
   });
 
-  it("renders into document.body via portal when portal=true", () => {
-    const { unmount } = renderToolbar({ portal: true });
-    // The toolbar should be present somewhere in the document
-    expect(document.body.querySelector('[role="toolbar"]')).toBeInTheDocument();
-    unmount();
-  });
-
   it("stops propagation of click events", () => {
     const parentClick = jest.fn();
     render(
@@ -185,14 +178,27 @@ describe("Toolbar", () => {
     });
 
     it("updates position on mousemove while dragging", () => {
-      // Use portal=true so the clamping boundary falls back to window.innerWidth/innerHeight
-      // (jsdom provides these), rather than the parent element which has no layout in jsdom.
-      renderToolbar({ xOffset: 20, yOffset: 20, portal: true });
+      const container = document.createElement("div");
+      // Give the parent container dimensions so jsdom clamps correctly.
+      Object.defineProperty(container, "clientWidth", { value: 800 });
+      Object.defineProperty(container, "clientHeight", { value: 600 });
+      document.body.appendChild(container);
+      render(
+        <Toolbar aria-label="Test toolbar" xOffset={20} yOffset={20}>
+          <ToolbarGroup>
+            <ToolbarAction aria-label="Action 1">
+              <TestIcon />
+            </ToolbarAction>
+          </ToolbarGroup>
+        </Toolbar>,
+        { container }
+      );
       const toolbar = screen.getByRole("toolbar");
       const dragHandle = toolbar.firstChild as HTMLElement;
       fireEvent.mouseDown(dragHandle, { clientX: 0, clientY: 0 });
       fireEvent.mouseMove(document, { clientX: 30, clientY: 40 });
       expect(toolbar).toHaveStyle({ left: "50px", top: "60px" });
+      document.body.removeChild(container);
     });
 
     it("does not move on X axis when lockX=true", () => {
