@@ -1,28 +1,5 @@
 /**
  * Copyright 2017-2026, Voxel51, Inc.
- *
- * Hook that provides drag-to-reposition behaviour for a floating element.
- *
- * The hook tracks mouse interactions and keeps the element within the bounds of
- * either its nearest parent element or the viewport (when `portal` is `true`).
- *
- * @example
- * ```tsx
- * const { position, isDragging, containerRef, handleDragStart } = useDraggable({
- *   initialX: 20,
- *   initialY: 100,
- * });
- *
- * return (
- *   <div
- *     ref={containerRef}
- *     data-dragging={isDragging || undefined}
- *     style={{ position: "absolute", left: position.x, top: position.y }}
- *   >
- *     <button onMouseDown={handleDragStart}>drag me</button>
- *   </div>
- * );
- * ```
  */
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -58,6 +35,30 @@ export interface UseDraggableReturn {
   handleDragStart: (e: React.MouseEvent) => void;
 }
 
+/**
+ * Hook that provides drag-to-reposition behaviour for a floating element.
+ *
+ * The hook tracks mouse interactions and keeps the element within the bounds of
+ * either its nearest parent element or the viewport (when `portal` is `true`).
+ *
+ * @example
+ * ```tsx
+ * const { position, isDragging, containerRef, handleDragStart } = useDraggable({
+ *   initialX: 20,
+ *   initialY: 100,
+ * });
+ *
+ * return (
+ *   <div
+ *     ref={containerRef}
+ *     data-dragging={isDragging || undefined}
+ *     style={{ position: "absolute", left: position.x, top: position.y }}
+ *   >
+ *     <button onMouseDown={handleDragStart}>drag me</button>
+ *   </div>
+ * );
+ * ```
+ */
 export const useDraggable = ({
   initialX = 0,
   initialY = 0,

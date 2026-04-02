@@ -12,7 +12,7 @@ import {
   MouseEvent,
 } from "react";
 
-import { ActionColor, bgColorClass, ElementState, Radius } from "@/types";
+import { ActionColor, bgColorClass, ElementState, getColorCssVar, IconColor, Radius } from "@/types";
 import { cn } from "@/util/classes";
 import radiusStyles from "@/styles/radius";
 
@@ -28,6 +28,37 @@ export interface ToolbarActionProps extends Omit<
   className?: string;
   onClick?: (e: MouseEvent) => void;
 }
+
+const toolbarActionClass = (
+  active: boolean,
+  isInteractive: boolean,
+  className?: string
+): string =>
+  cn(
+    "size-10 flex items-center justify-center",
+    radiusStyles(Radius.Md),
+    "transition-all",
+    active
+      ? cn(
+          `[--toolbar-action-icon-color:var(${getColorCssVar(IconColor.BrandAccent)})]`,
+          `bg-[color-mix(in_srgb,var(${getColorCssVar(IconColor.BrandAccent)})_20%,transparent)]`
+        )
+      : cn(
+          `[--toolbar-action-icon-color:var(${getColorCssVar(IconColor.Default)})]`,
+          "bg-transparent"
+        ),
+    "data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed",
+    isInteractive &&
+      cn(
+        bgColorClass(ActionColor.SecondaryHover, ElementState.Hover),
+        "hover:[--toolbar-action-icon-color:var(--color-content-icon-emphasis)]"
+      ),
+    "outline-none",
+    "data-[focus]:ring-2",
+    "data-[focus]:ring-[var(--color-content-border-focus)]",
+    "data-[focus]:ring-offset-1",
+    className
+  );
 
 /**
  * A single clickable icon-button within a `Toolbar`.
@@ -62,37 +93,6 @@ export interface ToolbarActionProps extends Omit<
  * </ToolbarAction>
  * ```
  */
-const toolbarActionClass = (
-  active: boolean,
-  isInteractive: boolean,
-  className?: string
-): string =>
-  cn(
-    "size-10 flex items-center justify-center",
-    radiusStyles(Radius.Md),
-    "transition-all",
-    active
-      ? cn(
-          "[--toolbar-action-icon-color:var(--color-content-icon-brand-accent)]",
-          "bg-[color-mix(in_srgb,var(--color-content-icon-brand-accent)_20%,transparent)]"
-        )
-      : cn(
-          "[--toolbar-action-icon-color:var(--color-content-icon-default)]",
-          "bg-transparent"
-        ),
-    "data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed",
-    isInteractive &&
-      cn(
-        bgColorClass(ActionColor.SecondaryHover, ElementState.Hover),
-        "hover:[--toolbar-action-icon-color:var(--color-content-icon-emphasis)]"
-      ),
-    "outline-none",
-    "data-[focus]:ring-2",
-    "data-[focus]:ring-[var(--color-content-border-focus)]",
-    "data-[focus]:ring-offset-1",
-    className
-  );
-
 export const ToolbarAction = forwardRef<HTMLButtonElement, ToolbarActionProps>(
   (
     {
