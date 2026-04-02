@@ -38,13 +38,17 @@ import {
   getColorCssVar,
   IconColor,
   Orientation,
+  Radius,
   Spacing,
+  Shadow,
   textColorClass,
   ZIndex,
   zIndexStyles,
 } from "@/types";
 import { cn } from "@/util/classes";
 import { useDraggable } from "@/util/useDraggable";
+import radiusStyles from "@/styles/radius";
+import shadowStyles from "@/styles/shadow";
 
 import { OrientationContext } from "./context";
 
@@ -122,7 +126,7 @@ export const Toolbar = ({
     "flex items-center justify-center",
     textColorClass(IconColor.Emphasis),
     "cursor-grab group-data-dragging:cursor-grabbing",
-    "rounded-md",
+    radiusStyles(Radius.Md),
     orientation === Orientation.Column
       ? "self-stretch py-2 px-1 [&_svg]:rotate-90"
       : "self-stretch px-2 py-1.5",
@@ -136,8 +140,10 @@ export const Toolbar = ({
     zIndexStyles(zIndex),
     "border",
     borderColorClass(BorderColor.Strong),
-    "rounded-md",
+    radiusStyles(Radius.Md),
     "backdrop-blur-sm",
+    shadowStyles(Shadow.Md),
+    shadowStyles(Shadow.Xl),
     "shadow-md data-dragging:shadow-xl",
     "transition-[opacity,box-shadow] data-dragging:transition-none",
     className

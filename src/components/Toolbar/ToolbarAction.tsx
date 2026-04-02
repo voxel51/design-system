@@ -12,8 +12,9 @@ import {
   MouseEvent,
 } from "react";
 
-import { ActionColor, bgColorClass, ElementState } from "@/types";
+import { ActionColor, bgColorClass, ElementState, Radius } from "@/types";
 import { cn } from "@/util/classes";
+import radiusStyles from "@/styles/radius";
 
 export interface ToolbarActionProps extends Omit<
   ComponentPropsWithoutRef<"button">,
@@ -68,7 +69,8 @@ const toolbarActionClass = (
 ): string =>
   cn(
     "size-10 flex items-center justify-center",
-    "rounded transition-all",
+    radiusStyles(Radius.Md),
+    "transition-all",
     active
       ? cn(
           "[--toolbar-action-icon-color:var(--color-content-icon-brand-accent)]",
