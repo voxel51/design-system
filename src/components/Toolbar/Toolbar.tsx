@@ -35,6 +35,7 @@ import {
   BackgroundColor,
   BorderColor,
   borderColorClass,
+  ElementState,
   getColorCssVar,
   IconColor,
   Orientation,
@@ -143,8 +144,7 @@ export const Toolbar = ({
     radiusStyles(Radius.Md),
     "backdrop-blur-sm",
     shadowStyles(Shadow.Md),
-    shadowStyles(Shadow.Xl),
-    "shadow-md data-dragging:shadow-xl",
+    shadowStyles(Shadow.Xl, ElementState.Dragging),
     "transition-[opacity,box-shadow] data-dragging:transition-none",
     className
   );

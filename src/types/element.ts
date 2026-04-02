@@ -3,6 +3,7 @@ export enum ElementState {
   AutoFocus = "data-autofocus",
   Checked = "data-checked",
   Disabled = "disabled",
+  Dragging = "data-dragging",
   Focus = "data-focus",
   Hover = "hover",
   None = "none",
