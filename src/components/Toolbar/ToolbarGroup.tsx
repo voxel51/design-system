@@ -4,13 +4,13 @@
  * A group of `ToolbarAction` items within a `Toolbar`.
  */
 
-import { useContext, ReactNode, ReactElement } from "react";
+import { ReactNode, ReactElement } from "react";
 
 import { Stack } from "@/components/Stack";
 import { Align, Orientation, Spacing } from "@/types";
 import { cn } from "@/util/classes";
 
-import { OrientationContext } from "./context";
+import { useOrientationContext } from "./context";
 
 export interface ToolbarGroupProps {
   children: ReactNode;
@@ -39,7 +39,7 @@ export const ToolbarGroup = ({
   children,
   "aria-label": ariaLabel,
 }: ToolbarGroupProps): ReactElement => {
-  const orientation = useContext(OrientationContext);
+  const orientation = useOrientationContext();
 
   return (
     <Stack
