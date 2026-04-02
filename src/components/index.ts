@@ -10,6 +10,7 @@ export * from "./FormField";
 export * from "./FormFieldGroup";
 export * from "./Heading";
 export * from "./Icons";
+export * from "./ImageList";
 export * from "./Input";
 export * from "./ListItem";
 export * from "./Pill";
