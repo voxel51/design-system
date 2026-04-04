@@ -98,7 +98,6 @@ export const Toolbar = ({
   xOffset = DEFAULT_X_OFFSET,
   yOffset = DEFAULT_Y_OFFSET,
   zIndex = ZIndex.AboveModal,
-  "aria-label": ariaLabel,
   className,
   style,
   visible = true,
@@ -180,7 +179,6 @@ export const Toolbar = ({
       <div
         ref={containerRef as RefObject<HTMLDivElement>}
         role="toolbar"
-        aria-label={ariaLabel}
         aria-orientation={
           orientation === Orientation.Column ? "vertical" : "horizontal"
         }

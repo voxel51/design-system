@@ -33,9 +33,6 @@ export interface ToolbarActionProps extends Omit<
   children: ReactNode;
   active?: boolean;
   disabled?: boolean;
-  title?: string;
-  "aria-label"?: string;
-  className?: string;
   onClick?: (e: MouseEvent) => void;
 }
 
@@ -46,7 +43,8 @@ const toolbarActionClass = (
   cn(
     "size-10 flex items-center justify-center transition-all",
     radiusStyles(Radius.Md),
-    isInteractive && bgColorClass(ActionColor.SecondaryHover, ElementState.Hover),
+    isInteractive &&
+      bgColorClass(ActionColor.SecondaryHover, ElementState.Hover),
     "data-[disabled]:opacity-50",
     "data-[disabled]:cursor-not-allowed",
     "outline-none",
@@ -58,7 +56,7 @@ const toolbarActionClass = (
 
 const iconClass = (active: boolean, isInteractive: boolean): string =>
   cn(
-    "size-full flex items-center justify-center pointer-events-none",
+    "size-full flex items-center justify-center",
     active
       ? textColorClass(IconColor.BrandAccent)
       : textColorClass(IconColor.Default),
@@ -89,7 +87,6 @@ export const ToolbarAction = forwardRef<HTMLButtonElement, ToolbarActionProps>(
       children,
       active = false,
       disabled = false,
-      "aria-label": ariaLabel,
       className,
       onClick,
       style,
@@ -110,15 +107,12 @@ export const ToolbarAction = forwardRef<HTMLButtonElement, ToolbarActionProps>(
         ref={ref}
         disabled={disabled}
         aria-pressed={active}
-        aria-label={ariaLabel}
         onClick={onClick}
         className={toolbarActionClass(isInteractive, className)}
         style={{ ...activeStyle, ...style }}
         {...rest}
       >
-        <div className={iconClass(active, isInteractive)}>
-          {children}
-        </div>
+        <div className={iconClass(active, isInteractive)}>{children}</div>
       </Button>
     );
   }
