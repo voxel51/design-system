@@ -4,7 +4,7 @@
  * A group of `ToolbarAction` items within a `Toolbar`.
  */
 
-import { HTMLAttributes, ReactNode } from "react";
+import { HTMLAttributes, JSX, ReactNode } from "react";
 
 import { Stack } from "@/components/Stack";
 import { Align, BorderColor, getColorCssVar, Orientation, Spacing } from "@/types";
@@ -39,7 +39,7 @@ export const ToolbarGroup = ({
   children,
   className,
   ...props
-}: ToolbarGroupProps) => {
+}: ToolbarGroupProps): JSX.Element => {
   const orientation = useOrientationContext();
 
   return (

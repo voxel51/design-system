@@ -13,6 +13,7 @@ import {
   MouseEvent,
 } from "react";
 
+import radiusStyles from "@/styles/radius";
 import {
   ActionColor,
   bgColorClass,
@@ -24,7 +25,6 @@ import {
   textColorClass,
 } from "@/types";
 import { cn } from "@/util/classes";
-import radiusStyles from "@/styles/radius";
 
 export interface ToolbarActionProps extends Omit<
   ComponentPropsWithoutRef<"button">,

@@ -1,5 +1,5 @@
-import Shadow from "@/types/shadow";
 import { ElementState, withElementState } from "@/types/element";
+import Shadow from "@/types/shadow";
 
 export const SHADOW_STYLES: Record<Shadow, string> = {
   [Shadow.None]: "shadow-none",

@@ -5,12 +5,15 @@ import {
   useState,
   CSSProperties,
   HTMLAttributes,
+  JSX,
   RefObject,
   ReactNode,
 } from "react";
 
 import { DragHandleIcon } from "@/components/Icons";
 import { Stack } from "@/components/Stack";
+import radiusStyles from "@/styles/radius";
+import shadowStyles from "@/styles/shadow";
 import {
   Align,
   BackgroundColor,
@@ -29,8 +32,6 @@ import {
 } from "@/types";
 import { cn } from "@/util/classes";
 import { useDraggable } from "@/util/useDraggable";
-import radiusStyles from "@/styles/radius";
-import shadowStyles from "@/styles/shadow";
 
 import { OrientationContext } from "./context";
 
@@ -105,7 +106,7 @@ export const Toolbar = ({
   onClick,
   onKeyDown,
   ...props
-}: ToolbarProps) => {
+}: ToolbarProps): JSX.Element | null => {
   const canDrag = !(lockX && lockY);
 
   const { position, isDragging, containerRef, handleDragStart } = useDraggable({

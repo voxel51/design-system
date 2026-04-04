@@ -3,6 +3,7 @@
  */
 
 import { act, fireEvent, renderHook } from "@testing-library/react";
+import { MouseEvent, RefObject } from "react";
 
 import { useDraggable } from "./useDraggable";
 
@@ -69,7 +70,7 @@ describe("useDraggable", () => {
           clientY: 0,
           preventDefault: jest.fn(),
           stopPropagation: jest.fn(),
-        } as unknown as React.MouseEvent);
+        } as unknown as MouseEvent);
       });
       expect(result.current.isDragging).toBe(true);
     });
@@ -82,7 +83,7 @@ describe("useDraggable", () => {
           clientY: 0,
           preventDefault: jest.fn(),
           stopPropagation: jest.fn(),
-        } as unknown as React.MouseEvent);
+        } as unknown as MouseEvent);
       });
       act(() => {
         fireEvent.mouseUp(document);
@@ -100,7 +101,7 @@ describe("useDraggable", () => {
           clientY: 0,
           preventDefault: jest.fn(),
           stopPropagation: jest.fn(),
-        } as unknown as React.MouseEvent);
+        } as unknown as MouseEvent);
       });
       expect(result.current.isDragging).toBe(false);
     });
@@ -116,7 +117,7 @@ describe("useDraggable", () => {
         // Attach el so the hook can read offsetWidth/offsetHeight
         act(() => {
           (
-            hook.result.current.containerRef as React.MutableRefObject<HTMLElement | null>
+            hook.result.current.containerRef as RefObject<HTMLElement | null>
           ).current = el;
         });
         return { ...hook, cleanup };
@@ -128,7 +129,7 @@ describe("useDraggable", () => {
           clientY: 0,
           preventDefault: jest.fn(),
           stopPropagation: jest.fn(),
-        } as unknown as React.MouseEvent);
+        } as unknown as MouseEvent);
       });
       act(() => {
         fireEvent.mouseMove(document, { clientX: 30, clientY: 40 });
@@ -146,7 +147,7 @@ describe("useDraggable", () => {
         );
         act(() => {
           (
-            hook.result.current.containerRef as React.MutableRefObject<HTMLElement | null>
+            hook.result.current.containerRef as RefObject<HTMLElement | null>
           ).current = el;
         });
         return { ...hook, cleanup };
@@ -158,7 +159,7 @@ describe("useDraggable", () => {
           clientY: 0,
           preventDefault: jest.fn(),
           stopPropagation: jest.fn(),
-        } as unknown as React.MouseEvent);
+        } as unknown as MouseEvent);
       });
       act(() => {
         // Move far past the left/top edge
@@ -179,7 +180,7 @@ describe("useDraggable", () => {
         );
         act(() => {
           (
-            hook.result.current.containerRef as React.MutableRefObject<HTMLElement | null>
+            hook.result.current.containerRef as RefObject<HTMLElement | null>
           ).current = el;
         });
         return { ...hook, cleanup };
@@ -191,7 +192,7 @@ describe("useDraggable", () => {
           clientY: 0,
           preventDefault: jest.fn(),
           stopPropagation: jest.fn(),
-        } as unknown as React.MouseEvent);
+        } as unknown as MouseEvent);
       });
       act(() => {
         fireEvent.mouseMove(document, { clientX: 10000, clientY: 10000 });
@@ -210,7 +211,7 @@ describe("useDraggable", () => {
         );
         act(() => {
           (
-            hook.result.current.containerRef as React.MutableRefObject<HTMLElement | null>
+            hook.result.current.containerRef as RefObject<HTMLElement | null>
           ).current = el;
         });
         return { ...hook, cleanup };
@@ -222,7 +223,7 @@ describe("useDraggable", () => {
           clientY: 0,
           preventDefault: jest.fn(),
           stopPropagation: jest.fn(),
-        } as unknown as React.MouseEvent);
+        } as unknown as MouseEvent);
       });
       act(() => {
         fireEvent.mouseMove(document, { clientX: 100, clientY: 100 });
@@ -241,7 +242,7 @@ describe("useDraggable", () => {
         );
         act(() => {
           (
-            hook.result.current.containerRef as React.MutableRefObject<HTMLElement | null>
+            hook.result.current.containerRef as RefObject<HTMLElement | null>
           ).current = el;
         });
         return { ...hook, cleanup };
@@ -253,7 +254,7 @@ describe("useDraggable", () => {
           clientY: 0,
           preventDefault: jest.fn(),
           stopPropagation: jest.fn(),
-        } as unknown as React.MouseEvent);
+        } as unknown as MouseEvent);
       });
       act(() => {
         fireEvent.mouseMove(document, { clientX: 100, clientY: 100 });
@@ -288,7 +289,7 @@ describe("useDraggable", () => {
           clientY: 0,
           preventDefault: jest.fn(),
           stopPropagation: jest.fn(),
-        } as unknown as React.MouseEvent);
+        } as unknown as MouseEvent);
       });
       act(() => {
         fireEvent.mouseMove(document, { clientX: 10000, clientY: 10000 });
@@ -312,16 +313,13 @@ describe("useDraggable", () => {
           clientY: 0,
           preventDefault: jest.fn(),
           stopPropagation: jest.fn(),
-        } as unknown as React.MouseEvent);
+        } as unknown as MouseEvent);
       });
       act(() => {
         fireEvent.mouseUp(document);
       });
 
-      expect(removeSpy).toHaveBeenCalledWith(
-        "mousemove",
-        expect.any(Function)
-      );
+      expect(removeSpy).toHaveBeenCalledWith("mousemove", expect.any(Function));
       expect(removeSpy).toHaveBeenCalledWith("mouseup", expect.any(Function));
       removeSpy.mockRestore();
     });
