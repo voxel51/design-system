@@ -7,13 +7,21 @@
 import { HTMLAttributes, JSX, ReactNode } from "react";
 
 import { Stack } from "@/components/Stack";
-import { Align, BorderColor, getColorCssVar, Orientation, Spacing } from "@/types";
+import {
+  Align,
+  BorderColor,
+  getColorCssVar,
+  Orientation,
+  Spacing,
+} from "@/types";
 import { cn } from "@/util/classes";
 
 import { useOrientationContext } from "./context";
 
-export interface ToolbarGroupProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
+export interface ToolbarGroupProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "children"
+> {
   children: ReactNode;
 }
 
