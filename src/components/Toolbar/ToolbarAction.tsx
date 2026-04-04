@@ -6,13 +6,23 @@
 
 import { Button } from "@headlessui/react";
 import {
+  CSSProperties,
   ComponentPropsWithoutRef,
   forwardRef,
   ReactNode,
   MouseEvent,
 } from "react";
 
-import { ActionColor, bgColorClass, ElementState, getColorCssVar, IconColor, Radius } from "@/types";
+import {
+  ActionColor,
+  bgColorClass,
+  BorderColor,
+  ElementState,
+  getColorCssVar,
+  IconColor,
+  Radius,
+  textColorClass,
+} from "@/types";
 import { cn } from "@/util/classes";
 import radiusStyles from "@/styles/radius";
 
@@ -30,53 +40,33 @@ export interface ToolbarActionProps extends Omit<
 }
 
 const toolbarActionClass = (
-  active: boolean,
   isInteractive: boolean,
   className?: string
 ): string =>
   cn(
-    "size-10 flex items-center justify-center",
+    "size-10 flex items-center justify-center transition-all",
     radiusStyles(Radius.Md),
-    "transition-all",
-    active
-      ? cn(
-          `[--toolbar-action-icon-color:var(${getColorCssVar(IconColor.BrandAccent)})]`,
-          `bg-[color-mix(in_srgb,var(${getColorCssVar(IconColor.BrandAccent)})_20%,transparent)]`
-        )
-      : cn(
-          `[--toolbar-action-icon-color:var(${getColorCssVar(IconColor.Default)})]`,
-          "bg-transparent"
-        ),
-    "data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed",
-    isInteractive &&
-      cn(
-        bgColorClass(ActionColor.SecondaryHover, ElementState.Hover),
-        "hover:[--toolbar-action-icon-color:var(--color-content-icon-emphasis)]"
-      ),
+    isInteractive && bgColorClass(ActionColor.SecondaryHover, ElementState.Hover),
+    "data-[disabled]:opacity-50",
+    "data-[disabled]:cursor-not-allowed",
     "outline-none",
     "data-[focus]:ring-2",
-    "data-[focus]:ring-[var(--color-content-border-focus)]",
+    `data-[focus]:ring-[var(${getColorCssVar(BorderColor.Focus)})]`,
     "data-[focus]:ring-offset-1",
     className
   );
 
+const iconClass = (active: boolean, isInteractive: boolean): string =>
+  cn(
+    "size-full flex items-center justify-center pointer-events-none",
+    active
+      ? textColorClass(IconColor.BrandAccent)
+      : textColorClass(IconColor.Default),
+    isInteractive && textColorClass(IconColor.Emphasis, ElementState.Hover)
+  );
+
 /**
  * A single clickable icon-button within a `Toolbar`.
- *
- * This component intentionally does not style its children. It sets
- * `--toolbar-action-icon-color` as a CSS custom property on the button element so
- * that children can opt in to state-aware coloring by consuming it:
- *
- * ```tsx
- * // SVG icon (e.g. a React component)
- * <BrushIcon className="text-[var(--toolbar-action-icon-color)]" />
- *
- * // Font Awesome icon eg: not an SVG icon
- * <i className="fa fa-gear" style={{ color: "var(--toolbar-action-icon-color)" }} />
- * ```
- *
- * Children that do not consume `--toolbar-action-icon-color` are unaffected and may
- * apply their own styles freely.
  *
  * @param active Whether the action is currently active/selected.
  * @param disabled Whether the action is disabled.
@@ -89,7 +79,7 @@ const toolbarActionClass = (
  * @example
  * ```tsx
  * <ToolbarAction active={tool === "brush"} onClick={() => setTool("brush")} aria-label="Brush">
- *   <BrushIcon className="text-[var(--toolbar-action-icon-color)]" />
+ *   <BrushIcon />
  * </ToolbarAction>
  * ```
  */
@@ -102,11 +92,19 @@ export const ToolbarAction = forwardRef<HTMLButtonElement, ToolbarActionProps>(
       "aria-label": ariaLabel,
       className,
       onClick,
+      style,
       ...rest
     },
     ref
   ) => {
     const isInteractive = !disabled && !active;
+
+    const activeStyle: CSSProperties | undefined = active
+      ? {
+          backgroundColor: `color-mix(in srgb, var(${getColorCssVar(IconColor.BrandAccent)}) 20%, transparent)`,
+        }
+      : undefined;
+
     return (
       <Button
         ref={ref}
@@ -114,10 +112,13 @@ export const ToolbarAction = forwardRef<HTMLButtonElement, ToolbarActionProps>(
         aria-pressed={active}
         aria-label={ariaLabel}
         onClick={onClick}
-        className={toolbarActionClass(active, isInteractive, className)}
+        className={toolbarActionClass(isInteractive, className)}
+        style={{ ...activeStyle, ...style }}
         {...rest}
       >
-        {children}
+        <div className={iconClass(active, isInteractive)}>
+          {children}
+        </div>
       </Button>
     );
   }

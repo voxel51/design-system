@@ -108,7 +108,7 @@ describe("useDraggable", () => {
 
   describe("position updates", () => {
     it("moves by the delta on mousemove", () => {
-      const { result, el, cleanup } = (() => {
+      const { result, cleanup } = (() => {
         const { el, cleanup } = setupContainer();
         const hook = renderHook(() =>
           useDraggable({ initialX: 20, initialY: 20 })
@@ -119,7 +119,7 @@ describe("useDraggable", () => {
             hook.result.current.containerRef as React.MutableRefObject<HTMLElement | null>
           ).current = el;
         });
-        return { ...hook, el, cleanup };
+        return { ...hook, cleanup };
       })();
 
       act(() => {
@@ -139,7 +139,7 @@ describe("useDraggable", () => {
     });
 
     it("clamps position to 0 minimum", () => {
-      const { result, el, cleanup } = (() => {
+      const { result, cleanup } = (() => {
         const { el, cleanup } = setupContainer();
         const hook = renderHook(() =>
           useDraggable({ initialX: 10, initialY: 10 })
@@ -149,7 +149,7 @@ describe("useDraggable", () => {
             hook.result.current.containerRef as React.MutableRefObject<HTMLElement | null>
           ).current = el;
         });
-        return { ...hook, el, cleanup };
+        return { ...hook, cleanup };
       })();
 
       act(() => {
@@ -172,7 +172,7 @@ describe("useDraggable", () => {
 
     it("clamps position to parent bounds maximum", () => {
       // parent 800×600, element 50×50 → max position is (750, 550)
-      const { result, el, cleanup } = (() => {
+      const { result, cleanup } = (() => {
         const { el, cleanup } = setupContainer(800, 600, 50, 50);
         const hook = renderHook(() =>
           useDraggable({ initialX: 20, initialY: 20 })
@@ -182,7 +182,7 @@ describe("useDraggable", () => {
             hook.result.current.containerRef as React.MutableRefObject<HTMLElement | null>
           ).current = el;
         });
-        return { ...hook, el, cleanup };
+        return { ...hook, cleanup };
       })();
 
       act(() => {
@@ -203,7 +203,7 @@ describe("useDraggable", () => {
     });
 
     it("does not update X when lockX=true", () => {
-      const { result, el, cleanup } = (() => {
+      const { result, cleanup } = (() => {
         const { el, cleanup } = setupContainer();
         const hook = renderHook(() =>
           useDraggable({ initialX: 20, initialY: 20, lockX: true })
@@ -213,7 +213,7 @@ describe("useDraggable", () => {
             hook.result.current.containerRef as React.MutableRefObject<HTMLElement | null>
           ).current = el;
         });
-        return { ...hook, el, cleanup };
+        return { ...hook, cleanup };
       })();
 
       act(() => {
@@ -234,7 +234,7 @@ describe("useDraggable", () => {
     });
 
     it("does not update Y when lockY=true", () => {
-      const { result, el, cleanup } = (() => {
+      const { result, cleanup } = (() => {
         const { el, cleanup } = setupContainer();
         const hook = renderHook(() =>
           useDraggable({ initialX: 20, initialY: 20, lockY: true })
@@ -244,7 +244,7 @@ describe("useDraggable", () => {
             hook.result.current.containerRef as React.MutableRefObject<HTMLElement | null>
           ).current = el;
         });
-        return { ...hook, el, cleanup };
+        return { ...hook, cleanup };
       })();
 
       act(() => {

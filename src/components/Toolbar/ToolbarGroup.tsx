@@ -4,17 +4,17 @@
  * A group of `ToolbarAction` items within a `Toolbar`.
  */
 
-import { ReactNode, ReactElement } from "react";
+import { HTMLAttributes, ReactNode } from "react";
 
 import { Stack } from "@/components/Stack";
-import { Align, Orientation, Spacing } from "@/types";
+import { Align, BorderColor, getColorCssVar, Orientation, Spacing } from "@/types";
 import { cn } from "@/util/classes";
 
 import { useOrientationContext } from "./context";
 
-export interface ToolbarGroupProps {
+export interface ToolbarGroupProps
+  extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
   children: ReactNode;
-  "aria-label"?: string;
 }
 
 /**
@@ -23,8 +23,8 @@ export interface ToolbarGroupProps {
  * Reads orientation from `OrientationContext` — no need to pass it explicitly.
  * A divider is automatically rendered after each group; the last group's divider is hidden.
  *
- * @param aria-label Accessible label for the group landmark.
  * @param children `ToolbarAction` items to render within the group.
+ * @param props Additional `HTMLDivElement` attributes (e.g. `data-testid`, `aria-label`) forwarded to the root element.
  *
  * @example
  * ```tsx
@@ -37,8 +37,9 @@ export interface ToolbarGroupProps {
  */
 export const ToolbarGroup = ({
   children,
-  "aria-label": ariaLabel,
-}: ToolbarGroupProps): ReactElement => {
+  className,
+  ...props
+}: ToolbarGroupProps) => {
   const orientation = useOrientationContext();
 
   return (
@@ -47,11 +48,12 @@ export const ToolbarGroup = ({
       orientation={orientation}
       align={Align.Center}
       spacing={Spacing.Xs}
-      aria-label={ariaLabel}
       className={cn(
         "group/toolbar-group",
-        orientation !== Orientation.Column && "self-stretch"
+        orientation !== Orientation.Column && "self-stretch",
+        className
       )}
+      {...props}
     >
       {children}
       <div
@@ -59,7 +61,7 @@ export const ToolbarGroup = ({
           orientation === Orientation.Column
             ? "h-px w-full my-0.5"
             : "w-px self-stretch mx-0.5",
-          "bg-[var(--color-content-border-strong)]",
+          `bg-[var(${getColorCssVar(BorderColor.Strong)})]`,
           "group-last/toolbar-group:hidden"
         )}
       />
