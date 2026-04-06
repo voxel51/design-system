@@ -12,6 +12,7 @@ export * from "./Heading";
 export * from "./Icons";
 export * from "./Input";
 export * from "./ListItem";
+export * from "./Modal";
 export * from "./Pill";
 export * from "./Radio";
 export * from "./RichButton";
