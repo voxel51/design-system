@@ -40,7 +40,9 @@
     "prepublishOnly": "npm run build",
     "test": "jest",
     "type-check": "tsc --noEmit",
-    "validate:all": "npm run lint && npm run format:check && npm run type-check && npm run build && npm run test"
+    "validate:all": "npm run lint && npm run format:check && npm run type-check && npm run build && npm run test",
+    "storybook": "storybook dev -p 6006",
+    "storybook:build": "storybook build"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -54,8 +56,14 @@
     "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
+    "@heroicons/react": "^2.2.0",
     "@mui/material": "^5.0.0",
     "@mui/utils": "^5.0.0",
+    "@storybook/addon-a11y": "^10.2.15",
+    "@storybook/addon-docs": "^10.2.15",
+    "@storybook/react-vite": "^10.2.15",
+    "lorem-ipsum": "^2.0.8",
+    "storybook": "^10.2.15",
     "@tailwindcss/postcss": "^4.1.17",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
