@@ -24,7 +24,7 @@ export const Z_INDEX_VALUES: Record<ZIndex, number | "auto"> = {
   [ZIndex.Low]: 10,
   [ZIndex.Medium]: 100,
   [ZIndex.High]: 1000,
-  [ZIndex.AboveModal]: 10000,
+  [ZIndex.AboveModal]: 10010,
 };
 
 /**
