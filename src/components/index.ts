@@ -29,5 +29,6 @@ export * from "./Toast";
 export * from "./ToastContainer";
 export * from "./Toggle";
 export * from "./ToggleSwitch";
+export * from "./Toolbar";
 export * from "./Tooltip";
 export * from "./UnsetHint";
