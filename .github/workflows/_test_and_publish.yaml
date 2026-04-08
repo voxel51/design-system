@@ -46,7 +46,7 @@ jobs:
       - name: Debug auth
         run: |
           echo "NPMRC:"
-          cat ~/.npmrc
+          cat /home/runner/work/_temp/.npmrc
           echo "Token check:"
           npm whoami
 
