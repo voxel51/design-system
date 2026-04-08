@@ -12,5 +12,5 @@ jobs:
       id-token: write
     uses: ./.github/workflows/_test_and_publish.yaml
     with:
-      node-version: 22
+      node-version: 22.22.0
       registry-url: https://registry.npmjs.org
