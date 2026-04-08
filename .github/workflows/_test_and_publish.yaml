@@ -38,7 +38,7 @@ jobs:
           registry-url: ${{ inputs.registry-url }}
 
       - name: Update NPM
-        run: npm install -g npm@latest
+        run: npm install -g npm@10
 
       - name: Clean install
         run: npm ci
