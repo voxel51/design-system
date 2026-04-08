@@ -38,17 +38,10 @@ jobs:
           registry-url: ${{ inputs.registry-url }}
 
       - name: Update NPM
-        run: npm install -g npm@10
+        run: npm install -g npm@latest
 
       - name: Clean install
         run: npm ci
-
-      - name: Debug auth
-        run: |
-          echo "NPMRC:"
-          cat /home/runner/work/_temp/.npmrc
-          echo "Token check:"
-          npm whoami
 
       - name: Publish package
         run: | # NODE_AUTH_TOKEN needs to be cleared explicitly; see https://github.com/actions/setup-node/issues/1440
