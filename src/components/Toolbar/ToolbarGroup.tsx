@@ -65,7 +65,6 @@ export const ToolbarGroup = ({
         align={Align.Center}
         spacing={Spacing.Xs}
         className={cn(
-          "flex-1",
           orientation !== Orientation.Column && "self-stretch",
           className
         )}
