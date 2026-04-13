@@ -1,6 +1,7 @@
 import {
   CSSProperties,
   HTMLAttributes,
+  ReactElement,
   ReactNode,
   useCallback,
   useEffect,
@@ -86,7 +87,7 @@ export function ImageList<T = unknown>({
   className,
   style,
   ...rest
-}: ImageListProps<T>): React.ReactElement {
+}: ImageListProps<T>): ReactElement {
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   const handleIntersection = useCallback(
