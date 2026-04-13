@@ -12,7 +12,9 @@ import { Spinner } from "@/components/Spinner";
 import { Descriptor, Orientation, Size } from "@/types";
 import { cn } from "@/util/classes";
 
-export interface ImageListProps<T = unknown> extends HTMLAttributes<HTMLDivElement> {
+export interface ImageListProps<
+  T = unknown,
+> extends HTMLAttributes<HTMLDivElement> {
   /** Items to display in the grid. */
   items: Descriptor<T>[];
   /** Renders the content of each grid cell. */
