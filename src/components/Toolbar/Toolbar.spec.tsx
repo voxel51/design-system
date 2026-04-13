@@ -380,16 +380,13 @@ describe("ToolbarGroup", () => {
             <TestIcon />
           </ToolbarAction>
         </ToolbarGroup>
+        <ToolbarGroup aria-label="Transform tools">
+          <ToolbarAction aria-label="Action">
+            <TestIcon />
+          </ToolbarAction>
+        </ToolbarGroup>
       </Toolbar>
     );
-    // The divider is a plain <div> inside the group that is not a button or text
-    const group = screen.getByRole("group");
-    const dividers = Array.from(group.querySelectorAll("div")).filter(
-      (el) =>
-        !el.querySelector("button") &&
-        el.tagName === "DIV" &&
-        el.children.length === 0
-    );
-    expect(dividers.length).toBeGreaterThan(0);
+    expect(screen.getAllByRole("separator").length).toBeGreaterThan(0);
   });
 });
