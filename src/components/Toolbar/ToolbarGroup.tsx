@@ -74,6 +74,7 @@ export const ToolbarGroup = ({
         {children}
       </Stack>
       <div
+        role="separator"
         className={cn(
           orientation === Orientation.Column
             ? "w-full my-0.5 border-t-1"
