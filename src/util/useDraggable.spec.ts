@@ -14,7 +14,9 @@ function setupContainer(
   parentWidth = 800,
   parentHeight = 600,
   elWidth = 50,
-  elHeight = 50
+  elHeight = 50,
+  elOffsetLeft = 0,
+  elOffsetTop = 0
 ) {
   const parent = document.createElement("div");
   Object.defineProperty(parent, "clientWidth", { value: parentWidth });
@@ -23,6 +25,8 @@ function setupContainer(
   const el = document.createElement("div");
   Object.defineProperty(el, "offsetWidth", { value: elWidth });
   Object.defineProperty(el, "offsetHeight", { value: elHeight });
+  Object.defineProperty(el, "offsetLeft", { value: elOffsetLeft });
+  Object.defineProperty(el, "offsetTop", { value: elOffsetTop });
 
   parent.appendChild(el);
   document.body.appendChild(parent);
@@ -110,7 +114,7 @@ describe("useDraggable", () => {
   describe("position updates", () => {
     it("moves by the delta on mousemove", () => {
       const { result, cleanup } = (() => {
-        const { el, cleanup } = setupContainer();
+        const { el, cleanup } = setupContainer(800, 600, 50, 50, 20, 20);
         const hook = renderHook(() =>
           useDraggable({ initialX: 20, initialY: 20 })
         );
@@ -205,7 +209,7 @@ describe("useDraggable", () => {
 
     it("does not update X when lockX=true", () => {
       const { result, cleanup } = (() => {
-        const { el, cleanup } = setupContainer();
+        const { el, cleanup } = setupContainer(800, 600, 50, 50, 20, 20);
         const hook = renderHook(() =>
           useDraggable({ initialX: 20, initialY: 20, lockX: true })
         );
@@ -236,7 +240,7 @@ describe("useDraggable", () => {
 
     it("does not update Y when lockY=true", () => {
       const { result, cleanup } = (() => {
-        const { el, cleanup } = setupContainer();
+        const { el, cleanup } = setupContainer(800, 600, 50, 50, 20, 20);
         const hook = renderHook(() =>
           useDraggable({ initialX: 20, initialY: 20, lockY: true })
         );
@@ -299,6 +303,179 @@ describe("useDraggable", () => {
       // so max = window.innerWidth - 0 = 1024, window.innerHeight - 0 = 768
       expect(result.current.position.x).toBe(window.innerWidth);
       expect(result.current.position.y).toBe(window.innerHeight);
+    });
+  });
+
+  describe("string initial values", () => {
+    it("accepts a string initialX and initialY as the initial position", () => {
+      const { result } = renderHook(() =>
+        useDraggable({ initialX: "10%", initialY: "2rem" })
+      );
+      expect(result.current.position).toEqual({ x: "10%", y: "2rem" });
+    });
+
+    it("resolves string initial values to pixel numbers from the DOM on first drag", () => {
+      // offsetLeft=80, offsetTop=120 simulate where the browser placed the element
+      // when its CSS position was "10%" / "2rem".
+      const { el, cleanup } = setupContainer(800, 600, 50, 50, 80, 120);
+      const hook = renderHook(() =>
+        useDraggable({ initialX: "10%", initialY: "2rem" })
+      );
+      act(() => {
+        (
+          hook.result.current.containerRef as RefObject<HTMLElement | null>
+        ).current = el;
+      });
+
+      act(() => {
+        hook.result.current.handleDragStart({
+          clientX: 100,
+          clientY: 100,
+          preventDefault: jest.fn(),
+          stopPropagation: jest.fn(),
+        } as unknown as MouseEvent);
+      });
+      // Zero delta — move to same client position as drag start.
+      act(() => {
+        fireEvent.mouseMove(document, { clientX: 100, clientY: 100 });
+      });
+
+      // After the first drag event, position must be a pixel number resolved
+      // from the DOM, not the original CSS string.
+      expect(typeof hook.result.current.position.x).toBe("number");
+      expect(typeof hook.result.current.position.y).toBe("number");
+      expect(hook.result.current.position.x).toBe(80);
+      expect(hook.result.current.position.y).toBe(120);
+      cleanup();
+    });
+
+    it("correctly applies drag delta on top of the DOM-resolved pixel position", () => {
+      const { el, cleanup } = setupContainer(800, 600, 50, 50, 80, 120);
+      const hook = renderHook(() =>
+        useDraggable({ initialX: "10%", initialY: "2rem" })
+      );
+      act(() => {
+        (
+          hook.result.current.containerRef as RefObject<HTMLElement | null>
+        ).current = el;
+      });
+
+      act(() => {
+        hook.result.current.handleDragStart({
+          clientX: 0,
+          clientY: 0,
+          preventDefault: jest.fn(),
+          stopPropagation: jest.fn(),
+        } as unknown as MouseEvent);
+      });
+      act(() => {
+        fireEvent.mouseMove(document, { clientX: 10, clientY: 20 });
+      });
+
+      expect(hook.result.current.position.x).toBe(90);  // 80 + 10
+      expect(hook.result.current.position.y).toBe(140); // 120 + 20
+      cleanup();
+    });
+  });
+
+  describe("onPositionChange", () => {
+    it("calls onPositionChange with the new pixel position on each mousemove", () => {
+      const onPositionChange = jest.fn();
+      const { el, cleanup } = setupContainer(800, 600, 50, 50, 20, 20);
+      const hook = renderHook(() =>
+        useDraggable({ initialX: 20, initialY: 20, onPositionChange })
+      );
+      act(() => {
+        (
+          hook.result.current.containerRef as RefObject<HTMLElement | null>
+        ).current = el;
+      });
+
+      act(() => {
+        hook.result.current.handleDragStart({
+          clientX: 0,
+          clientY: 0,
+          preventDefault: jest.fn(),
+          stopPropagation: jest.fn(),
+        } as unknown as MouseEvent);
+      });
+      act(() => {
+        fireEvent.mouseMove(document, { clientX: 30, clientY: 40 });
+      });
+
+      expect(onPositionChange).toHaveBeenCalledTimes(1);
+      expect(onPositionChange).toHaveBeenCalledWith({ x: 50, y: 60 });
+      cleanup();
+    });
+
+    it("calls onPositionChange on every mousemove, not just the first", () => {
+      const onPositionChange = jest.fn();
+      const { el, cleanup } = setupContainer(800, 600, 50, 50, 20, 20);
+      const hook = renderHook(() =>
+        useDraggable({ initialX: 20, initialY: 20, onPositionChange })
+      );
+      act(() => {
+        (
+          hook.result.current.containerRef as RefObject<HTMLElement | null>
+        ).current = el;
+      });
+
+      act(() => {
+        hook.result.current.handleDragStart({
+          clientX: 0,
+          clientY: 0,
+          preventDefault: jest.fn(),
+          stopPropagation: jest.fn(),
+        } as unknown as MouseEvent);
+      });
+      act(() => { fireEvent.mouseMove(document, { clientX: 10, clientY: 10 }); });
+      act(() => { fireEvent.mouseMove(document, { clientX: 20, clientY: 20 }); });
+      act(() => { fireEvent.mouseMove(document, { clientX: 30, clientY: 30 }); });
+
+      expect(onPositionChange).toHaveBeenCalledTimes(3);
+      cleanup();
+    });
+
+    it("does not call onPositionChange when not dragging", () => {
+      const onPositionChange = jest.fn();
+      renderHook(() => useDraggable({ initialX: 20, initialY: 20, onPositionChange }));
+
+      act(() => {
+        fireEvent.mouseMove(document, { clientX: 100, clientY: 100 });
+      });
+
+      expect(onPositionChange).not.toHaveBeenCalled();
+    });
+
+    it("always delivers pixel numbers to onPositionChange even with string initial values", () => {
+      const onPositionChange = jest.fn();
+      const { el, cleanup } = setupContainer(800, 600, 50, 50, 80, 120);
+      const hook = renderHook(() =>
+        useDraggable({ initialX: "10%", initialY: "2rem", onPositionChange })
+      );
+      act(() => {
+        (
+          hook.result.current.containerRef as RefObject<HTMLElement | null>
+        ).current = el;
+      });
+
+      act(() => {
+        hook.result.current.handleDragStart({
+          clientX: 0,
+          clientY: 0,
+          preventDefault: jest.fn(),
+          stopPropagation: jest.fn(),
+        } as unknown as MouseEvent);
+      });
+      act(() => {
+        fireEvent.mouseMove(document, { clientX: 0, clientY: 0 });
+      });
+
+      expect(onPositionChange).toHaveBeenCalledTimes(1);
+      const [pos] = onPositionChange.mock.calls[0];
+      expect(typeof pos.x).toBe("number");
+      expect(typeof pos.y).toBe("number");
+      cleanup();
     });
   });
 
