@@ -19,6 +19,11 @@ export interface UseDraggableOptions {
    * `position: fixed`. Default `false`.
    */
   portal?: boolean;
+  /**
+   * Called after every drag move with the new pixel position.
+   * Always delivers pixel values regardless of what type `initialX`/`initialY` were.
+   */
+  onPositionChange?: (pos: { x: number; y: number }) => void;
 }
 
 export interface UseDraggableReturn {
@@ -65,6 +70,7 @@ export const useDraggable = ({
   lockX = false,
   lockY = false,
   portal = false,
+  onPositionChange,
 }: UseDraggableOptions = {}): UseDraggableReturn => {
   const canDrag = !(lockX && lockY);
 
@@ -127,8 +133,9 @@ export const useDraggable = ({
           );
 
       setPosition({ x: nextX, y: nextY });
+      onPositionChange?.({ x: nextX, y: nextY });
     },
-    [lockX, lockY, portal]
+    [lockX, lockY, portal, onPositionChange]
   );
 
   const handleMouseUp = useCallback(() => {

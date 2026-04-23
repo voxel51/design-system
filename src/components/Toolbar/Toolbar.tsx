@@ -54,6 +54,11 @@ export interface ToolbarProps extends Omit<
   zIndex?: ZIndex;
   /** Whether the toolbar is rendered. Default `true`. */
   visible?: boolean;
+  /**
+   * Called after every drag move with the new pixel position.
+   * Use this to persist the toolbar's position across remounts.
+   */
+  onPositionChange?: (pos: { x: number; y: number }) => void;
 }
 
 const DEFAULT_X_OFFSET = 20;
@@ -76,6 +81,7 @@ const DEFAULT_Y_OFFSET = 20;
  * @param props.yOffset - Initial pixel offset from the top edge of the parent container. Default `20`.
  * @param props.zIndex - Stacking layer for the toolbar. Default `ZIndex.AboveModal`.
  * @param props.visible - Whether the toolbar is rendered. Default `true`.
+ * @param props.onPositionChange - Called after every drag move with the new pixel position.
  * @param props - Any additional `HTMLDivElement` attributes (e.g. `data-testid`, `aria-label`) are
  *   forwarded to the root `div`. Internal `onPointerDown`, `onClick`, and `onKeyDown` handlers that
  *   call `stopPropagation` are merged with any consumer-provided handlers.
@@ -105,6 +111,7 @@ export const Toolbar = ({
   onPointerDown,
   onClick,
   onKeyDown,
+  onPositionChange,
   ...props
 }: ToolbarProps): JSX.Element | null => {
   const canDrag = !(lockX && lockY);
@@ -114,6 +121,7 @@ export const Toolbar = ({
     initialY: yOffset,
     lockX,
     lockY,
+    onPositionChange,
   });
 
   const [isCollapsed, setIsCollapsed] = useState(false);
