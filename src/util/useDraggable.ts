@@ -5,10 +5,10 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
 export interface UseDraggableOptions {
-  /** Initial pixel offset from the left edge of the bounding container. Default `0`. */
-  initialX?: number;
-  /** Initial pixel offset from the top edge of the bounding container. Default `0`. */
-  initialY?: number;
+  /** Initial offset from the left edge of the bounding container. Accepts any CSS length (e.g. `0`, `"10%"`, `"2rem"`). Default `0`. */
+  initialX?: string | number;
+  /** Initial offset from the top edge of the bounding container. Accepts any CSS length (e.g. `0`, `"10%"`, `"2rem"`). Default `0`. */
+  initialY?: string | number;
   /** Lock horizontal (x-axis) movement. Default `false`. */
   lockX?: boolean;
   /** Lock vertical (y-axis) movement. Default `false`. */
@@ -27,8 +27,8 @@ export interface UseDraggableOptions {
 }
 
 export interface UseDraggableReturn {
-  /** Current `{ x, y }` position in pixels. */
-  position: { x: number; y: number };
+  /** Current `{ x, y }` position. Before the first drag this reflects the initial CSS value; after the first drag it is always a pixel number. */
+  position: { x: string | number; y: string | number };
   /** `true` while the user is actively dragging. */
   isDragging: boolean;
   /** Attach to the element that should be repositioned. */
@@ -74,14 +74,14 @@ export const useDraggable = ({
 }: UseDraggableOptions = {}): UseDraggableReturn => {
   const canDrag = !(lockX && lockY);
 
-  const [position, setPosition] = useState({ x: initialX, y: initialY });
+  const [position, setPosition] = useState<{ x: string | number; y: string | number }>({ x: initialX, y: initialY });
   const [isDragging, setIsDragging] = useState(false);
 
   const containerRef = useRef<HTMLElement | null>(null);
-  const dragStartRef = useRef({
+  const dragStartRef = useRef<{ clientX: number; clientY: number; pos: { x: number; y: number } }>({
     clientX: 0,
     clientY: 0,
-    pos: { x: initialX, y: initialY },
+    pos: { x: 0, y: 0 },
   });
 
   const handleDragStart = useCallback(
@@ -90,13 +90,17 @@ export const useDraggable = ({
       e.preventDefault();
       e.stopPropagation();
       setIsDragging(true);
+      const el = containerRef.current;
       dragStartRef.current = {
         clientX: e.clientX,
         clientY: e.clientY,
-        pos: position,
+        pos: {
+          x: el?.offsetLeft ?? 0,
+          y: el?.offsetTop ?? 0,
+        },
       };
     },
-    [canDrag, position]
+    [canDrag]
   );
 
   const handleMouseMove = useCallback(
