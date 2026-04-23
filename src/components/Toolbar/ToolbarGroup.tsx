@@ -10,7 +10,7 @@ import { Stack } from "@/components/Stack";
 import {
   Align,
   BorderColor,
-  getColorCssVar,
+  borderColorClass,
   Orientation,
   Spacing,
 } from "@/types";
@@ -51,29 +51,38 @@ export const ToolbarGroup = ({
   const orientation = useOrientationContext();
 
   return (
-    <Stack
-      role="group"
-      orientation={orientation}
-      align={Align.Center}
-      spacing={Spacing.Xs}
+    <div
       className={cn(
-        "group/toolbar-group",
-        orientation !== Orientation.Column && "self-stretch",
-        className
+        `group/toolbar-group flex gap-${Spacing.Xs}`,
+        orientation === Orientation.Column
+          ? "w-full flex-col"
+          : "h-full flex-row"
       )}
-      {...props}
     >
-      {children}
+      <Stack
+        role="group"
+        orientation={orientation}
+        align={Align.Center}
+        spacing={Spacing.Xs}
+        className={cn(
+          orientation !== Orientation.Column && "self-stretch",
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </Stack>
       <div
+        role="separator"
         className={cn(
           orientation === Orientation.Column
-            ? "h-px w-full my-0.5"
-            : "w-px self-stretch mx-0.5",
-          `bg-[var(${getColorCssVar(BorderColor.Strong)})]`,
+            ? "w-full my-0.5 border-t-1"
+            : "h-full mx-0.5 border-l-1",
+          borderColorClass(BorderColor.Strong),
           "group-last/toolbar-group:hidden"
         )}
       />
-    </Stack>
+    </div>
   );
 };
 
