@@ -4,6 +4,9 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
+const clamp = (lock: boolean, pos: number, delta: number, max: number) =>
+  lock ? pos : Math.max(0, Math.min(max, pos + delta));
+
 export interface UseDraggableOptions {
   /** Initial offset from the left edge of the bounding container. Accepts any CSS length (e.g. `0`, `"10%"`, `"2rem"`). Default `0`. */
   initialX?: string | number;
@@ -116,25 +119,8 @@ export const useDraggable = ({
       const toolbarH = el?.offsetHeight ?? 0;
       const { clientX, clientY, pos } = dragStartRef.current;
 
-      const nextX = lockX
-        ? pos.x
-        : Math.max(
-            0,
-            Math.min(
-              parent.clientWidth - toolbarW,
-              pos.x + (e.clientX - clientX)
-            )
-          );
-
-      const nextY = lockY
-        ? pos.y
-        : Math.max(
-            0,
-            Math.min(
-              parent.clientHeight - toolbarH,
-              pos.y + (e.clientY - clientY)
-            )
-          );
+      const nextX = clamp(lockX, pos.x, e.clientX - clientX, parent.clientWidth - toolbarW);
+      const nextY = clamp(lockY, pos.y, e.clientY - clientY, parent.clientHeight - toolbarH);
 
       setPosition({ x: nextX, y: nextY });
       onPositionChange?.({ x: nextX, y: nextY });
@@ -142,9 +128,7 @@ export const useDraggable = ({
     [lockX, lockY, portal, onPositionChange]
   );
 
-  const handleMouseUp = useCallback(() => {
-    setIsDragging(false);
-  }, []);
+  const handleMouseUp = () => setIsDragging(false);
 
   useEffect(() => {
     if (!isDragging) return;
