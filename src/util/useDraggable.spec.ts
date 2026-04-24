@@ -372,7 +372,7 @@ describe("useDraggable", () => {
         fireEvent.mouseMove(document, { clientX: 10, clientY: 20 });
       });
 
-      expect(hook.result.current.position.x).toBe(90);  // 80 + 10
+      expect(hook.result.current.position.x).toBe(90); // 80 + 10
       expect(hook.result.current.position.y).toBe(140); // 120 + 20
       cleanup();
     });
@@ -428,9 +428,15 @@ describe("useDraggable", () => {
           stopPropagation: jest.fn(),
         } as unknown as MouseEvent);
       });
-      act(() => { fireEvent.mouseMove(document, { clientX: 10, clientY: 10 }); });
-      act(() => { fireEvent.mouseMove(document, { clientX: 20, clientY: 20 }); });
-      act(() => { fireEvent.mouseMove(document, { clientX: 30, clientY: 30 }); });
+      act(() => {
+        fireEvent.mouseMove(document, { clientX: 10, clientY: 10 });
+      });
+      act(() => {
+        fireEvent.mouseMove(document, { clientX: 20, clientY: 20 });
+      });
+      act(() => {
+        fireEvent.mouseMove(document, { clientX: 30, clientY: 30 });
+      });
 
       expect(onPositionChange).toHaveBeenCalledTimes(3);
       cleanup();
@@ -438,7 +444,9 @@ describe("useDraggable", () => {
 
     it("does not call onPositionChange when not dragging", () => {
       const onPositionChange = jest.fn();
-      renderHook(() => useDraggable({ initialX: 20, initialY: 20, onPositionChange }));
+      renderHook(() =>
+        useDraggable({ initialX: 20, initialY: 20, onPositionChange })
+      );
 
       act(() => {
         fireEvent.mouseMove(document, { clientX: 100, clientY: 100 });
@@ -472,7 +480,9 @@ describe("useDraggable", () => {
       });
 
       expect(onPositionChange).toHaveBeenCalledTimes(1);
-      const [pos] = onPositionChange.mock.calls[0];
+      const [pos] = onPositionChange.mock.calls[0] as [
+        { x: number; y: number },
+      ];
       expect(typeof pos.x).toBe("number");
       expect(typeof pos.y).toBe("number");
       cleanup();

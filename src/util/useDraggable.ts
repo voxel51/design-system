@@ -4,8 +4,12 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
-const clamp = (lock: boolean, pos: number, delta: number, max: number) =>
-  lock ? pos : Math.max(0, Math.min(max, pos + delta));
+const clamp = (
+  lock: boolean,
+  pos: number,
+  delta: number,
+  max: number
+): number => (lock ? pos : Math.max(0, Math.min(max, pos + delta)));
 
 export interface UseDraggableOptions {
   /** Initial offset from the left edge of the bounding container. Accepts any CSS length (e.g. `0`, `"10%"`, `"2rem"`). Default `0`. */
@@ -77,14 +81,27 @@ export const useDraggable = ({
 }: UseDraggableOptions = {}): UseDraggableReturn => {
   const canDrag = !(lockX && lockY);
 
-  const [position, setPosition] = useState<{ x: string | number; y: string | number }>({ x: initialX, y: initialY });
+  const [position, setPosition] = useState<{
+    x: string | number;
+    y: string | number;
+  }>({ x: initialX, y: initialY });
   const [isDragging, setIsDragging] = useState(false);
 
   const containerRef = useRef<HTMLElement | null>(null);
-  const dragStartRef = useRef<{ clientX: number; clientY: number; pos: { x: number; y: number } }>({
+  const dragStartRef = useRef<{
+    clientX: number;
+    clientY: number;
+    pos: { x: number; y: number };
+  }>({
     clientX: 0,
     clientY: 0,
     pos: { x: 0, y: 0 },
+  });
+  // Mutable mirror of position so handleDragStart can read the current numeric
+  // position without being listed as a useCallback dependency.
+  const positionRef = useRef<{ x: string | number; y: string | number }>({
+    x: initialX,
+    y: initialY,
   });
 
   const handleDragStart = useCallback(
@@ -94,12 +111,16 @@ export const useDraggable = ({
       e.stopPropagation();
       setIsDragging(true);
       const el = containerRef.current;
+      const cur = positionRef.current;
+      // For numeric positions use the tracked value (avoids jsdom offsetLeft=0).
+      // For CSS string positions (e.g. "4rem", "22%") read offsetLeft/offsetTop
+      // so the browser-resolved pixel value is used as the drag origin.
       dragStartRef.current = {
         clientX: e.clientX,
         clientY: e.clientY,
         pos: {
-          x: el?.offsetLeft ?? 0,
-          y: el?.offsetTop ?? 0,
+          x: typeof cur.x === "number" ? cur.x : (el?.offsetLeft ?? 0),
+          y: typeof cur.y === "number" ? cur.y : (el?.offsetTop ?? 0),
         },
       };
     },
@@ -119,26 +140,36 @@ export const useDraggable = ({
       const toolbarH = el?.offsetHeight ?? 0;
       const { clientX, clientY, pos } = dragStartRef.current;
 
-      const nextX = clamp(lockX, pos.x, e.clientX - clientX, parent.clientWidth - toolbarW);
-      const nextY = clamp(lockY, pos.y, e.clientY - clientY, parent.clientHeight - toolbarH);
+      const nextX = clamp(
+        lockX,
+        pos.x,
+        e.clientX - clientX,
+        parent.clientWidth - toolbarW
+      );
+      const nextY = clamp(
+        lockY,
+        pos.y,
+        e.clientY - clientY,
+        parent.clientHeight - toolbarH
+      );
 
+      positionRef.current = { x: nextX, y: nextY };
       setPosition({ x: nextX, y: nextY });
       onPositionChange?.({ x: nextX, y: nextY });
     },
     [lockX, lockY, portal, onPositionChange]
   );
 
-  const handleMouseUp = () => setIsDragging(false);
-
   useEffect(() => {
     if (!isDragging) return;
+    const handleMouseUp = (): void => setIsDragging(false);
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
     return () => {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [isDragging, handleMouseMove, handleMouseUp]);
+  }, [isDragging, handleMouseMove]);
 
   return { position, isDragging, containerRef, handleDragStart };
 };
