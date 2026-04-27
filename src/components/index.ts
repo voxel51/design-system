@@ -1,5 +1,6 @@
 export * from "./ActivityToast";
 export * from "./AspectRatio";
+export * from "./FileInput";
 export * from "./ProgressBar";
 export * from "./Button";
 export * from "./Card";
