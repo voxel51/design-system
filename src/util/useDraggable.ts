@@ -4,11 +4,18 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
+const clamp = (
+  lock: boolean,
+  pos: number,
+  delta: number,
+  max: number
+): number => (lock ? pos : Math.max(0, Math.min(max, pos + delta)));
+
 export interface UseDraggableOptions {
-  /** Initial pixel offset from the left edge of the bounding container. Default `0`. */
-  initialX?: number;
-  /** Initial pixel offset from the top edge of the bounding container. Default `0`. */
-  initialY?: number;
+  /** Initial offset from the left edge of the bounding container. Accepts any CSS length (e.g. `0`, `"10%"`, `"2rem"`). Default `0`. */
+  initialX?: string | number;
+  /** Initial offset from the top edge of the bounding container. Accepts any CSS length (e.g. `0`, `"10%"`, `"2rem"`). Default `0`. */
+  initialY?: string | number;
   /** Lock horizontal (x-axis) movement. Default `false`. */
   lockX?: boolean;
   /** Lock vertical (y-axis) movement. Default `false`. */
@@ -19,11 +26,16 @@ export interface UseDraggableOptions {
    * `position: fixed`. Default `false`.
    */
   portal?: boolean;
+  /**
+   * Called after every drag move with the new pixel position.
+   * Always delivers pixel values regardless of what type `initialX`/`initialY` were.
+   */
+  onPositionChange?: (pos: { x: number; y: number }) => void;
 }
 
 export interface UseDraggableReturn {
-  /** Current `{ x, y }` position in pixels. */
-  position: { x: number; y: number };
+  /** Current `{ x, y }` position. Before the first drag this reflects the initial CSS value; after the first drag it is always a pixel number. */
+  position: { x: string | number; y: string | number };
   /** `true` while the user is actively dragging. */
   isDragging: boolean;
   /** Attach to the element that should be repositioned. */
@@ -65,17 +77,31 @@ export const useDraggable = ({
   lockX = false,
   lockY = false,
   portal = false,
+  onPositionChange,
 }: UseDraggableOptions = {}): UseDraggableReturn => {
   const canDrag = !(lockX && lockY);
 
-  const [position, setPosition] = useState({ x: initialX, y: initialY });
+  const [position, setPosition] = useState<{
+    x: string | number;
+    y: string | number;
+  }>({ x: initialX, y: initialY });
   const [isDragging, setIsDragging] = useState(false);
 
   const containerRef = useRef<HTMLElement | null>(null);
-  const dragStartRef = useRef({
+  const dragStartRef = useRef<{
+    clientX: number;
+    clientY: number;
+    pos: { x: number; y: number };
+  }>({
     clientX: 0,
     clientY: 0,
-    pos: { x: initialX, y: initialY },
+    pos: { x: 0, y: 0 },
+  });
+  // Mutable mirror of position so handleDragStart can read the current numeric
+  // position without being listed as a useCallback dependency.
+  const positionRef = useRef<{ x: string | number; y: string | number }>({
+    x: initialX,
+    y: initialY,
   });
 
   const handleDragStart = useCallback(
@@ -84,13 +110,21 @@ export const useDraggable = ({
       e.preventDefault();
       e.stopPropagation();
       setIsDragging(true);
+      const el = containerRef.current;
+      const cur = positionRef.current;
+      // For numeric positions use the tracked value (avoids jsdom offsetLeft=0).
+      // For CSS string positions (e.g. "4rem", "22%") read offsetLeft/offsetTop
+      // so the browser-resolved pixel value is used as the drag origin.
       dragStartRef.current = {
         clientX: e.clientX,
         clientY: e.clientY,
-        pos: position,
+        pos: {
+          x: typeof cur.x === "number" ? cur.x : (el?.offsetLeft ?? 0),
+          y: typeof cur.y === "number" ? cur.y : (el?.offsetTop ?? 0),
+        },
       };
     },
-    [canDrag, position]
+    [canDrag]
   );
 
   const handleMouseMove = useCallback(
@@ -106,44 +140,36 @@ export const useDraggable = ({
       const toolbarH = el?.offsetHeight ?? 0;
       const { clientX, clientY, pos } = dragStartRef.current;
 
-      const nextX = lockX
-        ? pos.x
-        : Math.max(
-            0,
-            Math.min(
-              parent.clientWidth - toolbarW,
-              pos.x + (e.clientX - clientX)
-            )
-          );
+      const nextX = clamp(
+        lockX,
+        pos.x,
+        e.clientX - clientX,
+        parent.clientWidth - toolbarW
+      );
+      const nextY = clamp(
+        lockY,
+        pos.y,
+        e.clientY - clientY,
+        parent.clientHeight - toolbarH
+      );
 
-      const nextY = lockY
-        ? pos.y
-        : Math.max(
-            0,
-            Math.min(
-              parent.clientHeight - toolbarH,
-              pos.y + (e.clientY - clientY)
-            )
-          );
-
+      positionRef.current = { x: nextX, y: nextY };
       setPosition({ x: nextX, y: nextY });
+      onPositionChange?.({ x: nextX, y: nextY });
     },
-    [lockX, lockY, portal]
+    [lockX, lockY, portal, onPositionChange]
   );
-
-  const handleMouseUp = useCallback(() => {
-    setIsDragging(false);
-  }, []);
 
   useEffect(() => {
     if (!isDragging) return;
+    const handleMouseUp = (): void => setIsDragging(false);
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
     return () => {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [isDragging, handleMouseMove, handleMouseUp]);
+  }, [isDragging, handleMouseMove]);
 
   return { position, isDragging, containerRef, handleDragStart };
 };

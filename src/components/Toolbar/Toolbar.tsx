@@ -46,14 +46,19 @@ export interface ToolbarProps extends Omit<
   lockX?: boolean;
   /** Lock vertical (y-axis) movement. Default `false`. */
   lockY?: boolean;
-  /** Initial pixel offset from the left edge of the parent container.*/
-  xOffset?: number;
-  /** Initial pixel offset from the top edge of the parent container.*/
-  yOffset?: number;
+  /** Initial offset from the left edge of the parent container. Accepts any CSS length (e.g. `20`, `"10%"`, `"2rem"`). Default `20`. */
+  xOffset?: string | number;
+  /** Initial offset from the top edge of the parent container. Accepts any CSS length (e.g. `20`, `"10%"`, `"2rem"`). Default `20`. */
+  yOffset?: string | number;
   /** Stacking layer for the toolbar. Default `ZIndex.AboveModal`. */
   zIndex?: ZIndex;
   /** Whether the toolbar is rendered. Default `true`. */
   visible?: boolean;
+  /**
+   * Called after every drag move with the new pixel position.
+   * Use this to persist the toolbar's position across remounts.
+   */
+  onPositionChange?: (pos: { x: number; y: number }) => void;
 }
 
 const DEFAULT_X_OFFSET = 20;
@@ -72,10 +77,11 @@ const DEFAULT_Y_OFFSET = 20;
  * @param props.orientation - Layout direction for groups and actions. Default `Orientation.Column`.
  * @param props.lockX - Lock horizontal (x-axis) movement. Default `false`.
  * @param props.lockY - Lock vertical (y-axis) movement. Default `false`.
- * @param props.xOffset - Initial pixel offset from the left edge of the parent container. Default `20`.
- * @param props.yOffset - Initial pixel offset from the top edge of the parent container. Default `20`.
+ * @param props.xOffset - Initial offset from the left edge of the parent container. Accepts any CSS length (e.g. `20`, `"10%"`, `"2rem"`). Default `20`.
+ * @param props.yOffset - Initial offset from the top edge of the parent container. Accepts any CSS length (e.g. `20`, `"10%"`, `"2rem"`). Default `20`.
  * @param props.zIndex - Stacking layer for the toolbar. Default `ZIndex.AboveModal`.
  * @param props.visible - Whether the toolbar is rendered. Default `true`.
+ * @param props.onPositionChange - Called after every drag move with the new pixel position.
  * @param props - Any additional `HTMLDivElement` attributes (e.g. `data-testid`, `aria-label`) are
  *   forwarded to the root `div`. Internal `onPointerDown`, `onClick`, and `onKeyDown` handlers that
  *   call `stopPropagation` are merged with any consumer-provided handlers.
@@ -105,6 +111,7 @@ export const Toolbar = ({
   onPointerDown,
   onClick,
   onKeyDown,
+  onPositionChange,
   ...props
 }: ToolbarProps): JSX.Element | null => {
   const canDrag = !(lockX && lockY);
@@ -114,6 +121,7 @@ export const Toolbar = ({
     initialY: yOffset,
     lockX,
     lockY,
+    onPositionChange,
   });
 
   const [isCollapsed, setIsCollapsed] = useState(false);
