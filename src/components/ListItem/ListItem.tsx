@@ -96,9 +96,15 @@ export const ListItem: FC<ListItemProps> = ({
             </span>
           )}
           <Text variant={TextVariant.Lg}>{primaryContent}</Text>
-          <Text variant={TextVariant.Md} color={TextColor.Secondary}>
+          <div
+            className={clsx(
+              "flex items-center",
+              "text-md/7",
+              textColorClass(TextColor.Secondary)
+            )}
+          >
             {secondaryContent}
-          </Text>
+          </div>
         </div>
 
         <span>{actions}</span>
