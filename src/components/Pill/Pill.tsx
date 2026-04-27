@@ -94,7 +94,11 @@ export const Pill: FC<PillProps> = ({
           />
         </div>
       )}
-      <div>{icon && <Icon size={size} name={icon} color={color} />}</div>
+      {icon && (
+        <div>
+          <Icon size={size} name={icon} color={color} />
+        </div>
+      )}
       <div>{children}</div>
     </Stack>
   );
