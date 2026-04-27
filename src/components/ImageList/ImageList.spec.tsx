@@ -13,15 +13,18 @@ type TestData = { label: string };
 
 describe("ImageList", () => {
   let testId: string;
-  let defaultProps: ImageListProps<TestData>;
+  let defaultProps: ImageListProps<TestData> & { "data-testid"?: string };
 
-  let capturedCallback: (entries: IntersectionObserverEntry[]) => void;
+  let capturedCallback: IntersectionObserverCallback;
   const mockObserve = jest.fn();
   const mockDisconnect = jest.fn();
 
   const triggerIntersection = (isIntersecting: boolean) => {
     act(() => {
-      capturedCallback([{ isIntersecting } as IntersectionObserverEntry]);
+      capturedCallback(
+        [{ isIntersecting } as IntersectionObserverEntry],
+        {} as IntersectionObserver
+      );
     });
   };
 
