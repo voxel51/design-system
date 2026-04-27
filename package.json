@@ -54,9 +54,7 @@
     "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
-    "@mui/material": "^5.0.0",
-    "@mui/utils": "^5.0.0",
-    "@tailwindcss/postcss": "^4.1.17",
+"@tailwindcss/postcss": "^4.1.17",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
@@ -96,8 +94,6 @@
     "vite-plugin-svgr": "^4.5.0"
   },
   "peerDependencies": {
-    "@emotion/react": "^11.0.0",
-    "@emotion/styled": "^11.0.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-is": "^18.0.0"
