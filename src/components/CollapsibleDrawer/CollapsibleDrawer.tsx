@@ -1,11 +1,14 @@
-import { ExpandMore } from "@mui/icons-material";
-import classnames from "classnames";
+import clsx from "clsx";
 import React, { useState } from "react";
+import ChevronBottomIcon from "@/img/ChevronBottom.svg?react";
 import styles from "./CollapsibleDrawer.module.css";
 
 export interface CollapsibleDrawerProps {
   label?: string;
   defaultOpen?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  align?: "left" | "right";
   children?: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
@@ -14,27 +17,39 @@ export interface CollapsibleDrawerProps {
 const CollapsibleDrawer: React.FC<CollapsibleDrawerProps> = ({
   label,
   defaultOpen = true,
+  open: controlledOpen,
+  onOpenChange,
+  align = "left",
   children,
   className,
   style,
 }) => {
-  const [open, setOpen] = useState(defaultOpen);
+  const [internalOpen, setInternalOpen] = useState(defaultOpen);
+  const isControlled = controlledOpen !== undefined;
+  const open = isControlled ? controlledOpen : internalOpen;
+
+  const handleToggle = () => {
+    const next = !open;
+    if (!isControlled) setInternalOpen(next);
+    onOpenChange?.(next);
+  };
 
   return (
-    <div className={classnames(styles.root, className)} style={style}>
+    <div className={clsx(styles.root, className)} style={style}>
       <div
-        className={styles.toggle}
-        onClick={() => setOpen((prev) => !prev)}
+        className={clsx(styles.toggle, { [styles.toggleRight]: align === "right" })}
+        onClick={handleToggle}
         role="button"
         aria-expanded={open}
       >
-        <ExpandMore
-          className={classnames(styles.chevron, { [styles.chevronOpen]: open })}
-          fontSize="small"
+        <ChevronBottomIcon
+          className={clsx(styles.chevron, { [styles.chevronOpen]: open })}
+          width={16}
+          height={16}
         />
         {label && <span className={styles.label}>{label}</span>}
       </div>
-      <div className={classnames(styles.drawer, { [styles.drawerOpen]: open })}>
+      <div className={clsx(styles.drawer, { [styles.drawerOpen]: open })}>
         {children}
       </div>
     </div>

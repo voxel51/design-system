@@ -1,0 +1,29 @@
+.root {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--color-content-text-secondary);
+  padding: 0 3px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}
+
+.btn:hover {
+  color: var(--color-content-text-primary);
+}
+
+.time {
+  font-family: monospace;
+  font-size: 0.7rem;
+  color: var(--color-content-text-secondary);
+  margin-left: 4px;
+  white-space: nowrap;
+}
