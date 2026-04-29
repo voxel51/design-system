@@ -28,6 +28,30 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+}
+
+.pinBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.65rem;
+  line-height: 1;
+  opacity: 0;
+  flex-shrink: 0;
+  transition: opacity 0.1s;
+  filter: grayscale(1);
+}
+
+.pinBtnActive {
+  opacity: 1;
+  filter: none;
+}
+
+.label:hover .pinBtn {
+  opacity: 1;
 }
 
 .lane {

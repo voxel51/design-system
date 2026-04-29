@@ -51,6 +51,11 @@
 
 .toggleRight .chevron {
   order: 1;
+  transform: rotate(90deg); /* ← when closed */
+}
+
+.toggleRight .chevronOpen {
+  transform: rotate(0deg); /* ↓ when open */
 }
 
 .toggle:hover {
@@ -85,9 +90,31 @@
   order: -1;
 }
 
+/* Wraps pinnedContent + content; the overlay is positioned within this */
+.trackArea {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.pinnedContent {
+  flex-shrink: 0;
+}
+
 .content {
   flex: 1;
   min-height: 0;
   overflow: hidden;
   color: var(--color-content-text-primary);
+}
+
+/* Full-bleed overlay covering pinnedContent + content — pointer-events handled by children */
+.overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
 }

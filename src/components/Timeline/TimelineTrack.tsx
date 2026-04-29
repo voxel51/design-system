@@ -13,6 +13,10 @@ export interface TimelineTrackProps {
   viewEnd: number;
   height?: number;
   labelWidth?: number;
+  pinned?: boolean;
+  onPinClick?: () => void;
+  onSeek?: (time: number) => void;
+  onContextMenu?: (e: React.MouseEvent<HTMLDivElement>) => void;
   className?: string;
   style?: React.CSSProperties;
 }
@@ -28,6 +32,10 @@ const TimelineTrack: React.FC<TimelineTrackProps> = ({
   viewEnd,
   height = 28,
   labelWidth = 0,
+  pinned = false,
+  onPinClick,
+  onSeek,
+  onContextMenu,
   className,
   style,
 }) => {
@@ -42,17 +50,32 @@ const TimelineTrack: React.FC<TimelineTrackProps> = ({
     <div
       className={clsx(styles.root, className)}
       style={{ height, ...style }}
+      onContextMenu={onContextMenu}
     >
       {labelWidth > 0 && (
         <div className={styles.label} style={{ width: labelWidth }}>
-          <div
-            className={styles.dot}
-            style={{ background: color }}
-          />
+          <div className={styles.dot} style={{ background: color }} />
           <span className={styles.labelText}>{id}</span>
+          {onPinClick && (
+            <button
+              className={clsx(styles.pinBtn, { [styles.pinBtnActive]: pinned })}
+              onClick={(e) => { e.stopPropagation(); onPinClick(); }}
+              title={pinned ? "Unpin track" : "Pin track"}
+              aria-label={pinned ? "Unpin track" : "Pin track"}
+            >
+              📌
+            </button>
+          )}
         </div>
       )}
-      <div className={styles.lane}>
+      <div
+        className={styles.lane}
+        onClick={(e) => {
+          if (!onSeek || (e.target as HTMLElement).classList.contains(styles.event)) return;
+          const rect = e.currentTarget.getBoundingClientRect();
+          onSeek(viewStart + ((e.clientX - rect.left) / rect.width) * (viewEnd - viewStart));
+        }}
+      >
         {barVisible && (
           <div
             className={styles.bar}

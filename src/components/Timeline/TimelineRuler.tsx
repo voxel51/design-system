@@ -40,12 +40,6 @@ export interface TimelineRulerProps {
    * just the ruler row itself.
    */
   zoomRef?: React.RefObject<HTMLElement | null>;
-  /**
-   * Reserved space on the right edge (in px) to account for a scrollbar in the
-   * adjacent track list. Handle positions and tick lane are shrunk by this
-   * amount so the ruler aligns with the visible track content area.
-   */
-  rightGutter?: number;
   className?: string;
   style?: React.CSSProperties;
 }
@@ -63,7 +57,6 @@ const TimelineRuler: React.FC<TimelineRulerProps> = ({
   onViewChange,
   onLoopChange,
   zoomRef,
-  rightGutter = 0,
   className,
   style,
 }) => {
@@ -97,25 +90,27 @@ const TimelineRuler: React.FC<TimelineRulerProps> = ({
     const rulerEl = rulerRef.current;
 
     const handleWheel = (e: WheelEvent) => {
-      if (!e.ctrlKey) return;
-      e.preventDefault();
       const { viewStart: vs, viewEnd: ve } = viewRef.current;
       const rect = (rulerEl ?? target).getBoundingClientRect();
       const laneWidth = rect.width - labelWidth;
-      const ratio = clamp(
-        (e.clientX - rect.left - labelWidth) / laneWidth,
-        0,
-        1
-      );
-      const pivotTime = vs + ratio * (ve - vs);
-      const factor = e.deltaY > 0 ? 1.15 : 1 / 1.15;
-      const newDuration = clamp((ve - vs) * factor, MIN_VIEW, duration);
-      const newStart = clamp(
-        pivotTime - ratio * newDuration,
-        0,
-        duration - newDuration
-      );
-      onViewChangeRef.current(newStart, newStart + newDuration);
+
+      if (e.ctrlKey) {
+        // Ctrl + vertical scroll → zoom around cursor
+        e.preventDefault();
+        const ratio = clamp((e.clientX - rect.left - labelWidth) / laneWidth, 0, 1);
+        const pivotTime = vs + ratio * (ve - vs);
+        const factor = e.deltaY > 0 ? 1.15 : 1 / 1.15;
+        const newDuration = clamp((ve - vs) * factor, MIN_VIEW, duration);
+        const newStart = clamp(pivotTime - ratio * newDuration, 0, duration - newDuration);
+        onViewChangeRef.current(newStart, newStart + newDuration);
+      } else if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+        // Horizontal scroll → pan
+        e.preventDefault();
+        const vd = ve - vs;
+        const dt = (e.deltaX / laneWidth) * vd;
+        const newStart = clamp(vs + dt, 0, duration - vd);
+        onViewChangeRef.current(newStart, newStart + vd);
+      }
     };
 
     target.addEventListener("wheel", handleWheel, { passive: false });
@@ -142,10 +137,9 @@ const TimelineRuler: React.FC<TimelineRulerProps> = ({
     ticks.push(t);
   }
 
-  // Converts a 0-1 ratio to a CSS left value accounting for the label column
-  // and any reserved right gutter (e.g. scrollbar space).
+  // Converts a 0-1 ratio to a CSS left value accounting for the label column.
   const laneLeft = (ratio: number) =>
-    `calc(${labelWidth}px + (100% - ${labelWidth}px - ${rightGutter}px) * ${ratio})`;
+    `calc(${labelWidth}px + (100% - ${labelWidth}px) * ${ratio})`;
 
   // ─── pointer handlers ──────────────────────────────────────────────────────
   // All interactions are captured on the ruler element so a single
@@ -258,7 +252,7 @@ const TimelineRuler: React.FC<TimelineRulerProps> = ({
 
       {/* Tick lane — overflow:hidden + pointer-events:none so handles above
           are never clipped or occluded by this layer. */}
-      <div className={styles.lane} style={rightGutter > 0 ? { marginRight: rightGutter } : undefined}>
+      <div className={styles.lane}>
         {ticks.map((t) => (
           <span
             key={t}

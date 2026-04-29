@@ -1,20 +1,25 @@
 import clsx from "clsx";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ChevronBottomIcon from "@/img/ChevronBottom.svg?react";
 import styles from "./ResizablePanel.module.css";
 
 const TOGGLE_HEIGHT = 24;
 const DRAG_HANDLE_HEIGHT = 4;
-const CLOSED_HEIGHT = DRAG_HANDLE_HEIGHT + TOGGLE_HEIGHT;
 
 export interface ResizablePanelProps {
   minHeight: number;
   maxHeight: number;
   mode?: "push" | "float";
   defaultOpen?: boolean;
-  label?: string;
+  label?: string | ((open: boolean) => React.ReactNode);
   align?: "left" | "right";
+  /** Ref forwarded to the trackArea div — use as zoomRef for wheel-to-zoom spanning the full panel. */
+  trackAreaRef?: React.RefObject<HTMLDivElement | null>;
   headerContent?: React.ReactNode;
+  /** Always-visible content shown below the toggle header, even when collapsed. */
+  pinnedContent?: React.ReactNode;
+  /** Absolutely-positioned layer over the full track area (pinnedContent + content). */
+  overlay?: React.ReactNode;
   children?: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
@@ -27,18 +32,37 @@ const ResizablePanel: React.FC<ResizablePanelProps> = ({
   defaultOpen = true,
   label,
   align = "left",
+  trackAreaRef,
   headerContent,
+  pinnedContent,
+  overlay,
   children,
   className,
   style,
 }) => {
   const [open, setOpen] = useState(defaultOpen);
+  const resolvedLabel = typeof label === "function" ? label(open) : label;
   const [height, setHeight] = useState(maxHeight);
   const [isDragging, setIsDragging] = useState(false);
   const isDraggingRef = useRef(false);
   const dragStartY = useRef(0);
   const dragStartHeight = useRef(maxHeight);
   const savedHeight = useRef(maxHeight);
+
+  const pinnedRef = useRef<HTMLDivElement>(null);
+  const [pinnedHeight, setPinnedHeight] = useState(0);
+  useEffect(() => {
+    const el = pinnedRef.current;
+    if (!el) return;
+    const measure = () => setPinnedHeight(el.offsetHeight);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const closedHeight = DRAG_HANDLE_HEIGHT + TOGGLE_HEIGHT + pinnedHeight;
+  const effectiveMinHeight = Math.max(minHeight, closedHeight);
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!open) return;
@@ -54,7 +78,7 @@ const ResizablePanel: React.FC<ResizablePanelProps> = ({
     const delta = dragStartY.current - e.clientY;
     const newHeight = Math.min(
       maxHeight,
-      Math.max(minHeight, dragStartHeight.current + delta)
+      Math.max(effectiveMinHeight, dragStartHeight.current + delta)
     );
     setHeight(newHeight);
     savedHeight.current = newHeight;
@@ -74,7 +98,7 @@ const ResizablePanel: React.FC<ResizablePanelProps> = ({
     <div
       className={clsx(styles.root, styles[mode], className)}
       style={{
-        height: open ? height : CLOSED_HEIGHT,
+        height: open ? height : closedHeight,
         transition: isDragging ? "none" : "height 0.2s ease",
         ...style,
       }}
@@ -96,17 +120,26 @@ const ResizablePanel: React.FC<ResizablePanelProps> = ({
           width={16}
           height={16}
         />
-        {label && <span className={styles.label}>{label}</span>}
+        {resolvedLabel && <span className={styles.label}>{resolvedLabel}</span>}
         {headerContent && (
-          <div
-            className={styles.headerContent}
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className={styles.headerContent}>
             {headerContent}
           </div>
         )}
       </div>
-      <div className={styles.content}>{children}</div>
+      <div ref={trackAreaRef} className={styles.trackArea}>
+        {pinnedContent !== undefined && (
+          <div ref={pinnedRef} className={styles.pinnedContent}>
+            {pinnedContent}
+          </div>
+        )}
+        <div className={styles.content}>{children}</div>
+        {overlay && (
+          <div className={styles.overlay} aria-hidden>
+            {overlay}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
