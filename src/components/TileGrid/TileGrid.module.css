@@ -1,0 +1,14 @@
+.root {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  background: var(--color-content-bg-background);
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  align-content: start;
+}
+
+.tile {
+  min-width: 0;
+  min-height: 0;
+}

@@ -1,0 +1,128 @@
+.root {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  background: var(--color-content-bg-secondary);
+  border-bottom: 1px solid var(--color-content-border-default);
+  overflow: hidden;
+  gap: 0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 0 8px;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 4px;
+  flex-shrink: 0;
+}
+
+.breadcrumbCrumb {
+  font-size: 0.75rem;
+  color: var(--color-content-text-secondary);
+  white-space: nowrap;
+}
+
+.breadcrumbSep {
+  font-size: 0.75rem;
+  color: var(--color-content-text-tertiary);
+}
+
+.divider {
+  width: 1px;
+  height: 20px;
+  background: var(--color-content-border-default);
+  flex-shrink: 0;
+  margin: 0 6px;
+}
+
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 4px;
+  flex-shrink: 0;
+}
+
+.tab {
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.75rem;
+  color: var(--color-content-text-secondary);
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+  display: flex;
+  align-items: center;
+}
+
+.tab:hover {
+  background: var(--color-content-bg-muted);
+  color: var(--color-content-text-primary);
+}
+
+.tabActive {
+  background: var(--color-brand-primary) !important;
+  color: #fff !important;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.panelControls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 4px;
+  flex-shrink: 0;
+}
+
+.iconBtn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--color-content-text-secondary);
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+
+.iconBtn:hover {
+  background: var(--color-content-bg-muted);
+  color: var(--color-content-text-primary);
+}
+
+.iconBtnActive {
+  color: var(--color-brand-primary) !important;
+}
+
+.separator {
+  width: 1px;
+  height: 20px;
+  background: var(--color-content-border-default);
+  flex-shrink: 0;
+  margin: 0 6px;
+}
+
+.rightActions {
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  flex-shrink: 0;
+}

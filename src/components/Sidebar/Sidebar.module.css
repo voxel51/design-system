@@ -1,0 +1,71 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+  background: var(--color-content-bg-secondary);
+  transition: width 0.2s ease;
+}
+
+.rootDragging {
+  transition: none;
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.header {
+  height: 36px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  font-size: 0.7rem;
+  color: var(--color-content-text-secondary);
+  border-bottom: 1px solid var(--color-content-border-default);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.content {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  cursor: ew-resize;
+  z-index: 10;
+  background: transparent;
+  transition: background 0.15s;
+}
+
+.handle:hover {
+  background: var(--color-brand-primary);
+}
+
+.handleLeft {
+  left: 0;
+  border-right: 1px solid var(--color-content-border-default);
+}
+
+.handleRight {
+  right: 0;
+  border-right: 1px solid var(--color-content-border-default);
+}
+
+.handleLeft.handleBorder {
+  border-right: 1px solid var(--color-content-border-default);
+}
