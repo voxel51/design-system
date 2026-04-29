@@ -1,0 +1,142 @@
+.root {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Strip the Blueprint theme; we paint everything ourselves */
+.mosaic {
+  background: var(--color-content-bg-background);
+}
+
+/* Split handle */
+:global(.mosaic-split) {
+  background: transparent;
+  z-index: 2;
+}
+:global(.mosaic-split:hover),
+:global(.mosaic-split.-row:hover),
+:global(.mosaic-split.-column:hover) {
+  background: var(--color-brand-primary);
+}
+
+/* Window chrome */
+:global(.mosaic-window) {
+  border-radius: 0;
+  box-shadow: none;
+  border: 1px solid var(--color-content-border-default);
+  background: var(--color-content-bg-card-2);
+  transition: border-color 0.1s;
+}
+
+/* Focused tile — orange border */
+:global(.mosaic-window.vd-tile-focused) {
+  border-color: #e05c00;
+  z-index: 1;
+}
+
+/* Remove the body white default */
+:global(.mosaic-window .mosaic-window-body) {
+  background: var(--color-content-bg-card-2);
+  border-radius: 0;
+}
+
+/* Remove Blueprint toolbar styling */
+:global(.mosaic-window .mosaic-window-toolbar) {
+  background: var(--color-content-bg-secondary);
+  border-bottom: 1px solid var(--color-content-border-default);
+  border-radius: 0;
+  box-shadow: none;
+  height: 28px;
+  padding: 0;
+}
+
+:global(.mosaic-window .mosaic-window-toolbar.draggable:hover) {
+  background: var(--color-content-bg-muted);
+}
+
+/* Root inset gap */
+:global(.mosaic-root) {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+/* Tile toolbar — replaces the default MosaicWindow toolbar */
+.toolbar {
+  height: 28px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 4px 0 8px;
+  gap: 2px;
+  cursor: move;
+}
+
+.toolbar[data-draggable] {
+  cursor: move;
+}
+
+.toolbar[data-focused] {
+  background: rgba(224, 92, 0, 0.12);
+}
+
+.title {
+  flex: 1;
+  font-size: 0.7rem;
+  font-family: monospace;
+  color: var(--color-content-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  flex-shrink: 0;
+}
+
+.actionBtn {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 3px;
+  cursor: pointer;
+  color: var(--color-content-text-tertiary);
+  transition: background 0.12s, color 0.12s;
+  padding: 0;
+}
+
+.actionBtn:hover {
+  background: var(--color-content-bg-muted);
+  color: var(--color-content-text-primary);
+}
+
+.actionBtn[data-active] {
+  color: #e05c00;
+}
+
+.body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--color-content-text-tertiary);
+  font-size: 0.8rem;
+}

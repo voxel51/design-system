@@ -60,7 +60,13 @@ export function useTimeline({
     return () => clearInterval(id);
   }, [isPlaying, fps, frame]);
 
-  const play = useCallback(() => setIsPlaying(true), []);
+  const play = useCallback(() => {
+    setCurrentTime((prev) => {
+      const { loopStart: ls, loopEnd: le } = loopRef.current;
+      return prev < ls || prev >= le ? ls : prev;
+    });
+    setIsPlaying(true);
+  }, []);
   const pause = useCallback(() => setIsPlaying(false), []);
 
   const seek = useCallback(

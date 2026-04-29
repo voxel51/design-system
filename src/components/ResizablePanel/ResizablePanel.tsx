@@ -62,26 +62,28 @@ const ResizablePanel: React.FC<ResizablePanelProps> = ({
   }, []);
 
   const closedHeight = DRAG_HANDLE_HEIGHT + TOGGLE_HEIGHT + pinnedHeight;
-  const effectiveMinHeight = Math.max(minHeight, closedHeight);
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!open) return;
     isDraggingRef.current = true;
     setIsDragging(true);
     dragStartY.current = e.clientY;
-    dragStartHeight.current = height;
+    dragStartHeight.current = open ? height : closedHeight;
     e.currentTarget.setPointerCapture(e.pointerId);
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!isDraggingRef.current) return;
     const delta = dragStartY.current - e.clientY;
-    const newHeight = Math.min(
-      maxHeight,
-      Math.max(effectiveMinHeight, dragStartHeight.current + delta)
-    );
-    setHeight(newHeight);
-    savedHeight.current = newHeight;
+    const raw = dragStartHeight.current + delta;
+    if (raw <= closedHeight) {
+      setHeight(closedHeight);
+      if (open) setOpen(false);
+    } else {
+      const newHeight = Math.min(maxHeight, Math.max(minHeight, raw));
+      setHeight(newHeight);
+      if (!open) setOpen(true);
+      savedHeight.current = newHeight;
+    }
   };
 
   const handlePointerUp = () => {
@@ -104,7 +106,7 @@ const ResizablePanel: React.FC<ResizablePanelProps> = ({
       }}
     >
       <div
-        className={clsx(styles.dragHandle, { [styles.dragHandleDisabled]: !open })}
+        className={styles.dragHandle}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}

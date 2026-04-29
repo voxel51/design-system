@@ -23,13 +23,8 @@
   background: transparent;
 }
 
-.dragHandle:hover:not(.dragHandleDisabled) {
+.dragHandle:hover {
   background: var(--color-brand-primary);
-}
-
-.dragHandleDisabled {
-  cursor: default;
-  pointer-events: none;
 }
 
 .toggle {
