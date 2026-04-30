@@ -1,6 +1,7 @@
 import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
-import clsx from "clsx";
 import type { FC, HTMLAttributes, ReactNode } from "react";
+
+import { cn } from "@/util/classes";
 
 import { Checkbox } from "@/components/Checkbox";
 import { DragHandleIcon } from "@/components/Icons/DragHandle";
@@ -61,9 +62,10 @@ export const ListItem: FC<ListItemProps> = ({
 }) => {
   return (
     <div
-      className={clsx(
+      className={cn(
         "flex flex-col",
         "w-full",
+        "py-3 px-3.5",
         bgColorClass(BackgroundColor.Card2),
         radiusStyles(Radius.Sm),
         className
@@ -71,13 +73,13 @@ export const ListItem: FC<ListItemProps> = ({
       {...props}
     >
       <div
-        className={clsx(
+        className={cn(
           "flex flex-nowrap items-center justify-between",
           "w-full",
           "gap-x-lg"
         )}
       >
-        <div className={clsx("flex flex-nowrap items-center", "gap-x-md")}>
+        <div className={cn("flex flex-nowrap items-center", "gap-x-md")}>
           {canSelect && (
             <Checkbox
               checked={selected}
@@ -90,13 +92,13 @@ export const ListItem: FC<ListItemProps> = ({
               {...dragHandleListeners}
             >
               <DragHandleIcon
-                className={clsx("size-4", textColorClass(TextColor.Secondary))}
+                className={cn("size-4", textColorClass(TextColor.Secondary))}
               />
             </span>
           )}
           <Text variant={TextVariant.Lg}>{primaryContent}</Text>
           <div
-            className={clsx(
+            className={cn(
               "flex items-center",
               "text-md/7",
               textColorClass(TextColor.Secondary)
@@ -110,7 +112,7 @@ export const ListItem: FC<ListItemProps> = ({
       </div>
       {additionalContent && (
         <div
-          className={clsx(
+          className={cn(
             "px-sm pb-3",
             // Align with primaryContent by adding margin for checkbox/drag handle
             canSelect && canDrag && "ml-12",
