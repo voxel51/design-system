@@ -1,8 +1,6 @@
 import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import type { FC, HTMLAttributes, ReactNode } from "react";
 
-import { cn } from "@/util/classes";
-
 import { Checkbox } from "@/components/Checkbox";
 import { DragHandleIcon } from "@/components/Icons/DragHandle";
 import { Text } from "@/components/Text";
@@ -15,6 +13,7 @@ import {
   textColorClass,
   TextVariant,
 } from "@/types";
+import { cn } from "@/util/classes";
 
 export interface ListItemProps extends HTMLAttributes<HTMLDivElement> {
   canSelect?: boolean;
