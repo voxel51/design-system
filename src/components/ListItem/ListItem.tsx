@@ -74,8 +74,7 @@ export const ListItem: FC<ListItemProps> = ({
         className={clsx(
           "flex flex-nowrap items-center justify-between",
           "w-full",
-          "gap-x-lg",
-          "py-3 px-[14px]"
+          "gap-x-lg"
         )}
       >
         <div className={clsx("flex flex-nowrap items-center", "gap-x-md")}>
@@ -112,7 +111,7 @@ export const ListItem: FC<ListItemProps> = ({
       {additionalContent && (
         <div
           className={clsx(
-            "px-md pb-3",
+            "px-sm pb-3",
             // Align with primaryContent by adding margin for checkbox/drag handle
             canSelect && canDrag && "ml-12",
             canSelect && !canDrag && "ml-6",
