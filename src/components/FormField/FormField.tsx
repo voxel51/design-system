@@ -74,7 +74,7 @@ export const FormField: FC<FormFieldProps> = ({
     <Field disabled={disabled} className={className}>
       <Stack orientation={Orientation.Column} spacing={spacing} {...props}>
         {label && (
-          <Stack orientation={Orientation.Row} spacing={spacing}>
+          <Stack orientation={Orientation.Row} spacing={Spacing.Sm}>
             <Label>
               <Text color={TextColor.Primary}>{label}</Text>
             </Label>
