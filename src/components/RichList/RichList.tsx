@@ -24,9 +24,18 @@ import {
 } from "react";
 
 import { ListItemProps } from "@/components/ListItem";
-import { Descriptor } from "@/types";
+import { Descriptor, Spacing } from "@/types";
 
 import { SortableListItem } from "./SortableListItem";
+
+const gapStyles: Record<Spacing, string> = {
+  [Spacing.None]: "gap-y-0",
+  [Spacing.Xs]: "gap-y-xs",
+  [Spacing.Sm]: "gap-y-sm",
+  [Spacing.Md]: "gap-y-md",
+  [Spacing.Lg]: "gap-y-lg",
+  [Spacing.Xl]: "gap-y-xl",
+};
 
 export interface RichListProps extends HTMLAttributes<HTMLDivElement> {
   listItems: Descriptor<ListItemProps>[];
@@ -34,6 +43,7 @@ export interface RichListProps extends HTMLAttributes<HTMLDivElement> {
   onSelected?: (selectedItems: string[]) => void;
   onOrderChange?: (newItems: Descriptor<ListItemProps>[]) => void;
   selected?: string[];
+  spacing?: Spacing;
 }
 
 /**
@@ -109,6 +119,7 @@ export const RichList: FC<RichListProps> = ({
   onSelected,
   onOrderChange,
   selected,
+  spacing = Spacing.Md,
   ...props
 }) => {
   // transientSelected contains the ID for each selected element in the list
@@ -180,7 +191,7 @@ export const RichList: FC<RichListProps> = ({
 
   return (
     <div
-      className={clsx("flex flex-col", "w-full", "gap-y-md", className)}
+      className={clsx("flex flex-col", "w-full", gapStyles[spacing], className)}
       {...props}
     >
       {draggable ? (
