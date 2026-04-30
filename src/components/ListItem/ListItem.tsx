@@ -113,7 +113,7 @@ export const ListItem: FC<ListItemProps> = ({
       {additionalContent && (
         <div
           className={cn(
-            "px-sm pb-3",
+            "px-sm py-3",
             // Align with primaryContent by adding margin for checkbox/drag handle
             canSelect && canDrag && "ml-12",
             canSelect && !canDrag && "ml-6",
