@@ -59,43 +59,6 @@ application.
 import "@voxel51/voodo/theme.css";
 ```
 
-#### Usage with MUI
-
-This library also exports theme configuration (in the form of a Material `ThemeConfig`)
-which can be used to generate an MUI theme.
-
-```typescript jsx
-
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { defaultMUIThemeConfig, createMUIThemeConfig } from '@voxel51/voodo';
-
-// Option 1: Use default (dark mode)
-const theme = createTheme(defaultMUIThemeConfig);
-
-// Option 2: Create light mode
-const lightTheme = createTheme(createMUIThemeConfig({ mode: 'light' }));
-
-// Option 3: With overrides
-const customTheme = createTheme(
-    createMUIThemeConfig({
-        mode: 'dark',
-        overrides: {
-            palette: {
-                primary: { main: '#custom-color' },
-            },
-        },
-    })
-);
-
-function App() {
-    return (
-        <ThemeProvider theme={theme}>
-            {/* Your app */}
-        </ThemeProvider>
-    );
-}
-```
-
 ## Contributing
 
 This library is based on [HeadlessUI](https://headlessui.com/) and [Tailwind](https://tailwindcss.com/). 
