@@ -69,7 +69,7 @@ describe("RichButtonGroup", () => {
           <RichButtonGroup
             {...defaultProps}
             buttons={buttons}
-            active={active}
+            activeIds={active}
           />
         );
 
@@ -78,7 +78,7 @@ describe("RichButtonGroup", () => {
         // validate active buttons
         activeIdxs.forEach((idx) => {
           expect(within(group).getByTestId(buttons[idx].id)).toHaveClass(
-            "data:active"
+            "data-active"
           );
         });
 
@@ -89,7 +89,7 @@ describe("RichButtonGroup", () => {
           .filter((idx) => !activeIdxs.includes(idx))
           .forEach((idx) => {
             expect(within(group).getByTestId(buttons[idx].id)).not.toHaveClass(
-              "data:active"
+              "data-active"
             );
           });
       });

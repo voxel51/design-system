@@ -1,14 +1,14 @@
-import { FC, HTMLAttributes, useCallback, useEffect, useState } from "react";
+import { FC, HTMLAttributes, useCallback, useState } from "react";
 
 import { RichButton, RichButtonProps } from "@/components/RichButton";
-import { Descriptor } from "@/types";
-import { cn } from "@/util/classes";
+import { Stack } from "@/components/Stack";
+import { Descriptor, Orientation, Spacing } from "@/types";
 
 export interface RichButtonGroupProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   "onChange"
 > {
-  active?: string[];
+  activeIds?: string[];
   buttons: Descriptor<RichButtonProps>[];
   exclusive?: boolean;
   onChange?: (active: string[]) => void;
@@ -43,7 +43,7 @@ export interface RichButtonGroupProps extends Omit<
  *
  *   return (
  *     <RichButtonGroup
- *       active={activeButtons}
+ *       activeIds={activeButtons}
  *       buttons={buttons}
  *       exclusive={true}
  *       onChange={onChange}
@@ -52,37 +52,42 @@ export interface RichButtonGroupProps extends Omit<
  * };
  * ```
  *
- * @param active List of descriptor IDs which should be active; this allows for controlled behavior.
+ * @param activeIds List of descriptor IDs which should be active; this allows for controlled behavior.
  * @param buttons List of component descriptors which will be used to create {@link RichButton} child components.
- * @param className `class` overrides to apply to the group's container.
  * @param exclusive If `true`, enforces mutual exclusion in child selection state.
  * @param onChange Callback triggered when child selection state changes.
  * @param props Additional HTML properties to apply to the component.
  */
 export const RichButtonGroup: FC<RichButtonGroupProps> = ({
-  active,
+  activeIds,
   buttons,
-  className,
   exclusive,
   onChange,
   ...props
 }) => {
-  const [transientActive, setTransientActive] = useState<string[]>(
-    () => active ?? []
-  );
+  const isControlled = activeIds !== undefined;
+  const [internalActive, setInternalActive] = useState<string[]>([]);
+  const transientActive = isControlled ? activeIds : internalActive;
+  const setTransientActive = useCallback(
+    (v: string[]) => {
+      // always trigger onChange; uncontrolled callers can still listen
+      onChange?.(v);
 
-  // Synchronize state for controlled behavior
-  useEffect(() => setTransientActive(active ?? []), [active]);
+      if (!isControlled) {
+        setInternalActive(v);
+      }
+    },
+    [isControlled, onChange]
+  );
 
   const activate = useCallback(
     (id: string) => {
       if (!transientActive.includes(id)) {
         const newActiveArray = exclusive ? [id] : [...transientActive, id];
         setTransientActive(newActiveArray);
-        onChange?.(newActiveArray);
       }
     },
-    [transientActive, exclusive, onChange]
+    [transientActive, exclusive, setTransientActive]
   );
 
   const deactivate = useCallback(
@@ -90,14 +95,13 @@ export const RichButtonGroup: FC<RichButtonGroupProps> = ({
       if (transientActive.includes(id)) {
         const newActiveArray = transientActive.filter((elem) => elem !== id);
         setTransientActive(newActiveArray);
-        onChange?.(newActiveArray);
       }
     },
-    [transientActive, onChange]
+    [transientActive, setTransientActive]
   );
 
   return (
-    <div className={cn("flex", "gap-x-md", className)} {...props}>
+    <Stack orientation={Orientation.Row} spacing={Spacing.Md} {...props}>
       {buttons.map((buttonProps) => (
         <RichButton
           key={buttonProps.id}
@@ -114,7 +118,7 @@ export const RichButtonGroup: FC<RichButtonGroupProps> = ({
           }}
         />
       ))}
-    </div>
+    </Stack>
   );
 };
 
