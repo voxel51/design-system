@@ -23,11 +23,8 @@ describe("useElementSize", () => {
   beforeEach(() => {
     observeFn = jest.fn();
     disconnectFn = jest.fn();
-<<<<<<< HEAD
+
     globalThis.ResizeObserver = jest
-=======
-    global.ResizeObserver = jest
->>>>>>> 7e67ff3 (lints)
       .fn()
       .mockImplementation((cb: ResizeObserverCallback) => {
         roCallback = cb;
