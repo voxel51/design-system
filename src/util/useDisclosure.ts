@@ -19,7 +19,7 @@ export function useDisclosure({
 }: UseDisclosureOptions = {}): UseDisclosureReturn {
   const [internalOpen, setInternalOpen] = useState(defaultOpen);
   const isControlled = controlledOpen !== undefined;
-  const open = isControlled ? controlledOpen! : internalOpen;
+  const open = isControlled ? controlledOpen : internalOpen;
 
   const setOpen = useCallback(
     (next: boolean) => {
