@@ -1,4 +1,5 @@
 import { act, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import React from "react";
 
 import { Collapsible } from "./index";
@@ -178,6 +179,33 @@ describe("Collapsible", () => {
       );
       expect(container.querySelector("[class*='content']")).not.toBeInTheDocument();
       expect(screen.getByText("raw child")).toBeInTheDocument();
+    });
+
+    it("hides children when closed", () => {
+      render(
+        <Collapsible animated={false} defaultOpen={false}>
+          <span>raw child</span>
+        </Collapsible>
+      );
+      expect(screen.queryByText("raw child")).not.toBeInTheDocument();
+    });
+
+    it("shows children when open and hides them when closed via toggle", async () => {
+      const user = userEvent.setup();
+      render(
+        <Collapsible
+          animated={false}
+          defaultOpen
+          header={(state) => (
+            <button onClick={state.toggle}>toggle</button>
+          )}
+        >
+          <span>raw child</span>
+        </Collapsible>
+      );
+      expect(screen.getByText("raw child")).toBeInTheDocument();
+      await user.click(screen.getByRole("button"));
+      expect(screen.queryByText("raw child")).not.toBeInTheDocument();
     });
   });
 });

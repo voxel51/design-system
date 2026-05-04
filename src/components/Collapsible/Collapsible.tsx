@@ -42,7 +42,7 @@ const Collapsible: React.FC<CollapsibleProps> = ({
           {children}
         </div>
       ) : (
-        children
+        open ? children : null
       )}
     </div>
   );
