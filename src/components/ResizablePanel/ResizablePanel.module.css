@@ -27,6 +27,10 @@
   background: var(--color-brand-primary);
 }
 
+.dragHandleDisabled {
+  cursor: default;
+}
+
 .toggle {
   height: 24px;
   display: flex;

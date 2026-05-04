@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import React from "react";
-import { ViewPanel } from "../ViewPanel";
+import { Tile } from "../Tile";
 import styles from "./TileGrid.module.css";
 
 export interface TileConfig {
@@ -47,13 +47,13 @@ const TileGrid: React.FC<TileGridProps> = ({
             gridRow: `span ${tile.rowSpan ?? 1}`,
           }}
         >
-          <ViewPanel
+          <Tile
             title={tile.title}
             onClose={tile.onClose}
             onSettings={tile.onSettings}
           >
             {tile.content}
-          </ViewPanel>
+          </Tile>
         </div>
       ))}
     </div>

@@ -3,9 +3,9 @@ import React from "react";
 import FullscreenIcon from "@/img/Fullscreen.svg?react";
 import SettingsIcon from "@/img/Settings.svg?react";
 import CloseIcon from "@/img/Close.svg?react";
-import styles from "./ViewPanel.module.css";
+import styles from "./Tile.module.css";
 
-export interface ViewPanelProps {
+export interface TileProps {
   title: string;
   onClose?: () => void;
   onSettings?: () => void;
@@ -16,7 +16,7 @@ export interface ViewPanelProps {
   style?: React.CSSProperties;
 }
 
-const ViewPanel: React.FC<ViewPanelProps> = ({
+const Tile: React.FC<TileProps> = ({
   title,
   onClose,
   onSettings,
@@ -74,4 +74,4 @@ const ViewPanel: React.FC<ViewPanelProps> = ({
   );
 };
 
-export default ViewPanel;
+export default Tile;

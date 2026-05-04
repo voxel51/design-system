@@ -1,6 +1,7 @@
 import clsx from "clsx";
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import ChevronBottomIcon from "@/img/ChevronBottom.svg?react";
+import { usePinnableDrawer } from "@/util/usePinnableDrawer";
 import styles from "./ResizablePanel.module.css";
 
 const TOGGLE_HEIGHT = 24;
@@ -11,6 +12,9 @@ export interface ResizablePanelProps {
   maxHeight: number;
   mode?: "push" | "float";
   defaultOpen?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  onHeightChange?: (height: number) => void;
   label?: string | ((open: boolean) => React.ReactNode);
   align?: "left" | "right";
   /** Ref forwarded to the trackArea div — use as zoomRef for wheel-to-zoom spanning the full panel. */
@@ -30,6 +34,9 @@ const ResizablePanel: React.FC<ResizablePanelProps> = ({
   maxHeight,
   mode = "push",
   defaultOpen = true,
+  open: controlledOpen,
+  onOpenChange,
+  onHeightChange,
   label,
   align = "left",
   trackAreaRef,
@@ -40,80 +47,38 @@ const ResizablePanel: React.FC<ResizablePanelProps> = ({
   className,
   style,
 }) => {
-  const [open, setOpen] = useState(defaultOpen);
+  const { open, toggle, size: height, isDragging, dragHandleProps, pinnedRef, closedSize } =
+    usePinnableDrawer({
+      axis: "vertical",
+      invert: true,
+      defaultOpen,
+      open: controlledOpen,
+      onOpenChange,
+      defaultSize: maxHeight,
+      minSize: minHeight,
+      maxSize: maxHeight,
+      closedPadding: DRAG_HANDLE_HEIGHT + TOGGLE_HEIGHT,
+      onSizeChange: onHeightChange,
+    });
+
   const resolvedLabel = typeof label === "function" ? label(open) : label;
-  const [height, setHeight] = useState(maxHeight);
-  const [isDragging, setIsDragging] = useState(false);
-  const isDraggingRef = useRef(false);
-  const dragStartY = useRef(0);
-  const dragStartHeight = useRef(maxHeight);
-  const savedHeight = useRef(maxHeight);
-
-  const pinnedRef = useRef<HTMLDivElement>(null);
-  const [pinnedHeight, setPinnedHeight] = useState(0);
-  useEffect(() => {
-    const el = pinnedRef.current;
-    if (!el) return;
-    const measure = () => setPinnedHeight(el.offsetHeight);
-    measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
-  const closedHeight = DRAG_HANDLE_HEIGHT + TOGGLE_HEIGHT + pinnedHeight;
-
-  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    isDraggingRef.current = true;
-    setIsDragging(true);
-    dragStartY.current = e.clientY;
-    dragStartHeight.current = open ? height : closedHeight;
-    e.currentTarget.setPointerCapture(e.pointerId);
-  };
-
-  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!isDraggingRef.current) return;
-    const delta = dragStartY.current - e.clientY;
-    const raw = dragStartHeight.current + delta;
-    if (raw <= closedHeight) {
-      setHeight(closedHeight);
-      if (open) setOpen(false);
-    } else {
-      const newHeight = Math.min(maxHeight, Math.max(minHeight, raw));
-      setHeight(newHeight);
-      if (!open) setOpen(true);
-      savedHeight.current = newHeight;
-    }
-  };
-
-  const handlePointerUp = () => {
-    isDraggingRef.current = false;
-    setIsDragging(false);
-  };
-
-  const handleToggle = () => {
-    if (!open) setHeight(savedHeight.current);
-    setOpen((prev) => !prev);
-  };
 
   return (
     <div
       className={clsx(styles.root, styles[mode], className)}
       style={{
-        height: open ? height : closedHeight,
+        height: open ? height : closedSize,
         transition: isDragging ? "none" : "height 0.2s ease",
         ...style,
       }}
     >
       <div
-        className={styles.dragHandle}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
+        className={clsx(styles.dragHandle, { [styles.dragHandleDisabled]: !open })}
+        {...dragHandleProps}
       />
       <div
         className={clsx(styles.toggle, { [styles.toggleRight]: align === "right" })}
-        onClick={handleToggle}
+        onClick={toggle}
         role="button"
         aria-expanded={open}
       >
@@ -124,9 +89,7 @@ const ResizablePanel: React.FC<ResizablePanelProps> = ({
         />
         {resolvedLabel && <span className={styles.label}>{resolvedLabel}</span>}
         {headerContent && (
-          <div className={styles.headerContent}>
-            {headerContent}
-          </div>
+          <div className={styles.headerContent}>{headerContent}</div>
         )}
       </div>
       <div ref={trackAreaRef} className={styles.trackArea}>

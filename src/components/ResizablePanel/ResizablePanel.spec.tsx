@@ -230,7 +230,24 @@ describe("ResizablePanel", () => {
       expect(root).toHaveStyle({ height: "200px" });
     });
 
-    it("should clamp height to minHeight", () => {
+    it("should clamp height to minHeight when minHeight exceeds closed height", () => {
+      // minHeight(50) > CLOSED_HEIGHT(28): drag that would land between them clamps to minHeight
+      const { container } = render(
+        <ResizablePanel minHeight={50} maxHeight={200} defaultOpen={true} />
+      );
+      const root = container.firstChild as HTMLElement;
+      const dragHandle = root.firstChild as HTMLElement;
+
+      // raw = 200 - 160 = 40, between CLOSED_HEIGHT(28) and minHeight(50) → clamps to 50
+      pointerDown(dragHandle, 100);
+      pointerMove(dragHandle, 260);
+      pointerUp(dragHandle);
+
+      expect(root).toHaveStyle({ height: "50px" });
+    });
+
+    it("should close when dragged below closed height", () => {
+      // Extreme drag past the closedHeight threshold closes the drawer
       const { container } = render(
         <ResizablePanel minHeight={20} maxHeight={200} defaultOpen={true} />
       );
@@ -241,7 +258,7 @@ describe("ResizablePanel", () => {
       pointerMove(dragHandle, 10000);
       pointerUp(dragHandle);
 
-      expect(root).toHaveStyle({ height: "20px" });
+      expect(root).toHaveStyle({ height: `${CLOSED_HEIGHT}px` });
     });
 
     it("should not respond to drag when closed", () => {
