@@ -1,5 +1,4 @@
 import { act, renderHook } from "@testing-library/react";
-
 import { useElementSize } from "./useElementSize";
 
 function makeElement(width: number, height: number) {
