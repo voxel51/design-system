@@ -6,5 +6,7 @@ export type {
   UseDisclosureOptions,
   UseDisclosureReturn,
 } from "./util/useDisclosure";
+export { useElementSize } from "./util/useElementSize";
+export type { UseElementSizeReturn } from "./util/useElementSize";
 
 import "./styles/globals.css";
