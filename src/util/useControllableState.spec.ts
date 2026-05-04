@@ -2,7 +2,7 @@ import { act, renderHook } from "@testing-library/react";
 
 import { useControllableState } from "./useControllableState";
 
-describe("useControllable", () => {
+describe("useControllableState", () => {
   describe("uncontrolled", () => {
     it("seeds value from initializer", () => {
       const { result } = renderHook(() =>
