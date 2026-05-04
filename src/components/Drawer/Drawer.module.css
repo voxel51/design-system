@@ -81,7 +81,10 @@
   order: 1;
 }
 
-/* Body — flex column so pinnedContent + content stack correctly */
+.header {
+  flex-shrink: 0;
+}
+
 .body {
   flex: 1;
   min-height: 0;
@@ -90,10 +93,6 @@
   flex-direction: column;
   position: relative;
   overflow: hidden;
-}
-
-.pinnedContent {
-  flex-shrink: 0;
 }
 
 .content {

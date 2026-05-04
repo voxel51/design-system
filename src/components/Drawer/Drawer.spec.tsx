@@ -3,10 +3,9 @@ import userEvent from "@testing-library/user-event";
 
 import Drawer from "./Drawer";
 
-// HANDLE_SIZE(4) with no header
-const CLOSED_SIZE_NO_HEADER = 4;
-// HANDLE_SIZE(4) + DEFAULT_HEADER_SIZE(24)
-const CLOSED_SIZE_WITH_HEADER = 28;
+// HANDLE_SIZE(4) — jsdom doesn't measure real element heights,
+// so headerHeight is always 0 and closedSize is always HANDLE_SIZE.
+const CLOSED_SIZE = 4;
 
 beforeEach(() => {
   Element.prototype.setPointerCapture = jest.fn();
@@ -79,11 +78,6 @@ describe("Drawer", () => {
       expect(container.firstChild).toHaveStyle({ zIndex: 5 });
     });
 
-    it("should render pinned content", () => {
-      render(<Drawer {...defaultProps} pinnedContent={<span>pinned</span>} />);
-      expect(screen.getByText("pinned")).toBeInTheDocument();
-    });
-
     it("should render overlay", () => {
       render(<Drawer {...defaultProps} overlay={<span>overlay</span>} />);
       expect(screen.getByText("overlay")).toBeInTheDocument();
@@ -137,7 +131,7 @@ describe("Drawer", () => {
       );
     });
 
-    it("should call the header render prop with open=false when closed", () => {
+    it("should pass open=false to header when closed", () => {
       render(
         <Drawer
           {...defaultProps}
@@ -155,6 +149,18 @@ describe("Drawer", () => {
       );
     });
 
+    it("should wrap header output in a measured div", () => {
+      const { container } = render(
+        <Drawer
+          {...defaultProps}
+          header={(state) => <button onClick={state.toggle}>toggle</button>}
+        />
+      );
+      const headerDiv = container.querySelector("[class*='header']");
+      expect(headerDiv).toBeInTheDocument();
+      expect(headerDiv).toContainElement(screen.getByRole("button"));
+    });
+
     it("should close the drawer when toggle is called via header", async () => {
       const user = userEvent.setup();
       const { container } = render(
@@ -169,9 +175,7 @@ describe("Drawer", () => {
         />
       );
       await user.click(screen.getByRole("button"));
-      expect(container.firstChild).toHaveStyle({
-        height: `${CLOSED_SIZE_WITH_HEADER}px`,
-      });
+      expect(container.firstChild).toHaveStyle({ height: `${CLOSED_SIZE}px` });
       expect(screen.getByRole("button")).toHaveAttribute(
         "aria-expanded",
         "false"
@@ -205,9 +209,11 @@ describe("Drawer", () => {
       expect(root).toHaveStyle({ height: "150px" });
     });
 
-    it("should not render a header when no header prop is provided", () => {
-      render(<Drawer {...defaultProps} />);
-      expect(screen.queryByRole("button")).not.toBeInTheDocument();
+    it("should not render a header wrapper when no header prop is provided", () => {
+      const { container } = render(<Drawer {...defaultProps} />);
+      expect(
+        container.querySelector("[class*='header']")
+      ).not.toBeInTheDocument();
     });
   });
 
@@ -221,16 +227,12 @@ describe("Drawer", () => {
       const { container } = render(
         <Drawer {...defaultProps} defaultOpen={false} />
       );
-      expect(container.firstChild).toHaveStyle({
-        height: `${CLOSED_SIZE_NO_HEADER}px`,
-      });
+      expect(container.firstChild).toHaveStyle({ height: `${CLOSED_SIZE}px` });
     });
 
     it("should respect controlled open prop", () => {
       const { container } = render(<Drawer {...defaultProps} open={false} />);
-      expect(container.firstChild).toHaveStyle({
-        height: `${CLOSED_SIZE_NO_HEADER}px`,
-      });
+      expect(container.firstChild).toHaveStyle({ height: `${CLOSED_SIZE}px` });
     });
   });
 
@@ -246,9 +248,7 @@ describe("Drawer", () => {
       const { container } = render(
         <Drawer {...defaultProps} side="bottom" defaultOpen={false} />
       );
-      expect(container.firstChild).toHaveStyle({
-        height: `${CLOSED_SIZE_NO_HEADER}px`,
-      });
+      expect(container.firstChild).toHaveStyle({ height: `${CLOSED_SIZE}px` });
     });
 
     it("should set width for left drawer when open", () => {
@@ -262,9 +262,7 @@ describe("Drawer", () => {
       const { container } = render(
         <Drawer {...defaultProps} side="left" defaultOpen={false} />
       );
-      expect(container.firstChild).toHaveStyle({
-        width: `${CLOSED_SIZE_NO_HEADER}px`,
-      });
+      expect(container.firstChild).toHaveStyle({ width: `${CLOSED_SIZE}px` });
     });
   });
 
@@ -284,7 +282,6 @@ describe("Drawer", () => {
     });
 
     it("should decrease height when dragged down on a bottom drawer", () => {
-      // bottom is inverted: dragging down (increasing clientY) reduces height
       const { container } = render(
         <Drawer {...defaultProps} side="bottom" defaultOpen={true} />
       );
@@ -350,11 +347,10 @@ describe("Drawer", () => {
       pointerMove(handle, 10000);
       pointerUp(handle);
 
-      expect(root).toHaveStyle({ height: `${CLOSED_SIZE_NO_HEADER}px` });
+      expect(root).toHaveStyle({ height: `${CLOSED_SIZE}px` });
     });
 
     it("should increase width when dragged right on a left drawer", () => {
-      // left is not inverted: dragging right (increasing clientX) increases width
       const { container } = render(
         <Drawer {...defaultProps} side="left" defaultOpen={true} />
       );
