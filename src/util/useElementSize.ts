@@ -36,7 +36,11 @@ export function useElementSize(): UseElementSizeReturn {
     roRef.current?.disconnect();
     roRef.current = null;
     if (!el) return;
+<<<<<<< HEAD
     const measure = (): void =>
+=======
+    const measure = () =>
+>>>>>>> 7e67ff3 (lints)
       setSize({ width: el.offsetWidth, height: el.offsetHeight });
     measure();
     roRef.current = new ResizeObserver(measure);
