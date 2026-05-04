@@ -1,4 +1,6 @@
 import { act, renderHook } from "@testing-library/react";
+import React from "react";
+
 import { useResizableDrawer } from "./useResizableDrawer";
 
 // Uses invert=true (bottom/right drawer): dragging down reduces size, dragging up increases it.
