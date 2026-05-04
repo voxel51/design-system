@@ -14,7 +14,7 @@ export function useElementSize(): UseElementSizeReturn {
     roRef.current?.disconnect();
     roRef.current = null;
     if (!el) return;
-    const measure = () =>
+    const measure = (): void =>
       setSize({ width: el.offsetWidth, height: el.offsetHeight });
     measure();
     roRef.current = new ResizeObserver(measure);

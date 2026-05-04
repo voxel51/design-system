@@ -1,4 +1,5 @@
 import { act, renderHook } from "@testing-library/react";
+
 import { useElementSize } from "./useElementSize";
 
 function makeElement(width: number, height: number) {
@@ -22,7 +23,7 @@ describe("useElementSize", () => {
   beforeEach(() => {
     observeFn = jest.fn();
     disconnectFn = jest.fn();
-    global.ResizeObserver = jest
+    globalThis.ResizeObserver = jest
       .fn()
       .mockImplementation((cb: ResizeObserverCallback) => {
         roCallback = cb;
@@ -64,7 +65,7 @@ describe("useElementSize", () => {
         result.current.ref(el);
       });
 
-      expect(global.ResizeObserver).toHaveBeenCalledTimes(1);
+      expect(globalThis.ResizeObserver).toHaveBeenCalledTimes(1);
       expect(observeFn).toHaveBeenCalledWith(el);
     });
 
@@ -81,7 +82,7 @@ describe("useElementSize", () => {
       });
 
       expect(disconnectFn).toHaveBeenCalledTimes(1);
-      expect(global.ResizeObserver).toHaveBeenCalledTimes(2);
+      expect(globalThis.ResizeObserver).toHaveBeenCalledTimes(2);
     });
 
     it("disconnects the observer when ref is detached", () => {
