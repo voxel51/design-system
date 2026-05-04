@@ -39,8 +39,12 @@ function pointerMove(
   });
 }
 
-function pointerUp(handleProps: ReturnType<typeof useResizableDrawer>["dragHandleProps"]) {
-  act(() => { handleProps.onPointerUp(); });
+function pointerUp(
+  handleProps: ReturnType<typeof useResizableDrawer>["dragHandleProps"]
+) {
+  act(() => {
+    handleProps.onPointerUp();
+  });
 }
 
 describe("useResizableDrawer", () => {
@@ -71,7 +75,9 @@ describe("useResizableDrawer", () => {
   describe("toggle", () => {
     it("closes when open", () => {
       const { result } = renderHook(() => useResizableDrawer(defaultOptions));
-      act(() => { result.current.toggle(); });
+      act(() => {
+        result.current.toggle();
+      });
       expect(result.current.open).toBe(false);
     });
 
@@ -79,7 +85,9 @@ describe("useResizableDrawer", () => {
       const { result } = renderHook(() =>
         useResizableDrawer({ ...defaultOptions, defaultOpen: false })
       );
-      act(() => { result.current.toggle(); });
+      act(() => {
+        result.current.toggle();
+      });
       expect(result.current.open).toBe(true);
     });
 
@@ -92,8 +100,12 @@ describe("useResizableDrawer", () => {
       pointerUp(result.current.dragHandleProps);
       expect(result.current.size).toBe(240);
 
-      act(() => { result.current.toggle(); });
-      act(() => { result.current.toggle(); });
+      act(() => {
+        result.current.toggle();
+      });
+      act(() => {
+        result.current.toggle();
+      });
 
       expect(result.current.size).toBe(240);
     });
@@ -106,8 +118,12 @@ describe("useResizableDrawer", () => {
       pointerMove(result.current.dragHandleProps, 50);
       pointerUp(result.current.dragHandleProps);
 
-      act(() => { result.current.toggle(); });
-      act(() => { result.current.toggle(); });
+      act(() => {
+        result.current.toggle();
+      });
+      act(() => {
+        result.current.toggle();
+      });
 
       expect(result.current.size).toBe(150);
       expect(result.current.size).not.toBe(200);
@@ -153,7 +169,11 @@ describe("useResizableDrawer", () => {
 
     it("uses clientX for horizontal axis", () => {
       const { result } = renderHook(() =>
-        useResizableDrawer({ ...defaultOptions, axis: "horizontal", invert: false })
+        useResizableDrawer({
+          ...defaultOptions,
+          axis: "horizontal",
+          invert: false,
+        })
       );
       // non-inverted horizontal: delta=+40, adjusted=+40, raw=240
       pointerDown(result.current.dragHandleProps, 0, 100);
@@ -242,7 +262,11 @@ describe("useResizableDrawer", () => {
     it("calls onOpenChange when closed by drag", () => {
       const onOpenChange = jest.fn();
       const { result } = renderHook(() =>
-        useResizableDrawer({ ...defaultOptions, closeThreshold: 28, onOpenChange })
+        useResizableDrawer({
+          ...defaultOptions,
+          closeThreshold: 28,
+          onOpenChange,
+        })
       );
       pointerDown(result.current.dragHandleProps, 0);
       pointerMove(result.current.dragHandleProps, 172);
@@ -255,7 +279,9 @@ describe("useResizableDrawer", () => {
       const { result } = renderHook(() =>
         useResizableDrawer({ ...defaultOptions, onOpenChange })
       );
-      act(() => { result.current.toggle(); });
+      act(() => {
+        result.current.toggle();
+      });
       expect(onOpenChange).toHaveBeenCalledWith(false);
     });
   });

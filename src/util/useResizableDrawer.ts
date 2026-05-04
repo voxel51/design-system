@@ -1,6 +1,10 @@
 import React, { useCallback, useRef, useState } from "react";
 import { DragAxis, useDragDelta } from "./useDragDelta";
-import { UseDisclosureOptions, UseDisclosureReturn, useDisclosure } from "./useDisclosure";
+import {
+  UseDisclosureOptions,
+  UseDisclosureReturn,
+  useDisclosure,
+} from "./useDisclosure";
 
 export type { DragAxis };
 
@@ -69,7 +73,10 @@ export function useResizableDrawer({
       if (raw <= closeThresholdRef.current) {
         if (openRef.current) setOpen(false);
       } else {
-        const clamped = Math.min(maxSizeRef.current, Math.max(minSizeRef.current, raw));
+        const clamped = Math.min(
+          maxSizeRef.current,
+          Math.max(minSizeRef.current, raw)
+        );
         sizeRef.current = clamped;
         setSize(clamped);
         if (!openRef.current) setOpen(true);
@@ -80,7 +87,11 @@ export function useResizableDrawer({
     [setOpen]
   );
 
-  const { isDragging, handleProps } = useDragDelta({ axis, onDragStart, onDelta });
+  const { isDragging, handleProps } = useDragDelta({
+    axis,
+    onDragStart,
+    onDelta,
+  });
 
   const toggle = useCallback(() => {
     if (!openRef.current) {
@@ -93,5 +104,12 @@ export function useResizableDrawer({
     }
   }, [setOpen]);
 
-  return { open, toggle, setOpen, size, isDragging, dragHandleProps: handleProps };
+  return {
+    open,
+    toggle,
+    setOpen,
+    size,
+    isDragging,
+    dragHandleProps: handleProps,
+  };
 }

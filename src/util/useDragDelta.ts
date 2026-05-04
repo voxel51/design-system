@@ -62,5 +62,8 @@ export function useDragDelta({
     onDragEndRef.current?.();
   }, []);
 
-  return { isDragging, handleProps: { onPointerDown, onPointerMove, onPointerUp } };
+  return {
+    isDragging,
+    handleProps: { onPointerDown, onPointerMove, onPointerUp },
+  };
 }

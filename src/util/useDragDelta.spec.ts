@@ -35,7 +35,9 @@ function pointerMove(
   });
 }
 
-function pointerUp(handleProps: ReturnType<typeof useDragDelta>["handleProps"]) {
+function pointerUp(
+  handleProps: ReturnType<typeof useDragDelta>["handleProps"]
+) {
   act(() => {
     handleProps.onPointerUp();
   });
