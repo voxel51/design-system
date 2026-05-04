@@ -1,4 +1,6 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
+
+import { useControllableState } from "@/util/useControllableState";
 
 export interface UseDisclosureOptions {
   defaultOpen?: boolean;
@@ -17,17 +19,11 @@ export function useDisclosure({
   open: controlledOpen,
   onOpenChange,
 }: UseDisclosureOptions = {}): UseDisclosureReturn {
-  const [internalOpen, setInternalOpen] = useState(defaultOpen);
-  const isControlled = controlledOpen !== undefined;
-  const open = isControlled ? controlledOpen : internalOpen;
-
-  const setOpen = useCallback(
-    (next: boolean) => {
-      if (!isControlled) setInternalOpen(next);
-      onOpenChange?.(next);
-    },
-    [isControlled, onOpenChange]
-  );
+  const [open, setOpen] = useControllableState({
+    initializer: () => defaultOpen,
+    onChange: onOpenChange,
+    value: controlledOpen,
+  });
 
   const toggle = useCallback(() => setOpen(!open), [open, setOpen]);
 
