@@ -10,7 +10,9 @@ describe("useDisclosure", () => {
     });
 
     it("respects defaultOpen=false", () => {
-      const { result } = renderHook(() => useDisclosure({ defaultOpen: false }));
+      const { result } = renderHook(() =>
+        useDisclosure({ defaultOpen: false })
+      );
       expect(result.current.open).toBe(false);
     });
 
@@ -23,33 +25,51 @@ describe("useDisclosure", () => {
   describe("uncontrolled", () => {
     it("toggle closes when open", () => {
       const { result } = renderHook(() => useDisclosure({ defaultOpen: true }));
-      act(() => { result.current.toggle(); });
+      act(() => {
+        result.current.toggle();
+      });
       expect(result.current.open).toBe(false);
     });
 
     it("toggle opens when closed", () => {
-      const { result } = renderHook(() => useDisclosure({ defaultOpen: false }));
-      act(() => { result.current.toggle(); });
+      const { result } = renderHook(() =>
+        useDisclosure({ defaultOpen: false })
+      );
+      act(() => {
+        result.current.toggle();
+      });
       expect(result.current.open).toBe(true);
     });
 
     it("setOpen sets to true", () => {
-      const { result } = renderHook(() => useDisclosure({ defaultOpen: false }));
-      act(() => { result.current.setOpen(true); });
+      const { result } = renderHook(() =>
+        useDisclosure({ defaultOpen: false })
+      );
+      act(() => {
+        result.current.setOpen(true);
+      });
       expect(result.current.open).toBe(true);
     });
 
     it("setOpen sets to false", () => {
       const { result } = renderHook(() => useDisclosure({ defaultOpen: true }));
-      act(() => { result.current.setOpen(false); });
+      act(() => {
+        result.current.setOpen(false);
+      });
       expect(result.current.open).toBe(false);
     });
 
     it("toggle alternates on repeated calls", () => {
       const { result } = renderHook(() => useDisclosure({ defaultOpen: true }));
-      act(() => { result.current.toggle(); });
-      act(() => { result.current.toggle(); });
-      act(() => { result.current.toggle(); });
+      act(() => {
+        result.current.toggle();
+      });
+      act(() => {
+        result.current.toggle();
+      });
+      act(() => {
+        result.current.toggle();
+      });
       expect(result.current.open).toBe(false);
     });
   });
@@ -62,13 +82,17 @@ describe("useDisclosure", () => {
 
     it("toggle does not change open when controlled", () => {
       const { result } = renderHook(() => useDisclosure({ open: true }));
-      act(() => { result.current.toggle(); });
+      act(() => {
+        result.current.toggle();
+      });
       expect(result.current.open).toBe(true);
     });
 
     it("setOpen does not change open when controlled", () => {
       const { result } = renderHook(() => useDisclosure({ open: true }));
-      act(() => { result.current.setOpen(false); });
+      act(() => {
+        result.current.setOpen(false);
+      });
       expect(result.current.open).toBe(true);
     });
   });
@@ -79,7 +103,9 @@ describe("useDisclosure", () => {
       const { result } = renderHook(() =>
         useDisclosure({ defaultOpen: true, onOpenChange })
       );
-      act(() => { result.current.toggle(); });
+      act(() => {
+        result.current.toggle();
+      });
       expect(onOpenChange).toHaveBeenCalledWith(false);
     });
 
@@ -88,7 +114,9 @@ describe("useDisclosure", () => {
       const { result } = renderHook(() =>
         useDisclosure({ defaultOpen: false, onOpenChange })
       );
-      act(() => { result.current.setOpen(true); });
+      act(() => {
+        result.current.setOpen(true);
+      });
       expect(onOpenChange).toHaveBeenCalledWith(true);
     });
 
@@ -97,7 +125,9 @@ describe("useDisclosure", () => {
       const { result } = renderHook(() =>
         useDisclosure({ open: true, onOpenChange })
       );
-      act(() => { result.current.toggle(); });
+      act(() => {
+        result.current.toggle();
+      });
       expect(onOpenChange).toHaveBeenCalledWith(false);
     });
   });
