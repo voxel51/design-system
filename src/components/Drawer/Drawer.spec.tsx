@@ -77,11 +77,6 @@ describe("Drawer", () => {
       );
       expect(container.firstChild).toHaveStyle({ zIndex: 5 });
     });
-
-    it("should render overlay", () => {
-      render(<Drawer {...defaultProps} overlay={<span>overlay</span>} />);
-      expect(screen.getByText("overlay")).toBeInTheDocument();
-    });
   });
 
   describe("side classes", () => {

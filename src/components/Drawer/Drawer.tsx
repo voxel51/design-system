@@ -39,7 +39,6 @@ export interface DrawerProps extends UseDisclosureOptions {
    * as the drawer's closed size automatically.
    */
   header?: (state: DrawerHeaderState) => React.ReactNode;
-  overlay?: React.ReactNode;
   onSizeChange?: (size: number) => void;
   bodyRef?: React.RefObject<HTMLDivElement | null>;
   children?: React.ReactNode;
@@ -58,7 +57,6 @@ const Drawer: React.FC<DrawerProps> = ({
   onOpenChange,
   onSizeChange,
   header,
-  overlay,
   bodyRef,
   children,
   className,
@@ -114,11 +112,6 @@ const Drawer: React.FC<DrawerProps> = ({
       )}
       <div ref={bodyRef} className={styles.body}>
         <div className={styles.content}>{children}</div>
-        {overlay && (
-          <div className={styles.overlay} aria-hidden>
-            {overlay}
-          </div>
-        )}
       </div>
     </div>
   );
