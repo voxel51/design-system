@@ -1,4 +1,5 @@
 export * from "./ActivityToast";
+export * from "./Collapsible";
 export * from "./Button";
 export * from "./Card";
 export * from "./Checkbox";
