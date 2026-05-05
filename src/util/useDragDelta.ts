@@ -28,13 +28,10 @@ export function useDragDelta({
   const isDraggingRef = useRef(false);
   const startPosRef = useRef(0);
 
-  // Mirror mutable callbacks into refs so handlers stay stable across re-renders.
-  const onDragStartRef = useRef(onDragStart);
-  onDragStartRef.current = onDragStart;
-  const onDeltaRef = useRef(onDelta);
-  onDeltaRef.current = onDelta;
-  const onDragEndRef = useRef(onDragEnd);
-  onDragEndRef.current = onDragEnd;
+  // Latest-value refs so handlers stay stable across re-renders.
+  const onDragStartRef = useLatest(onDragStart);
+  const onDeltaRef = useLatest(onDelta);
+  const onDragEndRef = useLatest(onDragEnd);
 
   const onPointerDown = useCallback(
     (e: React.PointerEvent<HTMLElement>) => {
@@ -44,7 +41,7 @@ export function useDragDelta({
       e.currentTarget.setPointerCapture(e.pointerId);
       onDragStartRef.current?.();
     },
-    [axis]
+    [axis, onDragStartRef]
   );
 
   const onPointerMove = useCallback(
@@ -53,14 +50,14 @@ export function useDragDelta({
       const current = axis === "horizontal" ? e.clientX : e.clientY;
       onDeltaRef.current(current - startPosRef.current);
     },
-    [axis]
+    [axis, onDeltaRef]
   );
 
   const onPointerUp = useCallback(() => {
     isDraggingRef.current = false;
     setIsDragging(false);
     onDragEndRef.current?.();
-  }, []);
+  }, [onDragEndRef]);
 
   return {
     isDragging,

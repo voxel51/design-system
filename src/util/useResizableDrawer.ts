@@ -5,6 +5,7 @@ import {
   UseDisclosureReturn,
   useDisclosure,
 } from "./useDisclosure";
+import { useLatest } from "./useLatest";
 
 export type { DragAxis };
 
@@ -43,28 +44,24 @@ export function useResizableDrawer({
   const { open, setOpen } = useDisclosure(disclosureOptions);
   const [size, setSize] = useState(defaultSize);
 
-  // Live-value refs so drag callbacks are stable and always read current values.
-  const openRef = useRef(open);
-  openRef.current = open;
-  const sizeRef = useRef(defaultSize);
+  // Latest-value refs so drag callbacks are stable and always read current values.
+  const openRef = useLatest(open);
+  const sizeRef = useLatest(size);
+  const closeThresholdRef = useLatest(closeThreshold);
+  const invertRef = useLatest(invert);
+  const minSizeRef = useLatest(minSize);
+  const maxSizeRef = useLatest(maxSize);
+  const onSizeChangeRef = useLatest(onSizeChange);
+
+  // Cross-event mutable state, not mirrors.
   const savedSizeRef = useRef(defaultSize);
   const dragStartSizeRef = useRef(defaultSize);
-  const closeThresholdRef = useRef(closeThreshold);
-  closeThresholdRef.current = closeThreshold;
-  const invertRef = useRef(invert);
-  invertRef.current = invert;
-  const minSizeRef = useRef(minSize);
-  minSizeRef.current = minSize;
-  const maxSizeRef = useRef(maxSize);
-  maxSizeRef.current = maxSize;
-  const onSizeChangeRef = useRef(onSizeChange);
-  onSizeChangeRef.current = onSizeChange;
 
   const onDragStart = useCallback(() => {
     dragStartSizeRef.current = openRef.current
       ? sizeRef.current
       : closeThresholdRef.current;
-  }, []);
+  }, [closeThresholdRef, openRef, sizeRef]);
 
   const onDelta = useCallback(
     (delta: number) => {
@@ -77,14 +74,21 @@ export function useResizableDrawer({
           maxSizeRef.current,
           Math.max(minSizeRef.current, raw)
         );
-        sizeRef.current = clamped;
         setSize(clamped);
         if (!openRef.current) setOpen(true);
         savedSizeRef.current = clamped;
         onSizeChangeRef.current?.(clamped);
       }
     },
-    [setOpen]
+    [
+      closeThresholdRef,
+      invertRef,
+      maxSizeRef,
+      minSizeRef,
+      onSizeChangeRef,
+      openRef,
+      setOpen,
+    ]
   );
 
   const { isDragging, handleProps } = useDragDelta({
@@ -95,14 +99,12 @@ export function useResizableDrawer({
 
   const toggle = useCallback(() => {
     if (!openRef.current) {
-      const restore = savedSizeRef.current;
-      sizeRef.current = restore;
-      setSize(restore);
+      setSize(savedSizeRef.current);
       setOpen(true);
     } else {
       setOpen(false);
     }
-  }, [setOpen]);
+  }, [openRef, setOpen]);
 
   return {
     open,
