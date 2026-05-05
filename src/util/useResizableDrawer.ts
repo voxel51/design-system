@@ -1,29 +1,48 @@
 import React, { useCallback, useRef, useState } from "react";
-import { DragAxis, useDragDelta } from "./useDragDelta";
+
 import {
   UseDisclosureOptions,
   UseDisclosureReturn,
   useDisclosure,
 } from "./useDisclosure";
+import { DragAxis, useDragDelta } from "./useDragDelta";
 import { useLatest } from "./useLatest";
 
 export type { DragAxis };
 
+/**
+ * Options for {@link useResizableDrawer}.
+ *
+ * Extends {@link UseDisclosureOptions} so the drawer's open state can be
+ * controlled or uncontrolled in the same way as {@link useDisclosure}.
+ */
 export interface UseResizableDrawerOptions extends UseDisclosureOptions {
+  /** Axis the drawer resizes along. `"horizontal"` for left/right drawers, `"vertical"` for top/bottom. */
   axis: DragAxis;
+  /** Initial drawer size in pixels, also used as the restore target after closing. */
   defaultSize: number;
+  /** Minimum drawer size in pixels while open. */
   minSize: number;
+  /** Maximum drawer size in pixels. */
   maxSize: number;
   /** Size at which a drag triggers close. Defaults to 0. */
   closeThreshold?: number;
   /** Flip the delta sign — use for right-side and bottom-side handles. */
   invert?: boolean;
+  /** Invoked with the new size on every drag-induced resize (not on open/close-only changes). */
   onSizeChange?: (size: number) => void;
 }
 
+/**
+ * Return value of {@link useResizableDrawer}. Extends {@link UseDisclosureReturn}
+ * with size and drag state.
+ */
 export interface UseResizableDrawerReturn extends UseDisclosureReturn {
+  /** Current drawer size in pixels. Reflects the last committed size even while closed. */
   size: number;
+  /** `true` while the user is actively dragging the resize handle. */
   isDragging: boolean;
+  /** Props to spread onto the drag handle element. */
   dragHandleProps: {
     onPointerDown: (e: React.PointerEvent<HTMLElement>) => void;
     onPointerMove: (e: React.PointerEvent<HTMLElement>) => void;
@@ -31,6 +50,31 @@ export interface UseResizableDrawerReturn extends UseDisclosureReturn {
   };
 }
 
+/**
+ * Hook which models a drawer that can be opened, closed, and resized by
+ * dragging a handle.
+ *
+ * Behavior:
+ * - Dragging below `closeThreshold` (default `0`) closes the drawer.
+ * - Dragging above `closeThreshold` while closed reopens the drawer.
+ * - Sizes are clamped to `[minSize, maxSize]` while open.
+ * - `toggle()` restores the last dragged size when reopening.
+ *
+ * @example
+ * ```tsx
+ * const { open, size, toggle, dragHandleProps } = useResizableDrawer({
+ *   axis: "horizontal",
+ *   defaultSize: 320,
+ *   minSize: 200,
+ *   maxSize: 600,
+ * });
+ * return (
+ *   <aside style={{ width: open ? size : 0 }}>
+ *     <div {...dragHandleProps} />
+ *   </aside>
+ * );
+ * ```
+ */
 export function useResizableDrawer({
   axis,
   defaultSize,
