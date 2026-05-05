@@ -177,7 +177,9 @@ describe("Collapsible", () => {
           <span>raw child</span>
         </Collapsible>
       );
-      expect(container.querySelector("[class*='content']")).not.toBeInTheDocument();
+      expect(
+        container.querySelector("[class*='content']")
+      ).not.toBeInTheDocument();
       expect(screen.getByText("raw child")).toBeInTheDocument();
     });
 
@@ -196,9 +198,7 @@ describe("Collapsible", () => {
         <Collapsible
           animated={false}
           defaultOpen
-          header={(state) => (
-            <button onClick={state.toggle}>toggle</button>
-          )}
+          header={(state) => <button onClick={state.toggle}>toggle</button>}
         >
           <span>raw child</span>
         </Collapsible>
