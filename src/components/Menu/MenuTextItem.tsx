@@ -2,6 +2,7 @@ import { MenuItem } from "@headlessui/react";
 import type { FC, HTMLAttributes } from "react";
 
 import { Text } from "@/components/Text";
+import radiusStyles from "@/styles/radius";
 import {
   BackgroundColor,
   bgColorClass,
@@ -10,7 +11,6 @@ import {
   TextColor,
   TextVariant,
 } from "@/types";
-import radiusStyles from "@/styles/radius";
 import { cn } from "@/util/classes";
 
 /**
