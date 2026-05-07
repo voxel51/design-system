@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 
 import { MenuTextItem } from "@/components/Menu";
 
-import { ContextMenu } from "./ContextMenu";
+import { ContextMenu, pickAnchor } from "./ContextMenu";
 
 const menu = (
   <>
@@ -147,5 +147,38 @@ describe("ContextMenu", () => {
     );
     fireEvent.contextMenu(screen.getByText("Right-click area"));
     expect(screen.queryByText("First")).not.toBeInTheDocument();
+  });
+});
+
+describe("pickAnchor", () => {
+  const viewport = { width: 1024, height: 768 };
+  const menu = { width: 320, height: 320 };
+
+  it("should default to bottom start when there is room below and to the right", () => {
+    expect(pickAnchor({ x: 100, y: 100 }, viewport, menu)).toBe("bottom start");
+  });
+
+  it("should flip to bottom end when near the right edge", () => {
+    expect(pickAnchor({ x: 900, y: 100 }, viewport, menu)).toBe("bottom end");
+  });
+
+  it("should flip to top start when near the bottom edge", () => {
+    expect(pickAnchor({ x: 100, y: 600 }, viewport, menu)).toBe("top start");
+  });
+
+  it("should flip to top end when near the bottom-right corner", () => {
+    expect(pickAnchor({ x: 900, y: 600 }, viewport, menu)).toBe("top end");
+  });
+
+  it("should treat exactly-fits as no flip", () => {
+    expect(
+      pickAnchor({ x: viewport.width - menu.width, y: 0 }, viewport, menu)
+    ).toBe("bottom start");
+  });
+
+  it("should flip when the menu would overflow by even one pixel", () => {
+    expect(
+      pickAnchor({ x: viewport.width - menu.width + 1, y: 0 }, viewport, menu)
+    ).toBe("bottom end");
   });
 });
