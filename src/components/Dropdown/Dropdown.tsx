@@ -1,5 +1,10 @@
 import { Menu, MenuButton, MenuItems } from "@headlessui/react";
-import { isValidElement, type FC, type HTMLAttributes, type ReactNode } from "react";
+import {
+  isValidElement,
+  type FC,
+  type HTMLAttributes,
+  type ReactNode,
+} from "react";
 
 import { menuPanelStyles } from "@/components/Menu";
 import { ZIndex, zIndexStyles } from "@/types";

@@ -20,8 +20,7 @@ import { cn } from "@/util/classes";
 /**
  * Props for {@link MenuIconTextItem}.
  */
-export interface MenuIconTextItemProps
-  extends HTMLAttributes<HTMLButtonElement> {
+export interface MenuIconTextItemProps extends HTMLAttributes<HTMLButtonElement> {
   /** Icon to display to the left of the text content. */
   icon: IconName | ReactNode;
   /** Primary label text. */
@@ -68,7 +67,9 @@ export const MenuIconTextItem: FC<MenuIconTextItemProps> = ({
   ...props
 }) => {
   const textColor = destructive ? TextColor.Destructive : TextColor.Primary;
-  const subtextColor = destructive ? TextColor.Destructive : TextColor.Secondary;
+  const subtextColor = destructive
+    ? TextColor.Destructive
+    : TextColor.Secondary;
   const iconColor = destructive ? IconColor.Destructive : IconColor.Default;
 
   return (
@@ -91,11 +92,7 @@ export const MenuIconTextItem: FC<MenuIconTextItemProps> = ({
         >
           <span className="flex size-5 shrink-0 items-center justify-center">
             {typeof icon === "string" ? (
-              <Icon
-                name={icon as IconName}
-                size={Size.Lg}
-                color={iconColor}
-              />
+              <Icon name={icon as IconName} size={Size.Lg} color={iconColor} />
             ) : (
               icon
             )}

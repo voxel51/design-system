@@ -34,9 +34,7 @@ describe("MenuSectionTitle", () => {
     const user = userEvent.setup();
     render(
       <Dropdown trigger={trigger}>
-        <MenuSectionTitle className="custom-title">
-          Section
-        </MenuSectionTitle>
+        <MenuSectionTitle className="custom-title">Section</MenuSectionTitle>
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));

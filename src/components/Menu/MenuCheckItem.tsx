@@ -19,8 +19,7 @@ import { cn } from "@/util/classes";
 /**
  * Props for {@link MenuCheckItem}.
  */
-export interface MenuCheckItemProps
-  extends HTMLAttributes<HTMLButtonElement> {
+export interface MenuCheckItemProps extends HTMLAttributes<HTMLButtonElement> {
   /** Whether this item is currently checked/selected. */
   checked?: boolean;
   /** If `true`, the item cannot be interacted with and is rendered in a muted style. */

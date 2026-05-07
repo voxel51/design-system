@@ -4,7 +4,6 @@ import userEvent from "@testing-library/user-event";
 import { Dropdown, DropdownTrigger } from "@/components/Dropdown";
 import { IconName } from "@/types";
 
-
 import { MenuIconTextItem } from "./MenuIconTextItem";
 
 const trigger = <DropdownTrigger>Open menu</DropdownTrigger>;
@@ -56,11 +55,7 @@ describe("MenuIconTextItem", () => {
     const onClick = jest.fn();
     render(
       <Dropdown trigger={trigger}>
-        <MenuIconTextItem
-          icon={IconName.Edit}
-          text="Edit"
-          onClick={onClick}
-        />
+        <MenuIconTextItem icon={IconName.Edit} text="Edit" onClick={onClick} />
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));

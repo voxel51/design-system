@@ -31,7 +31,11 @@ export const MenuSeparator: FC<MenuSeparatorProps> = ({
   return (
     <div
       role="separator"
-      className={cn("my-1 h-px", bgColorClass(TextColor.Placeholder), className)}
+      className={cn(
+        "my-1 h-px",
+        bgColorClass(TextColor.Placeholder),
+        className
+      )}
       {...props}
     />
   );

@@ -4,7 +4,6 @@ import userEvent from "@testing-library/user-event";
 import { MenuTextItem } from "@/components/Menu";
 import { Size } from "@/types";
 
-
 import { Dropdown } from "./Dropdown";
 import { DropdownTrigger } from "./DropdownTrigger";
 
@@ -49,7 +48,9 @@ describe("DropdownTrigger", () => {
 
   it("should accept a size prop", () => {
     render(
-      <Dropdown trigger={<DropdownTrigger size={Size.Md}>Menu</DropdownTrigger>}>
+      <Dropdown
+        trigger={<DropdownTrigger size={Size.Md}>Menu</DropdownTrigger>}
+      >
         {null}
       </Dropdown>
     );

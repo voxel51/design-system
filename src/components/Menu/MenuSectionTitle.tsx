@@ -7,8 +7,7 @@ import { cn } from "@/util/classes";
 /**
  * Props for {@link MenuSectionTitle}.
  */
-export interface MenuSectionTitleProps
-  extends HTMLAttributes<HTMLDivElement> {
+export interface MenuSectionTitleProps extends HTMLAttributes<HTMLDivElement> {
   /** The section title text. Rendered as an uppercase muted label. */
   children: string;
 }
