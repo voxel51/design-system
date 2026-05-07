@@ -9,7 +9,7 @@ import { cn } from "@/util/classes";
  * Provides the popover background, padding, max-width cap, radius, shadow,
  * and focus outline reset that define the menu's visual identity.
  */
-export const menuPanelStyles = () =>
+export const menuPanelStyles = (): string =>
   cn(
     "max-w-xs",
     "p-1.5",
