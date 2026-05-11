@@ -45,8 +45,12 @@ export interface DropdownProps extends HTMLAttributes<HTMLDivElement> {
   /** Position of the menu panel relative to the trigger. */
   anchor?: DropdownAnchor;
   /**
-   * When `true`, renders the menu panel in a portal so it escapes
-   * overflow-hidden ancestors and applies a high z-index automatically.
+   * Renders the menu panel in a portal so it escapes overflow-hidden
+   * ancestors and stacks above complex layouts (modals, mosaic grids,
+   * scrollable regions). Defaults to `true` — opt out by passing `false`
+   * when the menu must stay inside its trigger's DOM subtree (e.g. tightly
+   * scoped to a virtualized list).
+   * @default true
    */
   portal?: boolean;
   /** Explicit z-index override for the menu panel. */
@@ -102,7 +106,7 @@ export const Dropdown: FC<DropdownProps> = ({
   trigger,
   children,
   anchor = DropdownAnchor.BottomStart,
-  portal = false,
+  portal = true,
   zIndex,
   disabled,
   className,
