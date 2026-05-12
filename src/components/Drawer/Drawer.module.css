@@ -41,7 +41,8 @@
 /* Drag handle */
 .handle {
   flex-shrink: 0;
-  background: transparent;
+  background: var(--color-content-border-default);
+  transition: background 0.12s;
 }
 
 .handle:hover {
