@@ -1,0 +1,48 @@
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Version bump type
+        required: true
+        type: choice
+        default: patch
+        options:
+          - patch
+          - minor
+          - major
+
+jobs:
+  bump-and-tag:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.22.0
+
+      - name: Configure git
+        run: |
+          git config user.name "voxel51-bot"
+          git config user.email "bot@voxel51.com"
+
+      - name: Bump version and tag
+        run: npm version ${{ inputs.bump }} -m "v%s"
+
+      - name: Push commit and tag
+        run: git push --follow-tags
+
+  publish:
+    needs: bump-and-tag
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/_test_and_publish.yaml
+    with:
+      node-version: 22.22.0
+      registry-url: https://registry.npmjs.org

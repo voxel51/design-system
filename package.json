@@ -35,7 +35,6 @@
     "generate-tailwind-theme": "tsx utils/generate-color-classes.ts && tsx utils/generate-tailwind-theme.ts",
     "lint": "eslint src --max-warnings 0",
     "lint:fix": "eslint src --fix",
-    "patch": "npm version --commit-hooks false --git-tag-version false patch",
     "prebuild": "npm run generate-tailwind-theme",
     "prepublishOnly": "npm run build",
     "test": "jest",
