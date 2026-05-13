@@ -1,0 +1,16 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.content {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.2s ease;
+  color: var(--color-content-text-primary);
+}
+
+.contentOpen {
+  max-height: 2000px;
+}

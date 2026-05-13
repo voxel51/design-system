@@ -11,6 +11,7 @@ export interface FormFieldProps extends HTMLAttributes<HTMLDivElement> {
   description?: ReactNode;
   disabled?: boolean;
   error?: ReactNode;
+  spacing?: Spacing;
 }
 
 /**
@@ -55,6 +56,7 @@ export interface FormFieldProps extends HTMLAttributes<HTMLDivElement> {
  * @param description Optional description to display for the form field.
  * @param disabled If `true`, disables the form field.
  * @param error Optional error message to display for the form field.
+ * @param spacing Spacing between elements in the field. Defaults to {@link Spacing.Sm}.
  * @param className `class` overrides to apply to the field container.
  * @param props Additional HTML properties to apply to the field container.
  */
@@ -64,12 +66,13 @@ export const FormField: FC<FormFieldProps> = ({
   description,
   disabled,
   error,
+  spacing = Spacing.Sm,
   className,
   ...props
 }) => {
   return (
     <Field disabled={disabled} className={className}>
-      <Stack orientation={Orientation.Column} spacing={Spacing.Sm} {...props}>
+      <Stack orientation={Orientation.Column} spacing={spacing} {...props}>
         {label && (
           <Stack orientation={Orientation.Row} spacing={Spacing.Sm}>
             <Label>

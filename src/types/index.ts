@@ -13,4 +13,5 @@ export * from "./shadow";
 export * from "./size";
 export * from "./spacing";
 export * from "./text";
+export * from "./transition";
 export * from "./variant";
