@@ -1,6 +1,6 @@
 {
   "name": "@voxel51/voodo",
-  "version": "0.0.27",
+  "version": "0.0.28",
   "description": "Voxel51's official design ontology (VOODO) system",
   "type": "module",
   "author": "Voxel Engineering <engineering@voxel51.com>",
@@ -53,7 +53,7 @@
     "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
-"@tailwindcss/postcss": "^4.1.17",
+    "@tailwindcss/postcss": "^4.1.17",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",

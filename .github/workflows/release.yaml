@@ -18,6 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    outputs:
+      tag: ${{ steps.bump.outputs.tag }}
+      branch: ${{ steps.bump.outputs.branch }}
     steps:
       - uses: actions/checkout@v6
 
@@ -31,18 +34,79 @@ jobs:
           git config user.name "voxel51-bot"
           git config user.email "bot@voxel51.com"
 
-      - name: Bump version and tag
-        run: npm version ${{ inputs.bump }} -m "v%s"
+      - name: Bump version and tag on release branch
+        id: bump
+        run: |
+          NEW_TAG=$(npm version ${{ inputs.bump }} -m "v%s")
+          BRANCH="release/${NEW_TAG}"
+          git branch "$BRANCH"
+          echo "tag=$NEW_TAG" >> "$GITHUB_OUTPUT"
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
 
-      - name: Push commit and tag
-        run: git push --follow-tags
+      - name: Push branch and tag
+        run: git push --follow-tags origin "${{ steps.bump.outputs.branch }}"
+
+  run_tests:
+    name: run unit tests
+    needs: bump-and-tag
+    uses: ./.github/workflows/_run_tests.yaml
+    with:
+      node-version: 22.22.0
+      ref: ${{ needs.bump-and-tag.outputs.tag }}
+    permissions:
+      contents: read
 
   publish:
-    needs: bump-and-tag
+    needs: [bump-and-tag, run_tests]
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
-    uses: ./.github/workflows/_test_and_publish.yaml
-    with:
-      node-version: 22.22.0
-      registry-url: https://registry.npmjs.org
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.bump-and-tag.outputs.tag }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.22.0
+          registry-url: https://registry.npmjs.org
+
+      - name: Update NPM
+        run: npm install -g npm@latest
+
+      - name: Clean install
+        run: npm ci
+
+      - name: Publish package
+        run: | # NODE_AUTH_TOKEN needs to be cleared explicitly; see https://github.com/actions/setup-node/issues/1440
+          NODE_AUTH_TOKEN="" npm publish --provenance --access public
+
+  open-pr:
+    needs: [bump-and-tag, publish]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      actions: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.bump-and-tag.outputs.branch }}
+
+      - name: Create PR to develop
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create \
+            --base develop \
+            --head "${{ needs.bump-and-tag.outputs.branch }}" \
+            --title "${{ needs.bump-and-tag.outputs.tag }}" \
+            --body "Automated version bump for ${{ needs.bump-and-tag.outputs.tag }}. Already published to npm."
+
+      - name: Dispatch PR checks against release branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow run pr_checks.yaml --ref "${{ needs.bump-and-tag.outputs.branch }}"
