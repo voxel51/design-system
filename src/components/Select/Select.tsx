@@ -191,7 +191,7 @@ export const Select: FC<SelectProps> = ({
       onChange?.(value);
 
       if (exclusive) {
-        setTimeout(() => {
+        window.setTimeout(() => {
           inputRef.current?.blur();
         }, 0);
       }
