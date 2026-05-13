@@ -89,6 +89,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+      actions: write
     steps:
       - uses: actions/checkout@v6
         with:
@@ -103,3 +104,9 @@ jobs:
             --head "${{ needs.bump-and-tag.outputs.branch }}" \
             --title "${{ needs.bump-and-tag.outputs.tag }}" \
             --body "Automated version bump for ${{ needs.bump-and-tag.outputs.tag }}. Already published to npm."
+
+      - name: Dispatch PR checks against release branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow run pr_checks.yaml --ref "${{ needs.bump-and-tag.outputs.branch }}"
