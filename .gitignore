@@ -141,3 +141,9 @@ color-classes.ts
 
 .idea
 build
+
+# Cursor workspace settings
+.cursor/
+
+# VSCode settings
+.vscode/
