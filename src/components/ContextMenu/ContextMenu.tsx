@@ -17,11 +17,7 @@ import { cn } from "@/util/classes";
  * Anchor placements used when the cursor is far from any viewport edge
  * vs. flipped placements when the menu would overflow.
  */
-type MenuAnchor =
-  | "bottom start"
-  | "bottom end"
-  | "top start"
-  | "top end";
+type MenuAnchor = "bottom start" | "bottom end" | "top start" | "top end";
 
 /**
  * Conservative estimate of the menu panel size (px). Used at right-click
@@ -123,11 +119,7 @@ export const ContextMenu: FC<ContextMenuProps> = ({
 
   return (
     <>
-      <div
-        onContextMenu={handleContextMenu}
-        className={className}
-        {...props}
-      >
+      <div onContextMenu={handleContextMenu} className={className} {...props}>
         {children}
       </div>
       <Menu>
@@ -153,7 +145,10 @@ export const ContextMenu: FC<ContextMenuProps> = ({
               <MenuItems
                 anchor={{ to: anchor, gap: 0 }}
                 portal
-                className={cn(menuPanelStyles(), zIndexStyles(ZIndex.AboveModal))}
+                className={cn(
+                  menuPanelStyles(),
+                  zIndexStyles(ZIndex.AboveModal)
+                )}
               >
                 {menu}
               </MenuItems>
