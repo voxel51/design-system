@@ -105,7 +105,7 @@ export const ContextMenu: FC<ContextMenuProps> = ({
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [anchor, setAnchor] = useState<MenuAnchor>("bottom start");
 
-  const handleContextMenu = (e: MouseEvent<HTMLDivElement>) => {
+  const handleContextMenu = (e: MouseEvent<HTMLDivElement>): void => {
     onContextMenu?.(e);
     if (e.defaultPrevented || disabled) return;
     e.preventDefault();

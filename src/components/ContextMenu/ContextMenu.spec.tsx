@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { MouseEvent } from "react";
 
 import { MenuTextItem } from "@/components/Menu";
 
@@ -139,7 +140,7 @@ describe("ContextMenu", () => {
   });
 
   it("should respect onContextMenu calling preventDefault to opt out", () => {
-    const onContextMenu = jest.fn((e) => e.preventDefault());
+    const onContextMenu = jest.fn((e: MouseEvent): void => e.preventDefault());
     render(
       <ContextMenu menu={menu} onContextMenu={onContextMenu}>
         <div>Right-click area</div>
