@@ -14,5 +14,10 @@ export type {
   UseResizableDrawerReturn,
   DragAxis,
 } from "./util/useResizableDrawer";
+export { useDragDelta } from "./util/useDragDelta";
+export type {
+  UseDragDeltaOptions,
+  UseDragDeltaReturn,
+} from "./util/useDragDelta";
 
 import "./styles/globals.css";
