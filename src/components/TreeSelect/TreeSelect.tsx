@@ -1,5 +1,5 @@
 import { Combobox, ComboboxInput, ComboboxOptions } from "@headlessui/react";
-import { type FC, useCallback, useMemo, useRef, useState } from "react";
+import { type FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { Icon } from "@/components/Icons";
 import { inputStyle } from "@/components/Input";
@@ -98,7 +98,10 @@ export const TreeSelect: FC<TreeSelectProps> = ({
   ...props
 }) => {
   const [query, setQuery] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const { ref: triggerRef, width: triggerWidth } = useElementSize();
 
   const resolved = useMemo(
@@ -115,10 +118,6 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     (selected: string | null) => {
       setQuery("");
       onChange?.(selected);
-
-      window.setTimeout(() => {
-        inputRef.current?.blur();
-      }, 0);
     },
     [onChange]
   );
@@ -134,30 +133,52 @@ export const TreeSelect: FC<TreeSelectProps> = ({
         return displayValueProp(v, node);
       }
 
-      return formatBreadcrumb(v);
+      return node.name;
     },
     [root, displayValueProp]
   );
 
+  const toggleOpen = useCallback(() => {
+    if (!disabled) setIsOpen((prev) => !prev);
+  }, [disabled]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as Node;
+      if (
+        wrapperRef.current?.contains(target) ||
+        panelRef.current?.contains(target)
+      ) {
+        return;
+      }
+      setIsOpen(false);
+      setQuery("");
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen]);
+
   return (
-    <div className={cn(className, "w-full")} {...props}>
+    <div ref={wrapperRef} className={cn(className, "w-full")} {...props}>
       <Combobox
         disabled={disabled}
         value={value ?? null}
         onChange={handleChange}
-        immediate
-        onClose={() => setQuery("")}
       >
         <div ref={triggerRef} className="relative flex items-center">
           <ComboboxInput
             ref={inputRef}
+            readOnly
             autoComplete="off"
             displayValue={getDisplayValue}
-            onChange={(e) => setQuery(e.target.value)}
+            onClick={toggleOpen}
             placeholder={placeholder}
             className={cn(
               inputStyle({ disabled }),
-              "peer w-full cursor-pointer",
+              "w-full cursor-pointer",
               value ? "pr-14" : "pr-8"
             )}
           />
@@ -165,8 +186,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
             className={cn(
               "pointer-events-none absolute right-2.5 flex items-center",
               "transition-transform duration-150",
-              "rotate-90",
-              "peer-data-[open]:-rotate-90",
+              isOpen ? "-rotate-90" : "rotate-90",
               disabled && "opacity-50"
             )}
             aria-hidden
@@ -184,6 +204,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
               onClick={(e) => {
                 e.stopPropagation();
                 setQuery("");
+                setIsOpen(false);
                 onChange?.(null);
               }}
               className={cn(
@@ -209,7 +230,9 @@ export const TreeSelect: FC<TreeSelectProps> = ({
           )}
         </div>
 
-        <ComboboxOptions
+        {isOpen && <ComboboxOptions
+          ref={panelRef}
+          static
           anchor={anchor}
           portal={portal}
           className={cn(
@@ -245,7 +268,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
                   selectedPath={value}
                 />
               ))}
-        </ComboboxOptions>
+        </ComboboxOptions>}
       </Combobox>
     </div>
   );

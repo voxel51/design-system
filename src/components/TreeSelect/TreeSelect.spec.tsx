@@ -214,41 +214,6 @@ describe("TreeSelect", () => {
     });
   });
 
-  describe("typeahead / search", () => {
-    it("shows flat search results when typing a query", async () => {
-      const user = userEvent.setup();
-      renderTreeSelect();
-
-      await user.click(getInput());
-      await user.type(getInput(), "Civic");
-
-      expect(screen.getByText(/Civic/)).toBeInTheDocument();
-    });
-
-    it("excludes non-selectable nodes from search results", async () => {
-      const user = userEvent.setup();
-      renderTreeSelect();
-
-      await user.click(getInput());
-      await user.type(getInput(), "make");
-
-      expect(screen.queryByText(/\bmake\b/)).not.toBeInTheDocument();
-    });
-
-    it("fires onChange with full path from flat search selection", async () => {
-      const user = userEvent.setup();
-      const onChange = jest.fn();
-      renderTreeSelect({ onChange });
-
-      await user.click(getInput());
-      await user.type(getInput(), "motorcycle");
-
-      const option = screen.getByText(/motorcycle/);
-      await user.click(option);
-
-      expect(onChange).toHaveBeenCalledWith("vehicle_type/motorcycle");
-    });
-  });
 
   describe("leavesOnly", () => {
     it("makes branch nodes non-selectable", async () => {
@@ -274,15 +239,6 @@ describe("TreeSelect", () => {
       expect(onChange).toHaveBeenCalledWith("vehicle_type/motorcycle");
     });
 
-    it("excludes branches from search results", async () => {
-      const user = userEvent.setup();
-      renderTreeSelect({ leavesOnly: true });
-
-      await user.click(getInput());
-      await user.type(getInput(), "other");
-
-      expect(screen.queryByText(/\bother\b/)).not.toBeInTheDocument();
-    });
   });
 
   describe("deprecated styling", () => {
@@ -305,12 +261,10 @@ describe("TreeSelect", () => {
   });
 
   describe("controlled value", () => {
-    it("displays the breadcrumb for a controlled value", () => {
+    it("displays the node name for a controlled value", () => {
       renderTreeSelect({ value: "vehicle_type/motorcycle" });
 
-      expect(getInput()).toHaveValue(
-        "vehicle_type / motorcycle"
-      );
+      expect(getInput()).toHaveValue("motorcycle");
     });
 
     it("uses custom displayValue when provided", () => {
