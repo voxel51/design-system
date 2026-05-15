@@ -1,5 +1,5 @@
 import { ComboboxOption } from "@headlessui/react";
-import { type FC, type MouseEvent, useId } from "react";
+import { type FC, type MouseEvent, type PointerEvent, useId } from "react";
 
 import { Icon } from "@/components/Icons/Icon";
 import { Pill } from "@/components/Pill";
@@ -54,13 +54,13 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
   const isSelected = path === selectedPath;
 
   const { open, toggle } = useDisclosure({
-    defaultOpen: depth === 0,
+    defaultOpen: depth <= 1,
   });
 
   const groupId = useId() + "-group";
   const textColor = node.deprecated ? TextColor.Muted : TextColor.Primary;
 
-  const handleChevronClick = (e: MouseEvent) => {
+  const stopAndToggle = (e: MouseEvent | PointerEvent) => {
     e.stopPropagation();
     e.preventDefault();
     toggle();
@@ -86,7 +86,9 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
       aria-expanded={open}
       aria-controls={groupId}
       aria-label={open ? `Collapse ${node.name}` : `Expand ${node.name}`}
-      onClick={handleChevronClick}
+      onClick={stopAndToggle}
+      onPointerDown={stopAndToggle}
+      onPointerUp={stopAndToggle}
       className="shrink-0 flex items-center justify-center size-5"
     >
       <Icon
