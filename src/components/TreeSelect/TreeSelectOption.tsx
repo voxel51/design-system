@@ -5,6 +5,7 @@ import { Icon } from "@/components/Icons/Icon";
 import { Pill } from "@/components/Pill";
 import { Stack } from "@/components/Stack";
 import { Text } from "@/components/Text";
+import radiusStyles from "@/styles/radius";
 import {
   Align,
   BackgroundColor,
@@ -13,6 +14,7 @@ import {
   IconName,
   Justify,
   Orientation,
+  Radius,
   Size,
   Spacing,
   TextColor,
@@ -78,11 +80,12 @@ export const TreeSelectOption: FC<TreeSelectOptionProps> = ({
         spacing={Spacing.Md}
         className={cn(
           "flex-nowrap",
-          "py-2 px-3",
+          "py-1.5 px-3",
+          radiusStyles(Radius.Sm),
+          "cursor-pointer",
           bgColorClass(BackgroundColor.Card1),
           selected && bgColorClass(BackgroundColor.CardElevated),
-          bgColorClass(BackgroundColor.Card2, ElementState.Hover),
-          "cursor-pointer"
+          bgColorClass(BackgroundColor.Card2, ElementState.Hover)
         )}
         style={{
           paddingLeft: `calc(${depth} * ${DEPTH_INDENT} + var(--spacing-sm) + var(--spacing-xs))`,

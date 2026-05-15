@@ -107,25 +107,15 @@ describe("TreeSelect", () => {
       expect(screen.getByText("other")).toBeInTheDocument();
     });
 
-    it("shows expanded first-level children (depth 0 defaults open)", async () => {
+    it("does not expand branch children by default", async () => {
       const user = userEvent.setup();
       renderTreeSelect();
 
       await user.click(getInput());
 
-      expect(screen.getByText("make")).toBeInTheDocument();
-      expect(screen.getByText("golf_cart")).toBeInTheDocument();
-      expect(screen.getByText("atv")).toBeInTheDocument();
-    });
-
-    it("does not show deeply nested nodes (depth > 0 defaults closed)", async () => {
-      const user = userEvent.setup();
-      renderTreeSelect();
-
-      await user.click(getInput());
-
+      expect(screen.queryByText("make")).not.toBeInTheDocument();
+      expect(screen.queryByText("golf_cart")).not.toBeInTheDocument();
       expect(screen.queryByText("Honda")).not.toBeInTheDocument();
-      expect(screen.queryByText("Civic")).not.toBeInTheDocument();
     });
   });
 
@@ -136,13 +126,11 @@ describe("TreeSelect", () => {
 
       await user.click(getInput());
 
-      expect(screen.queryByText("Honda")).not.toBeInTheDocument();
+      expect(screen.queryByText("make")).not.toBeInTheDocument();
 
-      const makeChevron = screen.getByLabelText("Expand make");
-      await user.click(makeChevron);
+      await user.click(screen.getByLabelText("Expand car"));
 
-      expect(screen.getByText("Honda")).toBeInTheDocument();
-      expect(screen.getByText("Toyota")).toBeInTheDocument();
+      expect(screen.getByText("make")).toBeInTheDocument();
     });
 
     it("collapses a branch when its chevron is clicked again", async () => {
@@ -151,13 +139,11 @@ describe("TreeSelect", () => {
 
       await user.click(getInput());
 
-      const expandBtn = screen.getByLabelText("Expand make");
-      await user.click(expandBtn);
-      expect(screen.getByText("Honda")).toBeInTheDocument();
+      await user.click(screen.getByLabelText("Expand car"));
+      expect(screen.getByText("make")).toBeInTheDocument();
 
-      const collapseBtn = screen.getByLabelText("Collapse make");
-      await user.click(collapseBtn);
-      expect(screen.queryByText("Honda")).not.toBeInTheDocument();
+      await user.click(screen.getByLabelText("Collapse car"));
+      expect(screen.queryByText("make")).not.toBeInTheDocument();
     });
 
     it("clicking a non-selectable row toggles expansion", async () => {
@@ -166,6 +152,7 @@ describe("TreeSelect", () => {
 
       await user.click(getInput());
 
+      await user.click(screen.getByLabelText("Expand car"));
       expect(screen.queryByText("Honda")).not.toBeInTheDocument();
 
       const makeRow = screen.getByText("make");
@@ -206,6 +193,7 @@ describe("TreeSelect", () => {
 
       await user.click(getInput());
 
+      await user.click(screen.getByLabelText("Expand car"));
       const makeRow = screen.getByText("make");
       await user.click(makeRow);
 
@@ -219,7 +207,7 @@ describe("TreeSelect", () => {
 
       await user.click(getInput());
 
-      const chevron = screen.getByLabelText("Collapse other");
+      const chevron = screen.getByLabelText("Expand other");
       await user.click(chevron);
 
       expect(onChange).not.toHaveBeenCalled();
@@ -304,6 +292,7 @@ describe("TreeSelect", () => {
 
       await user.click(getInput());
 
+      await user.click(screen.getByLabelText("Expand car"));
       await user.click(screen.getByLabelText("Expand make"));
       await user.click(screen.getByLabelText("Expand Toyota"));
 

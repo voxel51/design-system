@@ -1,5 +1,4 @@
 import { Combobox, ComboboxInput, ComboboxOptions } from "@headlessui/react";
-import clsx from "clsx";
 import { type FC, useCallback, useMemo, useRef, useState } from "react";
 
 import { Icon } from "@/components/Icons";
@@ -8,6 +7,11 @@ import { SelectAnchor } from "@/components/Select";
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
 import {
+  BackgroundColor,
+  bgColorClass,
+  BorderColor,
+  borderColorClass,
+  ElementState,
   Radius,
   Shadow,
   Size,
@@ -17,8 +21,15 @@ import {
   zIndexStyles,
 } from "@/types";
 import { IconName } from "@/types/icons";
+import { cn } from "@/util/classes";
+import { useElementSize } from "@/util/useElementSize";
 
-import { buildResolvedTree, flattenForFilter, formatBreadcrumb, getNodeByPath } from "./tree";
+import {
+  buildResolvedTree,
+  flattenForFilter,
+  formatBreadcrumb,
+  getNodeByPath,
+} from "./tree";
 import { TreeSelectNode } from "./TreeSelectNode";
 import { TreeSelectOption } from "./TreeSelectOption";
 import type { TreeSelectProps } from "./types";
@@ -88,6 +99,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
 }) => {
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const { ref: triggerRef, width: triggerWidth } = useElementSize();
 
   const resolved = useMemo(
     () => buildResolvedTree(root, { leavesOnly }),
@@ -128,7 +140,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
   );
 
   return (
-    <div className={clsx(className, "w-full")} {...props}>
+    <div className={cn(className, "w-full")} {...props}>
       <Combobox
         disabled={disabled}
         value={value ?? null}
@@ -136,44 +148,82 @@ export const TreeSelect: FC<TreeSelectProps> = ({
         immediate
         onClose={() => setQuery("")}
       >
-        <div className="relative flex items-center">
+        <div ref={triggerRef} className="relative flex items-center">
           <ComboboxInput
             ref={inputRef}
             autoComplete="off"
             displayValue={getDisplayValue}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={placeholder}
-            className={clsx(
+            className={cn(
               inputStyle({ disabled }),
-              "w-full pr-8 cursor-pointer"
+              "peer w-full cursor-pointer",
+              value ? "pr-14" : "pr-8"
             )}
           />
           <span
-            className={clsx(
+            className={cn(
               "pointer-events-none absolute right-2.5 flex items-center",
+              "transition-transform duration-150",
+              "rotate-90",
+              "peer-data-[open]:-rotate-90",
               disabled && "opacity-50"
             )}
             aria-hidden
           >
             <Icon
-              name={IconName.CaretDown}
+              name={IconName.ChevronRight}
               size={Size.Sm}
               className={textColorClass(TextColor.Secondary)}
             />
           </span>
+          {value && !disabled && (
+            <button
+              type="button"
+              aria-label="Clear selection"
+              onClick={(e) => {
+                e.stopPropagation();
+                setQuery("");
+                onChange?.(null);
+              }}
+              className={cn(
+                "group",
+                "absolute right-7 flex items-center justify-center",
+                "p-[5px]",
+                "cursor-pointer",
+                "rounded-full",
+                "transition-[background-color] duration-150",
+                bgColorClass(BackgroundColor.Card2, ElementState.Hover)
+              )}
+            >
+              <Icon
+                name={IconName.Close}
+                size={Size.Sm}
+                className={cn(
+                  textColorClass(TextColor.Secondary),
+                  "group-hover:text-content-text-primary",
+                  "transition-colors duration-150"
+                )}
+              />
+            </button>
+          )}
         </div>
 
         <ComboboxOptions
           anchor={anchor}
           portal={portal}
-          className={clsx(
-            "mt-1",
-            "w-[var(--anchor-width)]",
+          className={cn(
+            "mt-1 p-1.5",
             "max-h-72 overflow-y-auto",
+            "border",
+            borderColorClass(BorderColor.Default),
+            bgColorClass(BackgroundColor.Card1),
             getZIndexClass(zIndex, portal),
-            radiusStyles(Radius.Md),
-            shadowStyles(Shadow.Md)
+            radiusStyles(Radius.Lg),
+            shadowStyles(Shadow.Lg),
+            "focus:outline-none"
           )}
+          style={triggerWidth ? { width: triggerWidth } : undefined}
         >
           {flatMatches
             ? flatMatches.map((match) => (

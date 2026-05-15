@@ -5,6 +5,7 @@ import { Icon } from "@/components/Icons/Icon";
 import { Pill } from "@/components/Pill";
 import { Stack } from "@/components/Stack";
 import { Text } from "@/components/Text";
+import radiusStyles from "@/styles/radius";
 import {
   Align,
   BackgroundColor,
@@ -13,6 +14,7 @@ import {
   IconName,
   Justify,
   Orientation,
+  Radius,
   Size,
   Spacing,
   TextColor,
@@ -54,29 +56,34 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
   const isSelected = path === selectedPath;
 
   const { open, toggle } = useDisclosure({
-    defaultOpen: depth <= 1,
+    defaultOpen: false,
   });
 
   const groupId = useId() + "-group";
   const textColor = node.deprecated ? TextColor.Muted : TextColor.Primary;
 
-  const stopAndToggle = (e: MouseEvent | PointerEvent) => {
+  const stopEvent = (e: MouseEvent | PointerEvent) => {
     e.stopPropagation();
     e.preventDefault();
+  };
+
+  const handleChevronClick = (e: MouseEvent) => {
+    stopEvent(e);
     toggle();
   };
 
   const indentStyle = {
-    paddingLeft: `calc(${depth} * ${DEPTH_INDENT} + var(--spacing-sm) + var(--spacing-xs))`,
+    paddingLeft: `calc(${depth - 1} * ${DEPTH_INDENT} + var(--spacing-xs))`,
   };
 
   const rowClasses = cn(
     "flex-nowrap",
-    "py-2 px-3",
+    "py-1.5",
+    radiusStyles(Radius.Sm),
+    "cursor-pointer",
     bgColorClass(BackgroundColor.Card1),
     isSelected && bgColorClass(BackgroundColor.CardElevated),
-    bgColorClass(BackgroundColor.Card2, ElementState.Hover),
-    "cursor-pointer"
+    bgColorClass(BackgroundColor.Card2, ElementState.Hover)
   );
 
   const chevron = isBranch ? (
@@ -86,15 +93,24 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
       aria-expanded={open}
       aria-controls={groupId}
       aria-label={open ? `Collapse ${node.name}` : `Expand ${node.name}`}
-      onClick={stopAndToggle}
-      onPointerDown={stopAndToggle}
-      onPointerUp={stopAndToggle}
-      className="shrink-0 flex items-center justify-center size-5"
+      onClick={handleChevronClick}
+      onPointerDown={stopEvent}
+      onPointerUp={stopEvent}
+      className={cn(
+        "group",
+        "cursor-pointer",
+        "shrink-0 flex items-center justify-center size-5 rounded-full",
+        bgColorClass(BackgroundColor.CardElevated, ElementState.Hover)
+      )}
     >
       <Icon
-        name={open ? IconName.ChevronBottom : IconName.ChevronRight}
+        name={IconName.ChevronRight}
         size={Size.Sm}
-        color={TextColor.Secondary}
+        className={cn(
+          "text-content-text-secondary",
+          "group-hover:text-content-text-primary",
+          open && "rotate-90"
+        )}
       />
     </button>
   ) : (
