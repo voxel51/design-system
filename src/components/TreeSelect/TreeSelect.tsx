@@ -1,9 +1,28 @@
-import { Combobox, ComboboxInput, ComboboxOptions } from "@headlessui/react";
-import { type FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  autoUpdate,
+  flip,
+  FloatingPortal,
+  offset,
+  shift,
+  size,
+  useFloating,
+  type Placement,
+} from "@floating-ui/react";
+import {
+  type FC,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import { Icon } from "@/components/Icons";
 import { inputStyle } from "@/components/Input";
 import { SelectAnchor } from "@/components/Select";
+import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
 import {
@@ -17,29 +36,48 @@ import {
   Size,
   TextColor,
   textColorClass,
+  TextVariant,
   ZIndex,
   zIndexStyles,
 } from "@/types";
 import { IconName } from "@/types/icons";
 import { cn } from "@/util/classes";
 import { useDebouncedCallback } from "@/util/useDebouncedCallback";
-import { useElementSize } from "@/util/useElementSize";
-
-import { Text } from "@/components/Text";
-import { TextVariant } from "@/types";
 
 import { buildResolvedTree, filterTreeForQuery, getNodeByPath } from "./tree";
 import { TreeSelectNode } from "./TreeSelectNode";
 import type { TreeSelectProps } from "./types";
 
+const ANCHOR_TO_PLACEMENT: Record<SelectAnchor, Placement> = {
+  [SelectAnchor.Bottom]: "bottom",
+  [SelectAnchor.BottomStart]: "bottom-start",
+  [SelectAnchor.BottomEnd]: "bottom-end",
+  [SelectAnchor.Top]: "top",
+  [SelectAnchor.TopStart]: "top-start",
+  [SelectAnchor.TopEnd]: "top-end",
+};
+
 function getZIndexClass(zIndex?: ZIndex, portal?: boolean): string | undefined {
-  if (portal) {
-    return zIndexStyles(ZIndex.AboveModal);
-  }
   if (zIndex) {
     return zIndexStyles(zIndex);
   }
+  if (portal) {
+    return zIndexStyles(ZIndex.AboveModal);
+  }
   return undefined;
+}
+
+function PortalWrapper({
+  portal,
+  children,
+}: {
+  portal?: boolean;
+  children: ReactNode;
+}) {
+  if (portal) {
+    return <FloatingPortal>{children}</FloatingPortal>;
+  }
+  return <>{children}</>;
 }
 
 /**
@@ -98,11 +136,26 @@ export const TreeSelect: FC<TreeSelectProps> = ({
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
-  const { ref: triggerRef, width: triggerWidth } = useElementSize();
+  const panelId = useId();
+
+  const { refs, floatingStyles } = useFloating({
+    placement: ANCHOR_TO_PLACEMENT[anchor],
+    open: isOpen,
+    middleware: [
+      offset(4),
+      flip(),
+      shift({ padding: 8 }),
+      size({
+        apply({ rects, elements }) {
+          Object.assign(elements.floating.style, {
+            minWidth: `${rects.reference.width}px`,
+          });
+        },
+      }),
+    ],
+    whileElementsMounted: autoUpdate,
+  });
 
   const debouncedSetQuery = useDebouncedCallback(setDebouncedQuery, 200);
 
@@ -126,8 +179,8 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     [resolved, debouncedQuery]
   );
 
-  const handleChange = useCallback(
-    (selected: string | null) => {
+  const handleSelect = useCallback(
+    (selected: string) => {
       setQuery("");
       onChange?.(selected);
     },
@@ -165,10 +218,9 @@ export const TreeSelect: FC<TreeSelectProps> = ({
 
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
-      if (
-        wrapperRef.current?.contains(target) ||
-        panelRef.current?.contains(target)
-      ) {
+      const reference = refs.reference.current as HTMLElement | null;
+      const floating = refs.floating.current;
+      if (reference?.contains(target) || floating?.contains(target)) {
         return;
       }
       setIsOpen(false);
@@ -177,88 +229,88 @@ export const TreeSelect: FC<TreeSelectProps> = ({
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isOpen]);
+  }, [isOpen, refs.reference, refs.floating]);
 
   return (
-    <div ref={wrapperRef} className={cn(className, "w-full")} {...props}>
-      <Combobox
-        disabled={disabled}
-        value={value ?? null}
-        onChange={handleChange}
-      >
-        <div ref={triggerRef} className="relative flex items-center">
-          <ComboboxInput
-            ref={inputRef}
-            readOnly
-            autoComplete="off"
-            displayValue={getDisplayValue}
-            onClick={() => {
-              setQuery("");
-              toggleOpen();
-            }}
-            placeholder={placeholder}
-            className={cn(
-              inputStyle({ disabled }),
-              "w-full cursor-pointer",
-              value ? "pr-14" : "pr-8"
-            )}
+    <div ref={refs.setReference} className={cn(className, "w-full")} {...props}>
+      <div className="relative flex items-center">
+        <input
+          readOnly
+          autoComplete="off"
+          role="combobox"
+          aria-haspopup="tree"
+          aria-expanded={isOpen}
+          aria-controls={isOpen ? panelId : undefined}
+          disabled={disabled}
+          value={getDisplayValue(value ?? null)}
+          onClick={() => {
+            setQuery("");
+            toggleOpen();
+          }}
+          placeholder={placeholder}
+          className={cn(
+            inputStyle({ disabled }),
+            "w-full cursor-pointer",
+            value ? "pr-14" : "pr-8"
+          )}
+        />
+        <span
+          className={cn(
+            "pointer-events-none absolute right-2.5 flex items-center",
+            "transition-transform duration-150",
+            isOpen ? "-rotate-90" : "rotate-90",
+            disabled && "opacity-50"
+          )}
+          aria-hidden
+        >
+          <Icon
+            name={IconName.ChevronRight}
+            size={Size.Sm}
+            className={textColorClass(TextColor.Secondary)}
           />
-          <span
+        </span>
+        {value && !disabled && (
+          <button
+            type="button"
+            aria-label="Clear selection"
+            onClick={(e) => {
+              e.stopPropagation();
+              setQuery("");
+              setIsOpen(false);
+              onChange?.(null);
+            }}
             className={cn(
-              "pointer-events-none absolute right-2.5 flex items-center",
-              "transition-transform duration-150",
-              isOpen ? "-rotate-90" : "rotate-90",
-              disabled && "opacity-50"
+              "group",
+              "absolute right-7 flex items-center justify-center",
+              "p-[5px]",
+              "cursor-pointer",
+              "rounded-full",
+              "transition-[background-color] duration-150",
+              bgColorClass(BackgroundColor.Card2, ElementState.Hover)
             )}
-            aria-hidden
           >
             <Icon
-              name={IconName.ChevronRight}
+              name={IconName.Close}
               size={Size.Sm}
-              className={textColorClass(TextColor.Secondary)}
-            />
-          </span>
-          {value && !disabled && (
-            <button
-              type="button"
-              aria-label="Clear selection"
-              onClick={(e) => {
-                e.stopPropagation();
-                setQuery("");
-                setIsOpen(false);
-                onChange?.(null);
-              }}
               className={cn(
-                "group",
-                "absolute right-7 flex items-center justify-center",
-                "p-[5px]",
-                "cursor-pointer",
-                "rounded-full",
-                "transition-[background-color] duration-150",
-                bgColorClass(BackgroundColor.Card2, ElementState.Hover)
+                textColorClass(TextColor.Secondary),
+                "group-hover:text-content-text-primary",
+                "transition-colors duration-150"
               )}
-            >
-              <Icon
-                name={IconName.Close}
-                size={Size.Sm}
-                className={cn(
-                  textColorClass(TextColor.Secondary),
-                  "group-hover:text-content-text-primary",
-                  "transition-colors duration-150"
-                )}
-              />
-            </button>
-          )}
-        </div>
+            />
+          </button>
+        )}
+      </div>
 
-        {isOpen && (
-          <ComboboxOptions
-            ref={panelRef}
-            static
-            anchor={anchor}
-            portal={portal}
+      {isOpen && (
+        <PortalWrapper portal={portal}>
+          <div
+            ref={refs.setFloating}
+            id={panelId}
+            role="tree"
+            aria-label="Tree selection"
+            style={floatingStyles}
             className={cn(
-              "mt-1",
               "max-h-72 overflow-y-auto",
               "border",
               borderColorClass(BorderColor.Default),
@@ -268,7 +320,6 @@ export const TreeSelect: FC<TreeSelectProps> = ({
               shadowStyles(Shadow.Lg),
               "focus:outline-none"
             )}
-            style={triggerWidth ? { width: triggerWidth } : undefined}
           >
             <div
               className={cn(
@@ -349,13 +400,14 @@ export const TreeSelect: FC<TreeSelectProps> = ({
                     selectedPath={value}
                     forceOpenPaths={filtered?.forceOpenPaths}
                     query={filtered ? query : undefined}
+                    onSelect={handleSelect}
                   />
                 ))
               )}
             </div>
-          </ComboboxOptions>
-        )}
-      </Combobox>
+          </div>
+        </PortalWrapper>
+      )}
     </div>
   );
 };

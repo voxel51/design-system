@@ -1,4 +1,3 @@
-import { ComboboxOption } from "@headlessui/react";
 import { type FC, type MouseEvent, type PointerEvent, useId } from "react";
 
 import { Icon } from "@/components/Icons/Icon";
@@ -34,6 +33,7 @@ interface TreeSelectNodeProps {
   selectedPath?: string;
   forceOpenPaths?: Set<string>;
   query?: string;
+  onSelect?: (path: string) => void;
 }
 
 function highlightMatch(text: string, query?: string): React.ReactNode {
@@ -59,13 +59,13 @@ function highlightMatch(text: string, query?: string): React.ReactNode {
  * Renders a single node row and, when expanded, recursively renders its
  * children. Handles three distinct cases:
  *
- * 1. **Selectable leaf** — rendered as a `ComboboxOption`.
- * 2. **Selectable branch** — rendered as a `ComboboxOption` with an
- *    embedded chevron button whose click `stopPropagation`s to toggle
+ * 1. **Selectable leaf** — rendered as a treeitem that fires `onSelect`.
+ * 2. **Selectable branch** — rendered as a treeitem that fires `onSelect`,
+ *    with an embedded chevron button whose click `stopPropagation`s to toggle
  *    expansion without triggering selection.
  * 3. **Non-selectable branch** (`can_select: false`) — rendered as a
- *    plain row (not a `ComboboxOption`) that toggles expansion on any
- *    click. Children are still real `ComboboxOption`s.
+ *    treeitem that toggles expansion on any click. Children are still
+ *    selectable treeitems.
  *
  * @internal For use by TreeSelect.
  */
@@ -74,6 +74,7 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
   selectedPath,
   forceOpenPaths,
   query,
+  onSelect,
 }) => {
   const { node, path, depth, selectable, isLeaf, children } = resolved;
   const isBranch = !isLeaf;
@@ -97,6 +98,14 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
   const handleChevronClick = (e: MouseEvent) => {
     stopEvent(e);
     toggle();
+  };
+
+  const handleRowClick = () => {
+    if (selectable) {
+      onSelect?.(path);
+    } else if (isBranch) {
+      toggle();
+    }
   };
 
   const indentStyle = {
@@ -185,34 +194,25 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
     </>
   );
 
-  const row = selectable ? (
-    <ComboboxOption value={path}>
-      <Stack
-        align={Align.Center}
-        justify={Justify.Between}
-        spacing={Spacing.Md}
-        className={rowClasses}
-        style={indentStyle}
-      >
-        {labelContent}
-      </Stack>
-    </ComboboxOption>
-  ) : (
-    <Stack
-      align={Align.Center}
-      justify={Justify.Between}
-      spacing={Spacing.Md}
-      className={rowClasses}
-      style={indentStyle}
-      onClick={isBranch ? toggle : undefined}
-    >
-      {labelContent}
-    </Stack>
-  );
-
   return (
     <>
-      {row}
+      <div
+        role="treeitem"
+        aria-selected={selectable ? isSelected : undefined}
+        aria-expanded={isBranch ? effectiveOpen : undefined}
+        tabIndex={-1}
+        onClick={handleRowClick}
+      >
+        <Stack
+          align={Align.Center}
+          justify={Justify.Between}
+          spacing={Spacing.Md}
+          className={rowClasses}
+          style={indentStyle}
+        >
+          {labelContent}
+        </Stack>
+      </div>
       {isBranch && effectiveOpen && (
         <div role="group" id={groupId}>
           {children.map((child) => (
@@ -222,6 +222,7 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
               selectedPath={selectedPath}
               forceOpenPaths={forceOpenPaths}
               query={query}
+              onSelect={onSelect}
             />
           ))}
         </div>

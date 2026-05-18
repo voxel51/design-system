@@ -1,6 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { ZIndex } from "@/types";
+
 import type { TreeNode } from "./types";
 import { TreeSelect } from "./TreeSelect";
 
@@ -281,6 +283,73 @@ describe("TreeSelect", () => {
     it("disables the input when disabled prop is true", () => {
       renderTreeSelect({ disabled: true });
       expect(getInput()).toBeDisabled();
+    });
+  });
+
+  describe("portal and z-index", () => {
+    it("renders the panel outside the wrapper when portal is true", async () => {
+      const user = userEvent.setup();
+      render(
+        <div data-testid="overflow-wrap" style={{ overflow: "hidden", height: 100 }}>
+          <TreeSelect root={vehicleTree} portal />
+        </div>
+      );
+
+      await user.click(screen.getByRole("combobox"));
+
+      const tree = screen.getByRole("tree");
+      expect(tree).toBeInTheDocument();
+      expect(tree.closest('[data-testid="overflow-wrap"]')).toBeNull();
+    });
+
+    it("applies AboveModal z-index when portal is true without explicit zIndex", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect({ portal: true });
+
+      await user.click(getInput());
+
+      const tree = screen.getByRole("tree");
+      expect(tree.className).toContain("z-[var(--z-above-modal)]");
+    });
+
+    it("applies explicit zIndex when both portal and zIndex are provided", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect({ portal: true, zIndex: ZIndex.High });
+
+      await user.click(getInput());
+
+      const tree = screen.getByRole("tree");
+      expect(tree.className).not.toContain("z-[var(--z-above-modal)]");
+      expect(tree.className).toContain("z-[var(--z-high)]");
+    });
+
+    it("renders the panel inline when portal is false", async () => {
+      const user = userEvent.setup();
+      render(
+        <div data-testid="parent-wrap">
+          <TreeSelect root={vehicleTree} data-testid="tree-select" />
+        </div>
+      );
+
+      await user.click(screen.getByRole("combobox"));
+
+      const tree = screen.getByRole("tree");
+      expect(tree.closest('[data-testid="parent-wrap"]')).not.toBeNull();
+    });
+
+    it("sets proper ARIA attributes on the combobox input", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect();
+
+      const input = getInput();
+      expect(input).toHaveAttribute("role", "combobox");
+      expect(input).toHaveAttribute("aria-haspopup", "tree");
+      expect(input).toHaveAttribute("aria-expanded", "false");
+
+      await user.click(input);
+
+      expect(input).toHaveAttribute("aria-expanded", "true");
+      expect(input).toHaveAttribute("aria-controls");
     });
   });
 
