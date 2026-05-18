@@ -9,6 +9,7 @@ import radiusStyles from "@/styles/radius";
 import {
   Align,
   BackgroundColor,
+  BrandColor,
   bgColorClass,
   ElementState,
   IconName,
@@ -32,6 +33,26 @@ interface TreeSelectNodeProps {
   resolved: ResolvedNode;
   selectedPath?: string;
   forceOpenPaths?: Set<string>;
+  query?: string;
+}
+
+function highlightMatch(text: string, query?: string): React.ReactNode {
+  if (!query) return text;
+
+  const idx = text.toLowerCase().indexOf(query.toLowerCase());
+  if (idx === -1) return text;
+
+  const before = text.slice(0, idx);
+  const match = text.slice(idx, idx + query.length);
+  const after = text.slice(idx + query.length);
+
+  return (
+    <>
+      {before}
+      <span className={textColorClass(BrandColor.Primary)}>{match}</span>
+      {after}
+    </>
+  );
 }
 
 /**
@@ -52,6 +73,7 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
   resolved,
   selectedPath,
   forceOpenPaths,
+  query,
 }) => {
   const { node, path, depth, selectable, isLeaf, children } = resolved;
   const isBranch = !isLeaf;
@@ -97,7 +119,9 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
       tabIndex={-1}
       aria-expanded={effectiveOpen}
       aria-controls={groupId}
-      aria-label={effectiveOpen ? `Collapse ${node.name}` : `Expand ${node.name}`}
+      aria-label={
+        effectiveOpen ? `Collapse ${node.name}` : `Expand ${node.name}`
+      }
       onClick={handleChevronClick}
       onPointerDown={stopEvent}
       onPointerUp={stopEvent}
@@ -127,12 +151,8 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
       <Stack orientation={Orientation.Column} className="min-w-0 flex-1">
         <Stack align={Align.Center} spacing={Spacing.Xs}>
           {chevron}
-          <Text
-            variant={TextVariant.Sm}
-            color={textColor}
-            className="truncate"
-          >
-            {node.name}
+          <Text variant={TextVariant.Sm} color={textColor} className="truncate">
+            {highlightMatch(node.name, query)}
           </Text>
           {node.deprecated && (
             <Pill size={Size.Xs} color={TextColor.Muted}>
@@ -201,6 +221,7 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
               resolved={child}
               selectedPath={selectedPath}
               forceOpenPaths={forceOpenPaths}
+              query={query}
             />
           ))}
         </div>

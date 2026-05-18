@@ -22,6 +22,7 @@ import {
 } from "@/types";
 import { IconName } from "@/types/icons";
 import { cn } from "@/util/classes";
+import { useDebouncedCallback } from "@/util/useDebouncedCallback";
 import { useElementSize } from "@/util/useElementSize";
 
 import { Text } from "@/components/Text";
@@ -95,6 +96,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
   ...props
 }) => {
   const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -102,14 +104,26 @@ export const TreeSelect: FC<TreeSelectProps> = ({
   const panelRef = useRef<HTMLDivElement>(null);
   const { ref: triggerRef, width: triggerWidth } = useElementSize();
 
+  const debouncedSetQuery = useDebouncedCallback(setDebouncedQuery, 200);
+
+  useEffect(() => {
+    if (!query) {
+      debouncedSetQuery.cancel();
+      setDebouncedQuery("");
+      return;
+    }
+    debouncedSetQuery(query);
+  }, [query, debouncedSetQuery]);
+
   const resolved = useMemo(
     () => buildResolvedTree(root, { leavesOnly }),
     [root, leavesOnly]
   );
 
   const filtered = useMemo(
-    () => (query ? filterTreeForQuery(resolved, query) : null),
-    [resolved, query]
+    () =>
+      debouncedQuery ? filterTreeForQuery(resolved, debouncedQuery) : null,
+    [resolved, debouncedQuery]
   );
 
   const handleChange = useCallback(
@@ -270,14 +284,14 @@ export const TreeSelect: FC<TreeSelectProps> = ({
                     className={textColorClass(TextColor.Tertiary)}
                   />
                 </span>
-              <input
-                ref={searchInputRef}
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onMouseDown={(e) => e.stopPropagation()}
-                aria-label="Search tree"
-                placeholder="Search..."
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onMouseDown={(e) => e.stopPropagation()}
+                  aria-label="Search tree"
+                  placeholder="Search..."
                   className={cn(
                     inputStyle({ disabled: false }),
                     "w-full pl-8",
@@ -317,14 +331,16 @@ export const TreeSelect: FC<TreeSelectProps> = ({
             </div>
 
             <div className="p-1.5 pt-0">
-              {query && !filtered ? (
-                <Text
-                  variant={TextVariant.Sm}
-                  color={TextColor.Tertiary}
-                  className="px-3 py-2"
-                >
-                  No matches found
-                </Text>
+              {debouncedQuery && !filtered ? (
+                <div className="flex justify-center">
+                  <Text
+                    variant={TextVariant.Sm}
+                    color={TextColor.Tertiary}
+                    className="px-3 py-2"
+                  >
+                    No matches found
+                  </Text>
+                </div>
               ) : (
                 (filtered?.tree ?? resolved).children.map((child) => (
                   <TreeSelectNode
@@ -332,6 +348,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
                     resolved={child}
                     selectedPath={value}
                     forceOpenPaths={filtered?.forceOpenPaths}
+                    query={filtered ? query : undefined}
                   />
                 ))
               )}

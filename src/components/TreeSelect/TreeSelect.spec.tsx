@@ -305,7 +305,7 @@ describe("TreeSelect", () => {
       await user.click(getInput());
       await user.type(getSearchInput(), "Civic");
 
-      expect(screen.getByText("Civic")).toBeInTheDocument();
+      expect(await screen.findByText("Civic")).toBeInTheDocument();
       expect(screen.queryByText("Accord")).not.toBeInTheDocument();
       expect(screen.queryByText("motorcycle")).not.toBeInTheDocument();
       expect(screen.queryByText("other")).not.toBeInTheDocument();
@@ -318,7 +318,7 @@ describe("TreeSelect", () => {
       await user.click(getInput());
       await user.type(getSearchInput(), "zzz_no_match");
 
-      expect(screen.getByText("No matches found")).toBeInTheDocument();
+      expect(await screen.findByText("No matches found")).toBeInTheDocument();
       expect(screen.queryByText("car")).not.toBeInTheDocument();
     });
 
@@ -329,11 +329,11 @@ describe("TreeSelect", () => {
       await user.click(getInput());
       await user.type(getSearchInput(), "Civic");
 
+      expect(await screen.findByText("Civic")).toBeInTheDocument();
       expect(screen.getByText("car")).toBeInTheDocument();
       expect(screen.getByText("make")).toBeInTheDocument();
       expect(screen.getByText("Honda")).toBeInTheDocument();
       expect(screen.getByText("model")).toBeInTheDocument();
-      expect(screen.getByText("Civic")).toBeInTheDocument();
     });
 
     it("shows non-selectable nodes when their name matches", async () => {
@@ -343,7 +343,7 @@ describe("TreeSelect", () => {
       await user.click(getInput());
       await user.type(getSearchInput(), "make");
 
-      expect(screen.getByText("make")).toBeInTheDocument();
+      expect(await screen.findByText("make")).toBeInTheDocument();
     });
 
     it("clears the search when the clear button is clicked", async () => {
@@ -353,6 +353,7 @@ describe("TreeSelect", () => {
       await user.click(getInput());
       await user.type(getSearchInput(), "Civic");
 
+      expect(await screen.findByText("Civic")).toBeInTheDocument();
       expect(screen.queryByText("motorcycle")).not.toBeInTheDocument();
 
       await user.click(screen.getByLabelText("Clear search"));
