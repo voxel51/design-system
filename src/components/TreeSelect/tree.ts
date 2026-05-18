@@ -68,34 +68,86 @@ export function buildResolvedTree(
 }
 
 /**
- * Flattens a resolved tree into a list of nodes whose names match the
- * given query (case-insensitive substring match). Only selectable nodes
- * are returned — non-selectable branch headers are skipped.
+ * Filters a resolved tree for a search query, returning a pruned copy of the
+ * tree that contains only:
+ * - Matched nodes (case-insensitive name substring match, any node)
+ * - Every ancestor of a match (force-expanded so the match is visible)
+ * - Siblings of each match (rendered but subtrees pruned)
+ * - Direct children of each match (rendered collapsed)
  *
- * Used to power the typeahead "flat search" mode: when the user types a
- * query, the tree view is replaced with a flat list of matching results.
+ * Returns `null` when no nodes match the query.
  */
-export function flattenForFilter(
+export function filterTreeForQuery(
   resolved: ResolvedNode,
   query: string
-): ResolvedNode[] {
-  const results: ResolvedNode[] = [];
+): { tree: ResolvedNode; forceOpenPaths: Set<string> } | null {
   const lowerQuery = query.toLowerCase();
 
-  function walk(node: ResolvedNode): void {
-    if (
-      node.selectable &&
-      node.node.name.toLowerCase().includes(lowerQuery)
-    ) {
-      results.push(node);
+  const matchedPaths = new Set<string>();
+
+  function collectMatches(node: ResolvedNode): void {
+    if (node.node.name.toLowerCase().includes(lowerQuery)) {
+      matchedPaths.add(node.path);
     }
     for (const child of node.children) {
-      walk(child);
+      collectMatches(child);
     }
   }
 
-  walk(resolved);
-  return results;
+  collectMatches(resolved);
+
+  if (matchedPaths.size === 0) return null;
+
+  const includedPaths = new Set<string>();
+  const forceOpenPaths = new Set<string>();
+
+  function addAncestors(path: string): void {
+    const segments = splitPath(path);
+    let current = "";
+    for (let i = 0; i < segments.length - 1; i++) {
+      current = current ? `${current}/${segments[i]}` : segments[i];
+      includedPaths.add(current);
+      forceOpenPaths.add(current);
+    }
+  }
+
+  for (const matchPath of matchedPaths) {
+    includedPaths.add(matchPath);
+    addAncestors(matchPath);
+  }
+
+  function addSubtree(node: ResolvedNode): void {
+    includedPaths.add(node.path);
+    for (const child of node.children) {
+      addSubtree(child);
+    }
+  }
+
+  function findNode(root: ResolvedNode, path: string): ResolvedNode | undefined {
+    if (root.path === path) return root;
+    for (const child of root.children) {
+      const found = findNode(child, path);
+      if (found) return found;
+    }
+    return undefined;
+  }
+
+  for (const matchPath of matchedPaths) {
+    const matchNode = findNode(resolved, matchPath);
+    if (matchNode) {
+      addSubtree(matchNode);
+    }
+  }
+
+  function pruneTree(node: ResolvedNode): ResolvedNode {
+    const filteredChildren = node.children
+      .filter((child) => includedPaths.has(child.path))
+      .map(pruneTree);
+
+    return { ...node, children: filteredChildren };
+  }
+
+  return { tree: pruneTree(resolved), forceOpenPaths };
 }
 
 /**

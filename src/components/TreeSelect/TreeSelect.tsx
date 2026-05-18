@@ -24,14 +24,11 @@ import { IconName } from "@/types/icons";
 import { cn } from "@/util/classes";
 import { useElementSize } from "@/util/useElementSize";
 
-import {
-  buildResolvedTree,
-  flattenForFilter,
-  formatBreadcrumb,
-  getNodeByPath,
-} from "./tree";
+import { Text } from "@/components/Text";
+import { TextVariant } from "@/types";
+
+import { buildResolvedTree, filterTreeForQuery, getNodeByPath } from "./tree";
 import { TreeSelectNode } from "./TreeSelectNode";
-import { TreeSelectOption } from "./TreeSelectOption";
 import type { TreeSelectProps } from "./types";
 
 function getZIndexClass(zIndex?: ZIndex, portal?: boolean): string | undefined {
@@ -100,6 +97,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const { ref: triggerRef, width: triggerWidth } = useElementSize();
@@ -109,8 +107,8 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     [root, leavesOnly]
   );
 
-  const flatMatches = useMemo(
-    () => (query ? flattenForFilter(resolved, query) : null),
+  const filtered = useMemo(
+    () => (query ? filterTreeForQuery(resolved, query) : null),
     [resolved, query]
   );
 
@@ -141,6 +139,12 @@ export const TreeSelect: FC<TreeSelectProps> = ({
   const toggleOpen = useCallback(() => {
     if (!disabled) setIsOpen((prev) => !prev);
   }, [disabled]);
+
+  useEffect(() => {
+    if (isOpen) {
+      requestAnimationFrame(() => searchInputRef.current?.focus());
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -174,7 +178,10 @@ export const TreeSelect: FC<TreeSelectProps> = ({
             readOnly
             autoComplete="off"
             displayValue={getDisplayValue}
-            onClick={toggleOpen}
+            onClick={() => {
+              setQuery("");
+              toggleOpen();
+            }}
             placeholder={placeholder}
             className={cn(
               inputStyle({ disabled }),
@@ -230,45 +237,107 @@ export const TreeSelect: FC<TreeSelectProps> = ({
           )}
         </div>
 
-        {isOpen && <ComboboxOptions
-          ref={panelRef}
-          static
-          anchor={anchor}
-          portal={portal}
-          className={cn(
-            "mt-1 p-1.5",
-            "max-h-72 overflow-y-auto",
-            "border",
-            borderColorClass(BorderColor.Default),
-            bgColorClass(BackgroundColor.Card1),
-            getZIndexClass(zIndex, portal),
-            radiusStyles(Radius.Lg),
-            shadowStyles(Shadow.Lg),
-            "focus:outline-none"
-          )}
-          style={triggerWidth ? { width: triggerWidth } : undefined}
-        >
-          {flatMatches
-            ? flatMatches.map((match) => (
-                <TreeSelectOption
-                  key={match.path}
-                  value={match.path}
-                  selected={match.path === value}
-                  depth={0}
-                  label={match.node.name}
-                  description={match.node.description}
-                  deprecated={match.node.deprecated}
-                  breadcrumb={formatBreadcrumb(match.path)}
+        {isOpen && (
+          <ComboboxOptions
+            ref={panelRef}
+            static
+            anchor={anchor}
+            portal={portal}
+            className={cn(
+              "mt-1",
+              "max-h-72 overflow-y-auto",
+              "border",
+              borderColorClass(BorderColor.Default),
+              bgColorClass(BackgroundColor.Card1),
+              getZIndexClass(zIndex, portal),
+              radiusStyles(Radius.Lg),
+              shadowStyles(Shadow.Lg),
+              "focus:outline-none"
+            )}
+            style={triggerWidth ? { width: triggerWidth } : undefined}
+          >
+            <div
+              className={cn(
+                "sticky top-0 z-10 p-1.5",
+                bgColorClass(BackgroundColor.Card1)
+              )}
+            >
+              <div className="relative flex items-center">
+                <span className="pointer-events-none absolute left-2.5 flex items-center">
+                  <Icon
+                    name={IconName.Search}
+                    size={Size.Sm}
+                    className={textColorClass(TextColor.Tertiary)}
+                  />
+                </span>
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onMouseDown={(e) => e.stopPropagation()}
+                aria-label="Search tree"
+                placeholder="Search..."
+                  className={cn(
+                    inputStyle({ disabled: false }),
+                    "w-full pl-8",
+                    query ? "pr-8" : "pr-3"
+                  )}
                 />
-              ))
-            : resolved.children.map((child) => (
-                <TreeSelectNode
-                  key={child.path}
-                  resolved={child}
-                  selectedPath={value}
-                />
-              ))}
-        </ComboboxOptions>}
+                {query && (
+                  <button
+                    type="button"
+                    aria-label="Clear search"
+                    onClick={() => {
+                      setQuery("");
+                      searchInputRef.current?.focus();
+                    }}
+                    className={cn(
+                      "group",
+                      "absolute right-1 flex items-center justify-center",
+                      "p-[5px]",
+                      "cursor-pointer",
+                      "rounded-full",
+                      "transition-[background-color] duration-150",
+                      bgColorClass(BackgroundColor.Card2, ElementState.Hover)
+                    )}
+                  >
+                    <Icon
+                      name={IconName.Close}
+                      size={Size.Sm}
+                      className={cn(
+                        textColorClass(TextColor.Secondary),
+                        "group-hover:text-content-text-primary",
+                        "transition-colors duration-150"
+                      )}
+                    />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div className="p-1.5 pt-0">
+              {query && !filtered ? (
+                <Text
+                  variant={TextVariant.Sm}
+                  color={TextColor.Tertiary}
+                  className="px-3 py-2"
+                >
+                  No matches found
+                </Text>
+              ) : (
+                (filtered?.tree ?? resolved).children.map((child) => (
+                  <TreeSelectNode
+                    key={child.path}
+                    resolved={child}
+                    selectedPath={value}
+                    forceOpenPaths={filtered?.forceOpenPaths}
+                  />
+                ))
+              )}
+            </div>
+          </ComboboxOptions>
+        )}
       </Combobox>
     </div>
   );

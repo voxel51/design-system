@@ -283,4 +283,96 @@ describe("TreeSelect", () => {
       expect(getInput()).toBeDisabled();
     });
   });
+
+  describe("search", () => {
+    function getSearchInput() {
+      return screen.getByLabelText("Search tree");
+    }
+
+    it("renders a search bar inside the panel", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect();
+
+      await user.click(getInput());
+
+      expect(getSearchInput()).toBeInTheDocument();
+    });
+
+    it("filters the tree to show only matching paths", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect();
+
+      await user.click(getInput());
+      await user.type(getSearchInput(), "Civic");
+
+      expect(screen.getByText("Civic")).toBeInTheDocument();
+      expect(screen.queryByText("Accord")).not.toBeInTheDocument();
+      expect(screen.queryByText("motorcycle")).not.toBeInTheDocument();
+      expect(screen.queryByText("other")).not.toBeInTheDocument();
+    });
+
+    it("shows 'No matches found' when query has no results", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect();
+
+      await user.click(getInput());
+      await user.type(getSearchInput(), "zzz_no_match");
+
+      expect(screen.getByText("No matches found")).toBeInTheDocument();
+      expect(screen.queryByText("car")).not.toBeInTheDocument();
+    });
+
+    it("auto-expands ancestors so the match is visible", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect();
+
+      await user.click(getInput());
+      await user.type(getSearchInput(), "Civic");
+
+      expect(screen.getByText("car")).toBeInTheDocument();
+      expect(screen.getByText("make")).toBeInTheDocument();
+      expect(screen.getByText("Honda")).toBeInTheDocument();
+      expect(screen.getByText("model")).toBeInTheDocument();
+      expect(screen.getByText("Civic")).toBeInTheDocument();
+    });
+
+    it("shows non-selectable nodes when their name matches", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect();
+
+      await user.click(getInput());
+      await user.type(getSearchInput(), "make");
+
+      expect(screen.getByText("make")).toBeInTheDocument();
+    });
+
+    it("clears the search when the clear button is clicked", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect();
+
+      await user.click(getInput());
+      await user.type(getSearchInput(), "Civic");
+
+      expect(screen.queryByText("motorcycle")).not.toBeInTheDocument();
+
+      await user.click(screen.getByLabelText("Clear search"));
+
+      expect(screen.getByText("car")).toBeInTheDocument();
+      expect(screen.getByText("motorcycle")).toBeInTheDocument();
+      expect(screen.getByText("other")).toBeInTheDocument();
+    });
+
+    it("clears the query when the selection clear button fires", async () => {
+      const user = userEvent.setup();
+      const onChange = jest.fn();
+      renderTreeSelect({ value: "vehicle_type/motorcycle", onChange });
+
+      await user.click(getInput());
+      await user.type(getSearchInput(), "car");
+
+      await user.click(screen.getByLabelText("Clear selection"));
+
+      expect(onChange).toHaveBeenCalledWith(null);
+    });
+  });
 });

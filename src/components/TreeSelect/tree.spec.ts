@@ -1,7 +1,7 @@
 import type { TreeNode } from "./types";
 import {
   buildResolvedTree,
-  flattenForFilter,
+  filterTreeForQuery,
   formatBreadcrumb,
   getNodeByPath,
   isSelectable,
@@ -168,53 +168,89 @@ describe("buildResolvedTree", () => {
   });
 });
 
-describe("flattenForFilter", () => {
-  it("returns selectable nodes matching the query", () => {
+describe("filterTreeForQuery", () => {
+  it("returns null when nothing matches", () => {
     const resolved = buildResolvedTree(vehicleTree);
-    const results = flattenForFilter(resolved, "civic");
-    expect(results).toHaveLength(1);
-    expect(results[0].node.name).toBe("Civic");
+    expect(filterTreeForQuery(resolved, "zzz_no_match")).toBeNull();
   });
 
   it("is case-insensitive", () => {
     const resolved = buildResolvedTree(vehicleTree);
-    const results = flattenForFilter(resolved, "HONDA");
-    expect(results).toHaveLength(1);
-    expect(results[0].node.name).toBe("Honda");
+    const result = filterTreeForQuery(resolved, "HONDA");
+    expect(result).not.toBeNull();
+    const names = collectNames(result!.tree);
+    expect(names).toContain("Honda");
   });
 
-  it("excludes non-selectable nodes even if name matches", () => {
+  it("matches non-selectable nodes", () => {
     const resolved = buildResolvedTree(vehicleTree);
-    const results = flattenForFilter(resolved, "make");
-    expect(results).toHaveLength(0);
+    const result = filterTreeForQuery(resolved, "make");
+    expect(result).not.toBeNull();
+    const names = collectNames(result!.tree);
+    expect(names).toContain("make");
   });
 
-  it("returns multiple matches across branches", () => {
+  it("includes ancestors of a match", () => {
     const resolved = buildResolvedTree(vehicleTree);
-    const results = flattenForFilter(resolved, "o");
-    const names = results.map((r) => r.node.name);
-    expect(names).toContain("motorcycle");
-    expect(names).toContain("other");
+    const result = filterTreeForQuery(resolved, "Civic")!;
+    const names = collectNames(result.tree);
+    expect(names).toContain("car");
+    expect(names).toContain("make");
+    expect(names).toContain("Honda");
+    expect(names).toContain("model");
+    expect(names).toContain("Civic");
+  });
+
+  it("does not include siblings of a match", () => {
+    const resolved = buildResolvedTree(vehicleTree);
+    const result = filterTreeForQuery(resolved, "Civic")!;
+    const names = collectNames(result.tree);
+    expect(names).not.toContain("Accord");
+  });
+
+  it("includes the full subtree of a match (collapsed, discoverable)", () => {
+    const resolved = buildResolvedTree(vehicleTree);
+    const result = filterTreeForQuery(resolved, "Honda")!;
+    const names = collectNames(result.tree);
+    expect(names).toContain("model");
+    expect(names).toContain("Civic");
+    expect(names).toContain("Accord");
+    expect(result.forceOpenPaths.has("vehicle_type/car/make/Honda")).toBe(false);
+  });
+
+  it("force-expands only ancestors, not matches themselves", () => {
+    const resolved = buildResolvedTree(vehicleTree);
+    const result = filterTreeForQuery(resolved, "Honda")!;
+    expect(result.forceOpenPaths.has("vehicle_type")).toBe(true);
+    expect(result.forceOpenPaths.has("vehicle_type/car")).toBe(true);
+    expect(result.forceOpenPaths.has("vehicle_type/car/make")).toBe(true);
+    expect(result.forceOpenPaths.has("vehicle_type/car/make/Honda")).toBe(false);
+  });
+
+  it("unions results from multiple matches across branches", () => {
+    const resolved = buildResolvedTree(vehicleTree);
+    const result = filterTreeForQuery(resolved, "model")!;
+    const names = collectNames(result.tree);
     expect(names).toContain("Honda");
     expect(names).toContain("Toyota");
-    expect(names).toContain("Accord");
-    expect(names).toContain("Corolla");
   });
 
-  it("returns empty array when nothing matches", () => {
+  it("excludes branches unrelated to the match", () => {
     const resolved = buildResolvedTree(vehicleTree);
-    const results = flattenForFilter(resolved, "zzz_no_match");
-    expect(results).toHaveLength(0);
-  });
-
-  it("respects leavesOnly in resolved tree", () => {
-    const resolved = buildResolvedTree(vehicleTree, { leavesOnly: true });
-    // "other" is a branch node — with leavesOnly it's non-selectable, so it
-    // should not appear even though the name matches.
-    const results = flattenForFilter(resolved, "other");
-    expect(results).toHaveLength(0);
+    const result = filterTreeForQuery(resolved, "Civic")!;
+    const names = collectNames(result.tree);
+    expect(names).not.toContain("motorcycle");
+    expect(names).not.toContain("other");
   });
 });
+
+function collectNames(node: ReturnType<typeof buildResolvedTree>): string[] {
+  const names: string[] = [node.node.name];
+  for (const child of node.children) {
+    names.push(...collectNames(child));
+  }
+  return names;
+}
 
 describe("getNodeByPath", () => {
   it("returns the root node for the root path", () => {

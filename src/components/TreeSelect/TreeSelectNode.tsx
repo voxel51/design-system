@@ -31,6 +31,7 @@ const DEPTH_INDENT = "var(--spacing-md)";
 interface TreeSelectNodeProps {
   resolved: ResolvedNode;
   selectedPath?: string;
+  forceOpenPaths?: Set<string>;
 }
 
 /**
@@ -50,14 +51,18 @@ interface TreeSelectNodeProps {
 export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
   resolved,
   selectedPath,
+  forceOpenPaths,
 }) => {
   const { node, path, depth, selectable, isLeaf, children } = resolved;
   const isBranch = !isLeaf;
   const isSelected = path === selectedPath;
+  const isForceOpen = forceOpenPaths?.has(path) ?? false;
 
   const { open, toggle } = useDisclosure({
     defaultOpen: false,
   });
+
+  const effectiveOpen = isForceOpen || open;
 
   const groupId = useId() + "-group";
   const textColor = node.deprecated ? TextColor.Muted : TextColor.Primary;
@@ -90,9 +95,9 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
     <button
       type="button"
       tabIndex={-1}
-      aria-expanded={open}
+      aria-expanded={effectiveOpen}
       aria-controls={groupId}
-      aria-label={open ? `Collapse ${node.name}` : `Expand ${node.name}`}
+      aria-label={effectiveOpen ? `Collapse ${node.name}` : `Expand ${node.name}`}
       onClick={handleChevronClick}
       onPointerDown={stopEvent}
       onPointerUp={stopEvent}
@@ -109,7 +114,7 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
         className={cn(
           "text-content-text-secondary",
           "group-hover:text-content-text-primary",
-          open && "rotate-90"
+          effectiveOpen && "rotate-90"
         )}
       />
     </button>
@@ -188,13 +193,14 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
   return (
     <>
       {row}
-      {isBranch && open && (
+      {isBranch && effectiveOpen && (
         <div role="group" id={groupId}>
           {children.map((child) => (
             <TreeSelectNode
               key={child.path}
               resolved={child}
               selectedPath={selectedPath}
+              forceOpenPaths={forceOpenPaths}
             />
           ))}
         </div>
