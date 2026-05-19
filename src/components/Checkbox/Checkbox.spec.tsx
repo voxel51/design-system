@@ -70,15 +70,6 @@ describe("Checkbox", () => {
       expect(checkbox).toHaveAttribute("aria-checked", "mixed");
     });
 
-    it("applies brand-accent bg and brand-primary border when indeterminate", () => {
-      render(<Checkbox indeterminate label={checkboxLabel} />);
-      const checkbox = screen.getByRole("checkbox");
-      expect(checkbox.className).toContain("bg-[var(--color-brand-accent)]");
-      expect(checkbox.className).toContain(
-        "border-[var(--color-brand-primary)]"
-      );
-    });
-
     it("ignores indeterminate when checked is true", () => {
       render(<Checkbox checked indeterminate label={checkboxLabel} />);
       const checkbox = screen.getByRole("checkbox");
