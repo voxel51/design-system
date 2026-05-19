@@ -353,6 +353,225 @@ describe("TreeSelect", () => {
     });
   });
 
+  describe("keyboard navigation", () => {
+    function getSearchInput() {
+      return screen.getByLabelText("Search tree");
+    }
+
+    async function openPanel(user: ReturnType<typeof userEvent.setup>) {
+      await user.click(getInput());
+      // The component uses requestAnimationFrame to focus the search input.
+      // Flush the rAF so keyboard events dispatch on the search input.
+      await new Promise((r) => requestAnimationFrame(r));
+    }
+
+    it("activates the first row on initial open", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect();
+      await openPanel(user);
+
+      const treeitems = screen.getAllByRole("treeitem");
+      expect(treeitems[0]).toHaveAttribute("data-active", "true");
+    });
+
+    it("moves active down with ArrowDown", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect();
+      await openPanel(user);
+
+      await user.keyboard("{ArrowDown}");
+
+      const treeitems = screen.getAllByRole("treeitem");
+      expect(treeitems[0]).not.toHaveAttribute("data-active");
+      expect(treeitems[1]).toHaveAttribute("data-active", "true");
+    });
+
+    it("moves active up with ArrowUp", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect();
+      await openPanel(user);
+
+      await user.keyboard("{ArrowDown}");
+      await user.keyboard("{ArrowUp}");
+
+      const treeitems = screen.getAllByRole("treeitem");
+      expect(treeitems[0]).toHaveAttribute("data-active", "true");
+    });
+
+    it("stops at the end boundary on ArrowDown", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect();
+      await openPanel(user);
+
+      // Root has 3 children: car, motorcycle, other
+      await user.keyboard("{ArrowDown}{ArrowDown}");
+
+      const treeitems = screen.getAllByRole("treeitem");
+      expect(treeitems[2]).toHaveAttribute("data-active", "true");
+
+      await user.keyboard("{ArrowDown}");
+      expect(treeitems[2]).toHaveAttribute("data-active", "true");
+    });
+
+    it("stops at the start boundary on ArrowUp", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect();
+      await openPanel(user);
+
+      const treeitems = screen.getAllByRole("treeitem");
+      expect(treeitems[0]).toHaveAttribute("data-active", "true");
+
+      await user.keyboard("{ArrowUp}");
+      expect(treeitems[0]).toHaveAttribute("data-active", "true");
+    });
+
+    it("selects a selectable row on Enter", async () => {
+      const user = userEvent.setup();
+      const onChange = jest.fn();
+      renderTreeSelect({ onChange });
+      await openPanel(user);
+
+      // First row is "car" which is selectable
+      await user.keyboard("{Enter}");
+
+      expect(onChange).toHaveBeenCalledWith("vehicle_type/car");
+    });
+
+    it("does not fire onChange on Enter for non-selectable row", async () => {
+      const user = userEvent.setup();
+      const onChange = jest.fn();
+      renderTreeSelect({ onChange });
+      await openPanel(user);
+
+      // Expand "car" to reveal "make" (non-selectable)
+      await user.keyboard("{ArrowRight}");
+      // Move down to "make"
+      await user.keyboard("{ArrowDown}");
+
+      await user.keyboard("{Enter}");
+
+      expect(onChange).not.toHaveBeenCalled();
+    });
+
+    it("expands a collapsed branch on ArrowRight", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect();
+      await openPanel(user);
+
+      // "car" is active and collapsed
+      expect(screen.queryByText("make")).not.toBeInTheDocument();
+
+      await user.keyboard("{ArrowRight}");
+
+      expect(screen.getByText("make")).toBeInTheDocument();
+    });
+
+    it("moves to first child on ArrowRight when branch is expanded", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect();
+      await openPanel(user);
+
+      // Expand "car"
+      await user.keyboard("{ArrowRight}");
+      // ArrowRight again moves to first child ("make")
+      await user.keyboard("{ArrowRight}");
+
+      const makeItem = screen.getByText("make").closest('[role="treeitem"]');
+      expect(makeItem).toHaveAttribute("data-active", "true");
+    });
+
+    it("is a no-op on ArrowRight for a leaf", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect();
+      await openPanel(user);
+
+      // Move to "motorcycle" (leaf, index 1)
+      await user.keyboard("{ArrowDown}");
+
+      const treeitems = screen.getAllByRole("treeitem");
+      expect(treeitems[1]).toHaveAttribute("data-active", "true");
+
+      await user.keyboard("{ArrowRight}");
+      expect(treeitems[1]).toHaveAttribute("data-active", "true");
+    });
+
+    it("collapses an expanded branch on ArrowLeft", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect();
+      await openPanel(user);
+
+      // Expand "car"
+      await user.keyboard("{ArrowRight}");
+      expect(screen.getByText("make")).toBeInTheDocument();
+
+      // Collapse "car"
+      await user.keyboard("{ArrowLeft}");
+      expect(screen.queryByText("make")).not.toBeInTheDocument();
+    });
+
+    it("moves to parent on ArrowLeft when collapsed", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect();
+      await openPanel(user);
+
+      // Expand "car", move to "make"
+      await user.keyboard("{ArrowRight}");
+      await user.keyboard("{ArrowDown}");
+
+      const makeItem = screen.getByText("make").closest('[role="treeitem"]');
+      expect(makeItem).toHaveAttribute("data-active", "true");
+
+      // ArrowLeft on collapsed "make" moves to parent "car"
+      await user.keyboard("{ArrowLeft}");
+
+      const carItem = screen.getByText("car").closest('[role="treeitem"]');
+      expect(carItem).toHaveAttribute("data-active", "true");
+    });
+
+    it("closes the panel on Escape", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect();
+      await openPanel(user);
+
+      expect(screen.getByRole("tree")).toBeInTheDocument();
+
+      await user.keyboard("{Escape}");
+
+      expect(screen.queryByRole("tree")).not.toBeInTheDocument();
+    });
+
+    it("sets aria-activedescendant on the search input", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect();
+      await openPanel(user);
+
+      const searchInput = getSearchInput();
+      const activedesc = searchInput.getAttribute("aria-activedescendant");
+      expect(activedesc).toBeTruthy();
+
+      const activeRow = document.getElementById(activedesc!);
+      expect(activeRow).not.toBeNull();
+      expect(activeRow).toHaveAttribute("role", "treeitem");
+    });
+
+    it("navigates through expanded children in DOM order", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect();
+      await openPanel(user);
+
+      // Expand "car"
+      await user.keyboard("{ArrowRight}");
+      // Now visible: car, make, motorcycle, other
+      // Active is still "car", move down through all
+      await user.keyboard("{ArrowDown}"); // make
+      await user.keyboard("{ArrowDown}"); // motorcycle
+      await user.keyboard("{ArrowDown}"); // other
+
+      const otherItem = screen.getByText("other").closest('[role="treeitem"]');
+      expect(otherItem).toHaveAttribute("data-active", "true");
+    });
+  });
+
   describe("search", () => {
     function getSearchInput() {
       return screen.getByLabelText("Search tree");

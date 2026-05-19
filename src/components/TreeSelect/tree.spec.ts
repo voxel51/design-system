@@ -2,8 +2,10 @@ import type { TreeNode } from "./types";
 import {
   buildResolvedTree,
   filterTreeForQuery,
+  flattenVisible,
   formatBreadcrumb,
   getNodeByPath,
+  getParentPath,
   isSelectable,
   splitPath,
 } from "./tree";
@@ -306,6 +308,59 @@ describe("splitPath", () => {
 
   it("returns empty array for empty string", () => {
     expect(splitPath("")).toEqual([]);
+  });
+});
+
+describe("getParentPath", () => {
+  it("returns the parent for a multi-segment path", () => {
+    expect(getParentPath("vehicle_type/car/make")).toBe("vehicle_type/car");
+  });
+
+  it("returns the root for a two-segment path", () => {
+    expect(getParentPath("vehicle_type/car")).toBe("vehicle_type");
+  });
+
+  it("returns undefined for a single-segment (root-level) path", () => {
+    expect(getParentPath("vehicle_type")).toBeUndefined();
+  });
+});
+
+describe("flattenVisible", () => {
+  const resolved = buildResolvedTree(vehicleTree);
+
+  it("returns only root children when nothing is expanded", () => {
+    const flat = flattenVisible(resolved, () => false);
+    const names = flat.map((n) => n.node.name);
+    expect(names).toEqual(["car", "motorcycle", "other"]);
+  });
+
+  it("includes children of expanded branches in DOM order", () => {
+    const openPaths = new Set(["vehicle_type/car"]);
+    const flat = flattenVisible(resolved, (p) => openPaths.has(p));
+    const names = flat.map((n) => n.node.name);
+    expect(names).toEqual(["car", "make", "motorcycle", "other"]);
+  });
+
+  it("recurses into deeply expanded paths", () => {
+    const openPaths = new Set([
+      "vehicle_type/car",
+      "vehicle_type/car/make",
+    ]);
+    const flat = flattenVisible(resolved, (p) => openPaths.has(p));
+    const names = flat.map((n) => n.node.name);
+    expect(names).toEqual([
+      "car",
+      "make",
+      "Honda",
+      "Toyota",
+      "motorcycle",
+      "other",
+    ]);
+  });
+
+  it("does not include the root node itself", () => {
+    const flat = flattenVisible(resolved, () => true);
+    expect(flat[0].node.name).not.toBe("vehicle_type");
   });
 });
 

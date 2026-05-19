@@ -199,6 +199,43 @@ export function splitPath(path: string): string[] {
 }
 
 /**
+ * Returns the parent path by stripping the last segment, or `undefined`
+ * for root-level paths (single segment).
+ */
+export function getParentPath(path: string): string | undefined {
+  const idx = path.lastIndexOf(PATH_SEPARATOR);
+  return idx === -1 ? undefined : path.slice(0, idx);
+}
+
+/**
+ * Depth-first walk of a resolved tree returning nodes in DOM render order.
+ * Skips the root itself (callers render `root.children`). For each child,
+ * includes the child, then if `isOpen(child.path)` returns true, recurses
+ * into its children. This mirrors exactly what `TreeSelectNode` renders.
+ */
+export function flattenVisible(
+  root: ResolvedNode,
+  isOpen: (path: string) => boolean
+): ResolvedNode[] {
+  const result: ResolvedNode[] = [];
+
+  function walk(node: ResolvedNode): void {
+    result.push(node);
+    if (!node.isLeaf && isOpen(node.path)) {
+      for (const child of node.children) {
+        walk(child);
+      }
+    }
+  }
+
+  for (const child of root.children) {
+    walk(child);
+  }
+
+  return result;
+}
+
+/**
  * Formats a path as a human-readable breadcrumb string.
  *
  * @example
