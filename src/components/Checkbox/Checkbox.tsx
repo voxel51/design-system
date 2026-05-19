@@ -11,6 +11,7 @@ import {
   bgColorClass,
   BorderColor,
   borderColorClass,
+  BrandColor,
   ElementState,
   IconName,
   Radius,
@@ -28,6 +29,12 @@ type ModifiedCheckboxProps = Omit<
 export interface CheckboxProps extends ModifiedCheckboxProps {
   checked?: boolean;
   onChange?: (checked: boolean) => void;
+  /**
+   * When true (and `checked` is false), renders a dash icon with brand-accent
+   * fill and brand-primary border, indicating partial selection among
+   * descendants. Ignored when `checked` is true.
+   */
+  indeterminate?: boolean;
   label?: string;
   disabled?: boolean;
   size?: Size;
@@ -75,6 +82,8 @@ const checkmarkSizeStyles: Record<Size, string> = {
  *
  * @param checked `checked` state of the checkbox.
  * @param onChange Change handler for when the checked state changes.
+ * @param indeterminate When true (and `checked` is false), renders a dash icon,
+ *  indicating partial selection among descendants. Ignored when `checked` is true.
  * @param size Size of the checkbox; this controls both the checkbox itself and the associated label. See {@link Size}.
  * @param radius Border radius of the checkbox; this controls the styling of the checkbox itself. See {@link Radius}.
  * @param className `class` overrides to apply to the checkbox.
@@ -86,6 +95,7 @@ const checkmarkSizeStyles: Record<Size, string> = {
 export const Checkbox: FC<CheckboxProps> = ({
   checked,
   onChange,
+  indeterminate,
   size = Size.Md,
   radius = Radius.Xs,
   className,
@@ -94,11 +104,14 @@ export const Checkbox: FC<CheckboxProps> = ({
   showUnsetHint,
   ...props
 }) => {
+  const showIndeterminate = !!indeterminate && !checked;
+
   return (
     <Field className="group flex items-center gap-2">
       <HeadlessCheckbox
         checked={checked}
         onChange={onChange}
+        indeterminate={showIndeterminate}
         className={cn(
           "group",
           "relative",
@@ -114,18 +127,27 @@ export const Checkbox: FC<CheckboxProps> = ({
           "disabled:cursor-not-allowed",
           bgColorClass(ActionColor.PrimaryDefault, ElementState.Checked),
           borderColorClass(BorderColor.Active, ElementState.Checked),
+          showIndeterminate &&
+            "bg-[var(--color-brand-primary)]/25 border-[var(--color-brand-primary)] ",
           className
         )}
         {...props}
       >
-        <Icon
-          name={IconName.Check}
-          color={TextColor.Primary}
-          className={clsx(
-            // scale to the size of the checkbox
-            "absolute inset-0 w-full h-full opacity-0 group-data-checked:opacity-100"
-          )}
-        />
+        {showIndeterminate ? (
+          <Icon
+            name={IconName.Remove}
+            color={BrandColor.Primary}
+            className="absolute inset-0 w-full h-full"
+          />
+        ) : (
+          <Icon
+            name={IconName.Check}
+            color={TextColor.Primary}
+            className={clsx(
+              "absolute inset-0 w-full h-full opacity-0 group-data-checked:opacity-100"
+            )}
+          />
+        )}
       </HeadlessCheckbox>
       {label && (
         <Label
