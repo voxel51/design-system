@@ -4,12 +4,17 @@ import {
   useEffect,
   useId,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
 import type { ResolvedNode } from "@/components/TreeSelect/types";
 
-import { flattenVisible, getParentPath } from "@/components/TreeSelect/tree";
+import {
+  collectBranchPaths,
+  flattenVisible,
+  getParentPath,
+} from "@/components/TreeSelect/tree";
 
 function encodeRowId(prefix: string, path: string): string {
   return `${prefix}-${path.replace(/\//g, "-")}`;
@@ -33,6 +38,15 @@ export interface UseTreeOptions {
   onSelect?: (path: string) => void;
   /** Fires on Escape key. */
   onEscape?: () => void;
+  /**
+   * Branches to expand initially. User can still collapse them.
+   * `resetExpansion()` restores this set rather than clearing to empty.
+   *
+   * - `Set<string>` — explicit branch paths.
+   * - `true` — expand every branch in `tree`.
+   * - `false` / `undefined` — expand nothing.
+   */
+  defaultExpanded?: Set<string> | boolean;
 }
 
 export interface TreeItemProps {
@@ -119,12 +133,24 @@ export function useTree(options: UseTreeOptions): UseTreeReturn {
     scrollActiveIntoView = true,
     onSelect,
     onEscape,
+    defaultExpanded,
   } = options;
 
   const generatedPrefix = useId();
   const idPrefix = idPrefixOption ?? generatedPrefix;
 
-  const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set());
+  const seedPaths = useMemo<Set<string>>(() => {
+    if (defaultExpanded instanceof Set) return defaultExpanded;
+    if (defaultExpanded === true) return collectBranchPaths(tree);
+    return new Set();
+  }, [defaultExpanded, tree]);
+
+  const seedRef = useRef(seedPaths);
+  seedRef.current = seedPaths;
+
+  const [expandedPaths, setExpandedPaths] = useState<Set<string>>(
+    () => new Set(seedPaths)
+  );
   const [activePath, setActivePath] = useState<string | null>(null);
 
   const isOpen = useCallback(
@@ -172,7 +198,7 @@ export function useTree(options: UseTreeOptions): UseTreeReturn {
   }, []);
 
   const resetExpansion = useCallback(() => {
-    setExpandedPaths(new Set());
+    setExpandedPaths(new Set(seedRef.current));
   }, []);
 
   // --- Scroll active into view ---

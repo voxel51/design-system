@@ -314,6 +314,65 @@ describe("useTree", () => {
     });
   });
 
+  describe("defaultExpanded", () => {
+    it("seeds expandedPaths from a Set", () => {
+      const defaults = new Set(["vehicle_type/car"]);
+      const { result } = setup({ defaultExpanded: defaults });
+      expect(result.current.expandedPaths.has("vehicle_type/car")).toBe(true);
+      const names = result.current.visibleNodes.map((n) => n.node.name);
+      expect(names).toContain("make");
+    });
+
+    it("expands all branches when true", () => {
+      const { result } = setup({ defaultExpanded: true });
+      expect(result.current.expandedPaths.has("vehicle_type/car")).toBe(true);
+      expect(result.current.expandedPaths.has("vehicle_type/car/make")).toBe(
+        true
+      );
+      expect(result.current.expandedPaths.has("vehicle_type/other")).toBe(true);
+      const names = result.current.visibleNodes.map((n) => n.node.name);
+      expect(names).toContain("Honda");
+      expect(names).toContain("Toyota");
+      expect(names).toContain("golf_cart");
+    });
+
+    it("expands nothing when false", () => {
+      const { result } = setup({ defaultExpanded: false });
+      expect(result.current.expandedPaths.size).toBe(0);
+    });
+
+    it("allows collapsing a default-expanded path", () => {
+      const defaults = new Set(["vehicle_type/car"]);
+      const { result } = setup({ defaultExpanded: defaults });
+      expect(result.current.isOpen("vehicle_type/car")).toBe(true);
+      act(() => result.current.collapse("vehicle_type/car"));
+      expect(result.current.isOpen("vehicle_type/car")).toBe(false);
+    });
+
+    it("resetExpansion restores default-expanded paths", () => {
+      const defaults = new Set(["vehicle_type/car"]);
+      const { result } = setup({ defaultExpanded: defaults });
+      act(() => {
+        result.current.collapse("vehicle_type/car");
+        result.current.expand("vehicle_type/other");
+      });
+      expect(result.current.expandedPaths.has("vehicle_type/car")).toBe(false);
+      expect(result.current.expandedPaths.has("vehicle_type/other")).toBe(true);
+      act(() => result.current.resetExpansion());
+      expect(result.current.expandedPaths.has("vehicle_type/car")).toBe(true);
+      expect(result.current.expandedPaths.has("vehicle_type/other")).toBe(
+        false
+      );
+    });
+
+    it("resetExpansion clears to empty when no defaultExpanded", () => {
+      const { result } = setup();
+      act(() => result.current.expand("vehicle_type/car"));
+      act(() => result.current.resetExpansion());
+      expect(result.current.expandedPaths.size).toBe(0);
+    });
+  });
+
   describe("keyboard navigation", () => {
     it("ArrowDown moves to the next visible node", () => {
       const { result } = setup();

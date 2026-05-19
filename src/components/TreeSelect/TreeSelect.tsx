@@ -120,6 +120,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
   portal,
   zIndex,
   displayValue: displayValueProp,
+  defaultExpanded,
   className,
   ...props
 }) => {
@@ -185,6 +186,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     tree: filtered?.tree ?? resolved,
     selectedPath: value,
     forceOpenPaths: filtered?.forceOpenPaths,
+    defaultExpanded,
     onSelect: handleSelect,
     onEscape: handleEscape,
   });
@@ -367,11 +369,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
                   aria-label="Search tree"
                   aria-activedescendant={tree.activeDescendantId}
                   placeholder="Search..."
-                  className={cn(
-                    inputStyle({ disabled: false }),
-                    "w-full pl-8",
-                    query ? "pr-8" : "pr-3"
-                  )}
+                  className={cn(inputStyle({ disabled: false }), "w-full px-8")}
                 />
                 {query && (
                   <button

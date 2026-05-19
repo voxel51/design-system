@@ -1,6 +1,7 @@
 import type { TreeNode } from "./types";
 import {
   buildResolvedTree,
+  collectBranchPaths,
   filterTreeForQuery,
   flattenVisible,
   formatBreadcrumb,
@@ -377,5 +378,32 @@ describe("formatBreadcrumb", () => {
 
   it("returns empty string for empty path", () => {
     expect(formatBreadcrumb("")).toBe("");
+  });
+});
+
+describe("collectBranchPaths", () => {
+  const resolved = buildResolvedTree(vehicleTree);
+
+  it("collects all non-leaf node paths", () => {
+    const paths = collectBranchPaths(resolved);
+    expect(paths.has("vehicle_type/car")).toBe(true);
+    expect(paths.has("vehicle_type/car/make")).toBe(true);
+    expect(paths.has("vehicle_type/car/make/Honda")).toBe(true);
+    expect(paths.has("vehicle_type/car/make/Honda/model")).toBe(true);
+    expect(paths.has("vehicle_type/car/make/Toyota")).toBe(true);
+    expect(paths.has("vehicle_type/car/make/Toyota/model")).toBe(true);
+    expect(paths.has("vehicle_type/other")).toBe(true);
+  });
+
+  it("excludes leaf nodes", () => {
+    const paths = collectBranchPaths(resolved);
+    expect(paths.has("vehicle_type/motorcycle")).toBe(false);
+    expect(paths.has("vehicle_type/car/make/Honda/model/Civic")).toBe(false);
+    expect(paths.has("vehicle_type/other/golf_cart")).toBe(false);
+  });
+
+  it("excludes the root node itself", () => {
+    const paths = collectBranchPaths(resolved);
+    expect(paths.has("vehicle_type")).toBe(false);
   });
 });

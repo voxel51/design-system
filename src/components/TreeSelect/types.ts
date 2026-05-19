@@ -87,4 +87,14 @@ export interface TreeSelectProps
    * When omitted, the full breadcrumb path is shown (e.g. `car / Honda / Civic`).
    */
   displayValue?: (path: string, node: TreeNode) => string;
+  /**
+   * Branches to expand when the panel first opens. Unlike `forceOpenPaths`
+   * (which prevents collapsing), these paths are user-collapsible and
+   * restored on panel re-open.
+   *
+   * - `Set<string>` — explicit branch paths to start expanded.
+   * - `true` — expand every branch in the tree.
+   * - `false` / `undefined` — expand nothing (default).
+   */
+  defaultExpanded?: Set<string> | boolean;
 }

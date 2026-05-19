@@ -236,6 +236,29 @@ export function flattenVisible(
 }
 
 /**
+ * Collects the paths of every non-leaf (branch) node in a resolved tree.
+ * Useful for resolving `defaultExpanded: true` into a concrete set of paths.
+ */
+export function collectBranchPaths(root: ResolvedNode): Set<string> {
+  const paths = new Set<string>();
+
+  function walk(node: ResolvedNode): void {
+    if (!node.isLeaf) {
+      paths.add(node.path);
+      for (const child of node.children) {
+        walk(child);
+      }
+    }
+  }
+
+  for (const child of root.children) {
+    walk(child);
+  }
+
+  return paths;
+}
+
+/**
  * Formats a path as a human-readable breadcrumb string.
  *
  * @example

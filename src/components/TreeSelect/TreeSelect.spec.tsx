@@ -572,6 +572,64 @@ describe("TreeSelect", () => {
     });
   });
 
+  describe("defaultExpanded", () => {
+    it("expands specified paths on open", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect({
+        defaultExpanded: new Set(["vehicle_type/car"]),
+      });
+
+      await user.click(getInput());
+
+      expect(screen.getByText("make")).toBeInTheDocument();
+    });
+
+    it("expands all branches when true", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect({ defaultExpanded: true });
+
+      await user.click(getInput());
+
+      expect(screen.getByText("make")).toBeInTheDocument();
+      expect(screen.getByText("Honda")).toBeInTheDocument();
+      expect(screen.getByText("golf_cart")).toBeInTheDocument();
+    });
+
+    it("allows collapsing a default-expanded path", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect({
+        defaultExpanded: new Set(["vehicle_type/car"]),
+      });
+
+      await user.click(getInput());
+      expect(screen.getByText("make")).toBeInTheDocument();
+
+      await user.click(screen.getByLabelText("Collapse car"));
+      expect(screen.queryByText("make")).not.toBeInTheDocument();
+    });
+
+    it("restores default expansion on panel re-open", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect({
+        defaultExpanded: new Set(["vehicle_type/car"]),
+      });
+
+      await user.click(getInput());
+      expect(screen.getByText("make")).toBeInTheDocument();
+
+      await user.click(screen.getByLabelText("Collapse car"));
+      expect(screen.queryByText("make")).not.toBeInTheDocument();
+
+      // Close by toggling the trigger
+      await user.click(getInput());
+      expect(screen.queryByRole("tree")).not.toBeInTheDocument();
+
+      // Re-open — default expansion should be restored
+      await user.click(getInput());
+      expect(screen.getByText("make")).toBeInTheDocument();
+    });
+  });
+
   describe("search", () => {
     function getSearchInput() {
       return screen.getByLabelText("Search tree");
