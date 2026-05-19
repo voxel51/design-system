@@ -61,6 +61,7 @@ export interface TreeItemProps {
   tabIndex: -1;
   "data-active": true | undefined;
   onClick: () => void;
+  onMouseDown: (e: { preventDefault: () => void }) => void;
   onMouseEnter: () => void;
 }
 
@@ -273,6 +274,9 @@ export function useTree(options: UseTreeOptions): UseTreeReturn {
           } else if (isBranch) {
             toggleExpand(node.path);
           }
+        },
+        onMouseDown: (e) => {
+          e.preventDefault();
         },
         onMouseEnter: () => {
           setActivePath(node.path);

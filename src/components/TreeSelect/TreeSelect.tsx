@@ -456,7 +456,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
             aria-label="Tree selection"
             style={floatingStyles}
             className={cn(
-              "max-h-72 overflow-y-auto",
+              "max-h-72 overflow-y-auto scroll-pt-12",
               "border",
               borderColorClass(BorderColor.Default),
               bgColorClass(BackgroundColor.Card1),
