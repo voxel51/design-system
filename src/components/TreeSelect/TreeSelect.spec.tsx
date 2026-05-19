@@ -58,15 +58,15 @@ const vehicleTree: TreeNode = {
   ],
 };
 
-function renderTreeSelect(
-  overrides: Partial<React.ComponentProps<typeof TreeSelect>> = {}
-) {
+function renderTreeSelect(overrides: Record<string, unknown> = {}) {
   const defaultProps = {
     root: vehicleTree,
     "data-testid": "tree-select",
     ...overrides,
   };
-  return render(<TreeSelect {...defaultProps} />);
+  return render(
+    <TreeSelect {...(defaultProps as React.ComponentProps<typeof TreeSelect>)} />
+  );
 }
 
 function getInput() {
@@ -272,7 +272,8 @@ describe("TreeSelect", () => {
     it("uses custom displayValue when provided", () => {
       renderTreeSelect({
         value: "vehicle_type/motorcycle",
-        displayValue: (_path, node) => node.name.toUpperCase(),
+        displayValue: (_path: string, node: TreeNode) =>
+          node.name.toUpperCase(),
       });
 
       expect(getInput()).toHaveValue("MOTORCYCLE");

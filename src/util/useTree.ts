@@ -23,8 +23,12 @@ function encodeRowId(prefix: string, path: string): string {
 export interface UseTreeOptions {
   /** Pre-resolved (and optionally pre-filtered) tree. */
   tree: ResolvedNode;
-  /** Currently selected path, used for `aria-selected` and `isSelected`. */
-  selectedPath?: string;
+  /**
+   * Set of currently selected paths, used for `aria-selected` and `isSelected`.
+   * For single-select, pass a Set with one element. For multi-select, pass
+   * all selected paths. The hook is mode-agnostic.
+   */
+  selection?: Set<string>;
   /**
    * Paths that must be treated as expanded regardless of user expansion state
    * (e.g. ancestors of a search match).
@@ -127,7 +131,7 @@ export interface UseTreeReturn {
 export function useTree(options: UseTreeOptions): UseTreeReturn {
   const {
     tree,
-    selectedPath,
+    selection,
     forceOpenPaths,
     idPrefix: idPrefixOption,
     scrollActiveIntoView = true,
@@ -224,8 +228,8 @@ export function useTree(options: UseTreeOptions): UseTreeReturn {
   );
 
   const isSelected = useCallback(
-    (node: ResolvedNode) => node.path === selectedPath,
-    [selectedPath]
+    (node: ResolvedNode) => selection?.has(node.path) ?? false,
+    [selection]
   );
 
   // --- Prop getters ---
@@ -233,7 +237,7 @@ export function useTree(options: UseTreeOptions): UseTreeReturn {
   const getItemProps = useCallback(
     (node: ResolvedNode): TreeItemProps => {
       const active = activePath === node.path;
-      const selected = node.path === selectedPath;
+      const selected = selection?.has(node.path) ?? false;
       const isBranch = !node.isLeaf;
 
       return {
@@ -255,7 +259,7 @@ export function useTree(options: UseTreeOptions): UseTreeReturn {
         },
       };
     },
-    [activePath, selectedPath, idPrefix, isOpen, onSelect, toggleExpand]
+    [activePath, selection, idPrefix, isOpen, onSelect, toggleExpand]
   );
 
   const getGroupProps = useCallback(

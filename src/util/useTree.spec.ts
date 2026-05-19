@@ -146,20 +146,46 @@ describe("useTree", () => {
   });
 
   describe("isSelected", () => {
-    it("returns true for the selectedPath node", () => {
-      const { result } = setup({ selectedPath: "vehicle_type/motorcycle" });
+    it("returns true for a single-element selection", () => {
+      const selection = new Set(["vehicle_type/motorcycle"]);
+      const { result } = setup({ selection });
       const moto = result.current.visibleNodes.find(
         (n) => n.path === "vehicle_type/motorcycle"
       )!;
       expect(result.current.isSelected(moto)).toBe(true);
     });
 
-    it("returns false for other nodes", () => {
-      const { result } = setup({ selectedPath: "vehicle_type/motorcycle" });
+    it("returns true for all members of a multi-element selection", () => {
+      const selection = new Set([
+        "vehicle_type/car",
+        "vehicle_type/motorcycle",
+      ]);
+      const { result } = setup({ selection });
+      const car = result.current.visibleNodes.find(
+        (n) => n.path === "vehicle_type/car"
+      )!;
+      const moto = result.current.visibleNodes.find(
+        (n) => n.path === "vehicle_type/motorcycle"
+      )!;
+      expect(result.current.isSelected(car)).toBe(true);
+      expect(result.current.isSelected(moto)).toBe(true);
+    });
+
+    it("returns false for nodes not in the selection", () => {
+      const selection = new Set(["vehicle_type/motorcycle"]);
+      const { result } = setup({ selection });
       const car = result.current.visibleNodes.find(
         (n) => n.path === "vehicle_type/car"
       )!;
       expect(result.current.isSelected(car)).toBe(false);
+    });
+
+    it("returns false for all nodes when selection is undefined", () => {
+      const { result } = setup();
+      const car = result.current.visibleNodes[0];
+      const moto = result.current.visibleNodes[1];
+      expect(result.current.isSelected(car)).toBe(false);
+      expect(result.current.isSelected(moto)).toBe(false);
     });
   });
 
@@ -194,11 +220,24 @@ describe("useTree", () => {
       expect(props.tabIndex).toBe(-1);
     });
 
-    it("sets aria-selected for selectable nodes", () => {
-      const { result } = setup({ selectedPath: "vehicle_type/car" });
+    it("sets aria-selected for selectable nodes in selection", () => {
+      const selection = new Set(["vehicle_type/car"]);
+      const { result } = setup({ selection });
       const car = result.current.visibleNodes[0];
       const props = result.current.getItemProps(car);
       expect(props["aria-selected"]).toBe(true);
+    });
+
+    it("sets aria-selected true for multiple selected nodes", () => {
+      const selection = new Set([
+        "vehicle_type/car",
+        "vehicle_type/motorcycle",
+      ]);
+      const { result } = setup({ selection });
+      const car = result.current.visibleNodes[0];
+      const moto = result.current.visibleNodes[1];
+      expect(result.current.getItemProps(car)["aria-selected"]).toBe(true);
+      expect(result.current.getItemProps(moto)["aria-selected"]).toBe(true);
     });
 
     it("sets aria-selected undefined for non-selectable nodes", () => {

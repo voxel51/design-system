@@ -113,6 +113,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
   root,
   value,
   onChange,
+  multiple,
   leavesOnly = false,
   disabled,
   placeholder,
@@ -171,10 +172,18 @@ export const TreeSelect: FC<TreeSelectProps> = ({
 
   const handleSelect = useCallback(
     (selected: string) => {
-      setQuery("");
-      onChange?.(selected);
+      if (multiple) {
+        const current = (value as string[] | undefined) ?? [];
+        const next = current.includes(selected)
+          ? current.filter((p) => p !== selected)
+          : [...current, selected];
+        (onChange as ((paths: string[]) => void) | undefined)?.(next);
+      } else {
+        setQuery("");
+        (onChange as ((path: string | null) => void) | undefined)?.(selected);
+      }
     },
-    [onChange]
+    [multiple, value, onChange]
   );
 
   const handleEscape = useCallback(() => {
@@ -182,9 +191,17 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     setQuery("");
   }, []);
 
+  const selection = useMemo<Set<string> | undefined>(() => {
+    if (multiple) {
+      const arr = value as string[] | undefined;
+      return arr?.length ? new Set(arr) : undefined;
+    }
+    return value ? new Set([value as string]) : undefined;
+  }, [multiple, value]);
+
   const tree = useTree({
     tree: filtered?.tree ?? resolved,
-    selectedPath: value,
+    selection,
     forceOpenPaths: filtered?.forceOpenPaths,
     defaultExpanded,
     onSelect: handleSelect,
@@ -215,9 +232,11 @@ export const TreeSelect: FC<TreeSelectProps> = ({
   useEffect(() => {
     if (isOpen) {
       requestAnimationFrame(() => searchInputRef.current?.focus());
+      const singleValue = multiple ? undefined : (value as string | undefined);
       const initial =
-        value && tree.visibleNodes.some((n) => n.path === value)
-          ? value
+        singleValue &&
+        tree.visibleNodes.some((n) => n.path === singleValue)
+          ? singleValue
           : tree.visibleNodes[0]?.path ?? null;
       tree.setActivePath(initial);
     } else {
@@ -253,6 +272,10 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen, refs.reference, refs.floating]);
 
+  const hasValue = multiple
+    ? !!((value as string[] | undefined)?.length)
+    : !!value;
+
   const panelId = tree.rowId("panel");
 
   return (
@@ -266,7 +289,11 @@ export const TreeSelect: FC<TreeSelectProps> = ({
           aria-expanded={isOpen}
           aria-controls={isOpen ? panelId : undefined}
           disabled={disabled}
-          value={getDisplayValue(value ?? null)}
+          value={
+            multiple
+              ? ""
+              : getDisplayValue((value as string | undefined) ?? null)
+          }
           onClick={() => {
             setQuery("");
             toggleOpen();
@@ -275,7 +302,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
           className={cn(
             inputStyle({ disabled }),
             "w-full cursor-pointer",
-            value ? "pr-14" : "pr-8"
+            hasValue ? "pr-14" : "pr-8"
           )}
         />
         <span
@@ -293,7 +320,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
             className={textColorClass(TextColor.Secondary)}
           />
         </span>
-        {value && !disabled && (
+        {hasValue && !disabled && (
           <button
             type="button"
             aria-label="Clear selection"
@@ -301,7 +328,13 @@ export const TreeSelect: FC<TreeSelectProps> = ({
               e.stopPropagation();
               setQuery("");
               setIsOpen(false);
-              onChange?.(null);
+              if (multiple) {
+                (onChange as ((paths: string[]) => void) | undefined)?.([]);
+              } else {
+                (onChange as ((path: string | null) => void) | undefined)?.(
+                  null
+                );
+              }
             }}
             className={cn(
               "group",

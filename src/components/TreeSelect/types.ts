@@ -43,22 +43,12 @@ export interface ResolvedNode {
 }
 
 /**
- * Props for {@link TreeSelect}.
- *
- * Phase 1 exposes single-select only. Multi-select props (`multiple`,
- * array-typed `value` / `onChange`) are added in Phase 3.
+ * Props shared by single-select and multi-select modes.
  */
-export interface TreeSelectProps
+interface TreeSelectBaseProps
   extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
   /** The root node of the taxonomy tree. */
   root: TreeNode;
-  /**
-   * Currently selected node path (slash-delimited).
-   * Pass `undefined` for no selection.
-   */
-  value?: string;
-  /** Fires when the user selects or deselects a node. */
-  onChange?: (path: string | null) => void;
   /**
    * When `true`, only leaf nodes (nodes with no children) are selectable.
    * Branch nodes still expand/collapse but cannot be picked as values.
@@ -84,7 +74,7 @@ export interface TreeSelectProps
   /**
    * Custom formatter for the trigger display text when a value is selected.
    * Receives the selected path and the corresponding {@link TreeNode}.
-   * When omitted, the full breadcrumb path is shown (e.g. `car / Honda / Civic`).
+   * When omitted, the node name is shown (e.g. `"Civic"`).
    */
   displayValue?: (path: string, node: TreeNode) => string;
   /**
@@ -98,3 +88,36 @@ export interface TreeSelectProps
    */
   defaultExpanded?: Set<string> | boolean;
 }
+
+/**
+ * Single-select mode (default). `value` is a single path string and
+ * `onChange` fires with the selected path or `null` on clear.
+ */
+interface TreeSelectSingleProps extends TreeSelectBaseProps {
+  multiple?: false;
+  /** Currently selected node path (slash-delimited). */
+  value?: string;
+  /** Fires when the user selects or clears a node. */
+  onChange?: (path: string | null) => void;
+}
+
+/**
+ * Multi-select mode. `value` is an array of selected path strings and
+ * `onChange` fires with the full updated array on every toggle.
+ */
+interface TreeSelectMultiProps extends TreeSelectBaseProps {
+  multiple: true;
+  /** Currently selected node paths (slash-delimited). */
+  value?: string[];
+  /** Fires with the updated array whenever a node is toggled. */
+  onChange?: (paths: string[]) => void;
+}
+
+/**
+ * Props for {@link TreeSelect}.
+ *
+ * Discriminated on `multiple`:
+ * - `multiple?: false` (default) — single-select; `value` is `string`, `onChange` fires `string | null`.
+ * - `multiple: true` — multi-select; `value` is `string[]`, `onChange` fires `string[]`.
+ */
+export type TreeSelectProps = TreeSelectSingleProps | TreeSelectMultiProps;
