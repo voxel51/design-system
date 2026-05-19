@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import type { FC, HTMLAttributes } from "react";
 
+import { cn } from "@/util/classes";
 import { Icon } from "@/components/Icons";
 import { Stack } from "@/components/Stack";
 import radiusStyles from "@/styles/radius";
@@ -110,9 +111,18 @@ export const Pill: FC<PillProps> = ({
             e.stopPropagation();
             onRemove();
           }}
-          className="shrink-0 cursor-pointer"
+          className="shrink-0 cursor-pointer group"
         >
-          <Icon size={Size.Xs} name={IconName.Close} color={color} />
+          <Icon
+            size={Size.Xs}
+            name={IconName.Close}
+            color={color}
+            className={cn(
+              "min-w-[10px]",
+              "group-hover:text-content-text-primary",
+              "transition-colors duration-150"
+            )}
+          />
         </button>
       )}
     </Stack>
