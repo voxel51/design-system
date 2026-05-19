@@ -20,6 +20,7 @@ import {
 
 import { Icon } from "@/components/Icons";
 import { inputStyle } from "@/components/Input";
+import { Pill } from "@/components/Pill";
 import { SelectAnchor } from "@/components/Select";
 import { Stack } from "@/components/Stack";
 import { Text } from "@/components/Text";
@@ -276,88 +277,173 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     ? !!((value as string[] | undefined)?.length)
     : !!value;
 
+  const removeOne = useCallback(
+    (pathToRemove: string) => {
+      if (!multiple) return;
+      const current = (value as string[] | undefined) ?? [];
+      (onChange as ((paths: string[]) => void) | undefined)?.(
+        current.filter((p) => p !== pathToRemove)
+      );
+    },
+    [multiple, value, onChange]
+  );
+
   const panelId = tree.rowId("panel");
 
   return (
     <div ref={refs.setReference} className={cn(className, "w-full")} {...props}>
-      <Stack align={Align.Center} className="relative">
-        <input
-          readOnly
-          autoComplete="off"
+      {multiple ? (
+        <div
           role="combobox"
           aria-haspopup="tree"
           aria-expanded={isOpen}
           aria-controls={isOpen ? panelId : undefined}
-          disabled={disabled}
-          value={
-            multiple
-              ? ""
-              : getDisplayValue((value as string | undefined) ?? null)
-          }
           onClick={() => {
-            setQuery("");
-            toggleOpen();
+            if (!disabled) {
+              setQuery("");
+              toggleOpen();
+            }
           }}
-          placeholder={placeholder}
           className={cn(
             inputStyle({ disabled }),
-            "w-full cursor-pointer",
+            "relative flex flex-wrap items-center gap-1",
+            "w-full min-h-[2.25rem] cursor-pointer",
             hasValue ? "pr-14" : "pr-8"
           )}
-        />
-        <span
-          className={cn(
-            "pointer-events-none absolute right-2.5 flex items-center",
-            "transition-transform duration-150",
-            isOpen ? "-rotate-90" : "rotate-90",
-            disabled && "opacity-50"
-          )}
-          aria-hidden
         >
-          <Icon
-            name={IconName.ChevronRight}
-            size={Size.Sm}
-            className={textColorClass(TextColor.Secondary)}
-          />
-        </span>
-        {hasValue && !disabled && (
-          <button
-            type="button"
-            aria-label="Clear selection"
-            onClick={(e) => {
-              e.stopPropagation();
-              setQuery("");
-              setIsOpen(false);
-              if (multiple) {
+          {((value as string[] | undefined) ?? []).map((p) => (
+            <Pill
+              key={p}
+              size={Size.Xs}
+              onRemove={disabled ? undefined : () => removeOne(p)}
+            >
+              {getDisplayValue(p)}
+            </Pill>
+          ))}
+          {!hasValue && placeholder && (
+            <span className={textColorClass(TextColor.Tertiary)}>
+              {placeholder}
+            </span>
+          )}
+          <span
+            className={cn(
+              "pointer-events-none absolute right-2.5 flex items-center",
+              "transition-transform duration-150",
+              isOpen ? "-rotate-90" : "rotate-90",
+              disabled && "opacity-50"
+            )}
+            aria-hidden
+          >
+            <Icon
+              name={IconName.ChevronRight}
+              size={Size.Sm}
+              className={textColorClass(TextColor.Secondary)}
+            />
+          </span>
+          {hasValue && !disabled && (
+            <button
+              type="button"
+              aria-label="Clear selection"
+              onClick={(e) => {
+                e.stopPropagation();
+                setQuery("");
+                setIsOpen(false);
                 (onChange as ((paths: string[]) => void) | undefined)?.([]);
-              } else {
+              }}
+              className={cn(
+                "group",
+                "absolute right-7 flex items-center justify-center",
+                "p-[5px]",
+                "cursor-pointer",
+                "rounded-full",
+                "transition-[background-color] duration-150",
+                bgColorClass(BackgroundColor.Card2, ElementState.Hover)
+              )}
+            >
+              <Icon
+                name={IconName.Close}
+                size={Size.Sm}
+                className={cn(
+                  textColorClass(TextColor.Secondary),
+                  "group-hover:text-content-text-primary",
+                  "transition-colors duration-150"
+                )}
+              />
+            </button>
+          )}
+        </div>
+      ) : (
+        <Stack align={Align.Center} className="relative">
+          <input
+            readOnly
+            autoComplete="off"
+            role="combobox"
+            aria-haspopup="tree"
+            aria-expanded={isOpen}
+            aria-controls={isOpen ? panelId : undefined}
+            disabled={disabled}
+            value={getDisplayValue((value as string | undefined) ?? null)}
+            onClick={() => {
+              setQuery("");
+              toggleOpen();
+            }}
+            placeholder={placeholder}
+            className={cn(
+              inputStyle({ disabled }),
+              "w-full cursor-pointer",
+              hasValue ? "pr-14" : "pr-8"
+            )}
+          />
+          <span
+            className={cn(
+              "pointer-events-none absolute right-2.5 flex items-center",
+              "transition-transform duration-150",
+              isOpen ? "-rotate-90" : "rotate-90",
+              disabled && "opacity-50"
+            )}
+            aria-hidden
+          >
+            <Icon
+              name={IconName.ChevronRight}
+              size={Size.Sm}
+              className={textColorClass(TextColor.Secondary)}
+            />
+          </span>
+          {hasValue && !disabled && (
+            <button
+              type="button"
+              aria-label="Clear selection"
+              onClick={(e) => {
+                e.stopPropagation();
+                setQuery("");
+                setIsOpen(false);
                 (onChange as ((path: string | null) => void) | undefined)?.(
                   null
                 );
-              }
-            }}
-            className={cn(
-              "group",
-              "absolute right-7 flex items-center justify-center",
-              "p-[5px]",
-              "cursor-pointer",
-              "rounded-full",
-              "transition-[background-color] duration-150",
-              bgColorClass(BackgroundColor.Card2, ElementState.Hover)
-            )}
-          >
-            <Icon
-              name={IconName.Close}
-              size={Size.Sm}
+              }}
               className={cn(
-                textColorClass(TextColor.Secondary),
-                "group-hover:text-content-text-primary",
-                "transition-colors duration-150"
+                "group",
+                "absolute right-7 flex items-center justify-center",
+                "p-[5px]",
+                "cursor-pointer",
+                "rounded-full",
+                "transition-[background-color] duration-150",
+                bgColorClass(BackgroundColor.Card2, ElementState.Hover)
               )}
-            />
-          </button>
-        )}
-      </Stack>
+            >
+              <Icon
+                name={IconName.Close}
+                size={Size.Sm}
+                className={cn(
+                  textColorClass(TextColor.Secondary),
+                  "group-hover:text-content-text-primary",
+                  "transition-colors duration-150"
+                )}
+              />
+            </button>
+          )}
+        </Stack>
+      )}
 
       {isOpen && (
         <PortalWrapper portal={portal}>
@@ -454,6 +540,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
                     resolved={child}
                     tree={tree}
                     query={filtered ? query : undefined}
+                    multiple={multiple}
                   />
                 ))
               )}

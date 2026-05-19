@@ -723,4 +723,154 @@ describe("TreeSelect", () => {
       expect(onChange).toHaveBeenCalledWith(null);
     });
   });
+
+  describe("multi-select", () => {
+    function renderMulti(overrides: Record<string, unknown> = {}) {
+      return renderTreeSelect({ multiple: true, ...overrides });
+    }
+
+    it("renders pills for selected values", () => {
+      renderMulti({
+        value: ["vehicle_type/car", "vehicle_type/motorcycle"],
+      });
+
+      expect(screen.getByText("car")).toBeInTheDocument();
+      expect(screen.getByText("motorcycle")).toBeInTheDocument();
+    });
+
+    it("fires onChange with the toggled-in path on first selection", async () => {
+      const user = userEvent.setup();
+      const onChange = jest.fn();
+      renderMulti({ onChange });
+
+      await user.click(getInput());
+      await user.click(screen.getByText("car"));
+
+      expect(onChange).toHaveBeenCalledWith(["vehicle_type/car"]);
+    });
+
+    it("fires onChange with cumulative array on additional selections", async () => {
+      const user = userEvent.setup();
+      const onChange = jest.fn();
+      renderMulti({
+        value: ["vehicle_type/car"],
+        onChange,
+      });
+
+      await user.click(getInput());
+      await user.click(screen.getByText("motorcycle"));
+
+      expect(onChange).toHaveBeenCalledWith([
+        "vehicle_type/car",
+        "vehicle_type/motorcycle",
+      ]);
+    });
+
+    it("deselects a path when clicking an already-selected row", async () => {
+      const user = userEvent.setup();
+      const onChange = jest.fn();
+      renderMulti({
+        value: ["vehicle_type/car", "vehicle_type/motorcycle"],
+        onChange,
+      });
+
+      await user.click(getInput());
+      const selectedItems = screen.getAllByRole("treeitem", {
+        selected: true,
+      });
+      await user.click(selectedItems[0]);
+
+      expect(onChange).toHaveBeenCalledWith(["vehicle_type/motorcycle"]);
+    });
+
+    it("removes a path when clicking the pill remove button", async () => {
+      const user = userEvent.setup();
+      const onChange = jest.fn();
+      renderMulti({
+        value: ["vehicle_type/car", "vehicle_type/motorcycle"],
+        onChange,
+      });
+
+      const removeButtons = screen.getAllByLabelText("Remove");
+      await user.click(removeButtons[0]);
+
+      expect(onChange).toHaveBeenCalledWith(["vehicle_type/motorcycle"]);
+    });
+
+    it("clears all selections when the clear button is clicked", async () => {
+      const user = userEvent.setup();
+      const onChange = jest.fn();
+      renderMulti({
+        value: ["vehicle_type/car", "vehicle_type/motorcycle"],
+        onChange,
+      });
+
+      await user.click(screen.getByLabelText("Clear selection"));
+
+      expect(onChange).toHaveBeenCalledWith([]);
+    });
+
+    it("keeps the panel open after selection", async () => {
+      const user = userEvent.setup();
+      const onChange = jest.fn();
+      renderMulti({ onChange });
+
+      await user.click(getInput());
+      expect(screen.getByRole("tree")).toBeInTheDocument();
+
+      await user.click(screen.getByText("motorcycle"));
+
+      expect(screen.getByRole("tree")).toBeInTheDocument();
+    });
+
+    it("renders checkboxes in multi mode instead of check icons", async () => {
+      const user = userEvent.setup();
+      renderMulti({
+        value: ["vehicle_type/car"],
+      });
+
+      await user.click(getInput());
+
+      const checkboxes = screen.getAllByRole("checkbox");
+      expect(checkboxes.length).toBeGreaterThan(0);
+    });
+
+    it("renders check icon in single mode (not checkboxes)", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect({ value: "vehicle_type/car" });
+
+      await user.click(getInput());
+
+      expect(screen.queryAllByRole("checkbox")).toHaveLength(0);
+    });
+
+    it("works with leavesOnly — branches non-selectable, leaves toggleable", async () => {
+      const user = userEvent.setup();
+      const onChange = jest.fn();
+      renderMulti({ leavesOnly: true, onChange });
+
+      await user.click(getInput());
+
+      await user.click(screen.getByText("car"));
+      expect(onChange).not.toHaveBeenCalled();
+
+      await user.click(screen.getByText("motorcycle"));
+      expect(onChange).toHaveBeenCalledWith(["vehicle_type/motorcycle"]);
+    });
+
+    it("shows placeholder when no values are selected", () => {
+      renderMulti({ placeholder: "Pick vehicles" });
+
+      expect(screen.getByText("Pick vehicles")).toBeInTheDocument();
+    });
+
+    it("hides placeholder when values are selected", () => {
+      renderMulti({
+        value: ["vehicle_type/car"],
+        placeholder: "Pick vehicles",
+      });
+
+      expect(screen.queryByText("Pick vehicles")).not.toBeInTheDocument();
+    });
+  });
 });

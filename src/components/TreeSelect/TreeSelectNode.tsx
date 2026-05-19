@@ -1,5 +1,6 @@
 import type { FC } from "react";
 
+import { Checkbox } from "@/components/Checkbox";
 import { Icon } from "@/components/Icons/Icon";
 import { Pill } from "@/components/Pill";
 import { Stack } from "@/components/Stack";
@@ -32,6 +33,7 @@ export interface TreeSelectNodeProps {
   resolved: ResolvedNode;
   tree: UseTreeReturn;
   query?: string;
+  multiple?: boolean;
 }
 
 function highlightMatch(text: string, query?: string): React.ReactNode {
@@ -60,7 +62,7 @@ function highlightMatch(text: string, query?: string): React.ReactNode {
  *
  * @internal For use by TreeSelect.
  */
-export const TreeSelectNode: FC<TreeSelectNodeProps> = ({ resolved, tree, query }) => {
+export const TreeSelectNode: FC<TreeSelectNodeProps> = ({ resolved, tree, query, multiple }) => {
   const { node, path, depth, children } = resolved;
   const isBranch = !resolved.isLeaf;
   const isSelected = tree.isSelected(resolved);
@@ -116,6 +118,14 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({ resolved, tree, query 
       <Stack orientation={Orientation.Column} className="min-w-0 flex-1">
         <Stack align={Align.Center} spacing={Spacing.Xs}>
           {chevron}
+          {multiple && resolved.selectable && (
+            <Checkbox
+              checked={isSelected}
+              size={Size.Sm}
+              radius={Radius.Xs}
+              className="pointer-events-none"
+            />
+          )}
           <Text variant={TextVariant.Sm} color={textColor} className="truncate">
             {highlightMatch(node.name, query)}
           </Text>
@@ -139,14 +149,16 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({ resolved, tree, query 
         )}
       </Stack>
 
-      <span
-        className={cn(
-          "size-5 shrink-0 flex items-center",
-          textColorClass(TextColor.Secondary)
-        )}
-      >
-        {isSelected && <Icon name={IconName.Check} size={Size.Sm} />}
-      </span>
+      {!multiple && (
+        <span
+          className={cn(
+            "size-5 shrink-0 flex items-center",
+            textColorClass(TextColor.Secondary)
+          )}
+        >
+          {isSelected && <Icon name={IconName.Check} size={Size.Sm} />}
+        </span>
+      )}
     </>
   );
 
@@ -172,6 +184,7 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({ resolved, tree, query 
               resolved={child}
               tree={tree}
               query={query}
+              multiple={multiple}
             />
           ))}
         </div>
