@@ -231,6 +231,34 @@ describe("Drawer", () => {
     });
   });
 
+  describe("test attributes", () => {
+    it("should expose data-testid=drawer on the root for queries", () => {
+      render(<Drawer {...defaultProps} />);
+      expect(screen.getByTestId("drawer")).toBeInTheDocument();
+    });
+
+    it("should reflect open state via data-state=open", () => {
+      render(<Drawer {...defaultProps} defaultOpen={true} />);
+      expect(screen.getByTestId("drawer")).toHaveAttribute("data-state", "open");
+    });
+
+    it("should reflect closed state via data-state=closed", () => {
+      render(<Drawer {...defaultProps} defaultOpen={false} />);
+      expect(screen.getByTestId("drawer")).toHaveAttribute(
+        "data-state",
+        "closed"
+      );
+    });
+
+    it.each(["left", "right", "top", "bottom"] as const)(
+      "should expose data-side=%s",
+      (side) => {
+        render(<Drawer {...defaultProps} side={side} />);
+        expect(screen.getByTestId("drawer")).toHaveAttribute("data-side", side);
+      }
+    );
+  });
+
   describe("dimension style", () => {
     it("should set height for bottom drawer when open", () => {
       const { container } = render(

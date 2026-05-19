@@ -127,6 +127,9 @@ const Drawer: React.FC<DrawerProps> = ({
 
   return (
     <div
+      data-testid="drawer"
+      data-state={open ? "open" : "closed"}
+      data-side={side}
       className={clsx(
         styles.root,
         styles[mode],
