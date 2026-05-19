@@ -529,4 +529,83 @@ describe("useTree", () => {
       expect(result.current.activePath).toBe("vehicle_type/motorcycle");
     });
   });
+
+  describe("hasSelectedDescendant", () => {
+    it("returns true for every ancestor of a selected path", () => {
+      const selection = new Set([
+        "vehicle_type/car/make/Honda/model/Civic",
+      ]);
+      const { result } = setup({ selection });
+      const find = (p: string) =>
+        result.current.visibleNodes.find((n) => n.path === p);
+
+      expect(
+        result.current.hasSelectedDescendant(find("vehicle_type/car")!)
+      ).toBe(true);
+    });
+
+    it("returns true for intermediate ancestors", () => {
+      const selection = new Set([
+        "vehicle_type/car/make/Honda/model/Civic",
+      ]);
+      const { result } = setup({
+        selection,
+        defaultExpanded: true,
+      });
+      const find = (p: string) =>
+        result.current.visibleNodes.find((n) => n.path === p);
+
+      expect(
+        result.current.hasSelectedDescendant(find("vehicle_type/car/make")!)
+      ).toBe(true);
+      expect(
+        result.current.hasSelectedDescendant(
+          find("vehicle_type/car/make/Honda")!
+        )
+      ).toBe(true);
+      expect(
+        result.current.hasSelectedDescendant(
+          find("vehicle_type/car/make/Honda/model")!
+        )
+      ).toBe(true);
+    });
+
+    it("returns false for the selected node itself", () => {
+      const selection = new Set(["vehicle_type/motorcycle"]);
+      const { result } = setup({ selection });
+      const moto = result.current.visibleNodes.find(
+        (n) => n.path === "vehicle_type/motorcycle"
+      )!;
+      expect(result.current.hasSelectedDescendant(moto)).toBe(false);
+    });
+
+    it("returns false for siblings of ancestors", () => {
+      const selection = new Set([
+        "vehicle_type/car/make/Honda/model/Civic",
+      ]);
+      const { result } = setup({ selection });
+      const moto = result.current.visibleNodes.find(
+        (n) => n.path === "vehicle_type/motorcycle"
+      )!;
+      const other = result.current.visibleNodes.find(
+        (n) => n.path === "vehicle_type/other"
+      )!;
+      expect(result.current.hasSelectedDescendant(moto)).toBe(false);
+      expect(result.current.hasSelectedDescendant(other)).toBe(false);
+    });
+
+    it("returns false for all nodes when selection is undefined", () => {
+      const { result } = setup();
+      for (const node of result.current.visibleNodes) {
+        expect(result.current.hasSelectedDescendant(node)).toBe(false);
+      }
+    });
+
+    it("returns false for all nodes when selection is empty", () => {
+      const { result } = setup({ selection: new Set() });
+      for (const node of result.current.visibleNodes) {
+        expect(result.current.hasSelectedDescendant(node)).toBe(false);
+      }
+    });
+  });
 });

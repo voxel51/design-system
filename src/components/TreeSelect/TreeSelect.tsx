@@ -307,7 +307,8 @@ export const TreeSelect: FC<TreeSelectProps> = ({
           className={cn(
             inputStyle({ disabled }),
             "relative flex flex-wrap items-center gap-1",
-            "w-full min-h-[2.25rem] cursor-pointer",
+            "h-auto",
+            "w-full cursor-pointer",
             hasValue ? "pr-14" : "pr-8"
           )}
         >
@@ -316,6 +317,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
               key={p}
               size={Size.Xs}
               onRemove={disabled ? undefined : () => removeOne(p)}
+              className="py-0"
             >
               {getDisplayValue(p)}
             </Pill>

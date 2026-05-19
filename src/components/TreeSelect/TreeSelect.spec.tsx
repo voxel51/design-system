@@ -872,5 +872,47 @@ describe("TreeSelect", () => {
 
       expect(screen.queryByText("Pick vehicles")).not.toBeInTheDocument();
     });
+
+    it("renders indeterminate checkboxes on ancestor branches of a deep selection", async () => {
+      const user = userEvent.setup();
+      renderMulti({
+        value: ["vehicle_type/car/make/Honda/model/Civic"],
+        defaultExpanded: true,
+      });
+
+      await user.click(getInput());
+
+      const mixedCheckboxes = screen
+        .getAllByRole("checkbox")
+        .filter((el) => el.getAttribute("aria-checked") === "mixed");
+      expect(mixedCheckboxes.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it("does not render indeterminate checkboxes when nothing is selected", async () => {
+      const user = userEvent.setup();
+      renderMulti();
+
+      await user.click(getInput());
+
+      const mixedCheckboxes = screen
+        .queryAllByRole("checkbox")
+        .filter((el) => el.getAttribute("aria-checked") === "mixed");
+      expect(mixedCheckboxes).toHaveLength(0);
+    });
+
+    it("does not render indeterminate checkboxes in single mode", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect({
+        value: "vehicle_type/car/make/Honda/model/Civic",
+        defaultExpanded: true,
+      });
+
+      await user.click(getInput());
+
+      const mixedCheckboxes = screen
+        .queryAllByRole("checkbox")
+        .filter((el) => el.getAttribute("aria-checked") === "mixed");
+      expect(mixedCheckboxes).toHaveLength(0);
+    });
   });
 });

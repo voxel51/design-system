@@ -118,6 +118,8 @@ export interface UseTreeReturn {
   isActive: (path: string) => boolean;
   /** Whether a node is the selected value. */
   isSelected: (node: ResolvedNode) => boolean;
+  /** Whether any descendant of a node is in the current selection. */
+  hasSelectedDescendant: (node: ResolvedNode) => boolean;
 }
 
 /**
@@ -230,6 +232,24 @@ export function useTree(options: UseTreeOptions): UseTreeReturn {
   const isSelected = useCallback(
     (node: ResolvedNode) => selection?.has(node.path) ?? false,
     [selection]
+  );
+
+  const ancestorsOfSelected = useMemo<Set<string>>(() => {
+    if (!selection) return new Set();
+    const acc = new Set<string>();
+    for (const path of selection) {
+      let parent = getParentPath(path);
+      while (parent) {
+        acc.add(parent);
+        parent = getParentPath(parent);
+      }
+    }
+    return acc;
+  }, [selection]);
+
+  const hasSelectedDescendant = useCallback(
+    (node: ResolvedNode) => ancestorsOfSelected.has(node.path),
+    [ancestorsOfSelected]
   );
 
   // --- Prop getters ---
@@ -398,5 +418,6 @@ export function useTree(options: UseTreeOptions): UseTreeReturn {
     isOpen,
     isActive,
     isSelected,
+    hasSelectedDescendant,
   };
 }

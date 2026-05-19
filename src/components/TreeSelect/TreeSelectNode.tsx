@@ -69,6 +69,9 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({ resolved, tree, query,
   const isActive = tree.isActive(path);
   const effectiveOpen = tree.isOpen(path);
 
+  const showIndeterminate =
+    !!multiple && isBranch && !isSelected && tree.hasSelectedDescendant(resolved);
+
   const itemProps = tree.getItemProps(resolved);
   const textColor = node.deprecated ? TextColor.Muted : TextColor.Primary;
 
@@ -118,9 +121,10 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({ resolved, tree, query,
       <Stack orientation={Orientation.Column} className="min-w-0 flex-1">
         <Stack align={Align.Center} spacing={Spacing.Xs}>
           {chevron}
-          {multiple && resolved.selectable && (
+          {multiple && (resolved.selectable || showIndeterminate) && (
             <Checkbox
               checked={isSelected}
+              indeterminate={showIndeterminate}
               size={Size.Sm}
               radius={Radius.Xs}
               className="pointer-events-none"
