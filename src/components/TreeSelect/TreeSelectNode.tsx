@@ -1,4 +1,4 @@
-import { type FC, type MouseEvent, type PointerEvent } from "react";
+import type { FC } from "react";
 
 import { Icon } from "@/components/Icons/Icon";
 import { Pill } from "@/components/Pill";
@@ -22,26 +22,16 @@ import {
   textColorClass,
 } from "@/types";
 import { cn } from "@/util/classes";
+import type { UseTreeReturn } from "@/util/useTree";
 
 import type { ResolvedNode } from "./types";
 
 const DEPTH_INDENT = "var(--spacing-md)";
 
-export function rowId(prefix: string, path: string): string {
-  return `${prefix}-${path.replace(/\//g, "-")}`;
-}
-
 export interface TreeSelectNodeProps {
   resolved: ResolvedNode;
-  selectedPath?: string;
-  activePath: string | null;
-  expandedPaths: Set<string>;
-  forceOpenPaths?: Set<string>;
+  tree: UseTreeReturn;
   query?: string;
-  onToggleExpand: (path: string) => void;
-  onSelect: (path: string) => void;
-  onActivate: (path: string) => void;
-  rowIdPrefix: string;
 }
 
 function highlightMatch(text: string, query?: string): React.ReactNode {
@@ -65,50 +55,20 @@ function highlightMatch(text: string, query?: string): React.ReactNode {
 
 /**
  * Renders a single node row and, when expanded, recursively renders its
- * children. Fully controlled by the parent — expansion, active highlight,
- * and selection are all driven by props.
+ * children. All state is driven by the `tree` hook — this component is
+ * simply presentation.
  *
  * @internal For use by TreeSelect.
  */
-export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
-  resolved,
-  selectedPath,
-  activePath,
-  expandedPaths,
-  forceOpenPaths,
-  query,
-  onToggleExpand,
-  onSelect,
-  onActivate,
-  rowIdPrefix,
-}) => {
-  const { node, path, depth, selectable, isLeaf, children } = resolved;
-  const isBranch = !isLeaf;
-  const isSelected = path === selectedPath;
-  const isExpanded = expandedPaths.has(path);
-  const effectiveOpen = forceOpenPaths?.has(path) || isExpanded;
-  const isActive = activePath === path;
+export const TreeSelectNode: FC<TreeSelectNodeProps> = ({ resolved, tree, query }) => {
+  const { node, path, depth, children } = resolved;
+  const isBranch = !resolved.isLeaf;
+  const isSelected = tree.isSelected(resolved);
+  const isActive = tree.isActive(path);
+  const effectiveOpen = tree.isOpen(path);
 
-  const groupId = rowId(rowIdPrefix, path) + "-group";
+  const itemProps = tree.getItemProps(resolved);
   const textColor = node.deprecated ? TextColor.Muted : TextColor.Primary;
-
-  const stopEvent = (e: MouseEvent | PointerEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
-  };
-
-  const handleChevronClick = (e: MouseEvent) => {
-    stopEvent(e);
-    onToggleExpand(path);
-  };
-
-  const handleRowClick = () => {
-    if (selectable) {
-      onSelect(path);
-    } else if (isBranch) {
-      onToggleExpand(path);
-    }
-  };
 
   const indentStyle = {
     paddingLeft: `calc(${depth - 1} * ${DEPTH_INDENT} + var(--spacing-xs))`,
@@ -129,14 +89,7 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
     <button
       type="button"
       tabIndex={-1}
-      aria-expanded={effectiveOpen}
-      aria-controls={groupId}
-      aria-label={
-        effectiveOpen ? `Collapse ${node.name}` : `Expand ${node.name}`
-      }
-      onClick={handleChevronClick}
-      onPointerDown={stopEvent}
-      onPointerUp={stopEvent}
+      {...tree.getChevronProps(resolved)}
       className={cn(
         "group",
         "cursor-pointer",
@@ -199,16 +152,7 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
 
   return (
     <>
-      <div
-        id={rowId(rowIdPrefix, path)}
-        role="treeitem"
-        aria-selected={selectable ? isSelected : undefined}
-        aria-expanded={isBranch ? effectiveOpen : undefined}
-        tabIndex={-1}
-        data-active={isActive || undefined}
-        onClick={handleRowClick}
-        onMouseEnter={() => onActivate(path)}
-      >
+      <div {...itemProps}>
         <Stack
           align={Align.Center}
           justify={Justify.Between}
@@ -221,20 +165,13 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
         </Stack>
       </div>
       {isBranch && effectiveOpen && (
-        <div role="group" id={groupId}>
+        <div {...tree.getGroupProps(resolved)}>
           {children.map((child) => (
             <TreeSelectNode
               key={child.path}
               resolved={child}
-              selectedPath={selectedPath}
-              activePath={activePath}
-              expandedPaths={expandedPaths}
-              forceOpenPaths={forceOpenPaths}
+              tree={tree}
               query={query}
-              onToggleExpand={onToggleExpand}
-              onSelect={onSelect}
-              onActivate={onActivate}
-              rowIdPrefix={rowIdPrefix}
             />
           ))}
         </div>

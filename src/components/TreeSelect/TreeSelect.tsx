@@ -10,11 +10,9 @@ import {
 } from "@floating-ui/react";
 import {
   type FC,
-  type KeyboardEvent,
   type ReactNode,
   useCallback,
   useEffect,
-  useId,
   useMemo,
   useRef,
   useState,
@@ -23,15 +21,18 @@ import {
 import { Icon } from "@/components/Icons";
 import { inputStyle } from "@/components/Input";
 import { SelectAnchor } from "@/components/Select";
+import { Stack } from "@/components/Stack";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
 import {
+  Align,
   BackgroundColor,
   bgColorClass,
   BorderColor,
   borderColorClass,
   ElementState,
+  Justify,
   Radius,
   Shadow,
   Size,
@@ -44,15 +45,10 @@ import {
 import { IconName } from "@/types/icons";
 import { cn } from "@/util/classes";
 import { useDebouncedCallback } from "@/util/useDebouncedCallback";
+import { useTree } from "@/util/useTree";
 
-import {
-  buildResolvedTree,
-  filterTreeForQuery,
-  flattenVisible,
-  getNodeByPath,
-  getParentPath,
-} from "./tree";
-import { TreeSelectNode, rowId } from "./TreeSelectNode";
+import { buildResolvedTree, filterTreeForQuery, getNodeByPath } from "./tree";
+import { TreeSelectNode } from "./TreeSelectNode";
 import type { TreeSelectProps } from "./types";
 
 const ANCHOR_TO_PLACEMENT: Record<SelectAnchor, Placement> = {
@@ -130,11 +126,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set());
-  const [activePath, setActivePath] = useState<string | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const panelId = useId();
-  const rowIdPrefix = useId();
 
   const { refs, floatingStyles } = useFloating({
     placement: ANCHOR_TO_PLACEMENT[anchor],
@@ -176,15 +168,6 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     [resolved, debouncedQuery]
   );
 
-  const visibleNodes = useMemo(() => {
-    const tree = filtered?.tree ?? resolved;
-    const force = filtered?.forceOpenPaths;
-    return flattenVisible(
-      tree,
-      (p) => expandedPaths.has(p) || force?.has(p) === true
-    );
-  }, [filtered, resolved, expandedPaths]);
-
   const handleSelect = useCallback(
     (selected: string) => {
       setQuery("");
@@ -193,14 +176,18 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     [onChange]
   );
 
-  const onToggleExpand = useCallback((path: string) => {
-    setExpandedPaths((prev) => {
-      const next = new Set(prev);
-      if (next.has(path)) next.delete(path);
-      else next.add(path);
-      return next;
-    });
+  const handleEscape = useCallback(() => {
+    setIsOpen(false);
+    setQuery("");
   }, []);
+
+  const tree = useTree({
+    tree: filtered?.tree ?? resolved,
+    selectedPath: value,
+    forceOpenPaths: filtered?.forceOpenPaths,
+    onSelect: handleSelect,
+    onEscape: handleEscape,
+  });
 
   const getDisplayValue = useCallback(
     (v: string | null): string => {
@@ -227,13 +214,13 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     if (isOpen) {
       requestAnimationFrame(() => searchInputRef.current?.focus());
       const initial =
-        value && visibleNodes.some((n) => n.path === value)
+        value && tree.visibleNodes.some((n) => n.path === value)
           ? value
-          : visibleNodes[0]?.path ?? null;
-      setActivePath(initial);
+          : tree.visibleNodes[0]?.path ?? null;
+      tree.setActivePath(initial);
     } else {
-      setActivePath(null);
-      setExpandedPaths(new Set());
+      tree.setActivePath(null);
+      tree.resetExpansion();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only fire on isOpen toggle
   }, [isOpen]);
@@ -241,19 +228,10 @@ export const TreeSelect: FC<TreeSelectProps> = ({
   // Reset active path when the filtered tree changes
   useEffect(() => {
     if (isOpen && debouncedQuery) {
-      setActivePath(visibleNodes[0]?.path ?? null);
+      tree.setActivePath(tree.visibleNodes[0]?.path ?? null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- reset on query change only
   }, [debouncedQuery]);
-
-  // Scroll active row into view
-  useEffect(() => {
-    if (!activePath) return;
-    const el = document.getElementById(rowId(rowIdPrefix, activePath));
-    if (el && typeof el.scrollIntoView === "function") {
-      el.scrollIntoView({ block: "nearest" });
-    }
-  }, [activePath, rowIdPrefix]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -273,99 +251,11 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen, refs.reference, refs.floating]);
 
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      const currentIdx = activePath
-        ? visibleNodes.findIndex((n) => n.path === activePath)
-        : -1;
-      const activeNode = currentIdx >= 0 ? visibleNodes[currentIdx] : null;
-
-      switch (e.key) {
-        case "ArrowDown": {
-          e.preventDefault();
-          if (currentIdx < visibleNodes.length - 1) {
-            setActivePath(visibleNodes[currentIdx + 1].path);
-          } else if (currentIdx === -1 && visibleNodes.length > 0) {
-            setActivePath(visibleNodes[0].path);
-          }
-          break;
-        }
-
-        case "ArrowUp": {
-          e.preventDefault();
-          if (currentIdx > 0) {
-            setActivePath(visibleNodes[currentIdx - 1].path);
-          }
-          break;
-        }
-
-        case "ArrowRight": {
-          if (!activeNode || activeNode.isLeaf) break;
-          e.preventDefault();
-          const isNodeOpen =
-            expandedPaths.has(activeNode.path) ||
-            filtered?.forceOpenPaths?.has(activeNode.path);
-          if (!isNodeOpen) {
-            onToggleExpand(activeNode.path);
-          } else if (activeNode.children.length > 0) {
-            setActivePath(activeNode.children[0].path);
-          }
-          break;
-        }
-
-        case "ArrowLeft": {
-          if (!activeNode) break;
-          e.preventDefault();
-          const isNodeExpanded =
-            !activeNode.isLeaf &&
-            (expandedPaths.has(activeNode.path) ||
-              filtered?.forceOpenPaths?.has(activeNode.path));
-          if (isNodeExpanded) {
-            onToggleExpand(activeNode.path);
-          } else {
-            const parentPath = getParentPath(activeNode.path);
-            if (parentPath) {
-              const parentVisible = visibleNodes.some(
-                (n) => n.path === parentPath
-              );
-              if (parentVisible) {
-                setActivePath(parentPath);
-              }
-            }
-          }
-          break;
-        }
-
-        case "Enter": {
-          if (!activeNode) break;
-          e.preventDefault();
-          if (activeNode.selectable) {
-            handleSelect(activeNode.path);
-          }
-          break;
-        }
-
-        case "Escape": {
-          e.preventDefault();
-          setIsOpen(false);
-          setQuery("");
-          break;
-        }
-      }
-    },
-    [
-      activePath,
-      visibleNodes,
-      expandedPaths,
-      filtered,
-      onToggleExpand,
-      handleSelect,
-    ]
-  );
+  const panelId = tree.rowId("panel");
 
   return (
     <div ref={refs.setReference} className={cn(className, "w-full")} {...props}>
-      <div className="relative flex items-center">
+      <Stack align={Align.Center} className="relative">
         <input
           readOnly
           autoComplete="off"
@@ -432,7 +322,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
             />
           </button>
         )}
-      </div>
+      </Stack>
 
       {isOpen && (
         <PortalWrapper portal={portal}>
@@ -459,7 +349,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
                 bgColorClass(BackgroundColor.Card1)
               )}
             >
-              <div className="relative flex items-center">
+              <Stack align={Align.Center} className="relative">
                 <span className="pointer-events-none absolute left-2.5 flex items-center">
                   <Icon
                     name={IconName.Search}
@@ -473,13 +363,9 @@ export const TreeSelect: FC<TreeSelectProps> = ({
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   onMouseDown={(e) => e.stopPropagation()}
-                  onKeyDown={handleKeyDown}
+                  onKeyDown={tree.handleKeyDown}
                   aria-label="Search tree"
-                  aria-activedescendant={
-                    activePath
-                      ? rowId(rowIdPrefix, activePath)
-                      : undefined
-                  }
+                  aria-activedescendant={tree.activeDescendantId}
                   placeholder="Search..."
                   className={cn(
                     inputStyle({ disabled: false }),
@@ -516,12 +402,12 @@ export const TreeSelect: FC<TreeSelectProps> = ({
                     />
                   </button>
                 )}
-              </div>
+              </Stack>
             </div>
 
             <div className="p-1.5 pt-0">
               {debouncedQuery && !filtered ? (
-                <div className="flex justify-center">
+                <Stack justify={Justify.Center}>
                   <Text
                     variant={TextVariant.Sm}
                     color={TextColor.Tertiary}
@@ -529,21 +415,14 @@ export const TreeSelect: FC<TreeSelectProps> = ({
                   >
                     No matches found
                   </Text>
-                </div>
+                </Stack>
               ) : (
                 (filtered?.tree ?? resolved).children.map((child) => (
                   <TreeSelectNode
                     key={child.path}
                     resolved={child}
-                    selectedPath={value}
-                    activePath={activePath}
-                    expandedPaths={expandedPaths}
-                    forceOpenPaths={filtered?.forceOpenPaths}
+                    tree={tree}
                     query={filtered ? query : undefined}
-                    onToggleExpand={onToggleExpand}
-                    onSelect={handleSelect}
-                    onActivate={setActivePath}
-                    rowIdPrefix={rowIdPrefix}
                   />
                 ))
               )}
