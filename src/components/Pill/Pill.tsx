@@ -29,6 +29,7 @@ export interface PillProps extends HTMLAttributes<HTMLSpanElement> {
   isStatus?: boolean;
   backgroundColor?: PillColor;
   icon?: IconName;
+  onRemove?: () => void;
 }
 
 const sizeStyles: Record<PillSize, string> = {
@@ -65,6 +66,7 @@ export const Pill: FC<PillProps> = ({
   backgroundColor = BackgroundColor.Muted,
   icon,
   isStatus = false,
+  onRemove,
   className,
   children,
   ...props
@@ -100,6 +102,19 @@ export const Pill: FC<PillProps> = ({
         </div>
       )}
       <div>{children}</div>
+      {onRemove && (
+        <button
+          type="button"
+          aria-label="Remove"
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemove();
+          }}
+          className="shrink-0 cursor-pointer"
+        >
+          <Icon size={Size.Xs} name={IconName.Close} color={color} />
+        </button>
+      )}
     </Stack>
   );
 };
