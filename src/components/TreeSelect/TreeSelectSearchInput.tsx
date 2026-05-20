@@ -39,7 +39,7 @@ export const TreeSelectSearchInput: FC<TreeSelectSearchInputProps> = ({
   return (
     <div
       className={cn(
-        "sticky top-0 z-10 p-1.5",
+        "shrink-0 p-1.5",
         bgColorClass(BackgroundColor.Card1)
       )}
     >

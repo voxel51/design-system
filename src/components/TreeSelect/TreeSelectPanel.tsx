@@ -75,6 +75,10 @@ export interface TreeSelectPanelProps {
  * Floating panel for TreeSelect. Renders the dropdown shell containing
  * the search input and the tree body (or "No matches found").
  *
+ * The search input sits outside the scroll container so the virtualizer's
+ * coordinate system aligns with the scrollable area without needing
+ * scrollMargin adjustments.
+ *
  * @internal For use by TreeSelect.
  */
 const ROW_HEIGHT_ESTIMATE = 36;
@@ -116,16 +120,13 @@ export const TreeSelectPanel: FC<TreeSelectPanelProps> = ({
   return (
     <PortalWrapper portal={portal}>
       <div
-        ref={(node) => {
-          floatingRef(node);
-          (scrollRef as React.RefObject<HTMLDivElement | null>).current = node;
-        }}
+        ref={floatingRef}
         id={panelId}
         role="tree"
         aria-label="Tree selection"
         style={floatingStyles}
         className={cn(
-          "max-h-72 overflow-y-auto scroll-pt-12",
+          "max-h-72 flex flex-col overflow-hidden",
           "border",
           borderColorClass(BorderColor.Default),
           bgColorClass(BackgroundColor.Card1),
@@ -143,50 +144,55 @@ export const TreeSelectPanel: FC<TreeSelectPanelProps> = ({
           activeDescendantId={tree.activeDescendantId}
         />
 
-        <div className="p-1.5 pt-0">
-          {noMatches ? (
-            <Stack justify={Justify.Center}>
-              <Text
-                variant={TextVariant.Sm}
-                color={TextColor.Tertiary}
-                className="px-3 py-2"
+        <div
+          ref={scrollRef}
+          className="flex-1 min-h-0 overflow-y-auto"
+        >
+          <div className="p-1.5 pt-0">
+            {noMatches ? (
+              <Stack justify={Justify.Center}>
+                <Text
+                  variant={TextVariant.Sm}
+                  color={TextColor.Tertiary}
+                  className="px-3 py-2"
+                >
+                  No matches found
+                </Text>
+              </Stack>
+            ) : (
+              <div
+                style={{
+                  height: rowVirtualizer.getTotalSize(),
+                  position: "relative",
+                }}
               >
-                No matches found
-              </Text>
-            </Stack>
-          ) : (
-            <div
-              style={{
-                height: rowVirtualizer.getTotalSize(),
-                position: "relative",
-              }}
-            >
-              {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-                const node = tree.visibleNodes[virtualRow.index];
-                return (
-                  <div
-                    key={node.path}
-                    ref={rowVirtualizer.measureElement}
-                    data-index={virtualRow.index}
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      transform: `translateY(${virtualRow.start}px)`,
-                    }}
-                  >
-                    <TreeSelectNode
-                      resolved={node}
-                      tree={tree}
-                      query={filteredTree ? query : undefined}
-                      multiple={multiple}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-          )}
+                {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                  const node = tree.visibleNodes[virtualRow.index];
+                  return (
+                    <div
+                      key={node.path}
+                      ref={rowVirtualizer.measureElement}
+                      data-index={virtualRow.index}
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        transform: `translateY(${virtualRow.start}px)`,
+                      }}
+                    >
+                      <TreeSelectNode
+                        resolved={node}
+                        tree={tree}
+                        query={filteredTree ? query : undefined}
+                        multiple={multiple}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </PortalWrapper>

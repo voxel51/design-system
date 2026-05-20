@@ -22,8 +22,11 @@ const OriginalResizeObserver = globalThis.ResizeObserver;
 
 beforeAll(() => {
   Element.prototype.getBoundingClientRect = function () {
-    if (this.className?.includes?.("max-h-72")) {
-      return { ...JSDOM_DEFAULT_RECT, height: 288, bottom: 288 };
+    // The scroll container for the virtualizer (overflow-y-auto, separate
+    // from the outer panel). Its height is the panel max-height minus the
+    // search bar (~288 - 48 = 240).
+    if (this.className?.includes?.("overflow-y-auto")) {
+      return { ...JSDOM_DEFAULT_RECT, height: 240, bottom: 240 };
     }
     return { ...JSDOM_DEFAULT_RECT };
   };
