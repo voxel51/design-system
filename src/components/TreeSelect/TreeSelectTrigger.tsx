@@ -17,7 +17,7 @@ import { IconName } from "@/types/icons";
 import { cn } from "@/util/classes";
 
 export interface TreeSelectTriggerProps {
-  multiple?: boolean;
+  multiSelect?: boolean;
   value: string | string[] | undefined;
   disabled?: boolean;
   placeholder?: string;
@@ -87,12 +87,12 @@ function ClearButton({ onClick }: { onClick: (e: React.MouseEvent) => void }) {
 
 /**
  * Trigger element for TreeSelect. Renders either a pill-based multi-select
- * trigger or a single-select read-only input, branching on `multiple`.
+ * trigger or a single-select read-only input, branching on `multiSelect`.
  *
  * @internal For use by TreeSelect.
  */
 export const TreeSelectTrigger: FC<TreeSelectTriggerProps> = ({
-  multiple,
+  multiSelect,
   value,
   disabled,
   placeholder,
@@ -109,7 +109,7 @@ export const TreeSelectTrigger: FC<TreeSelectTriggerProps> = ({
     onClear();
   };
 
-  if (multiple) {
+  if (multiSelect) {
     return (
       <div
         role="combobox"

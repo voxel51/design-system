@@ -100,7 +100,7 @@ interface TreeSelectBaseProps extends Omit<
  * `onChange` fires with the selected path or `null` on clear.
  */
 interface TreeSelectSingleProps extends TreeSelectBaseProps {
-  multiple?: false;
+  multiSelect?: false;
   /** Currently selected node path (slash-delimited). */
   value?: string;
   /** Fires when the user selects or clears a node. */
@@ -112,7 +112,7 @@ interface TreeSelectSingleProps extends TreeSelectBaseProps {
  * `onChange` fires with the full updated array on every toggle.
  */
 interface TreeSelectMultiProps extends TreeSelectBaseProps {
-  multiple: true;
+  multiSelect: true;
   /** Currently selected node paths (slash-delimited). */
   value?: string[];
   /** Fires with the updated array whenever a node is toggled. */
@@ -122,8 +122,8 @@ interface TreeSelectMultiProps extends TreeSelectBaseProps {
 /**
  * Props for {@link TreeSelect}.
  *
- * Discriminated on `multiple`:
- * - `multiple?: false` (default) — single-select; `value` is `string`, `onChange` fires `string | null`.
- * - `multiple: true` — multi-select; `value` is `string[]`, `onChange` fires `string[]`.
+ * Discriminated on `multiSelect`:
+ * - `multiSelect?: false` (default) — single-select; `value` is `string`, `onChange` fires `string | null`.
+ * - `multiSelect: true` — multi-select; `value` is `string[]`, `onChange` fires `string[]`.
  */
 export type TreeSelectProps = TreeSelectSingleProps | TreeSelectMultiProps;

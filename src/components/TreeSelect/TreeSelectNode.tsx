@@ -33,7 +33,7 @@ export interface TreeSelectNodeProps {
   resolved: ResolvedNode;
   tree: UseTreeReturn;
   query?: string;
-  multiple?: boolean;
+  multiSelect?: boolean;
 }
 
 function highlightMatch(text: string, query?: string): React.ReactNode {
@@ -64,7 +64,7 @@ function highlightMatch(text: string, query?: string): React.ReactNode {
  *
  * @internal For use by TreeSelectPanel.
  */
-export const TreeSelectNode: FC<TreeSelectNodeProps> = ({ resolved, tree, query, multiple }) => {
+export const TreeSelectNode: FC<TreeSelectNodeProps> = ({ resolved, tree, query, multiSelect }) => {
   const { node, path, depth } = resolved;
   const isBranch = !resolved.isLeaf;
   const isSelected = tree.isSelected(resolved);
@@ -72,7 +72,7 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({ resolved, tree, query,
   const effectiveOpen = tree.isOpen(path);
 
   const showIndeterminate =
-    !!multiple && isBranch && !isSelected && tree.hasSelectedDescendant(resolved);
+    !!multiSelect && isBranch && !isSelected && tree.hasSelectedDescendant(resolved);
 
   const itemProps = tree.getItemProps(resolved);
   const textColor = node.deprecated ? TextColor.Muted : TextColor.Primary;
@@ -123,7 +123,7 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({ resolved, tree, query,
       <Stack orientation={Orientation.Column} className="min-w-0 flex-1">
         <Stack align={Align.Center} spacing={Spacing.Xs}>
           {chevron}
-          {multiple && (resolved.selectable || showIndeterminate) && (
+          {multiSelect && (resolved.selectable || showIndeterminate) && (
             <div className="pr-1">
               <Checkbox
                 checked={isSelected}
@@ -157,7 +157,7 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({ resolved, tree, query,
         )}
       </Stack>
 
-      {!multiple && (
+      {!multiSelect && (
         <span
           className={cn(
             "size-5 shrink-0 flex items-center",

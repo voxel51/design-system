@@ -68,7 +68,7 @@ export interface TreeSelectPanelProps {
   searchInputRef: RefObject<HTMLInputElement | null>;
   tree: UseTreeReturn;
   filteredTree: boolean;
-  multiple?: boolean;
+  multiSelect?: boolean;
 }
 
 /**
@@ -96,7 +96,7 @@ export const TreeSelectPanel: FC<TreeSelectPanelProps> = ({
   searchInputRef,
   tree,
   filteredTree,
-  multiple,
+  multiSelect,
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -185,7 +185,7 @@ export const TreeSelectPanel: FC<TreeSelectPanelProps> = ({
                         resolved={node}
                         tree={tree}
                         query={filteredTree ? query : undefined}
-                        multiple={multiple}
+                        multiSelect={multiSelect}
                       />
                     </div>
                   );

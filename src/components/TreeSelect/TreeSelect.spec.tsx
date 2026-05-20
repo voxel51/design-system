@@ -777,7 +777,7 @@ describe("TreeSelect", () => {
 
   describe("multi-select", () => {
     function renderMulti(overrides: Record<string, unknown> = {}) {
-      return renderTreeSelect({ multiple: true, ...overrides });
+      return renderTreeSelect({ multiSelect: true, ...overrides });
     }
 
     it("renders pills for selected values", () => {

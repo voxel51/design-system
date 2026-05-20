@@ -65,7 +65,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
   root,
   value,
   onChange,
-  multiple,
+  multiSelect,
   leavesOnly = false,
   disabled,
   placeholder,
@@ -124,7 +124,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
 
   const handleSelect = useCallback(
     (selected: string) => {
-      if (multiple) {
+      if (multiSelect) {
         const current = (value as string[] | undefined) ?? [];
         const next = current.includes(selected)
           ? current.filter((p) => p !== selected)
@@ -132,10 +132,11 @@ export const TreeSelect: FC<TreeSelectProps> = ({
         (onChange as ((paths: string[]) => void) | undefined)?.(next);
       } else {
         setQuery("");
+        setIsOpen(false);
         (onChange as ((path: string | null) => void) | undefined)?.(selected);
       }
     },
-    [multiple, value, onChange]
+    [multiSelect, value, onChange]
   );
 
   const handleEscape = useCallback(() => {
@@ -144,12 +145,12 @@ export const TreeSelect: FC<TreeSelectProps> = ({
   }, []);
 
   const selection = useMemo<Set<string> | undefined>(() => {
-    if (multiple) {
+    if (multiSelect) {
       const arr = value as string[] | undefined;
       return arr?.length ? new Set(arr) : undefined;
     }
     return value ? new Set([value as string]) : undefined;
-  }, [multiple, value]);
+  }, [multiSelect, value]);
 
   const tree = useTree({
     tree: filtered?.tree ?? resolved,
@@ -189,18 +190,18 @@ export const TreeSelect: FC<TreeSelectProps> = ({
   const handleClear = useCallback(() => {
     setQuery("");
     setIsOpen(false);
-    if (multiple) {
+    if (multiSelect) {
       (onChange as ((paths: string[]) => void) | undefined)?.([]);
     } else {
       (onChange as ((path: string | null) => void) | undefined)?.(null);
     }
-  }, [multiple, onChange]);
+  }, [multiSelect, onChange]);
 
   // Focus search input when panel opens; initialize active path
   useEffect(() => {
     if (isOpen) {
       requestAnimationFrame(() => searchInputRef.current?.focus());
-      const singleValue = multiple ? undefined : (value as string | undefined);
+      const singleValue = multiSelect ? undefined : (value as string | undefined);
       const initial =
         singleValue &&
         tree.visibleNodes.some((n) => n.path === singleValue)
@@ -240,19 +241,19 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen, refs.reference, refs.floating]);
 
-  const hasValue = multiple
+  const hasValue = multiSelect
     ? !!((value as string[] | undefined)?.length)
     : !!value;
 
   const removeOne = useCallback(
     (pathToRemove: string) => {
-      if (!multiple) return;
+      if (!multiSelect) return;
       const current = (value as string[] | undefined) ?? [];
       (onChange as ((paths: string[]) => void) | undefined)?.(
         current.filter((p) => p !== pathToRemove)
       );
     },
-    [multiple, value, onChange]
+    [multiSelect, value, onChange]
   );
 
   const panelId = tree.rowId("panel");
@@ -260,7 +261,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
   return (
     <div ref={refs.setReference} className={cn(className, "w-full")} {...props}>
       <TreeSelectTrigger
-        multiple={multiple}
+        multiSelect={multiSelect}
         value={value}
         disabled={disabled}
         placeholder={placeholder}
@@ -286,7 +287,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
           searchInputRef={searchInputRef}
           tree={tree}
           filteredTree={!!filtered}
-          multiple={multiple}
+          multiSelect={multiSelect}
         />
       )}
     </div>
