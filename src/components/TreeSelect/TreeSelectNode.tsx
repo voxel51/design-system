@@ -122,13 +122,15 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({ resolved, tree, query,
         <Stack align={Align.Center} spacing={Spacing.Xs}>
           {chevron}
           {multiple && (resolved.selectable || showIndeterminate) && (
-            <Checkbox
-              checked={isSelected}
-              indeterminate={showIndeterminate}
-              size={Size.Sm}
-              radius={Radius.Xs}
-              className="pointer-events-none"
-            />
+            <div className="pr-1">
+              <Checkbox
+                checked={isSelected}
+                indeterminate={showIndeterminate}
+                size={Size.Sm}
+                radius={Radius.Xs}
+                className="pointer-events-none"
+              />
+            </div>
           )}
           <Text variant={TextVariant.Sm} color={textColor} className="truncate">
             {highlightMatch(node.name, query)}

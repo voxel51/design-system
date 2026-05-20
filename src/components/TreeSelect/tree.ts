@@ -31,7 +31,7 @@ export function isSelectable(
  * {@link ResolvedNode} tree with pre-computed paths, depths, and
  * selectability flags.
  *
- * @param root The root node of the taxonomy tree.
+ * @param root The root node of the tree.
  * @param options.leavesOnly When `true`, branch nodes are marked non-selectable.
  * @returns The resolved root node (callers typically render its `children`).
  */

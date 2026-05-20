@@ -5,7 +5,7 @@ import type { ZIndex } from "@/types";
 import type { SelectAnchor } from "@/components/Select";
 
 /**
- * A node within a taxonomy tree.
+ * A node within a tree.
  *
  * `values` has three meaningful states:
  * - `TreeNode[]` (non-empty) — branch with known children.
@@ -45,9 +45,11 @@ export interface ResolvedNode {
 /**
  * Props shared by single-select and multi-select modes.
  */
-interface TreeSelectBaseProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
-  /** The root node of the taxonomy tree. */
+interface TreeSelectBaseProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "onChange"
+> {
+  /** The root node of the tree. */
   root: TreeNode;
   /**
    * When `true`, only leaf nodes (nodes with no children) are selectable.

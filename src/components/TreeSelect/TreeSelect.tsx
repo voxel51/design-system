@@ -1,7 +1,6 @@
 import {
   autoUpdate,
   flip,
-  FloatingPortal,
   offset,
   shift,
   size,
@@ -10,7 +9,6 @@ import {
 } from "@floating-ui/react";
 import {
   type FC,
-  type ReactNode,
   useCallback,
   useEffect,
   useMemo,
@@ -18,38 +16,14 @@ import {
   useState,
 } from "react";
 
-import { Icon } from "@/components/Icons";
-import { inputStyle } from "@/components/Input";
-import { Pill } from "@/components/Pill";
 import { SelectAnchor } from "@/components/Select";
-import { Stack } from "@/components/Stack";
-import { Text } from "@/components/Text";
-import radiusStyles from "@/styles/radius";
-import shadowStyles from "@/styles/shadow";
-import {
-  Align,
-  BackgroundColor,
-  bgColorClass,
-  BorderColor,
-  borderColorClass,
-  ElementState,
-  Justify,
-  Radius,
-  Shadow,
-  Size,
-  TextColor,
-  textColorClass,
-  TextVariant,
-  ZIndex,
-  zIndexStyles,
-} from "@/types";
-import { IconName } from "@/types/icons";
 import { cn } from "@/util/classes";
 import { useDebouncedCallback } from "@/util/useDebouncedCallback";
 import { useTree } from "@/util/useTree";
 
 import { buildResolvedTree, filterTreeForQuery, getNodeByPath } from "./tree";
-import { TreeSelectNode } from "./TreeSelectNode";
+import { TreeSelectPanel } from "./TreeSelectPanel";
+import { TreeSelectTrigger } from "./TreeSelectTrigger";
 import type { TreeSelectProps } from "./types";
 
 const ANCHOR_TO_PLACEMENT: Record<SelectAnchor, Placement> = {
@@ -61,38 +35,15 @@ const ANCHOR_TO_PLACEMENT: Record<SelectAnchor, Placement> = {
   [SelectAnchor.TopEnd]: "top-end",
 };
 
-function getZIndexClass(zIndex?: ZIndex, portal?: boolean): string | undefined {
-  if (zIndex) {
-    return zIndexStyles(zIndex);
-  }
-  if (portal) {
-    return zIndexStyles(ZIndex.AboveModal);
-  }
-  return undefined;
-}
-
-function PortalWrapper({
-  portal,
-  children,
-}: {
-  portal?: boolean;
-  children: ReactNode;
-}) {
-  if (portal) {
-    return <FloatingPortal>{children}</FloatingPortal>;
-  }
-  return <>{children}</>;
-}
-
 /**
- * A tree-shaped selection control that renders taxonomy nodes in a
+ * A tree-shaped selection control that renders nodes in a
  * searchable dropdown panel styled to match {@link Select}.
  *
  * Supports single-select with full keyboard navigation (ARIA treeview pattern).
  *
  * @example
  * ```tsx
- * const taxonomy: TreeNode = {
+ * const tree: TreeNode = {
  *   name: "vehicle_type",
  *   values: [
  *     { name: "car", values: [{ name: "Honda" }, { name: "Toyota" }] },
@@ -103,7 +54,7 @@ function PortalWrapper({
  * const [value, setValue] = useState<string | undefined>();
  *
  * <TreeSelect
- *   root={taxonomy}
+ *   root={tree}
  *   value={value}
  *   onChange={(path) => setValue(path ?? undefined)}
  *   placeholder="Select a vehicle…"
@@ -229,6 +180,21 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     if (!disabled) setIsOpen((prev) => !prev);
   }, [disabled]);
 
+  const handleToggle = useCallback(() => {
+    setQuery("");
+    toggleOpen();
+  }, [toggleOpen]);
+
+  const handleClear = useCallback(() => {
+    setQuery("");
+    setIsOpen(false);
+    if (multiple) {
+      (onChange as ((paths: string[]) => void) | undefined)?.([]);
+    } else {
+      (onChange as ((path: string | null) => void) | undefined)?.(null);
+    }
+  }, [multiple, onChange]);
+
   // Focus search input when panel opens; initialize active path
   useEffect(() => {
     if (isOpen) {
@@ -292,263 +258,36 @@ export const TreeSelect: FC<TreeSelectProps> = ({
 
   return (
     <div ref={refs.setReference} className={cn(className, "w-full")} {...props}>
-      {multiple ? (
-        <div
-          role="combobox"
-          aria-haspopup="tree"
-          aria-expanded={isOpen}
-          aria-controls={isOpen ? panelId : undefined}
-          onClick={() => {
-            if (!disabled) {
-              setQuery("");
-              toggleOpen();
-            }
-          }}
-          className={cn(
-            inputStyle({ disabled }),
-            "relative flex flex-wrap items-center gap-1",
-            "h-auto",
-            "w-full cursor-pointer",
-            hasValue ? "pr-14" : "pr-8"
-          )}
-        >
-          {((value as string[] | undefined) ?? []).map((p) => (
-            <Pill
-              key={p}
-              size={Size.Xs}
-              onRemove={disabled ? undefined : () => removeOne(p)}
-              className="py-0"
-            >
-              {getDisplayValue(p)}
-            </Pill>
-          ))}
-          {!hasValue && placeholder && (
-            <span className={textColorClass(TextColor.Tertiary)}>
-              {placeholder}
-            </span>
-          )}
-          <span
-            className={cn(
-              "pointer-events-none absolute right-2.5 flex items-center",
-              "transition-transform duration-150",
-              isOpen ? "-rotate-90" : "rotate-90",
-              disabled && "opacity-50"
-            )}
-            aria-hidden
-          >
-            <Icon
-              name={IconName.ChevronRight}
-              size={Size.Sm}
-              className={textColorClass(TextColor.Secondary)}
-            />
-          </span>
-          {hasValue && !disabled && (
-            <button
-              type="button"
-              aria-label="Clear selection"
-              onClick={(e) => {
-                e.stopPropagation();
-                setQuery("");
-                setIsOpen(false);
-                (onChange as ((paths: string[]) => void) | undefined)?.([]);
-              }}
-              className={cn(
-                "group",
-                "absolute right-7 flex items-center justify-center",
-                "p-[5px]",
-                "cursor-pointer",
-                "rounded-full",
-                "transition-[background-color] duration-150",
-                bgColorClass(BackgroundColor.Card2, ElementState.Hover)
-              )}
-            >
-              <Icon
-                name={IconName.Close}
-                size={Size.Sm}
-                className={cn(
-                  textColorClass(TextColor.Secondary),
-                  "group-hover:text-content-text-primary",
-                  "transition-colors duration-150"
-                )}
-              />
-            </button>
-          )}
-        </div>
-      ) : (
-        <Stack align={Align.Center} className="relative">
-          <input
-            readOnly
-            autoComplete="off"
-            role="combobox"
-            aria-haspopup="tree"
-            aria-expanded={isOpen}
-            aria-controls={isOpen ? panelId : undefined}
-            disabled={disabled}
-            value={getDisplayValue((value as string | undefined) ?? null)}
-            onClick={() => {
-              setQuery("");
-              toggleOpen();
-            }}
-            placeholder={placeholder}
-            className={cn(
-              inputStyle({ disabled }),
-              "w-full cursor-pointer",
-              hasValue ? "pr-14" : "pr-8"
-            )}
-          />
-          <span
-            className={cn(
-              "pointer-events-none absolute right-2.5 flex items-center",
-              "transition-transform duration-150",
-              isOpen ? "-rotate-90" : "rotate-90",
-              disabled && "opacity-50"
-            )}
-            aria-hidden
-          >
-            <Icon
-              name={IconName.ChevronRight}
-              size={Size.Sm}
-              className={textColorClass(TextColor.Secondary)}
-            />
-          </span>
-          {hasValue && !disabled && (
-            <button
-              type="button"
-              aria-label="Clear selection"
-              onClick={(e) => {
-                e.stopPropagation();
-                setQuery("");
-                setIsOpen(false);
-                (onChange as ((path: string | null) => void) | undefined)?.(
-                  null
-                );
-              }}
-              className={cn(
-                "group",
-                "absolute right-7 flex items-center justify-center",
-                "p-[5px]",
-                "cursor-pointer",
-                "rounded-full",
-                "transition-[background-color] duration-150",
-                bgColorClass(BackgroundColor.Card2, ElementState.Hover)
-              )}
-            >
-              <Icon
-                name={IconName.Close}
-                size={Size.Sm}
-                className={cn(
-                  textColorClass(TextColor.Secondary),
-                  "group-hover:text-content-text-primary",
-                  "transition-colors duration-150"
-                )}
-              />
-            </button>
-          )}
-        </Stack>
-      )}
+      <TreeSelectTrigger
+        multiple={multiple}
+        value={value}
+        disabled={disabled}
+        placeholder={placeholder}
+        isOpen={isOpen}
+        panelId={panelId}
+        hasValue={hasValue}
+        getDisplayValue={getDisplayValue}
+        onToggle={handleToggle}
+        onClear={handleClear}
+        onRemoveOne={removeOne}
+      />
 
       {isOpen && (
-        <PortalWrapper portal={portal}>
-          <div
-            ref={refs.setFloating}
-            id={panelId}
-            role="tree"
-            aria-label="Tree selection"
-            style={floatingStyles}
-            className={cn(
-              "max-h-72 overflow-y-auto scroll-pt-12",
-              "border",
-              borderColorClass(BorderColor.Default),
-              bgColorClass(BackgroundColor.Card1),
-              getZIndexClass(zIndex, portal),
-              radiusStyles(Radius.Lg),
-              shadowStyles(Shadow.Lg),
-              "focus:outline-none"
-            )}
-          >
-            <div
-              className={cn(
-                "sticky top-0 z-10 p-1.5",
-                bgColorClass(BackgroundColor.Card1)
-              )}
-            >
-              <Stack align={Align.Center} className="relative">
-                <span className="pointer-events-none absolute left-2.5 flex items-center">
-                  <Icon
-                    name={IconName.Search}
-                    size={Size.Sm}
-                    className={textColorClass(TextColor.Tertiary)}
-                  />
-                </span>
-                <input
-                  ref={searchInputRef}
-                  type="text"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  onMouseDown={(e) => e.stopPropagation()}
-                  onKeyDown={tree.handleKeyDown}
-                  aria-label="Search tree"
-                  aria-activedescendant={tree.activeDescendantId}
-                  placeholder="Search..."
-                  className={cn(inputStyle({ disabled: false }), "w-full px-8")}
-                />
-                {query && (
-                  <button
-                    type="button"
-                    aria-label="Clear search"
-                    onClick={() => {
-                      setQuery("");
-                      searchInputRef.current?.focus();
-                    }}
-                    className={cn(
-                      "group",
-                      "absolute right-1 flex items-center justify-center",
-                      "p-[5px]",
-                      "cursor-pointer",
-                      "rounded-full",
-                      "transition-[background-color] duration-150",
-                      bgColorClass(BackgroundColor.Card2, ElementState.Hover)
-                    )}
-                  >
-                    <Icon
-                      name={IconName.Close}
-                      size={Size.Sm}
-                      className={cn(
-                        textColorClass(TextColor.Secondary),
-                        "group-hover:text-content-text-primary",
-                        "transition-colors duration-150"
-                      )}
-                    />
-                  </button>
-                )}
-              </Stack>
-            </div>
-
-            <div className="p-1.5 pt-0">
-              {debouncedQuery && !filtered ? (
-                <Stack justify={Justify.Center}>
-                  <Text
-                    variant={TextVariant.Sm}
-                    color={TextColor.Tertiary}
-                    className="px-3 py-2"
-                  >
-                    No matches found
-                  </Text>
-                </Stack>
-              ) : (
-                (filtered?.tree ?? resolved).children.map((child) => (
-                  <TreeSelectNode
-                    key={child.path}
-                    resolved={child}
-                    tree={tree}
-                    query={filtered ? query : undefined}
-                    multiple={multiple}
-                  />
-                ))
-              )}
-            </div>
-          </div>
-        </PortalWrapper>
+        <TreeSelectPanel
+          floatingRef={refs.setFloating}
+          floatingStyles={floatingStyles}
+          portal={portal}
+          zIndex={zIndex}
+          panelId={panelId}
+          query={query}
+          onQueryChange={setQuery}
+          debouncedQuery={debouncedQuery}
+          searchInputRef={searchInputRef}
+          tree={tree}
+          resolvedTree={resolved}
+          filteredTree={filtered?.tree ?? null}
+          multiple={multiple}
+        />
       )}
     </div>
   );
