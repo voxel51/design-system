@@ -24,7 +24,6 @@ import type { UseTreeReturn } from "@/util/useTree";
 
 import { TreeSelectNode } from "./TreeSelectNode";
 import { TreeSelectSearchInput } from "./TreeSelectSearchInput";
-import type { ResolvedNode } from "./types";
 
 function getZIndexClass(zIndex?: ZIndex, portal?: boolean): string | undefined {
   if (zIndex) {
@@ -60,8 +59,7 @@ export interface TreeSelectPanelProps {
   debouncedQuery: string;
   searchInputRef: RefObject<HTMLInputElement | null>;
   tree: UseTreeReturn;
-  resolvedTree: ResolvedNode;
-  filteredTree: ResolvedNode | null;
+  filteredTree: boolean;
   multiple?: boolean;
 }
 
@@ -82,12 +80,9 @@ export const TreeSelectPanel: FC<TreeSelectPanelProps> = ({
   debouncedQuery,
   searchInputRef,
   tree,
-  resolvedTree,
   filteredTree,
   multiple,
 }) => {
-  const displayTree = filteredTree ?? resolvedTree;
-
   return (
     <PortalWrapper portal={portal}>
       <div
@@ -127,10 +122,10 @@ export const TreeSelectPanel: FC<TreeSelectPanelProps> = ({
               </Text>
             </Stack>
           ) : (
-            displayTree.children.map((child) => (
+            tree.visibleNodes.map((node) => (
               <TreeSelectNode
-                key={child.path}
-                resolved={child}
+                key={node.path}
+                resolved={node}
                 tree={tree}
                 query={filteredTree ? query : undefined}
                 multiple={multiple}

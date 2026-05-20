@@ -65,14 +65,8 @@ export interface TreeItemProps {
   onMouseEnter: () => void;
 }
 
-export interface TreeGroupProps {
-  id: string;
-  role: "group";
-}
-
 export interface TreeChevronProps {
   "aria-expanded": boolean;
-  "aria-controls": string;
   "aria-label": string;
   onClick: (e: { stopPropagation: () => void; preventDefault: () => void }) => void;
   onPointerDown: (e: { stopPropagation: () => void; preventDefault: () => void }) => void;
@@ -103,8 +97,6 @@ export interface UseTreeReturn {
 
   /** Spread onto the outer `<div role="treeitem">` wrapper. */
   getItemProps: (node: ResolvedNode) => TreeItemProps;
-  /** Spread onto the `<div role="group">` children wrapper. */
-  getGroupProps: (node: ResolvedNode) => TreeGroupProps;
   /** Spread onto the chevron `<button>`. */
   getChevronProps: (node: ResolvedNode) => TreeChevronProps;
 
@@ -286,18 +278,9 @@ export function useTree(options: UseTreeOptions): UseTreeReturn {
     [activePath, selection, idPrefix, isOpen, onSelect, toggleExpand]
   );
 
-  const getGroupProps = useCallback(
-    (node: ResolvedNode): TreeGroupProps => ({
-      id: encodeRowId(idPrefix, node.path) + "-group",
-      role: "group",
-    }),
-    [idPrefix]
-  );
-
   const getChevronProps = useCallback(
     (node: ResolvedNode): TreeChevronProps => {
       const open = isOpen(node.path);
-      const groupId = encodeRowId(idPrefix, node.path) + "-group";
       const stop = (e: {
         stopPropagation: () => void;
         preventDefault: () => void;
@@ -308,7 +291,6 @@ export function useTree(options: UseTreeOptions): UseTreeReturn {
 
       return {
         "aria-expanded": open,
-        "aria-controls": groupId,
         "aria-label": open
           ? `Collapse ${node.node.name}`
           : `Expand ${node.node.name}`,
@@ -413,7 +395,6 @@ export function useTree(options: UseTreeOptions): UseTreeReturn {
     setActivePath,
 
     getItemProps,
-    getGroupProps,
     getChevronProps,
 
     handleKeyDown,

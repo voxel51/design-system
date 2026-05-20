@@ -56,14 +56,16 @@ function highlightMatch(text: string, query?: string): React.ReactNode {
 }
 
 /**
- * Renders a single node row and, when expanded, recursively renders its
- * children. All state is driven by the `tree` hook — this component is
- * simply presentation.
+ * Renders a single node row. The parent renders a flat list of all visible
+ * nodes (via `tree.visibleNodes`), so this component never recurses.
+ * Depth-based indentation produces the visual tree hierarchy.
+ * All state is driven by the `tree` hook — this component is purely
+ * presentational.
  *
- * @internal For use by TreeSelect.
+ * @internal For use by TreeSelectPanel.
  */
 export const TreeSelectNode: FC<TreeSelectNodeProps> = ({ resolved, tree, query, multiple }) => {
-  const { node, path, depth, children } = resolved;
+  const { node, path, depth } = resolved;
   const isBranch = !resolved.isLeaf;
   const isSelected = tree.isSelected(resolved);
   const isActive = tree.isActive(path);
@@ -169,33 +171,18 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({ resolved, tree, query,
   );
 
   return (
-    <>
-      <div {...itemProps}>
-        <Stack
-          align={Align.Center}
-          justify={Justify.Between}
-          spacing={Spacing.Md}
-          className={rowClasses}
-          style={indentStyle}
-          data-active={isActive || undefined}
-        >
-          {labelContent}
-        </Stack>
-      </div>
-      {isBranch && effectiveOpen && (
-        <div {...tree.getGroupProps(resolved)}>
-          {children.map((child) => (
-            <TreeSelectNode
-              key={child.path}
-              resolved={child}
-              tree={tree}
-              query={query}
-              multiple={multiple}
-            />
-          ))}
-        </div>
-      )}
-    </>
+    <div {...itemProps} aria-level={depth}>
+      <Stack
+        align={Align.Center}
+        justify={Justify.Between}
+        spacing={Spacing.Md}
+        className={rowClasses}
+        style={indentStyle}
+        data-active={isActive || undefined}
+      >
+        {labelContent}
+      </Stack>
+    </div>
   );
 };
 

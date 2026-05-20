@@ -284,8 +284,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
           debouncedQuery={debouncedQuery}
           searchInputRef={searchInputRef}
           tree={tree}
-          resolvedTree={resolved}
-          filteredTree={filtered?.tree ?? null}
+          filteredTree={!!filtered}
           multiple={multiple}
         />
       )}

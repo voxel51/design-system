@@ -310,16 +310,6 @@ describe("useTree", () => {
     });
   });
 
-  describe("getGroupProps", () => {
-    it("returns group role and correct id", () => {
-      const { result } = setup({ idPrefix: "t" });
-      const car = result.current.visibleNodes[0];
-      const props = result.current.getGroupProps(car);
-      expect(props.role).toBe("group");
-      expect(props.id).toBe("t-vehicle_type-car-group");
-    });
-  });
-
   describe("getChevronProps", () => {
     it("returns correct aria-label for collapsed", () => {
       const { result } = setup();
