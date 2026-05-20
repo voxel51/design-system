@@ -42,7 +42,9 @@ export function buildResolvedTree(
   function walk(
     node: TreeNode,
     parentPath: string,
-    depth: number
+    depth: number,
+    index: number,
+    siblingCount: number
   ): ResolvedNode {
     const path = parentPath
       ? `${parentPath}${PATH_SEPARATOR}${node.name}`
@@ -50,9 +52,10 @@ export function buildResolvedTree(
 
     const isLeaf = nodeIsLeaf(node);
 
-    const children = isLeaf
-      ? []
-      : node.values!.map((child) => walk(child, path, depth + 1));
+    const childValues = isLeaf ? [] : node.values!;
+    const children = childValues.map((child, i) =>
+      walk(child, path, depth + 1, i, childValues.length)
+    );
 
     return {
       node,
@@ -61,10 +64,12 @@ export function buildResolvedTree(
       selectable: isSelectable(node, options),
       isLeaf,
       children,
+      posinset: index + 1,
+      setsize: siblingCount,
     };
   }
 
-  return walk(root, "", 0);
+  return walk(root, "", 0, 0, 1);
 }
 
 /**
@@ -142,7 +147,10 @@ export function filterTreeForQuery(
   function pruneTree(node: ResolvedNode): ResolvedNode {
     const filteredChildren = node.children
       .filter((child) => includedPaths.has(child.path))
-      .map(pruneTree);
+      .map((child, i, arr) => {
+        const pruned = pruneTree(child);
+        return { ...pruned, posinset: i + 1, setsize: arr.length };
+      });
 
     return { ...node, children: filteredChildren };
   }

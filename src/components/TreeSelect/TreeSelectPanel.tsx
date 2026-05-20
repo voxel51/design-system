@@ -1,6 +1,14 @@
-import { type CSSProperties, type FC, type ReactNode, type RefObject } from "react";
+import {
+  type CSSProperties,
+  type FC,
+  type ReactNode,
+  type RefObject,
+  useEffect,
+  useRef,
+} from "react";
 
 import { FloatingPortal } from "@floating-ui/react";
+import { useVirtualizer } from "@tanstack/react-virtual";
 
 import { Stack } from "@/components/Stack";
 import { Text } from "@/components/Text";
@@ -69,6 +77,9 @@ export interface TreeSelectPanelProps {
  *
  * @internal For use by TreeSelect.
  */
+const ROW_HEIGHT_ESTIMATE = 36;
+const VIRTUALIZER_OVERSCAN = 8;
+
 export const TreeSelectPanel: FC<TreeSelectPanelProps> = ({
   floatingRef,
   floatingStyles,
@@ -83,10 +94,32 @@ export const TreeSelectPanel: FC<TreeSelectPanelProps> = ({
   filteredTree,
   multiple,
 }) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const rowVirtualizer = useVirtualizer({
+    count: tree.visibleNodes.length,
+    getScrollElement: () => scrollRef.current,
+    estimateSize: () => ROW_HEIGHT_ESTIMATE,
+    overscan: VIRTUALIZER_OVERSCAN,
+  });
+
+  useEffect(() => {
+    if (!tree.activePath) return;
+    const idx = tree.visibleNodes.findIndex((n) => n.path === tree.activePath);
+    if (idx >= 0) {
+      rowVirtualizer.scrollToIndex(idx, { align: "auto" });
+    }
+  }, [tree.activePath, tree.visibleNodes, rowVirtualizer]);
+
+  const noMatches = debouncedQuery && !filteredTree;
+
   return (
     <PortalWrapper portal={portal}>
       <div
-        ref={floatingRef}
+        ref={(node) => {
+          floatingRef(node);
+          (scrollRef as React.RefObject<HTMLDivElement | null>).current = node;
+        }}
         id={panelId}
         role="tree"
         aria-label="Tree selection"
@@ -111,7 +144,7 @@ export const TreeSelectPanel: FC<TreeSelectPanelProps> = ({
         />
 
         <div className="p-1.5 pt-0">
-          {debouncedQuery && !filteredTree ? (
+          {noMatches ? (
             <Stack justify={Justify.Center}>
               <Text
                 variant={TextVariant.Sm}
@@ -122,15 +155,37 @@ export const TreeSelectPanel: FC<TreeSelectPanelProps> = ({
               </Text>
             </Stack>
           ) : (
-            tree.visibleNodes.map((node) => (
-              <TreeSelectNode
-                key={node.path}
-                resolved={node}
-                tree={tree}
-                query={filteredTree ? query : undefined}
-                multiple={multiple}
-              />
-            ))
+            <div
+              style={{
+                height: rowVirtualizer.getTotalSize(),
+                position: "relative",
+              }}
+            >
+              {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                const node = tree.visibleNodes[virtualRow.index];
+                return (
+                  <div
+                    key={node.path}
+                    ref={rowVirtualizer.measureElement}
+                    data-index={virtualRow.index}
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      transform: `translateY(${virtualRow.start}px)`,
+                    }}
+                  >
+                    <TreeSelectNode
+                      resolved={node}
+                      tree={tree}
+                      query={filteredTree ? query : undefined}
+                      multiple={multiple}
+                    />
+                  </div>
+                );
+              })}
+            </div>
           )}
         </div>
       </div>

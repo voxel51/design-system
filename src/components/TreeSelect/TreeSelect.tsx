@@ -156,6 +156,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     selection,
     forceOpenPaths: filtered?.forceOpenPaths,
     defaultExpanded,
+    scrollActiveIntoView: false,
     onSelect: handleSelect,
     onEscape: handleEscape,
   });

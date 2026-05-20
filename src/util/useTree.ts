@@ -58,6 +58,8 @@ export interface TreeItemProps {
   role: "treeitem";
   "aria-selected": boolean | undefined;
   "aria-expanded": boolean | undefined;
+  "aria-posinset": number;
+  "aria-setsize": number;
   tabIndex: -1;
   "data-active": true | undefined;
   onClick: () => void;
@@ -258,6 +260,8 @@ export function useTree(options: UseTreeOptions): UseTreeReturn {
         role: "treeitem",
         "aria-selected": node.selectable ? selected : undefined,
         "aria-expanded": isBranch ? isOpen(node.path) : undefined,
+        "aria-posinset": node.posinset,
+        "aria-setsize": node.setsize,
         tabIndex: -1,
         "data-active": active || undefined,
         onClick: () => {

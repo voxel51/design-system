@@ -40,6 +40,10 @@ export interface ResolvedNode {
   isLeaf: boolean;
   /** Pre-resolved children, in source order. Empty array for leaves. */
   children: ResolvedNode[];
+  /** 1-based position among siblings (for `aria-posinset`). */
+  posinset: number;
+  /** Total number of siblings including this node (for `aria-setsize`). */
+  setsize: number;
 }
 
 /**
