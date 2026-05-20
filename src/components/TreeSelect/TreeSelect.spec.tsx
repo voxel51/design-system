@@ -6,6 +6,54 @@ import { ZIndex } from "@/types";
 import type { TreeNode } from "./types";
 import { TreeSelect } from "./TreeSelect";
 
+// --- jsdom layout mocks for @tanstack/react-virtual ---
+// The virtualizer needs non-zero element sizes and a ResizeObserver that
+// fires its callback. These mocks are scoped to this file so they don't
+// affect unrelated tests.
+
+const JSDOM_DEFAULT_RECT: DOMRect = {
+  x: 0, y: 0, width: 320, height: 36,
+  top: 0, right: 320, bottom: 36, left: 0,
+  toJSON() { return this; },
+};
+
+const originalGetBCR = Element.prototype.getBoundingClientRect;
+const OriginalResizeObserver = globalThis.ResizeObserver;
+
+beforeAll(() => {
+  Element.prototype.getBoundingClientRect = function () {
+    if (this.className?.includes?.("max-h-72")) {
+      return { ...JSDOM_DEFAULT_RECT, height: 288, bottom: 288 };
+    }
+    return { ...JSDOM_DEFAULT_RECT };
+  };
+
+  globalThis.ResizeObserver = class ResizeObserver {
+    private cb: ResizeObserverCallback;
+    constructor(cb: ResizeObserverCallback) { this.cb = cb; }
+    observe(target: Element): void {
+      const rect = target.getBoundingClientRect();
+      this.cb(
+        [{
+          target,
+          contentRect: rect,
+          borderBoxSize: [{ inlineSize: rect.width, blockSize: rect.height }],
+          contentBoxSize: [{ inlineSize: rect.width, blockSize: rect.height }],
+          devicePixelContentBoxSize: [{ inlineSize: rect.width, blockSize: rect.height }],
+        } as ResizeObserverEntry],
+        this,
+      );
+    }
+    unobserve(): void {}
+    disconnect(): void {}
+  };
+});
+
+afterAll(() => {
+  Element.prototype.getBoundingClientRect = originalGetBCR;
+  globalThis.ResizeObserver = OriginalResizeObserver;
+});
+
 const vehicleTree: TreeNode = {
   name: "vehicle_type",
   description: "The type of vehicle",
@@ -913,6 +961,82 @@ describe("TreeSelect", () => {
         .queryAllByRole("checkbox")
         .filter((el) => el.getAttribute("aria-checked") === "mixed");
       expect(mixedCheckboxes).toHaveLength(0);
+    });
+  });
+
+  describe("virtualization", () => {
+    /** Builds a flat tree with `count` leaf children under a single root. */
+    function buildLargeTree(count: number): TreeNode {
+      return {
+        name: "root",
+        values: Array.from({ length: count }, (_, i) => ({
+          name: `item_${i}`,
+        })),
+      };
+    }
+
+    it("renders only a subset of DOM rows for a large flat list", async () => {
+      const user = userEvent.setup();
+      const TOTAL = 100;
+      render(<TreeSelect root={buildLargeTree(TOTAL)} />);
+
+      await user.click(screen.getByRole("combobox"));
+
+      const treeitems = screen.getAllByRole("treeitem");
+      // The virtualizer should mount far fewer than all 100 rows.
+      expect(treeitems.length).toBeLessThan(TOTAL);
+      // But it should mount at least some rows.
+      expect(treeitems.length).toBeGreaterThan(0);
+    });
+
+    it("renders the virtual container with a relative-positioned sizer div", async () => {
+      const user = userEvent.setup();
+      render(<TreeSelect root={buildLargeTree(100)} />);
+
+      await user.click(screen.getByRole("combobox"));
+
+      // The virtualizer wraps all rows in a relative-positioned div so
+      // absolutely-positioned row items can be placed correctly.
+      const tree = screen.getByRole("tree");
+      const virtualContainer = tree.querySelector(
+        'div[style*="position: relative"]'
+      ) as HTMLElement;
+      expect(virtualContainer).not.toBeNull();
+    });
+
+    it("rendered rows have correct aria-posinset and aria-setsize", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect();
+
+      await user.click(getInput());
+
+      // Root children: car (1/3), motorcycle (2/3), other (3/3)
+      const treeitems = screen.getAllByRole("treeitem");
+      expect(treeitems[0]).toHaveAttribute("aria-posinset", "1");
+      expect(treeitems[0]).toHaveAttribute("aria-setsize", "3");
+      expect(treeitems[1]).toHaveAttribute("aria-posinset", "2");
+      expect(treeitems[1]).toHaveAttribute("aria-setsize", "3");
+      expect(treeitems[2]).toHaveAttribute("aria-posinset", "3");
+      expect(treeitems[2]).toHaveAttribute("aria-setsize", "3");
+    });
+
+    it("posinset/setsize reflect the filtered sibling count after search", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect();
+
+      await user.click(getInput());
+      await user.type(screen.getByLabelText("Search tree"), "Civic");
+
+      // Wait until the debounce fires and Civic is visible — at that point
+      // the filter is fully applied and car's ARIA attrs reflect the pruned tree.
+      await screen.findByText("Civic");
+
+      // After filtering for "Civic", only "car" survives at the root level.
+      // Its posinset=1 and setsize=1, not 1/3 from the full tree.
+      const carItem = screen.getByText("car");
+      const treeitem = carItem.closest('[role="treeitem"]') as HTMLElement;
+      expect(treeitem).toHaveAttribute("aria-posinset", "1");
+      expect(treeitem).toHaveAttribute("aria-setsize", "1");
     });
   });
 });

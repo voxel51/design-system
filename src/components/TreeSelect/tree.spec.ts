@@ -100,6 +100,39 @@ describe("buildResolvedTree", () => {
     expect(resolved.isLeaf).toBe(false);
   });
 
+  it("sets posinset and setsize on root children", () => {
+    const resolved = buildResolvedTree(vehicleTree);
+    const [car, motorcycle, other] = resolved.children;
+    // 3 root children
+    expect(car.posinset).toBe(1);
+    expect(car.setsize).toBe(3);
+    expect(motorcycle.posinset).toBe(2);
+    expect(motorcycle.setsize).toBe(3);
+    expect(other.posinset).toBe(3);
+    expect(other.setsize).toBe(3);
+  });
+
+  it("sets posinset and setsize on nested children", () => {
+    const resolved = buildResolvedTree(vehicleTree);
+    const make = resolved.children[0].children[0]; // car > make (only child)
+    expect(make.posinset).toBe(1);
+    expect(make.setsize).toBe(1);
+
+    const honda = make.children[0];
+    const toyota = make.children[1];
+    // 2 children under make
+    expect(honda.posinset).toBe(1);
+    expect(honda.setsize).toBe(2);
+    expect(toyota.posinset).toBe(2);
+    expect(toyota.setsize).toBe(2);
+  });
+
+  it("sets posinset 1 and setsize 1 for the root itself", () => {
+    const resolved = buildResolvedTree(vehicleTree);
+    expect(resolved.posinset).toBe(1);
+    expect(resolved.setsize).toBe(1);
+  });
+
   it("sets correct paths for deeply nested nodes", () => {
     const resolved = buildResolvedTree(vehicleTree);
     const car = resolved.children[0];
@@ -244,6 +277,32 @@ describe("filterTreeForQuery", () => {
     const names = collectNames(result.tree);
     expect(names).not.toContain("motorcycle");
     expect(names).not.toContain("other");
+  });
+
+  it("recomputes posinset and setsize after pruning siblings", () => {
+    // Query "Civic" keeps only one root child (car). After pruning, car
+    // should be posinset=1 setsize=1, not posinset=1 setsize=3.
+    const resolved = buildResolvedTree(vehicleTree);
+    const result = filterTreeForQuery(resolved, "Civic")!;
+
+    const car = result.tree.children[0];
+    expect(car.node.name).toBe("car");
+    expect(car.posinset).toBe(1);
+    expect(car.setsize).toBe(1);
+  });
+
+  it("recomputes posinset for multiple surviving siblings after pruning", () => {
+    // Query "model" matches both Honda > model and Toyota > model.
+    // Both Honda and Toyota survive under make, so they should be 1/2 and 2/2.
+    const resolved = buildResolvedTree(vehicleTree);
+    const result = filterTreeForQuery(resolved, "model")!;
+
+    const make = result.tree.children[0].children[0]; // car > make
+    expect(make.children).toHaveLength(2);
+    expect(make.children[0].posinset).toBe(1);
+    expect(make.children[0].setsize).toBe(2);
+    expect(make.children[1].posinset).toBe(2);
+    expect(make.children[1].setsize).toBe(2);
   });
 });
 
