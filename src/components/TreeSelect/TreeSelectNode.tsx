@@ -2,7 +2,6 @@ import type { FC } from "react";
 
 import { Checkbox } from "@/components/Checkbox";
 import { Icon } from "@/components/Icons/Icon";
-import { Pill } from "@/components/Pill";
 import { Stack } from "@/components/Stack";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
@@ -117,7 +116,7 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({ resolved, tree, query,
         size={Size.Sm}
         className={cn(
           "text-content-text-secondary",
-          "group-hover:text-content-text-primary",
+          !extraClassName && "group-hover:text-content-text-primary",
           extraClassName
         )}
       />
@@ -137,7 +136,7 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({ resolved, tree, query,
   } else if (nodeLoadState === "error") {
     chevron = chevronButton(
       IconName.Refresh,
-      "",
+      textColorClass(BrandColor.Primary),
       null,
       (e) => {
         e.stopPropagation();
@@ -172,11 +171,6 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({ resolved, tree, query,
           <Text variant={TextVariant.Sm} color={textColor} className="truncate">
             {highlightMatch(node.name, query)}
           </Text>
-          {node.deprecated && (
-            <Pill size={Size.Xs} color={TextColor.Muted}>
-              deprecated
-            </Pill>
-          )}
         </Stack>
         {node.description && (
           <Text
@@ -184,7 +178,7 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({ resolved, tree, query,
             color={TextColor.Tertiary}
             className="truncate"
             style={{
-              paddingLeft: `calc(var(--spacing-md) + var(--spacing-xs))`,
+              paddingLeft: `calc(var(--spacing-md) + var(--spacing-xs) * 2)`,
             }}
           >
             {node.description}

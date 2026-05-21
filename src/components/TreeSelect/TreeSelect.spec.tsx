@@ -364,14 +364,33 @@ describe("TreeSelect", () => {
       expect(tree.className).toContain("z-[var(--z-above-modal)]");
     });
 
-    it("applies explicit zIndex when both portal and zIndex are provided", async () => {
+    it("portal takes precedence over explicit zIndex (AboveModal always wins)", async () => {
       const user = userEvent.setup();
       renderTreeSelect({ portal: true, zIndex: ZIndex.High });
 
       await user.click(getInput());
 
       const tree = screen.getByRole("tree");
-      expect(tree.className).not.toContain("z-[var(--z-above-modal)]");
+      expect(tree.className).toContain("z-[var(--z-above-modal)]");
+    });
+
+    it("applies explicit zIndex when not portaled", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect({ zIndex: ZIndex.High });
+
+      await user.click(getInput());
+
+      const tree = screen.getByRole("tree");
+      expect(tree.className).toContain("z-[var(--z-high)]");
+    });
+
+    it("applies High z-index by default when no portal or explicit zIndex", async () => {
+      const user = userEvent.setup();
+      renderTreeSelect();
+
+      await user.click(getInput());
+
+      const tree = screen.getByRole("tree");
       expect(tree.className).toContain("z-[var(--z-high)]");
     });
 

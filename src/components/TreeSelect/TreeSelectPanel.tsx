@@ -33,14 +33,14 @@ import type { UseTreeReturn } from "@/util/useTree";
 import { TreeSelectNode } from "./TreeSelectNode";
 import { TreeSelectSearchInput } from "./TreeSelectSearchInput";
 
-function getZIndexClass(zIndex?: ZIndex, portal?: boolean): string | undefined {
-  if (zIndex) {
-    return zIndexStyles(zIndex);
-  }
+function getZIndexClass(zIndex?: ZIndex, portal?: boolean): string {
   if (portal) {
     return zIndexStyles(ZIndex.AboveModal);
   }
-  return undefined;
+  if (zIndex) {
+    return zIndexStyles(zIndex);
+  }
+  return zIndexStyles(ZIndex.High);
 }
 
 function PortalWrapper({
@@ -107,6 +107,7 @@ export const TreeSelectPanel: FC<TreeSelectPanelProps> = ({
     getScrollElement: () => scrollRef.current,
     estimateSize: () => ROW_HEIGHT_ESTIMATE,
     overscan: VIRTUALIZER_OVERSCAN,
+    getItemKey: (index) => tree.visibleNodes[index].path,
   });
 
   useEffect(() => {
