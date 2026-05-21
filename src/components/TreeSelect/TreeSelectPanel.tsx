@@ -147,7 +147,7 @@ export const TreeSelectPanel: FC<TreeSelectPanelProps> = ({
           activeDescendantId={tree.activeDescendantId}
         />
 
-        <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto">
+        <div ref={scrollRef} className="flex-1 min-h-0 overflow-auto">
           <div className="p-1.5 pt-0">
             {noMatches ? (
               <Stack justify={Justify.Center}>
@@ -163,6 +163,7 @@ export const TreeSelectPanel: FC<TreeSelectPanelProps> = ({
               <div
                 style={{
                   height: rowVirtualizer.getTotalSize(),
+                  minWidth: "100%",
                   position: "relative",
                 }}
               >
@@ -177,7 +178,7 @@ export const TreeSelectPanel: FC<TreeSelectPanelProps> = ({
                         position: "absolute",
                         top: 0,
                         left: 0,
-                        right: 0,
+                        minWidth: "100%",
                         transform: `translateY(${virtualRow.start}px)`,
                       }}
                     >

@@ -175,7 +175,11 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
               />
             </div>
           )}
-          <Text variant={TextVariant.Sm} color={textColor} className="truncate">
+          <Text
+            variant={TextVariant.Sm}
+            color={textColor}
+            className="whitespace-nowrap"
+          >
             {highlightMatch(node.name, query)}
           </Text>
         </Stack>
@@ -183,7 +187,7 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
           <Text
             variant={TextVariant.Xs}
             color={TextColor.Tertiary}
-            className="truncate"
+            className="whitespace-nowrap"
             style={{
               paddingLeft: `calc(var(--spacing-md) + var(--spacing-xs) * 2)`,
             }}
