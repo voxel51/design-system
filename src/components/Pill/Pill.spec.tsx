@@ -52,12 +52,16 @@ describe("Pill", () => {
   describe("onRemove", () => {
     it("renders a remove button when onRemove is provided", () => {
       render(<Pill onRemove={jest.fn()}>{pillText}</Pill>);
-      expect(screen.getByRole("button", { name: "Remove" })).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: "Remove" })
+      ).toBeInTheDocument();
     });
 
     it("does not render a remove button when onRemove is omitted", () => {
       render(<Pill>{pillText}</Pill>);
-      expect(screen.queryByRole("button", { name: "Remove" })).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: "Remove" })
+      ).not.toBeInTheDocument();
     });
 
     it("fires onRemove when the remove button is clicked", async () => {
@@ -75,9 +79,9 @@ describe("Pill", () => {
       const outerClick = jest.fn();
       const onRemove = jest.fn();
       render(
-        <div onClick={outerClick}>
+        <button type="button" onClick={outerClick}>
           <Pill onRemove={onRemove}>{pillText}</Pill>
-        </div>
+        </button>
       );
 
       await user.click(screen.getByRole("button", { name: "Remove" }));

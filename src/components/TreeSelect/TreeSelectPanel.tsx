@@ -1,14 +1,14 @@
+import { FloatingPortal } from "@floating-ui/react";
+import { useVirtualizer } from "@tanstack/react-virtual";
 import {
   type CSSProperties,
   type FC,
+  type ReactElement,
   type ReactNode,
   type RefObject,
   useEffect,
   useRef,
 } from "react";
-
-import { FloatingPortal } from "@floating-ui/react";
-import { useVirtualizer } from "@tanstack/react-virtual";
 
 import { Stack } from "@/components/Stack";
 import { Text } from "@/components/Text";
@@ -49,7 +49,7 @@ function PortalWrapper({
 }: {
   portal?: boolean;
   children: ReactNode;
-}) {
+}): ReactElement {
   if (portal) {
     return <FloatingPortal>{children}</FloatingPortal>;
   }
@@ -147,10 +147,7 @@ export const TreeSelectPanel: FC<TreeSelectPanelProps> = ({
           activeDescendantId={tree.activeDescendantId}
         />
 
-        <div
-          ref={scrollRef}
-          className="flex-1 min-h-0 overflow-y-auto"
-        >
+        <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto">
           <div className="p-1.5 pt-0">
             {noMatches ? (
               <Stack justify={Justify.Center}>

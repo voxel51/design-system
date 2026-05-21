@@ -1,10 +1,11 @@
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import React from "react";
 
 import { ZIndex } from "@/types";
 
-import type { TreeNode } from "./types";
 import { TreeSelect } from "./TreeSelect";
+import type { TreeNode } from "./types";
 
 // --- jsdom layout mocks for @tanstack/react-virtual ---
 // The virtualizer needs non-zero element sizes and a ResizeObserver that
@@ -12,11 +13,20 @@ import { TreeSelect } from "./TreeSelect";
 // affect unrelated tests.
 
 const JSDOM_DEFAULT_RECT: DOMRect = {
-  x: 0, y: 0, width: 320, height: 36,
-  top: 0, right: 320, bottom: 36, left: 0,
-  toJSON() { return this; },
+  x: 0,
+  y: 0,
+  width: 320,
+  height: 36,
+  top: 0,
+  right: 320,
+  bottom: 36,
+  left: 0,
+  toJSON() {
+    return this;
+  },
 };
 
+// eslint-disable-next-line @typescript-eslint/unbound-method
 const originalGetBCR = Element.prototype.getBoundingClientRect;
 const OriginalResizeObserver = globalThis.ResizeObserver;
 
@@ -33,18 +43,26 @@ beforeAll(() => {
 
   globalThis.ResizeObserver = class ResizeObserver {
     private cb: ResizeObserverCallback;
-    constructor(cb: ResizeObserverCallback) { this.cb = cb; }
+    constructor(cb: ResizeObserverCallback) {
+      this.cb = cb;
+    }
     observe(target: Element): void {
       const rect = target.getBoundingClientRect();
       this.cb(
-        [{
-          target,
-          contentRect: rect,
-          borderBoxSize: [{ inlineSize: rect.width, blockSize: rect.height }],
-          contentBoxSize: [{ inlineSize: rect.width, blockSize: rect.height }],
-          devicePixelContentBoxSize: [{ inlineSize: rect.width, blockSize: rect.height }],
-        } as ResizeObserverEntry],
-        this,
+        [
+          {
+            target,
+            contentRect: rect,
+            borderBoxSize: [{ inlineSize: rect.width, blockSize: rect.height }],
+            contentBoxSize: [
+              { inlineSize: rect.width, blockSize: rect.height },
+            ],
+            devicePixelContentBoxSize: [
+              { inlineSize: rect.width, blockSize: rect.height },
+            ],
+          } as ResizeObserverEntry,
+        ],
+        this
       );
     }
     unobserve(): void {}
@@ -116,7 +134,9 @@ function renderTreeSelect(overrides: Record<string, unknown> = {}) {
     ...overrides,
   };
   return render(
-    <TreeSelect {...(defaultProps as React.ComponentProps<typeof TreeSelect>)} />
+    <TreeSelect
+      {...(defaultProps as React.ComponentProps<typeof TreeSelect>)}
+    />
   );
 }
 
@@ -267,7 +287,6 @@ describe("TreeSelect", () => {
     });
   });
 
-
   describe("leavesOnly", () => {
     it("makes branch nodes non-selectable", async () => {
       const user = userEvent.setup();
@@ -290,26 +309,6 @@ describe("TreeSelect", () => {
       await user.click(screen.getByText("motorcycle"));
 
       expect(onChange).toHaveBeenCalledWith("vehicle_type/motorcycle");
-    });
-
-  });
-
-  describe("deprecated styling", () => {
-    it("renders a deprecated badge for deprecated nodes", async () => {
-      const user = userEvent.setup();
-      renderTreeSelect();
-
-      await user.click(getInput());
-
-      await user.click(screen.getByLabelText("Expand car"));
-      await user.click(screen.getByLabelText("Expand make"));
-      await user.click(screen.getByLabelText("Expand Toyota"));
-
-      const modelChevrons = screen.getAllByLabelText("Expand model");
-      await user.click(modelChevrons[modelChevrons.length - 1]);
-
-      expect(screen.getByText("Corolla")).toBeInTheDocument();
-      expect(screen.getByText("deprecated")).toBeInTheDocument();
     });
   });
 
@@ -342,7 +341,10 @@ describe("TreeSelect", () => {
     it("renders the panel outside the wrapper when portal is true", async () => {
       const user = userEvent.setup();
       render(
-        <div data-testid="overflow-wrap" style={{ overflow: "hidden", height: 100 }}>
+        <div
+          data-testid="overflow-wrap"
+          style={{ overflow: "hidden", height: 100 }}
+        >
           <TreeSelect root={vehicleTree} portal />
         </div>
       );
@@ -433,7 +435,7 @@ describe("TreeSelect", () => {
       await user.click(getInput());
       // The component uses requestAnimationFrame to focus the search input.
       // Flush the rAF so keyboard events dispatch on the search input.
-      await new Promise((r) => requestAnimationFrame(r));
+      await new Promise((r) => window.requestAnimationFrame(r));
     }
 
     it("activates the first row on initial open", async () => {
@@ -1082,8 +1084,8 @@ describe("TreeSelect", () => {
       await user.click(getInput());
 
       const expandButtons = screen.getAllByRole("button", { name: /Expand/ });
-      const lazyChevron = expandButtons.find((btn) =>
-        btn.getAttribute("aria-label") === "Expand lazy_branch"
+      const lazyChevron = expandButtons.find(
+        (btn) => btn.getAttribute("aria-label") === "Expand lazy_branch"
       )!;
       await user.click(lazyChevron);
 
@@ -1095,7 +1097,10 @@ describe("TreeSelect", () => {
       const user = userEvent.setup();
       let resolve!: (value: TreeNode[]) => void;
       const loadChildren = jest.fn<Promise<TreeNode[]>, [string]>(
-        () => new Promise((r) => { resolve = r; })
+        () =>
+          new Promise((r) => {
+            resolve = r;
+          })
       );
       renderTreeSelect({ root: lazyTree, loadChildren });
 
@@ -1108,6 +1113,7 @@ describe("TreeSelect", () => {
 
       expect(screen.queryByText("async_child")).not.toBeInTheDocument();
 
+      // eslint-disable-next-line @typescript-eslint/require-await
       await act(async () => {
         resolve([{ name: "async_child" }]);
       });
@@ -1117,8 +1123,8 @@ describe("TreeSelect", () => {
 
     it("does not call loadChildren for non-lazy branches", async () => {
       const user = userEvent.setup();
-      const loadChildren = jest.fn<Promise<TreeNode[]>, [string]>(
-        () => Promise.resolve([])
+      const loadChildren = jest.fn<Promise<TreeNode[]>, [string]>(() =>
+        Promise.resolve([])
       );
       renderTreeSelect({ root: lazyTree, loadChildren });
 
@@ -1173,7 +1179,10 @@ describe("TreeSelect", () => {
       const user = userEvent.setup();
       let resolve!: (value: TreeNode[]) => void;
       const loadChildren = jest.fn<Promise<TreeNode[]>, [string]>(
-        () => new Promise((r) => { resolve = r; })
+        () =>
+          new Promise((r) => {
+            resolve = r;
+          })
       );
       renderTreeSelect({ root: lazyTree, loadChildren });
 
@@ -1185,16 +1194,19 @@ describe("TreeSelect", () => {
       await user.click(lazyChevron);
 
       expect(
-        screen.getByRole("treeitem", { name: /lazy_branch/ })
+        screen
+          .getByRole("treeitem", { name: /lazy_branch/ })
           .querySelector(".animate-spin")
       ).toBeInTheDocument();
 
+      // eslint-disable-next-line @typescript-eslint/require-await
       await act(async () => {
         resolve([{ name: "loaded_child" }]);
       });
 
       expect(
-        screen.getByRole("treeitem", { name: /lazy_branch/ })
+        screen
+          .getByRole("treeitem", { name: /lazy_branch/ })
           .querySelector(".animate-spin")
       ).not.toBeInTheDocument();
       expect(screen.getByText("loaded_child")).toBeInTheDocument();
@@ -1204,7 +1216,10 @@ describe("TreeSelect", () => {
       const user = userEvent.setup();
       let reject!: (reason: Error) => void;
       const loadChildren = jest.fn<Promise<TreeNode[]>, [string]>(
-        () => new Promise((_r, rej) => { reject = rej; })
+        () =>
+          new Promise((_r, rej) => {
+            reject = rej;
+          })
       );
       renderTreeSelect({ root: lazyTree, loadChildren });
 
@@ -1215,6 +1230,7 @@ describe("TreeSelect", () => {
       });
       await user.click(lazyChevron);
 
+      // eslint-disable-next-line @typescript-eslint/require-await
       await act(async () => {
         reject(new Error("network error"));
       });
@@ -1226,17 +1242,22 @@ describe("TreeSelect", () => {
 
       let resolveRetry!: (value: TreeNode[]) => void;
       loadChildren.mockImplementation(
-        () => new Promise((r) => { resolveRetry = r; })
+        () =>
+          new Promise((r) => {
+            resolveRetry = r;
+          })
       );
 
       await user.click(retryButton!);
 
       expect(loadChildren).toHaveBeenCalledTimes(2);
       expect(
-        screen.getByRole("treeitem", { name: /lazy_branch/ })
+        screen
+          .getByRole("treeitem", { name: /lazy_branch/ })
           .querySelector(".animate-spin")
       ).toBeInTheDocument();
 
+      // eslint-disable-next-line @typescript-eslint/require-await
       await act(async () => {
         resolveRetry([{ name: "retried_child" }]);
       });

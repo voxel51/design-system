@@ -37,12 +37,7 @@ export const TreeSelectSearchInput: FC<TreeSelectSearchInputProps> = ({
   activeDescendantId,
 }) => {
   return (
-    <div
-      className={cn(
-        "shrink-0 p-1.5",
-        bgColorClass(BackgroundColor.Card1)
-      )}
-    >
+    <div className={cn("shrink-0 p-1.5", bgColorClass(BackgroundColor.Card1))}>
       <Stack align={Align.Center} className="relative">
         <span className="pointer-events-none absolute left-2.5 flex items-center">
           <Icon
@@ -69,7 +64,9 @@ export const TreeSelectSearchInput: FC<TreeSelectSearchInputProps> = ({
             aria-label="Clear search"
             onClick={() => {
               onChange("");
-              (inputRef as React.RefObject<HTMLInputElement>).current?.focus();
+              if (inputRef && typeof inputRef === "object") {
+                inputRef.current?.focus();
+              }
             }}
             className={cn(
               "group",

@@ -1,4 +1,4 @@
-import type { FC } from "react";
+import React, { type FC } from "react";
 
 import { Icon } from "@/components/Icons";
 import { inputStyle } from "@/components/Input";
@@ -36,7 +36,7 @@ function ChevronIndicator({
 }: {
   isOpen: boolean;
   disabled?: boolean;
-}) {
+}): React.ReactElement {
   return (
     <span
       className={cn(
@@ -56,7 +56,11 @@ function ChevronIndicator({
   );
 }
 
-function ClearButton({ onClick }: { onClick: (e: React.MouseEvent) => void }) {
+function ClearButton({
+  onClick,
+}: {
+  onClick: (e: React.MouseEvent) => void;
+}): React.ReactElement {
   return (
     <button
       type="button"
@@ -104,7 +108,7 @@ export const TreeSelectTrigger: FC<TreeSelectTriggerProps> = ({
   onClear,
   onRemoveOne,
 }) => {
-  const handleClear = (e: React.MouseEvent) => {
+  const handleClear = (e: React.MouseEvent): void => {
     e.stopPropagation();
     onClear();
   };
@@ -113,11 +117,19 @@ export const TreeSelectTrigger: FC<TreeSelectTriggerProps> = ({
     return (
       <div
         role="combobox"
+        tabIndex={disabled ? -1 : 0}
         aria-haspopup="tree"
         aria-expanded={isOpen}
         aria-controls={isOpen ? panelId : undefined}
         onClick={() => {
           if (!disabled) onToggle();
+        }}
+        onKeyDown={(e) => {
+          if (disabled) return;
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onToggle();
+          }
         }}
         className={cn(
           inputStyle({ disabled }),

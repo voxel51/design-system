@@ -1,4 +1,4 @@
-import type { FC } from "react";
+import React, { type FC } from "react";
 
 import { Checkbox } from "@/components/Checkbox";
 import { Icon } from "@/components/Icons/Icon";
@@ -64,7 +64,13 @@ function highlightMatch(text: string, query?: string): React.ReactNode {
  *
  * @internal For use by TreeSelectPanel.
  */
-export const TreeSelectNode: FC<TreeSelectNodeProps> = ({ resolved, tree, query, multiSelect, onRetryLoad }) => {
+export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
+  resolved,
+  tree,
+  query,
+  multiSelect,
+  onRetryLoad,
+}) => {
   const { node, path, depth } = resolved;
   const isBranch = !resolved.isLeaf;
   const isSelected = tree.isSelected(resolved);
@@ -73,7 +79,10 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({ resolved, tree, query,
   const nodeLoadState = tree.getLoadState(path);
 
   const showIndeterminate =
-    !!multiSelect && isBranch && !isSelected && tree.hasSelectedDescendant(resolved);
+    !!multiSelect &&
+    isBranch &&
+    !isSelected &&
+    tree.hasSelectedDescendant(resolved);
 
   const itemProps = tree.getItemProps(resolved);
   const textColor = node.deprecated ? TextColor.Muted : TextColor.Primary;
@@ -98,7 +107,7 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({ resolved, tree, query,
     extraClassName: string,
     props: ReturnType<typeof tree.getChevronProps> | null,
     onClick?: (e: React.MouseEvent) => void
-  ) => (
+  ): React.ReactElement => (
     <button
       type="button"
       tabIndex={-1}
@@ -127,12 +136,10 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({ resolved, tree, query,
   if (!isBranch) {
     chevron = <span className="size-5 shrink-0" />;
   } else if (nodeLoadState === "loading") {
-    chevron = chevronButton(
-      IconName.Spinner,
-      "animate-spin",
-      null,
-      (e) => { e.stopPropagation(); e.preventDefault(); }
-    );
+    chevron = chevronButton(IconName.Spinner, "animate-spin", null, (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+    });
   } else if (nodeLoadState === "error") {
     chevron = chevronButton(
       IconName.Refresh,

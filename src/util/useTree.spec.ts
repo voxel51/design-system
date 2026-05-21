@@ -1,4 +1,5 @@
 import { act, renderHook } from "@testing-library/react";
+import React from "react";
 
 import { buildResolvedTree } from "@/components/TreeSelect/tree";
 import type { TreeNode } from "@/components/TreeSelect/types";
@@ -522,9 +523,7 @@ describe("useTree", () => {
 
   describe("hasSelectedDescendant", () => {
     it("returns true for every ancestor of a selected path", () => {
-      const selection = new Set([
-        "vehicle_type/car/make/Honda/model/Civic",
-      ]);
+      const selection = new Set(["vehicle_type/car/make/Honda/model/Civic"]);
       const { result } = setup({ selection });
       const find = (p: string) =>
         result.current.visibleNodes.find((n) => n.path === p);
@@ -535,9 +534,7 @@ describe("useTree", () => {
     });
 
     it("returns true for intermediate ancestors", () => {
-      const selection = new Set([
-        "vehicle_type/car/make/Honda/model/Civic",
-      ]);
+      const selection = new Set(["vehicle_type/car/make/Honda/model/Civic"]);
       const { result } = setup({
         selection,
         defaultExpanded: true,
@@ -570,9 +567,7 @@ describe("useTree", () => {
     });
 
     it("returns false for siblings of ancestors", () => {
-      const selection = new Set([
-        "vehicle_type/car/make/Honda/model/Civic",
-      ]);
+      const selection = new Set(["vehicle_type/car/make/Honda/model/Civic"]);
       const { result } = setup({ selection });
       const moto = result.current.visibleNodes.find(
         (n) => n.path === "vehicle_type/motorcycle"

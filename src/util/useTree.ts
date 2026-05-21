@@ -8,13 +8,12 @@ import {
   useState,
 } from "react";
 
-import type { ResolvedNode } from "@/components/TreeSelect/types";
-
 import {
   collectBranchPaths,
   flattenVisible,
   getParentPath,
 } from "@/components/TreeSelect/tree";
+import type { ResolvedNode } from "@/components/TreeSelect/types";
 
 function encodeRowId(prefix: string, path: string): string {
   return `${prefix}-${path.replace(/\//g, "-")}`;
@@ -83,9 +82,18 @@ export interface TreeItemProps {
 export interface TreeChevronProps {
   "aria-expanded": boolean;
   "aria-label": string;
-  onClick: (e: { stopPropagation: () => void; preventDefault: () => void }) => void;
-  onPointerDown: (e: { stopPropagation: () => void; preventDefault: () => void }) => void;
-  onPointerUp: (e: { stopPropagation: () => void; preventDefault: () => void }) => void;
+  onClick: (e: {
+    stopPropagation: () => void;
+    preventDefault: () => void;
+  }) => void;
+  onPointerDown: (e: {
+    stopPropagation: () => void;
+    preventDefault: () => void;
+  }) => void;
+  onPointerUp: (e: {
+    stopPropagation: () => void;
+    preventDefault: () => void;
+  }) => void;
 }
 
 export interface UseTreeReturn {
@@ -324,7 +332,7 @@ export function useTree(options: UseTreeOptions): UseTreeReturn {
       const stop = (e: {
         stopPropagation: () => void;
         preventDefault: () => void;
-      }) => {
+      }): void => {
         e.stopPropagation();
         e.preventDefault();
       };
@@ -342,7 +350,7 @@ export function useTree(options: UseTreeOptions): UseTreeReturn {
         onPointerUp: stop,
       };
     },
-    [idPrefix, isOpen, toggleExpand]
+    [isOpen, toggleExpand]
   );
 
   // --- Keyboard handler ---

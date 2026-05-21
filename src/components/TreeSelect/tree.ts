@@ -68,7 +68,7 @@ export function buildResolvedTree(
       ? []
       : node.values?.length
         ? node.values
-        : cached ?? [];
+        : (cached ?? []);
     const children = childValues.map((child, i) =>
       walk(child, path, depth + 1, i, childValues.length)
     );
@@ -145,7 +145,10 @@ export function filterTreeForQuery(
     }
   }
 
-  function findNode(root: ResolvedNode, path: string): ResolvedNode | undefined {
+  function findNode(
+    root: ResolvedNode,
+    path: string
+  ): ResolvedNode | undefined {
     if (root.path === path) return root;
     for (const child of root.children) {
       const found = findNode(child, path);

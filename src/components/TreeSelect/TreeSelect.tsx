@@ -21,9 +21,9 @@ import { cn } from "@/util/classes";
 import { useDebouncedCallback } from "@/util/useDebouncedCallback";
 import { useTree } from "@/util/useTree";
 
-import { buildResolvedTree, filterTreeForQuery, getNodeByPath } from "./tree";
 import { TreeSelectPanel } from "./TreeSelectPanel";
 import { TreeSelectTrigger } from "./TreeSelectTrigger";
+import { buildResolvedTree, filterTreeForQuery, getNodeByPath } from "./tree";
 import type { TreeNode, TreeSelectProps } from "./types";
 
 const ANCHOR_TO_PLACEMENT: Record<SelectAnchor, Placement> = {
@@ -139,15 +139,22 @@ export const TreeSelect: FC<TreeSelectProps> = ({
   const handleSelect = useCallback(
     (selected: string) => {
       if (multiSelect) {
-        const current = (value as string[] | undefined) ?? [];
+        const multiValue = value;
+        const multiOnChange = onChange as
+          | ((paths: string[]) => void)
+          | undefined;
+        const current = multiValue ?? [];
         const next = current.includes(selected)
           ? current.filter((p) => p !== selected)
           : [...current, selected];
-        (onChange as ((paths: string[]) => void) | undefined)?.(next);
+        multiOnChange?.(next);
       } else {
         setQuery("");
         setIsOpen(false);
-        (onChange as ((path: string | null) => void) | undefined)?.(selected);
+        const singleOnChange = onChange as
+          | ((path: string | null) => void)
+          | undefined;
+        singleOnChange?.(selected);
       }
     },
     [multiSelect, value, onChange]
@@ -197,7 +204,12 @@ export const TreeSelect: FC<TreeSelectProps> = ({
       });
       if (!loadChildren) return;
       const sourceNode = getNodeByPath(root, path);
-      if (!sourceNode || !Array.isArray(sourceNode.values) || sourceNode.values.length > 0) return;
+      if (
+        !sourceNode ||
+        !Array.isArray(sourceNode.values) ||
+        sourceNode.values.length > 0
+      )
+        return;
       setLoadState((prev) => new Map(prev).set(path, "loading"));
       loadChildren(path).then(
         (children) => {
@@ -218,10 +230,11 @@ export const TreeSelect: FC<TreeSelectProps> = ({
 
   const selection = useMemo<Set<string> | undefined>(() => {
     if (multiSelect) {
-      const arr = value as string[] | undefined;
+      const arr = value;
       return arr?.length ? new Set(arr) : undefined;
     }
-    return value ? new Set([value as string]) : undefined;
+    const singleValue = value;
+    return singleValue ? new Set([singleValue]) : undefined;
   }, [multiSelect, value]);
 
   const tree = useTree({
@@ -265,19 +278,21 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     setQuery("");
     setIsOpen(false);
     if (multiSelect) {
-      (onChange as ((paths: string[]) => void) | undefined)?.([]);
+      const multiOnChange = onChange as ((paths: string[]) => void) | undefined;
+      multiOnChange?.([]);
     } else {
-      (onChange as ((path: string | null) => void) | undefined)?.(null);
+      const singleOnChange = onChange as
+        | ((path: string | null) => void)
+        | undefined;
+      singleOnChange?.(null);
     }
   }, [multiSelect, onChange]);
 
   // Focus search input when panel opens; initialize active path
   useEffect(() => {
     if (isOpen) {
-      requestAnimationFrame(() => searchInputRef.current?.focus());
-      const singleValue = multiSelect
-        ? undefined
-        : (value as string | undefined);
+      window.requestAnimationFrame(() => searchInputRef.current?.focus());
+      const singleValue = multiSelect ? undefined : value;
       const initial =
         singleValue && tree.visibleNodes.some((n) => n.path === singleValue)
           ? singleValue
@@ -301,7 +316,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
   useEffect(() => {
     if (!isOpen) return;
 
-    const handleClickOutside = (e: MouseEvent) => {
+    const handleClickOutside = (e: MouseEvent): void => {
       const target = e.target as Node;
       const reference = refs.reference.current as HTMLElement | null;
       const floating = refs.floating.current;
@@ -316,17 +331,14 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen, refs.reference, refs.floating]);
 
-  const hasValue = multiSelect
-    ? !!(value as string[] | undefined)?.length
-    : !!value;
+  const hasValue = multiSelect ? !!value?.length : !!value;
 
   const removeOne = useCallback(
     (pathToRemove: string) => {
       if (!multiSelect) return;
-      const current = (value as string[] | undefined) ?? [];
-      (onChange as ((paths: string[]) => void) | undefined)?.(
-        current.filter((p) => p !== pathToRemove)
-      );
+      const multiOnChange = onChange as ((paths: string[]) => void) | undefined;
+      const current = value ?? [];
+      multiOnChange?.(current.filter((p) => p !== pathToRemove));
     },
     [multiSelect, value, onChange]
   );

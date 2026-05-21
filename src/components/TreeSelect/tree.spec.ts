@@ -1,4 +1,3 @@
-import type { TreeNode } from "./types";
 import {
   buildResolvedTree,
   collectBranchPaths,
@@ -10,6 +9,7 @@ import {
   isSelectable,
   splitPath,
 } from "./tree";
+import type { TreeNode } from "./types";
 
 const vehicleTree: TreeNode = {
   name: "vehicle_type",
@@ -307,7 +307,9 @@ describe("filterTreeForQuery", () => {
     expect(names).toContain("model");
     expect(names).toContain("Civic");
     expect(names).toContain("Accord");
-    expect(result.forceOpenPaths.has("vehicle_type/car/make/Honda")).toBe(false);
+    expect(result.forceOpenPaths.has("vehicle_type/car/make/Honda")).toBe(
+      false
+    );
   });
 
   it("force-expands only ancestors, not matches themselves", () => {
@@ -316,7 +318,9 @@ describe("filterTreeForQuery", () => {
     expect(result.forceOpenPaths.has("vehicle_type")).toBe(true);
     expect(result.forceOpenPaths.has("vehicle_type/car")).toBe(true);
     expect(result.forceOpenPaths.has("vehicle_type/car/make")).toBe(true);
-    expect(result.forceOpenPaths.has("vehicle_type/car/make/Honda")).toBe(false);
+    expect(result.forceOpenPaths.has("vehicle_type/car/make/Honda")).toBe(
+      false
+    );
   });
 
   it("unions results from multiple matches across branches", () => {
@@ -458,10 +462,7 @@ describe("flattenVisible", () => {
   });
 
   it("recurses into deeply expanded paths", () => {
-    const openPaths = new Set([
-      "vehicle_type/car",
-      "vehicle_type/car/make",
-    ]);
+    const openPaths = new Set(["vehicle_type/car", "vehicle_type/car/make"]);
     const flat = flattenVisible(resolved, (p) => openPaths.has(p));
     const names = flat.map((n) => n.node.name);
     expect(names).toEqual([

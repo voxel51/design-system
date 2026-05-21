@@ -1,8 +1,7 @@
 import type { HTMLAttributes } from "react";
 
-import type { ZIndex } from "@/types";
-
 import type { SelectAnchor } from "@/components/Select";
+import type { ZIndex } from "@/types";
 
 /**
  * A node within a tree.
