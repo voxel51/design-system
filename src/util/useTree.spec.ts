@@ -598,4 +598,67 @@ describe("useTree", () => {
       }
     });
   });
+
+  describe("onExpand", () => {
+    it("fires when toggleExpand opens a path", () => {
+      const onExpand = jest.fn();
+      const { result } = setup({ onExpand });
+
+      act(() => result.current.toggleExpand("vehicle_type/car"));
+
+      expect(onExpand).toHaveBeenCalledTimes(1);
+      expect(onExpand).toHaveBeenCalledWith("vehicle_type/car");
+    });
+
+    it("does not fire when toggleExpand closes an already-open path", () => {
+      const onExpand = jest.fn();
+      const { result } = setup({ onExpand });
+
+      act(() => result.current.toggleExpand("vehicle_type/car"));
+      onExpand.mockClear();
+
+      act(() => result.current.toggleExpand("vehicle_type/car"));
+      expect(onExpand).not.toHaveBeenCalled();
+    });
+
+    it("fires when expand opens a new path", () => {
+      const onExpand = jest.fn();
+      const { result } = setup({ onExpand });
+
+      act(() => result.current.expand("vehicle_type/car"));
+
+      expect(onExpand).toHaveBeenCalledTimes(1);
+      expect(onExpand).toHaveBeenCalledWith("vehicle_type/car");
+    });
+
+    it("does not fire when expand is called on an already-open path", () => {
+      const onExpand = jest.fn();
+      const { result } = setup({ onExpand });
+
+      act(() => result.current.expand("vehicle_type/car"));
+      onExpand.mockClear();
+
+      act(() => result.current.expand("vehicle_type/car"));
+      expect(onExpand).not.toHaveBeenCalled();
+    });
+
+    it("fires on ArrowRight when a collapsed branch is active", () => {
+      const onExpand = jest.fn();
+      const { result } = setup({ onExpand });
+
+      act(() => result.current.setActivePath("vehicle_type/car"));
+      act(() => result.current.handleKeyDown(fakeKeyEvent("ArrowRight")));
+
+      expect(onExpand).toHaveBeenCalledTimes(1);
+      expect(onExpand).toHaveBeenCalledWith("vehicle_type/car");
+    });
+
+    it("does not fire for paths opened only via forceOpenPaths", () => {
+      const onExpand = jest.fn();
+      const forceOpenPaths = new Set(["vehicle_type/car"]);
+      setup({ onExpand, forceOpenPaths });
+
+      expect(onExpand).not.toHaveBeenCalled();
+    });
+  });
 });

@@ -197,9 +197,6 @@ describe("buildResolvedTree", () => {
   });
 
   it("treats an empty values array as an unloaded branch, not a leaf", () => {
-    // values: [] is the backend signal for "branch with children that
-    // have not been loaded yet" (truncated). It must render as a branch
-    // (chevron visible) with no resolved children.
     const tree: TreeNode = { name: "root", values: [] };
     const resolved = buildResolvedTree(tree);
     expect(resolved.isLeaf).toBe(false);
@@ -211,6 +208,55 @@ describe("buildResolvedTree", () => {
     const resolved = buildResolvedTree(tree);
     expect(resolved.isLeaf).toBe(true);
     expect(resolved.children).toEqual([]);
+  });
+
+  it("marks values: [] as isLazyBranch when no cache exists", () => {
+    const tree: TreeNode = { name: "root", values: [] };
+    const resolved = buildResolvedTree(tree);
+    expect(resolved.isLazyBranch).toBe(true);
+  });
+
+  it("marks values: undefined (leaf) as isLazyBranch false", () => {
+    const tree: TreeNode = { name: "root" };
+    const resolved = buildResolvedTree(tree);
+    expect(resolved.isLazyBranch).toBe(false);
+  });
+
+  it("marks non-empty values as isLazyBranch false", () => {
+    const resolved = buildResolvedTree(vehicleTree);
+    expect(resolved.isLazyBranch).toBe(false);
+    expect(resolved.children[0].isLazyBranch).toBe(false);
+  });
+
+  it("resolves cached children for a lazy branch", () => {
+    const tree: TreeNode = {
+      name: "root",
+      values: [{ name: "lazy_branch", values: [] }],
+    };
+    const cache = new Map<string, TreeNode[]>([
+      ["root/lazy_branch", [{ name: "child_a" }, { name: "child_b" }]],
+    ]);
+    const resolved = buildResolvedTree(tree, {}, cache);
+    const branch = resolved.children[0];
+    expect(branch.isLazyBranch).toBe(false);
+    expect(branch.isLeaf).toBe(false);
+    expect(branch.children).toHaveLength(2);
+    expect(branch.children[0].node.name).toBe("child_a");
+    expect(branch.children[1].node.name).toBe("child_b");
+  });
+
+  it("ignores cache for nodes with populated values", () => {
+    const tree: TreeNode = {
+      name: "root",
+      values: [{ name: "branch", values: [{ name: "existing" }] }],
+    };
+    const cache = new Map<string, TreeNode[]>([
+      ["root/branch", [{ name: "cached_child" }]],
+    ]);
+    const resolved = buildResolvedTree(tree, {}, cache);
+    const branch = resolved.children[0];
+    expect(branch.children).toHaveLength(1);
+    expect(branch.children[0].node.name).toBe("existing");
   });
 });
 

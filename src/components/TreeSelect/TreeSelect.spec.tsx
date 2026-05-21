@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { ZIndex } from "@/types";
@@ -1040,6 +1040,96 @@ describe("TreeSelect", () => {
       const treeitem = carItem.closest('[role="treeitem"]') as HTMLElement;
       expect(treeitem).toHaveAttribute("aria-posinset", "1");
       expect(treeitem).toHaveAttribute("aria-setsize", "1");
+    });
+  });
+
+  describe("async loading", () => {
+    const lazyTree: TreeNode = {
+      name: "root",
+      values: [
+        { name: "loaded_branch", values: [{ name: "child_a" }] },
+        { name: "lazy_branch", values: [] },
+        { name: "leaf_node" },
+      ],
+    };
+
+    it("calls loadChildren with the full path when a lazy branch chevron is clicked", async () => {
+      const user = userEvent.setup();
+      const loadChildren = jest.fn<Promise<TreeNode[]>, [string]>(
+        () => new Promise(() => {})
+      );
+      renderTreeSelect({ root: lazyTree, loadChildren });
+
+      await user.click(getInput());
+
+      const expandButtons = screen.getAllByRole("button", { name: /Expand/ });
+      const lazyChevron = expandButtons.find((btn) =>
+        btn.getAttribute("aria-label") === "Expand lazy_branch"
+      )!;
+      await user.click(lazyChevron);
+
+      expect(loadChildren).toHaveBeenCalledTimes(1);
+      expect(loadChildren).toHaveBeenCalledWith("root/lazy_branch");
+    });
+
+    it("renders loaded children after loadChildren resolves", async () => {
+      const user = userEvent.setup();
+      let resolve!: (value: TreeNode[]) => void;
+      const loadChildren = jest.fn<Promise<TreeNode[]>, [string]>(
+        () => new Promise((r) => { resolve = r; })
+      );
+      renderTreeSelect({ root: lazyTree, loadChildren });
+
+      await user.click(getInput());
+
+      const lazyChevron = screen.getByRole("button", {
+        name: "Expand lazy_branch",
+      });
+      await user.click(lazyChevron);
+
+      expect(screen.queryByText("async_child")).not.toBeInTheDocument();
+
+      await act(async () => {
+        resolve([{ name: "async_child" }]);
+      });
+
+      expect(screen.getByText("async_child")).toBeInTheDocument();
+    });
+
+    it("does not call loadChildren for non-lazy branches", async () => {
+      const user = userEvent.setup();
+      const loadChildren = jest.fn<Promise<TreeNode[]>, [string]>(
+        () => Promise.resolve([])
+      );
+      renderTreeSelect({ root: lazyTree, loadChildren });
+
+      await user.click(getInput());
+
+      const loadedChevron = screen.getByRole("button", {
+        name: "Expand loaded_branch",
+      });
+      await user.click(loadedChevron);
+
+      expect(loadChildren).not.toHaveBeenCalled();
+    });
+
+    it("de-duplicates in-flight requests on rapid clicks", async () => {
+      const user = userEvent.setup();
+      const loadChildren = jest.fn<Promise<TreeNode[]>, [string]>(
+        () => new Promise(() => {})
+      );
+      renderTreeSelect({ root: lazyTree, loadChildren });
+
+      await user.click(getInput());
+
+      const lazyChevron = screen.getByRole("button", {
+        name: "Expand lazy_branch",
+      });
+      await user.click(lazyChevron);
+      await user.click(lazyChevron);
+      await user.click(lazyChevron);
+
+      expect(loadChildren).toHaveBeenCalledTimes(1);
     });
   });
 });

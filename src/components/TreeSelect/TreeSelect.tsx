@@ -172,8 +172,8 @@ export const TreeSelect: FC<TreeSelectProps> = ({
         return;
       setLoadState((prev) => new Map(prev).set(path, "loading"));
       loadChildren(path).then(
-        (kids) => {
-          setLoadedChildren((prev) => new Map(prev).set(path, kids));
+        (children) => {
+          setLoadedChildren((prev) => new Map(prev).set(path, children));
           setLoadState((prev) => {
             const next = new Map(prev);
             next.delete(path);
