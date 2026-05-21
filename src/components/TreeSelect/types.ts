@@ -8,11 +8,11 @@ import type { SelectAnchor } from "@/components/Select";
  * A node within a tree.
  *
  * `values` has three meaningful states:
- * - `TreeNode[]` (non-empty) — branch with known children.
- * - `[]` — explicit leaf (rare; usually omit the field entirely).
- * - `undefined` — unknown / not yet loaded. In the current version this
- *   renders identically to a leaf. A future `loadChildren` prop will treat
- *   this as a lazy-loadable branch.
+ * - `TreeNode[]` (non-empty) — branch with known, loaded children.
+ * - `[]` — branch whose children have not yet been loaded (truncated by
+ *   the source). Renders with a chevron; expanding it triggers
+ *   `loadChildren` (when wired up).
+ * - `undefined` — leaf node; the field is omitted entirely.
  */
 export interface TreeNode {
   name: string;

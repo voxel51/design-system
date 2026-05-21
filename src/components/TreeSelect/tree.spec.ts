@@ -196,8 +196,18 @@ describe("buildResolvedTree", () => {
     expect(motorcycle.children).toEqual([]);
   });
 
-  it("handles empty values array as a leaf", () => {
+  it("treats an empty values array as an unloaded branch, not a leaf", () => {
+    // values: [] is the backend signal for "branch with children that
+    // have not been loaded yet" (truncated). It must render as a branch
+    // (chevron visible) with no resolved children.
     const tree: TreeNode = { name: "root", values: [] };
+    const resolved = buildResolvedTree(tree);
+    expect(resolved.isLeaf).toBe(false);
+    expect(resolved.children).toEqual([]);
+  });
+
+  it("treats missing values key as a leaf", () => {
+    const tree: TreeNode = { name: "root" };
     const resolved = buildResolvedTree(tree);
     expect(resolved.isLeaf).toBe(true);
     expect(resolved.children).toEqual([]);

@@ -4,10 +4,14 @@ const PATH_SEPARATOR = "/";
 
 /**
  * Whether a node counts as a leaf (has no children).
- * Both `undefined` and empty-array `values` are treated as leaves.
+ *
+ * Only `values: undefined` indicates a leaf. `values: []` represents a
+ * branch whose children have not yet been loaded (truncated by the
+ * source) and is therefore *not* a leaf — it should still render with
+ * a chevron.
  */
 function nodeIsLeaf(node: TreeNode): boolean {
-  return !node.values || node.values.length === 0;
+  return node.values === undefined;
 }
 
 /**
