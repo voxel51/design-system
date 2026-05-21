@@ -136,6 +136,15 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     [resolved, debouncedQuery]
   );
 
+  const selection = useMemo<Set<string> | undefined>(() => {
+    if (multiSelect) {
+      const arr = value;
+      return arr?.length ? new Set(arr) : undefined;
+    }
+    const singleValue = value;
+    return singleValue ? new Set([singleValue]) : undefined;
+  }, [multiSelect, value]);
+
   const handleSelect = useCallback(
     (selected: string) => {
       if (multiSelect) {
@@ -227,15 +236,6 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     },
     [loadChildren, root]
   );
-
-  const selection = useMemo<Set<string> | undefined>(() => {
-    if (multiSelect) {
-      const arr = value;
-      return arr?.length ? new Set(arr) : undefined;
-    }
-    const singleValue = value;
-    return singleValue ? new Set([singleValue]) : undefined;
-  }, [multiSelect, value]);
 
   const tree = useTree({
     tree: filtered?.tree ?? resolved,

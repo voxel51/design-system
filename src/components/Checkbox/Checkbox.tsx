@@ -29,11 +29,6 @@ type ModifiedCheckboxProps = Omit<
 export interface CheckboxProps extends ModifiedCheckboxProps {
   checked?: boolean;
   onChange?: (checked: boolean) => void;
-  /**
-   * When true (and `checked` is false), renders a dash icon with brand-accent
-   * fill and brand-primary border, indicating partial selection among
-   * descendants. Ignored when `checked` is true.
-   */
   indeterminate?: boolean;
   label?: string;
   disabled?: boolean;
