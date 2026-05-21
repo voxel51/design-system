@@ -188,6 +188,34 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     [loadChildren, loadedChildren, loadState, root]
   );
 
+  const handleRetryLoad = useCallback(
+    (path: string) => {
+      setLoadState((prev) => {
+        const next = new Map(prev);
+        next.delete(path);
+        return next;
+      });
+      if (!loadChildren) return;
+      const sourceNode = getNodeByPath(root, path);
+      if (!sourceNode || !Array.isArray(sourceNode.values) || sourceNode.values.length > 0) return;
+      setLoadState((prev) => new Map(prev).set(path, "loading"));
+      loadChildren(path).then(
+        (children) => {
+          setLoadedChildren((prev) => new Map(prev).set(path, children));
+          setLoadState((prev) => {
+            const next = new Map(prev);
+            next.delete(path);
+            return next;
+          });
+        },
+        () => {
+          setLoadState((prev) => new Map(prev).set(path, "error"));
+        }
+      );
+    },
+    [loadChildren, root]
+  );
+
   const selection = useMemo<Set<string> | undefined>(() => {
     if (multiSelect) {
       const arr = value as string[] | undefined;
@@ -205,6 +233,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     onSelect: handleSelect,
     onEscape: handleEscape,
     onExpand: handleExpand,
+    loadState,
   });
 
   const getDisplayValue = useCallback(
@@ -334,6 +363,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
           tree={tree}
           filteredTree={!!filtered}
           multiSelect={multiSelect}
+          onRetryLoad={handleRetryLoad}
         />
       )}
     </div>

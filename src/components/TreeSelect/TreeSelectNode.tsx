@@ -34,6 +34,7 @@ export interface TreeSelectNodeProps {
   tree: UseTreeReturn;
   query?: string;
   multiSelect?: boolean;
+  onRetryLoad?: (path: string) => void;
 }
 
 function highlightMatch(text: string, query?: string): React.ReactNode {
@@ -64,12 +65,13 @@ function highlightMatch(text: string, query?: string): React.ReactNode {
  *
  * @internal For use by TreeSelectPanel.
  */
-export const TreeSelectNode: FC<TreeSelectNodeProps> = ({ resolved, tree, query, multiSelect }) => {
+export const TreeSelectNode: FC<TreeSelectNodeProps> = ({ resolved, tree, query, multiSelect, onRetryLoad }) => {
   const { node, path, depth } = resolved;
   const isBranch = !resolved.isLeaf;
   const isSelected = tree.isSelected(resolved);
   const isActive = tree.isActive(path);
   const effectiveOpen = tree.isOpen(path);
+  const nodeLoadState = tree.getLoadState(path);
 
   const showIndeterminate =
     !!multiSelect && isBranch && !isSelected && tree.hasSelectedDescendant(resolved);
@@ -92,11 +94,17 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({ resolved, tree, query,
     bgColorClass(BackgroundColor.Card2, ElementState.Active)
   );
 
-  const chevron = isBranch ? (
+  const chevronButton = (
+    iconName: IconName,
+    extraClassName: string,
+    props: ReturnType<typeof tree.getChevronProps> | null,
+    onClick?: (e: React.MouseEvent) => void
+  ) => (
     <button
       type="button"
       tabIndex={-1}
-      {...tree.getChevronProps(resolved)}
+      {...(props ?? {})}
+      onClick={onClick ?? props?.onClick}
       className={cn(
         "group",
         "cursor-pointer",
@@ -105,18 +113,45 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({ resolved, tree, query,
       )}
     >
       <Icon
-        name={IconName.ChevronRight}
+        name={iconName}
         size={Size.Sm}
         className={cn(
           "text-content-text-secondary",
           "group-hover:text-content-text-primary",
-          effectiveOpen && "rotate-90"
+          extraClassName
         )}
       />
     </button>
-  ) : (
-    <span className="size-5 shrink-0" />
   );
+
+  let chevron: React.ReactNode;
+  if (!isBranch) {
+    chevron = <span className="size-5 shrink-0" />;
+  } else if (nodeLoadState === "loading") {
+    chevron = chevronButton(
+      IconName.Spinner,
+      "animate-spin",
+      null,
+      (e) => { e.stopPropagation(); e.preventDefault(); }
+    );
+  } else if (nodeLoadState === "error") {
+    chevron = chevronButton(
+      IconName.Refresh,
+      "",
+      null,
+      (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        onRetryLoad?.(path);
+      }
+    );
+  } else {
+    chevron = chevronButton(
+      IconName.ChevronRight,
+      effectiveOpen ? "rotate-90" : "",
+      tree.getChevronProps(resolved)
+    );
+  }
 
   const labelContent = (
     <>

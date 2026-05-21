@@ -69,6 +69,7 @@ export interface TreeSelectPanelProps {
   tree: UseTreeReturn;
   filteredTree: boolean;
   multiSelect?: boolean;
+  onRetryLoad?: (path: string) => void;
 }
 
 /**
@@ -97,6 +98,7 @@ export const TreeSelectPanel: FC<TreeSelectPanelProps> = ({
   tree,
   filteredTree,
   multiSelect,
+  onRetryLoad,
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -186,6 +188,7 @@ export const TreeSelectPanel: FC<TreeSelectPanelProps> = ({
                         tree={tree}
                         query={filteredTree ? query : undefined}
                         multiSelect={multiSelect}
+                        onRetryLoad={onRetryLoad}
                       />
                     </div>
                   );

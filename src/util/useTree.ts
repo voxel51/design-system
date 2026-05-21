@@ -50,6 +50,12 @@ export interface UseTreeOptions {
    */
   onExpand?: (path: string) => void;
   /**
+   * Async load state for lazy branches. Exposed via `getLoadState` so
+   * renderers can show spinners / error icons without direct access to the
+   * map.
+   */
+  loadState?: Map<string, "loading" | "error">;
+  /**
    * Branches to expand initially. User can still collapse them.
    * `resetExpansion()` restores this set rather than clearing to empty.
    *
@@ -122,6 +128,8 @@ export interface UseTreeReturn {
   isSelected: (node: ResolvedNode) => boolean;
   /** Whether any descendant of a node is in the current selection. */
   hasSelectedDescendant: (node: ResolvedNode) => boolean;
+  /** Async load state for a path: `"loading"`, `"error"`, or `undefined`. */
+  getLoadState: (path: string) => "loading" | "error" | undefined;
 }
 
 /**
@@ -142,6 +150,7 @@ export function useTree(options: UseTreeOptions): UseTreeReturn {
     onSelect,
     onEscape,
     onExpand,
+    loadState,
     defaultExpanded,
   } = options;
 
@@ -267,6 +276,11 @@ export function useTree(options: UseTreeOptions): UseTreeReturn {
   const hasSelectedDescendant = useCallback(
     (node: ResolvedNode) => ancestorsOfSelected.has(node.path),
     [ancestorsOfSelected]
+  );
+
+  const getLoadState = useCallback(
+    (path: string): "loading" | "error" | undefined => loadState?.get(path),
+    [loadState]
   );
 
   // --- Prop getters ---
@@ -430,5 +444,6 @@ export function useTree(options: UseTreeOptions): UseTreeReturn {
     isActive,
     isSelected,
     hasSelectedDescendant,
+    getLoadState,
   };
 }

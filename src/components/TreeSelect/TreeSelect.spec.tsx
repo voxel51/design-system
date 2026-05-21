@@ -1131,5 +1131,114 @@ describe("TreeSelect", () => {
 
       expect(loadChildren).toHaveBeenCalledTimes(1);
     });
+
+    it("renders a spinner icon while a lazy branch is loading", async () => {
+      const user = userEvent.setup();
+      const loadChildren = jest.fn<Promise<TreeNode[]>, [string]>(
+        () => new Promise(() => {})
+      );
+      renderTreeSelect({ root: lazyTree, loadChildren });
+
+      await user.click(getInput());
+
+      const lazyChevron = screen.getByRole("button", {
+        name: "Expand lazy_branch",
+      });
+      await user.click(lazyChevron);
+
+      const treeItem = screen.getByRole("treeitem", { name: /lazy_branch/ });
+      expect(treeItem.querySelector(".animate-spin")).toBeInTheDocument();
+    });
+
+    it("removes spinner and shows children after loadChildren resolves", async () => {
+      const user = userEvent.setup();
+      let resolve!: (value: TreeNode[]) => void;
+      const loadChildren = jest.fn<Promise<TreeNode[]>, [string]>(
+        () => new Promise((r) => { resolve = r; })
+      );
+      renderTreeSelect({ root: lazyTree, loadChildren });
+
+      await user.click(getInput());
+
+      const lazyChevron = screen.getByRole("button", {
+        name: "Expand lazy_branch",
+      });
+      await user.click(lazyChevron);
+
+      expect(
+        screen.getByRole("treeitem", { name: /lazy_branch/ })
+          .querySelector(".animate-spin")
+      ).toBeInTheDocument();
+
+      await act(async () => {
+        resolve([{ name: "loaded_child" }]);
+      });
+
+      expect(
+        screen.getByRole("treeitem", { name: /lazy_branch/ })
+          .querySelector(".animate-spin")
+      ).not.toBeInTheDocument();
+      expect(screen.getByText("loaded_child")).toBeInTheDocument();
+    });
+
+    it("renders a retry icon on error and retries when clicked", async () => {
+      const user = userEvent.setup();
+      let reject!: (reason: Error) => void;
+      const loadChildren = jest.fn<Promise<TreeNode[]>, [string]>(
+        () => new Promise((_r, rej) => { reject = rej; })
+      );
+      renderTreeSelect({ root: lazyTree, loadChildren });
+
+      await user.click(getInput());
+
+      const lazyChevron = screen.getByRole("button", {
+        name: "Expand lazy_branch",
+      });
+      await user.click(lazyChevron);
+
+      await act(async () => {
+        reject(new Error("network error"));
+      });
+
+      const treeItem = screen.getByRole("treeitem", { name: /lazy_branch/ });
+      expect(treeItem.querySelector(".animate-spin")).not.toBeInTheDocument();
+      const retryButton = treeItem.querySelector("button");
+      expect(retryButton).toBeInTheDocument();
+
+      let resolveRetry!: (value: TreeNode[]) => void;
+      loadChildren.mockImplementation(
+        () => new Promise((r) => { resolveRetry = r; })
+      );
+
+      await user.click(retryButton!);
+
+      expect(loadChildren).toHaveBeenCalledTimes(2);
+      expect(
+        screen.getByRole("treeitem", { name: /lazy_branch/ })
+          .querySelector(".animate-spin")
+      ).toBeInTheDocument();
+
+      await act(async () => {
+        resolveRetry([{ name: "retried_child" }]);
+      });
+
+      expect(screen.getByText("retried_child")).toBeInTheDocument();
+    });
+
+    it("search only finds matches in already-loaded subtrees", async () => {
+      const user = userEvent.setup();
+      const loadChildren = jest.fn<Promise<TreeNode[]>, [string]>(
+        () => new Promise(() => {})
+      );
+      renderTreeSelect({ root: lazyTree, loadChildren });
+
+      await user.click(getInput());
+
+      const searchInput = screen.getByLabelText("Search tree");
+      await user.type(searchInput, "child_a");
+
+      expect(await screen.findByText("child_a")).toBeInTheDocument();
+      expect(screen.queryByText("lazy_branch")).not.toBeInTheDocument();
+    });
   });
 });
