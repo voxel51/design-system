@@ -24,7 +24,7 @@ import { useTree } from "@/util/useTree";
 import { buildResolvedTree, filterTreeForQuery, getNodeByPath } from "./tree";
 import { TreeSelectPanel } from "./TreeSelectPanel";
 import { TreeSelectTrigger } from "./TreeSelectTrigger";
-import type { TreeSelectProps } from "./types";
+import type { TreeNode, TreeSelectProps } from "./types";
 
 const ANCHOR_TO_PLACEMENT: Record<SelectAnchor, Placement> = {
   [SelectAnchor.Bottom]: "bottom",
@@ -74,6 +74,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
   zIndex,
   displayValue: displayValueProp,
   defaultExpanded,
+  loadChildren,
   className,
   ...props
 }) => {
@@ -81,6 +82,19 @@ export const TreeSelect: FC<TreeSelectProps> = ({
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const [loadedChildren, setLoadedChildren] = useState(
+    () => new Map<string, TreeNode[]>()
+  );
+  const [loadState, setLoadState] = useState(
+    () => new Map<string, "loading" | "error">()
+  );
+
+  // Reset the async cache whenever the root node reference changes.
+  useEffect(() => {
+    setLoadedChildren(new Map());
+    setLoadState(new Map());
+  }, [root]);
 
   const { refs, floatingStyles } = useFloating({
     placement: ANCHOR_TO_PLACEMENT[anchor],
@@ -112,8 +126,8 @@ export const TreeSelect: FC<TreeSelectProps> = ({
   }, [query, debouncedSetQuery]);
 
   const resolved = useMemo(
-    () => buildResolvedTree(root, { leavesOnly }),
-    [root, leavesOnly]
+    () => buildResolvedTree(root, { leavesOnly }, loadedChildren),
+    [root, leavesOnly, loadedChildren]
   );
 
   const filtered = useMemo(
@@ -144,6 +158,36 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     setQuery("");
   }, []);
 
+  const handleExpand = useCallback(
+    (path: string) => {
+      if (!loadChildren) return;
+      if (loadedChildren.has(path)) return;
+      if (loadState.get(path) === "loading") return;
+      const sourceNode = getNodeByPath(root, path);
+      if (
+        !sourceNode ||
+        !Array.isArray(sourceNode.values) ||
+        sourceNode.values.length > 0
+      )
+        return;
+      setLoadState((prev) => new Map(prev).set(path, "loading"));
+      loadChildren(path).then(
+        (kids) => {
+          setLoadedChildren((prev) => new Map(prev).set(path, kids));
+          setLoadState((prev) => {
+            const next = new Map(prev);
+            next.delete(path);
+            return next;
+          });
+        },
+        () => {
+          setLoadState((prev) => new Map(prev).set(path, "error"));
+        }
+      );
+    },
+    [loadChildren, loadedChildren, loadState, root]
+  );
+
   const selection = useMemo<Set<string> | undefined>(() => {
     if (multiSelect) {
       const arr = value as string[] | undefined;
@@ -160,6 +204,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     scrollActiveIntoView: false,
     onSelect: handleSelect,
     onEscape: handleEscape,
+    onExpand: handleExpand,
   });
 
   const getDisplayValue = useCallback(
@@ -201,12 +246,13 @@ export const TreeSelect: FC<TreeSelectProps> = ({
   useEffect(() => {
     if (isOpen) {
       requestAnimationFrame(() => searchInputRef.current?.focus());
-      const singleValue = multiSelect ? undefined : (value as string | undefined);
+      const singleValue = multiSelect
+        ? undefined
+        : (value as string | undefined);
       const initial =
-        singleValue &&
-        tree.visibleNodes.some((n) => n.path === singleValue)
+        singleValue && tree.visibleNodes.some((n) => n.path === singleValue)
           ? singleValue
-          : tree.visibleNodes[0]?.path ?? null;
+          : (tree.visibleNodes[0]?.path ?? null);
       tree.setActivePath(initial);
     } else {
       tree.setActivePath(null);
@@ -242,7 +288,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
   }, [isOpen, refs.reference, refs.floating]);
 
   const hasValue = multiSelect
-    ? !!((value as string[] | undefined)?.length)
+    ? !!(value as string[] | undefined)?.length
     : !!value;
 
   const removeOne = useCallback(

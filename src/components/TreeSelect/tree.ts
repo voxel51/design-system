@@ -37,11 +37,15 @@ export function isSelectable(
  *
  * @param root The root node of the tree.
  * @param options.leavesOnly When `true`, branch nodes are marked non-selectable.
+ * @param loadedChildren Cache of asynchronously fetched children, keyed by
+ *   slash-delimited path. When a node has `values: []` and a cache entry
+ *   exists, the cached children are used in place of the empty array.
  * @returns The resolved root node (callers typically render its `children`).
  */
 export function buildResolvedTree(
   root: TreeNode,
-  options: { leavesOnly?: boolean } = {}
+  options: { leavesOnly?: boolean } = {},
+  loadedChildren?: Map<string, TreeNode[]>
 ): ResolvedNode {
   function walk(
     node: TreeNode,
@@ -55,8 +59,16 @@ export function buildResolvedTree(
       : node.name;
 
     const isLeaf = nodeIsLeaf(node);
+    const cached = loadedChildren?.get(path);
+    const sourceIsTruncatedBranch =
+      Array.isArray(node.values) && node.values.length === 0;
+    const isLazyBranch = sourceIsTruncatedBranch && !cached?.length;
 
-    const childValues = isLeaf ? [] : node.values!;
+    const childValues = isLeaf
+      ? []
+      : node.values?.length
+        ? node.values
+        : cached ?? [];
     const children = childValues.map((child, i) =>
       walk(child, path, depth + 1, i, childValues.length)
     );
@@ -67,6 +79,7 @@ export function buildResolvedTree(
       depth,
       selectable: isSelectable(node, options),
       isLeaf,
+      isLazyBranch,
       children,
       posinset: index + 1,
       setsize: siblingCount,

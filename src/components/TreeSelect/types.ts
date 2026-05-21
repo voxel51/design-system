@@ -36,9 +36,15 @@ export interface ResolvedNode {
   depth: number;
   /** Whether this node can be selected given current mode flags. */
   selectable: boolean;
-  /** `true` when the node has no children (or only empty `values`). */
+  /** `true` when the source node has `values: undefined` (a true leaf). */
   isLeaf: boolean;
-  /** Pre-resolved children, in source order. Empty array for leaves. */
+  /**
+   * `true` when the source node has `values: []` (truncated branch) and
+   * no cached children have been loaded for this path yet. Renders as a
+   * branch (chevron visible) with an empty `children` array.
+   */
+  isLazyBranch: boolean;
+  /** Pre-resolved children, in source order. Empty array for leaves and lazy branches. */
   children: ResolvedNode[];
   /** 1-based position among siblings (for `aria-posinset`). */
   posinset: number;
@@ -83,6 +89,14 @@ interface TreeSelectBaseProps extends Omit<
    * When omitted, the node name is shown (e.g. `"Civic"`).
    */
   displayValue?: (path: string, node: TreeNode) => string;
+  /**
+   * Fetches children for a lazy branch (a node whose `values` is an empty
+   * array). Called exactly once per lazy branch on first user-initiated
+   * expand. The returned children are spliced into the tree and cached for
+   * the lifetime of `root`. Errors set the branch to an "error" state with
+   * an inline retry control.
+   */
+  loadChildren?: (path: string) => Promise<TreeNode[]>;
   /**
    * Branches to expand when the panel first opens. Unlike `forceOpenPaths`
    * (which prevents collapsing), these paths are user-collapsible and

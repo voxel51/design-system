@@ -43,6 +43,13 @@ export interface UseTreeOptions {
   /** Fires on Escape key. */
   onEscape?: () => void;
   /**
+   * Fires when a branch is newly opened by user interaction
+   * (`toggleExpand`, `expand`, or ArrowRight). Does **not** fire for paths
+   * opened solely via `forceOpenPaths` (search auto-expand), and fires at
+   * most once per path transition from closed → open.
+   */
+  onExpand?: (path: string) => void;
+  /**
    * Branches to expand initially. User can still collapse them.
    * `resetExpansion()` restores this set rather than clearing to empty.
    *
@@ -134,6 +141,7 @@ export function useTree(options: UseTreeOptions): UseTreeReturn {
     scrollActiveIntoView = true,
     onSelect,
     onEscape,
+    onExpand,
     defaultExpanded,
   } = options;
 
@@ -152,6 +160,10 @@ export function useTree(options: UseTreeOptions): UseTreeReturn {
   const [expandedPaths, setExpandedPaths] = useState<Set<string>>(
     () => new Set(seedPaths)
   );
+
+  const expandedRef = useRef(expandedPaths);
+  expandedRef.current = expandedPaths;
+
   const [activePath, setActivePath] = useState<string | null>(null);
 
   const isOpen = useCallback(
@@ -171,23 +183,33 @@ export function useTree(options: UseTreeOptions): UseTreeReturn {
 
   // --- Expansion actions ---
 
-  const toggleExpand = useCallback((path: string) => {
-    setExpandedPaths((prev) => {
-      const next = new Set(prev);
-      if (next.has(path)) next.delete(path);
-      else next.add(path);
-      return next;
-    });
-  }, []);
+  const toggleExpand = useCallback(
+    (path: string) => {
+      const wasOpen = expandedRef.current.has(path);
+      setExpandedPaths((prev) => {
+        const next = new Set(prev);
+        if (next.has(path)) next.delete(path);
+        else next.add(path);
+        return next;
+      });
+      if (!wasOpen) onExpand?.(path);
+    },
+    [onExpand]
+  );
 
-  const expand = useCallback((path: string) => {
-    setExpandedPaths((prev) => {
-      if (prev.has(path)) return prev;
-      const next = new Set(prev);
-      next.add(path);
-      return next;
-    });
-  }, []);
+  const expand = useCallback(
+    (path: string) => {
+      const wasOpen = expandedRef.current.has(path);
+      setExpandedPaths((prev) => {
+        if (prev.has(path)) return prev;
+        const next = new Set(prev);
+        next.add(path);
+        return next;
+      });
+      if (!wasOpen) onExpand?.(path);
+    },
+    [onExpand]
+  );
 
   const collapse = useCallback((path: string) => {
     setExpandedPaths((prev) => {
