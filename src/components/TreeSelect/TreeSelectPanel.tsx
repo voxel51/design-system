@@ -70,6 +70,7 @@ export interface TreeSelectPanelProps {
   filteredTree: boolean;
   multiSelect?: boolean;
   onRetryLoad?: (path: string) => void;
+  panelMaxHeight?: string;
 }
 
 /**
@@ -99,6 +100,7 @@ export const TreeSelectPanel: FC<TreeSelectPanelProps> = ({
   filteredTree,
   multiSelect,
   onRetryLoad,
+  panelMaxHeight,
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -127,9 +129,9 @@ export const TreeSelectPanel: FC<TreeSelectPanelProps> = ({
         id={panelId}
         role="tree"
         aria-label="Tree selection"
-        style={floatingStyles}
+        style={{ ...floatingStyles, maxHeight: panelMaxHeight ?? "18rem" }}
         className={cn(
-          "max-h-72 flex flex-col overflow-hidden",
+          "flex flex-col overflow-hidden",
           "border",
           borderColorClass(BorderColor.Default),
           bgColorClass(BackgroundColor.Card1),

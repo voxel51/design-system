@@ -83,6 +83,12 @@ interface TreeSelectBaseProps extends Omit<
   /** Explicit z-index for the dropdown panel. */
   zIndex?: ZIndex;
   /**
+   * Maximum height of the dropdown panel. Accepts any valid CSS length value
+   * (e.g. `"400px"`, `"50vh"`). Defaults to `"18rem"` (equivalent to
+   * Tailwind's `max-h-72`).
+   */
+  panelMaxHeight?: string;
+  /**
    * Custom formatter for the trigger display text when a value is selected.
    * Receives the selected path and the corresponding {@link TreeNode}.
    * When omitted, the node name is shown (e.g. `"Civic"`).

@@ -144,6 +144,7 @@ export const TreeSelectTrigger: FC<TreeSelectTriggerProps> = ({
             key={p}
             size={Size.Xs}
             onRemove={disabled ? undefined : () => onRemoveOne(p)}
+            backgroundColor={BackgroundColor.CardElevated}
             className="py-0"
           >
             {getDisplayValue(p)}

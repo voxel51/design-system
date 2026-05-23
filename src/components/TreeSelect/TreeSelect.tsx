@@ -72,6 +72,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
   anchor = SelectAnchor.BottomStart,
   portal,
   zIndex,
+  panelMaxHeight,
   displayValue: displayValueProp,
   defaultExpanded,
   loadChildren,
@@ -367,6 +368,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
           floatingStyles={floatingStyles}
           portal={portal}
           zIndex={zIndex}
+          panelMaxHeight={panelMaxHeight}
           panelId={panelId}
           query={query}
           onQueryChange={setQuery}
