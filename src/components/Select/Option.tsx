@@ -4,13 +4,15 @@ import type { FC, HTMLAttributes } from "react";
 
 import { Icon } from "@/components/Icons/Icon";
 import { Text } from "@/components/Text";
+import radiusStyles from "@/styles/radius";
 import {
   BackgroundColor,
   bgColorClass,
   ElementState,
   IconName,
+  Radius,
   Size,
-  TextColor,
+  BrandColor,
   textColorClass,
 } from "@/types";
 import { cn } from "@/util/classes";
@@ -42,6 +44,7 @@ export const Option: FC<OptionProps> = ({
         "flex flex-nowrap items-center justify-between",
         "gap-x-md",
         "py-2 px-3",
+        radiusStyles(Radius.Sm),
         cn(
           bgColorClass(BackgroundColor.Card1),
           selected && bgColorClass(BackgroundColor.CardElevated)
@@ -53,7 +56,7 @@ export const Option: FC<OptionProps> = ({
       <span
         className={clsx(
           "size-5 flex items-center",
-          textColorClass(TextColor.Secondary)
+          textColorClass(BrandColor.Primary)
         )}
       >
         {selected && <Icon name={IconName.Check} size={Size.Sm} />}
