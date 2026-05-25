@@ -93,7 +93,7 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
 
   const rowClasses = cn(
     "flex-nowrap",
-    "py-1.5",
+    "py-1",
     radiusStyles(Radius.Sm),
     "cursor-pointer",
     bgColorClass(BackgroundColor.Card1),
@@ -201,7 +201,7 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
         <span
           className={cn(
             "size-5 shrink-0 flex items-center",
-            textColorClass(TextColor.Secondary)
+            textColorClass(BrandColor.Primary)
           )}
         >
           {isSelected && <Icon name={IconName.Check} size={Size.Sm} />}
