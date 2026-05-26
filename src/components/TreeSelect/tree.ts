@@ -3,6 +3,32 @@ import type { ResolvedNode, TreeNode } from "./types";
 const PATH_SEPARATOR = "/";
 
 /**
+ * Encode a single node name for use as a path segment. Only `/` and `%`
+ * are encoded — the two characters that would break path parsing.
+ * All other characters pass through unchanged, keeping paths readable.
+ */
+function encodeSegment(name: string): string {
+  return name.replace(/%/g, "%25").replace(/\//g, "%2F");
+}
+
+/**
+ * Decode a single encoded path segment back to the original node name.
+ * Decoding order is the reverse of encoding: `%2F` first, then `%25`.
+ */
+function decodeSegment(seg: string): string {
+  return seg.replace(/%2F/gi, "/").replace(/%25/gi, "%");
+}
+
+/**
+ * Join an array of (raw, unencoded) node names into a safe path string.
+ * Each segment is encoded before joining so slashes in names cannot be
+ * mistaken for path separators.
+ */
+function joinPath(segments: string[]): string {
+  return segments.map(encodeSegment).join(PATH_SEPARATOR);
+}
+
+/**
  * Whether a node counts as a leaf (has no children).
  *
  * Only `values: undefined` indicates a leaf. `values: []` represents a
@@ -52,8 +78,8 @@ export function buildResolvedTree(
     siblingCount: number
   ): ResolvedNode {
     const path = parentPath
-      ? `${parentPath}${PATH_SEPARATOR}${node.name}`
-      : node.name;
+      ? `${parentPath}${PATH_SEPARATOR}${encodeSegment(node.name)}`
+      : encodeSegment(node.name);
 
     const isLeaf = nodeIsLeaf(node);
     const cached = loadedChildren?.get(path);
@@ -122,9 +148,8 @@ export function filterTreeForQuery(
 
   function addAncestors(path: string): void {
     const segments = splitPath(path);
-    let current = "";
     for (let i = 0; i < segments.length - 1; i++) {
-      current = current ? `${current}/${segments[i]}` : segments[i];
+      const current = joinPath(segments.slice(0, i + 1));
       includedPaths.add(current);
       forceOpenPaths.add(current);
     }
@@ -209,6 +234,9 @@ export function getNodeByPath(
 /**
  * Splits a path string into its individual node-name segments.
  *
+ * Segments are returned in their original (decoded) form — any `/` or `%`
+ * characters that were encoded during path construction are restored here.
+ *
  * Useful for rendering breadcrumbs: each segment can be resolved to its
  * {@link TreeNode} by calling {@link getNodeByPath} with the prefix path.
  *
@@ -216,11 +244,14 @@ export function getNodeByPath(
  * ```ts
  * splitPath("vehicle_type/car/make/Honda");
  * // ["vehicle_type", "car", "make", "Honda"]
+ *
+ * splitPath("bands/AC%2FDC");
+ * // ["bands", "AC/DC"]
  * ```
  */
 export function splitPath(path: string): string[] {
   if (!path) return [];
-  return path.split(PATH_SEPARATOR);
+  return path.split(PATH_SEPARATOR).map(decodeSegment);
 }
 
 /**

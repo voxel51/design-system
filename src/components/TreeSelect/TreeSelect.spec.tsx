@@ -1281,4 +1281,34 @@ describe("TreeSelect", () => {
       expect(screen.queryByText("lazy_branch")).not.toBeInTheDocument();
     });
   });
+
+  describe("node names containing /", () => {
+    const slashTree: TreeNode = {
+      name: "root",
+      values: [
+        {
+          name: "AC/DC",
+          values: [{ name: "Back in Black" }, { name: "Highway to Hell" }],
+        },
+        { name: "normal" },
+      ],
+    };
+
+    it("fires onChange with the encoded path when a slashed node is clicked", async () => {
+      const user = userEvent.setup();
+      const onChange = jest.fn();
+      renderTreeSelect({ root: slashTree, onChange });
+
+      await user.click(getInput());
+      await user.click(screen.getByText("AC/DC"));
+
+      expect(onChange).toHaveBeenCalledWith("root/AC%2FDC");
+    });
+
+    it("displays the decoded node name in the trigger when value is the encoded path", () => {
+      renderTreeSelect({ root: slashTree, value: "root/AC%2FDC" });
+
+      expect(getInput()).toHaveValue("AC/DC");
+    });
+  });
 });

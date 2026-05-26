@@ -497,6 +497,122 @@ describe("formatBreadcrumb", () => {
   });
 });
 
+describe("special characters in node names", () => {
+  const slashTree: TreeNode = {
+    name: "root",
+    values: [
+      {
+        name: "AC/DC",
+        values: [{ name: "Back in Black" }, { name: "Highway to Hell" }],
+      },
+      { name: "normal" },
+    ],
+  };
+
+  const percentTree: TreeNode = {
+    name: "root",
+    values: [{ name: "50% off", values: [{ name: "deal" }] }],
+  };
+
+  describe("buildResolvedTree", () => {
+    it("encodes slashes in names as %2F in the path", () => {
+      const resolved = buildResolvedTree(slashTree);
+      const child = resolved.children[0];
+      expect(child.path).toBe("root/AC%2FDC");
+      expect(child.node.name).toBe("AC/DC");
+    });
+
+    it("encodes percent signs in names as %25 in the path", () => {
+      const resolved = buildResolvedTree(percentTree);
+      const child = resolved.children[0];
+      expect(child.path).toBe("root/50%25 off");
+      expect(child.node.name).toBe("50% off");
+    });
+
+    it("preserves grandchild paths correctly under an encoded branch", () => {
+      const resolved = buildResolvedTree(slashTree);
+      const grandchild = resolved.children[0].children[0];
+      expect(grandchild.path).toBe("root/AC%2FDC/Back in Black");
+    });
+  });
+
+  describe("splitPath", () => {
+    it("decodes %2F back to / in segments", () => {
+      expect(splitPath("root/AC%2FDC")).toEqual(["root", "AC/DC"]);
+    });
+
+    it("decodes %25 back to % in segments", () => {
+      expect(splitPath("root/50%25 off")).toEqual(["root", "50% off"]);
+    });
+
+    it("decodes both encodings in a single segment", () => {
+      expect(splitPath("root/50%25%2F50")).toEqual(["root", "50%/50"]);
+    });
+  });
+
+  describe("getNodeByPath", () => {
+    it("resolves a node whose name contains /", () => {
+      const resolved = buildResolvedTree(slashTree);
+      const node = getNodeByPath(slashTree, resolved.children[0].path);
+      expect(node).toBeDefined();
+      expect(node!.name).toBe("AC/DC");
+    });
+
+    it("resolves a grandchild under a slashed-name branch", () => {
+      const resolved = buildResolvedTree(slashTree);
+      const node = getNodeByPath(slashTree, resolved.children[0].children[0].path);
+      expect(node).toBeDefined();
+      expect(node!.name).toBe("Back in Black");
+    });
+
+    it("resolves a node whose name contains %", () => {
+      const resolved = buildResolvedTree(percentTree);
+      const node = getNodeByPath(percentTree, resolved.children[0].path);
+      expect(node).toBeDefined();
+      expect(node!.name).toBe("50% off");
+    });
+  });
+
+  describe("getParentPath", () => {
+    it("returns the correct parent for an encoded path", () => {
+      expect(getParentPath("root/AC%2FDC")).toBe("root");
+    });
+
+    it("returns the correct parent for a deeply encoded path", () => {
+      expect(getParentPath("root/AC%2FDC/Back in Black")).toBe(
+        "root/AC%2FDC"
+      );
+    });
+  });
+
+  describe("formatBreadcrumb", () => {
+    it("decodes encoded segments in breadcrumb output", () => {
+      expect(formatBreadcrumb("root/AC%2FDC")).toBe("root / AC/DC");
+    });
+
+    it("decodes percent signs in breadcrumb output", () => {
+      expect(formatBreadcrumb("root/50%25 off")).toBe("root / 50% off");
+    });
+  });
+
+  describe("filterTreeForQuery", () => {
+    it("matches a query against a node name containing /", () => {
+      const resolved = buildResolvedTree(slashTree);
+      const result = filterTreeForQuery(resolved, "AC/DC");
+      expect(result).not.toBeNull();
+      const names = result!.tree.children.map((c) => c.node.name);
+      expect(names).toContain("AC/DC");
+    });
+
+    it("force-opens the correct encoded ancestor path", () => {
+      const resolved = buildResolvedTree(slashTree);
+      const result = filterTreeForQuery(resolved, "Back in Black");
+      expect(result).not.toBeNull();
+      expect(result!.forceOpenPaths.has("root/AC%2FDC")).toBe(true);
+    });
+  });
+});
+
 describe("collectBranchPaths", () => {
   const resolved = buildResolvedTree(vehicleTree);
 
