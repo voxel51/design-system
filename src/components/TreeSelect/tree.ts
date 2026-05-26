@@ -21,12 +21,9 @@ function nodeIsLeaf(node: TreeNode): boolean {
  * 1. Its `can_select` is not explicitly `false` (defaults to `true`).
  * 2. If `leavesOnly` is enabled, the node must be a leaf.
  */
-export function isSelectable(
-  node: TreeNode,
-  options: { leavesOnly?: boolean } = {}
-): boolean {
+export function isSelectable(node: TreeNode, leavesOnly = false): boolean {
   if (node.can_select === false) return false;
-  if (options.leavesOnly && !nodeIsLeaf(node)) return false;
+  if (leavesOnly && !nodeIsLeaf(node)) return false;
   return true;
 }
 
@@ -77,7 +74,7 @@ export function buildResolvedTree(
       node,
       path,
       depth,
-      selectable: isSelectable(node, options),
+      selectable: isSelectable(node, options.leavesOnly),
       isLeaf,
       isLazyBranch,
       children,

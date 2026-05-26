@@ -159,6 +159,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
           : [...current, selected];
         multiOnChange?.(next);
       } else {
+        // Single-select: close the panel and clear search on pick.
         setQuery("");
         setIsOpen(false);
         const singleOnChange = onChange as
@@ -175,20 +176,10 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     setQuery("");
   }, []);
 
-  const handleExpand = useCallback(
+  const fetchChildren = useCallback(
     (path: string) => {
-      if (!loadChildren) return;
-      if (loadedChildren.has(path)) return;
-      if (loadState.get(path) === "loading") return;
-      const sourceNode = getNodeByPath(root, path);
-      if (
-        !sourceNode ||
-        !Array.isArray(sourceNode.values) ||
-        sourceNode.values.length > 0
-      )
-        return;
       setLoadState((prev) => new Map(prev).set(path, "loading"));
-      loadChildren(path).then(
+      loadChildren!(path).then(
         (children) => {
           setLoadedChildren((prev) => new Map(prev).set(path, children));
           setLoadState((prev) => {
@@ -202,11 +193,30 @@ export const TreeSelect: FC<TreeSelectProps> = ({
         }
       );
     },
-    [loadChildren, loadedChildren, loadState, root]
+    [loadChildren]
+  );
+
+  const handleExpand = useCallback(
+    (path: string) => {
+      if (!loadChildren) return; // no async loader wired up; expand is purely visual
+      if (loadedChildren.has(path)) return; // children already fetched; nothing to do
+      if (loadState.get(path) === "loading") return; // fetch already in flight
+      const sourceNode = getNodeByPath(root, path);
+      if (
+        !sourceNode ||
+        !Array.isArray(sourceNode.values) ||
+        sourceNode.values.length > 0 // only lazy branches (values: []) need fetching
+      )
+        return;
+      fetchChildren(path);
+    },
+    [fetchChildren, loadChildren, loadedChildren, loadState, root]
   );
 
   const handleRetryLoad = useCallback(
     (path: string) => {
+      // Clear error state immediately so the node stops showing retry UI,
+      // regardless of whether the re-fetch succeeds.
       setLoadState((prev) => {
         const next = new Map(prev);
         next.delete(path);
@@ -220,22 +230,9 @@ export const TreeSelect: FC<TreeSelectProps> = ({
         sourceNode.values.length > 0
       )
         return;
-      setLoadState((prev) => new Map(prev).set(path, "loading"));
-      loadChildren(path).then(
-        (children) => {
-          setLoadedChildren((prev) => new Map(prev).set(path, children));
-          setLoadState((prev) => {
-            const next = new Map(prev);
-            next.delete(path);
-            return next;
-          });
-        },
-        () => {
-          setLoadState((prev) => new Map(prev).set(path, "error"));
-        }
-      );
+      fetchChildren(path);
     },
-    [loadChildren, root]
+    [fetchChildren, loadChildren, root]
   );
 
   const tree = useTree({
@@ -255,7 +252,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
       if (!v) return "";
 
       const node = getNodeByPath(root, v);
-      if (!node) return v;
+      if (!node) return v; // path not found in tree (e.g. stale value); fall back to raw path string
 
       if (displayValueProp) {
         return displayValueProp(v, node);
@@ -336,7 +333,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
 
   const removeOne = useCallback(
     (pathToRemove: string) => {
-      if (!multiSelect) return;
+      if (!multiSelect) return; // should never be called in single-select, but guard defensively
       const multiOnChange = onChange as ((paths: string[]) => void) | undefined;
       const current = value ?? [];
       multiOnChange?.(current.filter((p) => p !== pathToRemove));

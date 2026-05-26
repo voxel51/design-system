@@ -75,11 +75,11 @@ describe("isSelectable", () => {
 
   it("returns false for branch nodes when leavesOnly is true", () => {
     const branch: TreeNode = { name: "car", values: [{ name: "Civic" }] };
-    expect(isSelectable(branch, { leavesOnly: true })).toBe(false);
+    expect(isSelectable(branch, true)).toBe(false);
   });
 
   it("returns true for leaf nodes when leavesOnly is true", () => {
-    expect(isSelectable({ name: "Civic" }, { leavesOnly: true })).toBe(true);
+    expect(isSelectable({ name: "Civic" }, true)).toBe(true);
   });
 
   it("returns false when can_select is false even with leavesOnly false", () => {
@@ -88,7 +88,7 @@ describe("isSelectable", () => {
       can_select: false,
       values: [{ name: "Honda" }],
     };
-    expect(isSelectable(node, { leavesOnly: false })).toBe(false);
+    expect(isSelectable(node, false)).toBe(false);
   });
 });
 
