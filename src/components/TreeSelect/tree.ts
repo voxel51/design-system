@@ -29,6 +29,29 @@ function joinPath(segments: string[]): string {
 }
 
 /**
+ * Constructs a path string from an ordered array of raw node names.
+ *
+ * Node names that contain `/` or `%` are encoded automatically, so the
+ * resulting path is always safe to pass to {@link getNodeByPath},
+ * {@link TreeSelectProps.value}, {@link TreeSelectProps.defaultExpanded}, etc.
+ *
+ * Use this when building a path programmatically rather than by selecting
+ * a node in the UI (which produces an already-encoded path via `onChange`).
+ *
+ * @example
+ * ```ts
+ * encodePath(["bands", "AC/DC"]);
+ * // "bands/AC%2FDC"
+ *
+ * encodePath(["root", "50% off", "deal"]);
+ * // "root/50%25 off/deal"
+ * ```
+ */
+export function encodePath(segments: string[]): string {
+  return joinPath(segments);
+}
+
+/**
  * Whether a node counts as a leaf (has no children).
  *
  * Only `values: undefined` indicates a leaf. `values: []` represents a

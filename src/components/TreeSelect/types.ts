@@ -120,9 +120,17 @@ interface TreeSelectBaseProps extends Omit<
  */
 interface TreeSelectSingleProps extends TreeSelectBaseProps {
   multiSelect?: false;
-  /** Currently selected node path (slash-delimited). */
+  /**
+   * Currently selected node path (slash-delimited). Node names that contain
+   * `/` are encoded as `%2F`, so paths may include percent-encoded sequences.
+   * Use `splitPath` to decode a path back into individual node names, or
+   * `encodePath` to construct a path programmatically from node names.
+   */
   value?: string;
-  /** Fires when the user selects or clears a node. */
+  /**
+   * Fires when the user selects or clears a node. The path argument uses the
+   * same encoding as `value` — node names containing `/` are encoded as `%2F`.
+   */
   onChange?: (path: string | null) => void;
 }
 
@@ -132,9 +140,16 @@ interface TreeSelectSingleProps extends TreeSelectBaseProps {
  */
 interface TreeSelectMultiProps extends TreeSelectBaseProps {
   multiSelect: true;
-  /** Currently selected node paths (slash-delimited). */
+  /**
+   * Currently selected node paths (slash-delimited). Node names that contain
+   * `/` are encoded as `%2F`. Use `splitPath` to decode or `encodePath` to
+   * construct paths programmatically.
+   */
   value?: string[];
-  /** Fires with the updated array whenever a node is toggled. */
+  /**
+   * Fires with the updated array whenever a node is toggled. Paths use the
+   * same encoding as `value` — node names containing `/` are encoded as `%2F`.
+   */
   onChange?: (paths: string[]) => void;
 }
 

@@ -41,6 +41,13 @@ const ANCHOR_TO_PLACEMENT: Record<SelectAnchor, Placement> = {
  *
  * Supports single-select with full keyboard navigation (ARIA treeview pattern).
  *
+ * ### Path encoding
+ * Node paths are slash-delimited strings (e.g. `"vehicle_type/car/Honda"`).
+ * If a node name contains a `/`, it is encoded as `%2F` in the path, so
+ * `value` and `onChange` paths may contain percent-encoded sequences.
+ * Use `splitPath` to decode a path into its original node names, or
+ * `encodePath` to build a path programmatically from node names.
+ *
  * @example
  * ```tsx
  * const tree: TreeNode = {
