@@ -560,7 +560,10 @@ describe("special characters in node names", () => {
 
     it("resolves a grandchild under a slashed-name branch", () => {
       const resolved = buildResolvedTree(slashTree);
-      const node = getNodeByPath(slashTree, resolved.children[0].children[0].path);
+      const node = getNodeByPath(
+        slashTree,
+        resolved.children[0].children[0].path
+      );
       expect(node).toBeDefined();
       expect(node!.name).toBe("Back in Black");
     });
@@ -579,9 +582,7 @@ describe("special characters in node names", () => {
     });
 
     it("returns the correct parent for a deeply encoded path", () => {
-      expect(getParentPath("root/AC%2FDC/Back in Black")).toBe(
-        "root/AC%2FDC"
-      );
+      expect(getParentPath("root/AC%2FDC/Back in Black")).toBe("root/AC%2FDC");
     });
   });
 
