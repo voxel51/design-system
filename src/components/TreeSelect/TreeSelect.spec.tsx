@@ -803,7 +803,10 @@ describe("TreeSelect", () => {
 
     it("renders pills for selected values", () => {
       renderMulti({
-        value: [["vehicle_type", "car"], ["vehicle_type", "motorcycle"]],
+        value: [
+          ["vehicle_type", "car"],
+          ["vehicle_type", "motorcycle"],
+        ],
       });
 
       expect(screen.getByText("car")).toBeInTheDocument();
@@ -842,7 +845,10 @@ describe("TreeSelect", () => {
       const user = userEvent.setup();
       const onChange = jest.fn();
       renderMulti({
-        value: [["vehicle_type", "car"], ["vehicle_type", "motorcycle"]],
+        value: [
+          ["vehicle_type", "car"],
+          ["vehicle_type", "motorcycle"],
+        ],
         onChange,
       });
 
@@ -859,7 +865,10 @@ describe("TreeSelect", () => {
       const user = userEvent.setup();
       const onChange = jest.fn();
       renderMulti({
-        value: [["vehicle_type", "car"], ["vehicle_type", "motorcycle"]],
+        value: [
+          ["vehicle_type", "car"],
+          ["vehicle_type", "motorcycle"],
+        ],
         onChange,
       });
 
@@ -873,7 +882,10 @@ describe("TreeSelect", () => {
       const user = userEvent.setup();
       const onChange = jest.fn();
       renderMulti({
-        value: [["vehicle_type", "car"], ["vehicle_type", "motorcycle"]],
+        value: [
+          ["vehicle_type", "car"],
+          ["vehicle_type", "motorcycle"],
+        ],
         onChange,
       });
 

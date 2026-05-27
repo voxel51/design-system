@@ -384,7 +384,12 @@ describe("getNodeByPath", () => {
 
   it("resolves a deeply nested node", () => {
     const node = getNodeByPath(vehicleTree, [
-      "vehicle_type", "car", "make", "Honda", "model", "Civic",
+      "vehicle_type",
+      "car",
+      "make",
+      "Honda",
+      "model",
+      "Civic",
     ]);
     expect(node).toBeDefined();
     expect(node!.name).toBe("Civic");
@@ -465,9 +470,9 @@ describe("flattenVisible", () => {
 
 describe("formatBreadcrumb", () => {
   it("formats a path with spaced separators", () => {
-    expect(
-      formatBreadcrumb(["vehicle_type", "car", "make", "Honda"])
-    ).toBe("vehicle_type / car / make / Honda");
+    expect(formatBreadcrumb(["vehicle_type", "car", "make", "Honda"])).toBe(
+      "vehicle_type / car / make / Honda"
+    );
   });
 
   it("returns the name as-is for a single segment", () => {
@@ -543,9 +548,7 @@ describe("special characters in node names", () => {
     });
 
     it("resolves a grandchild under a slashed-name branch", () => {
-      const node = getNodeByPath(slashTree, [
-        "root", "AC/DC", "Back in Black",
-      ]);
+      const node = getNodeByPath(slashTree, ["root", "AC/DC", "Back in Black"]);
       expect(node).toBeDefined();
       expect(node!.name).toBe("Back in Black");
     });

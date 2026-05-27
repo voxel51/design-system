@@ -148,15 +148,11 @@ export const TreeSelect: FC<TreeSelectProps> = ({
 
   const selection = useMemo<Set<string> | undefined>(() => {
     if (multiSelect) {
-      const arr = value as readonly TreePath[] | undefined;
-      return arr?.length
-        ? new Set(arr.map((p) => toInternalPath(p)))
+      return value?.length
+        ? new Set(value.map((p) => toInternalPath(p)))
         : undefined;
     }
-    const singleValue = value as TreePath | undefined;
-    return singleValue?.length
-      ? new Set([toInternalPath(singleValue)])
-      : undefined;
+    return value?.length ? new Set([toInternalPath(value)]) : undefined;
   }, [multiSelect, value]);
 
   const handleSelect = useCallback(
@@ -165,9 +161,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
         const multiOnChange = onChange as
           | ((paths: TreePath[]) => void)
           | undefined;
-        const currentInternal = selection
-          ? [...selection]
-          : [];
+        const currentInternal = selection ? [...selection] : [];
         const next = currentInternal.includes(selected)
           ? currentInternal.filter((p) => p !== selected)
           : [...currentInternal, selected];
@@ -313,9 +307,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
   useEffect(() => {
     if (isOpen) {
       window.requestAnimationFrame(() => searchInputRef.current?.focus());
-      const singleValue = multiSelect
-        ? undefined
-        : (value as TreePath | undefined);
+      const singleValue = multiSelect ? undefined : value;
       const singleInternal = singleValue?.length
         ? toInternalPath(singleValue)
         : undefined;
@@ -345,7 +337,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
 
     const handleClickOutside = (e: MouseEvent): void => {
       const target = e.target as Node;
-      const reference = refs.reference.current as HTMLElement | null;
+      const reference = refs.reference.current as Element | null;
       const floating = refs.floating.current;
       if (reference?.contains(target) || floating?.contains(target)) {
         return;
@@ -358,9 +350,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen, refs.reference, refs.floating]);
 
-  const hasValue = multiSelect
-    ? !!(value as readonly TreePath[] | undefined)?.length
-    : !!(value as TreePath | undefined)?.length;
+  const hasValue = !!value?.length;
 
   const removeOne = useCallback(
     (pathToRemove: string) => {
@@ -370,9 +360,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
         | undefined;
       const currentInternal = selection ? [...selection] : [];
       multiOnChange?.(
-        currentInternal
-          .filter((p) => p !== pathToRemove)
-          .map(fromInternalPath)
+        currentInternal.filter((p) => p !== pathToRemove).map(fromInternalPath)
       );
     },
     [multiSelect, selection, onChange]
@@ -386,9 +374,9 @@ export const TreeSelect: FC<TreeSelectProps> = ({
         multiSelect={multiSelect}
         value={
           multiSelect
-            ? (value as readonly TreePath[] | undefined)?.map(toInternalPath)
-            : (value as TreePath | undefined)?.length
-              ? toInternalPath(value as TreePath)
+            ? value?.map(toInternalPath)
+            : value?.length
+              ? toInternalPath(value)
               : undefined
         }
         disabled={disabled}
