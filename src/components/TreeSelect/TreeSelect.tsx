@@ -23,8 +23,14 @@ import { useTree } from "@/util/useTree";
 
 import { TreeSelectPanel } from "./TreeSelectPanel";
 import { TreeSelectTrigger } from "./TreeSelectTrigger";
-import { buildResolvedTree, filterTreeForQuery, getNodeByPath } from "./tree";
-import type { TreeNode, TreeSelectProps } from "./types";
+import {
+  buildResolvedTree,
+  filterTreeForQuery,
+  fromInternalPath,
+  getNodeByInternalPath,
+  toInternalPath,
+} from "./tree";
+import type { TreeNode, TreePath, TreeSelectProps } from "./types";
 
 const ANCHOR_TO_PLACEMENT: Record<SelectAnchor, Placement> = {
   [SelectAnchor.Bottom]: "bottom",
@@ -41,12 +47,8 @@ const ANCHOR_TO_PLACEMENT: Record<SelectAnchor, Placement> = {
  *
  * Supports single-select with full keyboard navigation (ARIA treeview pattern).
  *
- * ### Path encoding
- * Node paths are slash-delimited strings (e.g. `"vehicle_type/car/Honda"`).
- * If a node name contains a `/`, it is encoded as `%2F` in the path, so
- * `value` and `onChange` paths may contain percent-encoded sequences.
- * Use `splitPath` to decode a path into its original node names, or
- * `encodePath` to build a path programmatically from node names.
+ * Paths are represented as {@link TreePath} — ordered arrays of raw node
+ * names. No encoding is needed, even when names contain `/` or `%`.
  *
  * @example
  * ```tsx
@@ -58,7 +60,7 @@ const ANCHOR_TO_PLACEMENT: Record<SelectAnchor, Placement> = {
  *   ],
  * };
  *
- * const [value, setValue] = useState<string | undefined>();
+ * const [value, setValue] = useState<TreePath | undefined>();
  *
  * <TreeSelect
  *   root={tree}
@@ -146,36 +148,41 @@ export const TreeSelect: FC<TreeSelectProps> = ({
 
   const selection = useMemo<Set<string> | undefined>(() => {
     if (multiSelect) {
-      const arr = value;
-      return arr?.length ? new Set(arr) : undefined;
+      const arr = value as readonly TreePath[] | undefined;
+      return arr?.length
+        ? new Set(arr.map((p) => toInternalPath(p)))
+        : undefined;
     }
-    const singleValue = value;
-    return singleValue ? new Set([singleValue]) : undefined;
+    const singleValue = value as TreePath | undefined;
+    return singleValue?.length
+      ? new Set([toInternalPath(singleValue)])
+      : undefined;
   }, [multiSelect, value]);
 
   const handleSelect = useCallback(
     (selected: string) => {
       if (multiSelect) {
-        const multiValue = value;
         const multiOnChange = onChange as
-          | ((paths: string[]) => void)
+          | ((paths: TreePath[]) => void)
           | undefined;
-        const current = multiValue ?? [];
-        const next = current.includes(selected)
-          ? current.filter((p) => p !== selected)
-          : [...current, selected];
-        multiOnChange?.(next);
+        const currentInternal = selection
+          ? [...selection]
+          : [];
+        const next = currentInternal.includes(selected)
+          ? currentInternal.filter((p) => p !== selected)
+          : [...currentInternal, selected];
+        multiOnChange?.(next.map(fromInternalPath));
       } else {
         // Single-select: close the panel and clear search on pick.
         setQuery("");
         setIsOpen(false);
         const singleOnChange = onChange as
-          | ((path: string | null) => void)
+          | ((path: TreePath | null) => void)
           | undefined;
-        singleOnChange?.(selected);
+        singleOnChange?.(fromInternalPath(selected));
       }
     },
-    [multiSelect, value, onChange]
+    [multiSelect, selection, onChange]
   );
 
   const handleEscape = useCallback(() => {
@@ -186,7 +193,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
   const fetchChildren = useCallback(
     (path: string) => {
       setLoadState((prev) => new Map(prev).set(path, "loading"));
-      loadChildren!(path).then(
+      loadChildren!(fromInternalPath(path)).then(
         (children) => {
           setLoadedChildren((prev) => new Map(prev).set(path, children));
           setLoadState((prev) => {
@@ -208,7 +215,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
       if (!loadChildren) return; // no async loader wired up; expand is purely visual
       if (loadedChildren.has(path)) return; // children already fetched; nothing to do
       if (loadState.get(path) === "loading") return; // fetch already in flight
-      const sourceNode = getNodeByPath(root, path);
+      const sourceNode = getNodeByInternalPath(root, path);
       if (
         !sourceNode ||
         !Array.isArray(sourceNode.values) ||
@@ -230,7 +237,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
         return next;
       });
       if (!loadChildren) return;
-      const sourceNode = getNodeByPath(root, path);
+      const sourceNode = getNodeByInternalPath(root, path);
       if (
         !sourceNode ||
         !Array.isArray(sourceNode.values) ||
@@ -242,11 +249,18 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     [fetchChildren, loadChildren, root]
   );
 
+  const internalDefaultExpanded = useMemo<Set<string> | boolean>(() => {
+    if (typeof defaultExpanded === "boolean" || defaultExpanded === undefined) {
+      return defaultExpanded ?? false;
+    }
+    return new Set(defaultExpanded.map((p) => toInternalPath(p)));
+  }, [defaultExpanded]);
+
   const tree = useTree({
     tree: filtered?.tree ?? resolved,
     selection,
     forceOpenPaths: filtered?.forceOpenPaths,
-    defaultExpanded,
+    defaultExpanded: internalDefaultExpanded,
     scrollActiveIntoView: false,
     onSelect: handleSelect,
     onEscape: handleEscape,
@@ -258,11 +272,11 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     (v: string | null): string => {
       if (!v) return "";
 
-      const node = getNodeByPath(root, v);
+      const node = getNodeByInternalPath(root, v);
       if (!node) return v; // path not found in tree (e.g. stale value); fall back to raw path string
 
       if (displayValueProp) {
-        return displayValueProp(v, node);
+        return displayValueProp(fromInternalPath(v), node);
       }
 
       return node.name;
@@ -283,11 +297,13 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     setQuery("");
     setIsOpen(false);
     if (multiSelect) {
-      const multiOnChange = onChange as ((paths: string[]) => void) | undefined;
+      const multiOnChange = onChange as
+        | ((paths: TreePath[]) => void)
+        | undefined;
       multiOnChange?.([]);
     } else {
       const singleOnChange = onChange as
-        | ((path: string | null) => void)
+        | ((path: TreePath | null) => void)
         | undefined;
       singleOnChange?.(null);
     }
@@ -297,10 +313,16 @@ export const TreeSelect: FC<TreeSelectProps> = ({
   useEffect(() => {
     if (isOpen) {
       window.requestAnimationFrame(() => searchInputRef.current?.focus());
-      const singleValue = multiSelect ? undefined : value;
+      const singleValue = multiSelect
+        ? undefined
+        : (value as TreePath | undefined);
+      const singleInternal = singleValue?.length
+        ? toInternalPath(singleValue)
+        : undefined;
       const initial =
-        singleValue && tree.visibleNodes.some((n) => n.path === singleValue)
-          ? singleValue
+        singleInternal &&
+        tree.visibleNodes.some((n) => n.path === singleInternal)
+          ? singleInternal
           : (tree.visibleNodes[0]?.path ?? null);
       tree.setActivePath(initial);
     } else {
@@ -336,16 +358,24 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen, refs.reference, refs.floating]);
 
-  const hasValue = multiSelect ? !!value?.length : !!value;
+  const hasValue = multiSelect
+    ? !!(value as readonly TreePath[] | undefined)?.length
+    : !!(value as TreePath | undefined)?.length;
 
   const removeOne = useCallback(
     (pathToRemove: string) => {
       if (!multiSelect) return; // should never be called in single-select, but guard defensively
-      const multiOnChange = onChange as ((paths: string[]) => void) | undefined;
-      const current = value ?? [];
-      multiOnChange?.(current.filter((p) => p !== pathToRemove));
+      const multiOnChange = onChange as
+        | ((paths: TreePath[]) => void)
+        | undefined;
+      const currentInternal = selection ? [...selection] : [];
+      multiOnChange?.(
+        currentInternal
+          .filter((p) => p !== pathToRemove)
+          .map(fromInternalPath)
+      );
     },
-    [multiSelect, value, onChange]
+    [multiSelect, selection, onChange]
   );
 
   const panelId = tree.rowId("panel");
@@ -354,7 +384,13 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     <div ref={refs.setReference} className={cn(className, "w-full")} {...props}>
       <TreeSelectTrigger
         multiSelect={multiSelect}
-        value={value}
+        value={
+          multiSelect
+            ? (value as readonly TreePath[] | undefined)?.map(toInternalPath)
+            : (value as TreePath | undefined)?.length
+              ? toInternalPath(value as TreePath)
+              : undefined
+        }
         disabled={disabled}
         placeholder={placeholder}
         isOpen={isOpen}

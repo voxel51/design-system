@@ -5,7 +5,7 @@ import React from "react";
 import { ZIndex } from "@/types";
 
 import { TreeSelect } from "./TreeSelect";
-import type { TreeNode } from "./types";
+import type { TreeNode, TreePath } from "./types";
 
 // --- jsdom layout mocks for @tanstack/react-virtual ---
 // The virtualizer needs non-zero element sizes and a ResizeObserver that
@@ -245,7 +245,7 @@ describe("TreeSelect", () => {
 
       await user.click(screen.getByText("motorcycle"));
 
-      expect(onChange).toHaveBeenCalledWith("vehicle_type/motorcycle");
+      expect(onChange).toHaveBeenCalledWith(["vehicle_type", "motorcycle"]);
     });
 
     it("fires onChange with the path when a selectable branch is clicked", async () => {
@@ -256,7 +256,7 @@ describe("TreeSelect", () => {
       await user.click(getInput());
       await user.click(screen.getByText("car"));
 
-      expect(onChange).toHaveBeenCalledWith("vehicle_type/car");
+      expect(onChange).toHaveBeenCalledWith(["vehicle_type", "car"]);
     });
 
     it("does NOT fire onChange when a non-selectable branch row is clicked", async () => {
@@ -308,21 +308,21 @@ describe("TreeSelect", () => {
       await user.click(getInput());
       await user.click(screen.getByText("motorcycle"));
 
-      expect(onChange).toHaveBeenCalledWith("vehicle_type/motorcycle");
+      expect(onChange).toHaveBeenCalledWith(["vehicle_type", "motorcycle"]);
     });
   });
 
   describe("controlled value", () => {
     it("displays the node name for a controlled value", () => {
-      renderTreeSelect({ value: "vehicle_type/motorcycle" });
+      renderTreeSelect({ value: ["vehicle_type", "motorcycle"] });
 
       expect(getInput()).toHaveValue("motorcycle");
     });
 
     it("uses custom displayValue when provided", () => {
       renderTreeSelect({
-        value: "vehicle_type/motorcycle",
-        displayValue: (_path: string, node: TreeNode) =>
+        value: ["vehicle_type", "motorcycle"],
+        displayValue: (_path: TreePath, node: TreeNode) =>
           node.name.toUpperCase(),
       });
 
@@ -507,7 +507,7 @@ describe("TreeSelect", () => {
       // First row is "car" which is selectable
       await user.keyboard("{Enter}");
 
-      expect(onChange).toHaveBeenCalledWith("vehicle_type/car");
+      expect(onChange).toHaveBeenCalledWith(["vehicle_type", "car"]);
     });
 
     it("does not fire onChange on Enter for non-selectable row", async () => {
@@ -649,7 +649,7 @@ describe("TreeSelect", () => {
     it("expands specified paths on open", async () => {
       const user = userEvent.setup();
       renderTreeSelect({
-        defaultExpanded: new Set(["vehicle_type/car"]),
+        defaultExpanded: [["vehicle_type", "car"]],
       });
 
       await user.click(getInput());
@@ -671,7 +671,7 @@ describe("TreeSelect", () => {
     it("allows collapsing a default-expanded path", async () => {
       const user = userEvent.setup();
       renderTreeSelect({
-        defaultExpanded: new Set(["vehicle_type/car"]),
+        defaultExpanded: [["vehicle_type", "car"]],
       });
 
       await user.click(getInput());
@@ -684,7 +684,7 @@ describe("TreeSelect", () => {
     it("restores default expansion on panel re-open", async () => {
       const user = userEvent.setup();
       renderTreeSelect({
-        defaultExpanded: new Set(["vehicle_type/car"]),
+        defaultExpanded: [["vehicle_type", "car"]],
       });
 
       await user.click(getInput());
@@ -785,7 +785,7 @@ describe("TreeSelect", () => {
     it("clears the query when the selection clear button fires", async () => {
       const user = userEvent.setup();
       const onChange = jest.fn();
-      renderTreeSelect({ value: "vehicle_type/motorcycle", onChange });
+      renderTreeSelect({ value: ["vehicle_type", "motorcycle"], onChange });
 
       await user.click(getInput());
       await user.type(getSearchInput(), "car");
@@ -803,7 +803,7 @@ describe("TreeSelect", () => {
 
     it("renders pills for selected values", () => {
       renderMulti({
-        value: ["vehicle_type/car", "vehicle_type/motorcycle"],
+        value: [["vehicle_type", "car"], ["vehicle_type", "motorcycle"]],
       });
 
       expect(screen.getByText("car")).toBeInTheDocument();
@@ -818,14 +818,14 @@ describe("TreeSelect", () => {
       await user.click(getInput());
       await user.click(screen.getByText("car"));
 
-      expect(onChange).toHaveBeenCalledWith(["vehicle_type/car"]);
+      expect(onChange).toHaveBeenCalledWith([["vehicle_type", "car"]]);
     });
 
     it("fires onChange with cumulative array on additional selections", async () => {
       const user = userEvent.setup();
       const onChange = jest.fn();
       renderMulti({
-        value: ["vehicle_type/car"],
+        value: [["vehicle_type", "car"]],
         onChange,
       });
 
@@ -833,8 +833,8 @@ describe("TreeSelect", () => {
       await user.click(screen.getByText("motorcycle"));
 
       expect(onChange).toHaveBeenCalledWith([
-        "vehicle_type/car",
-        "vehicle_type/motorcycle",
+        ["vehicle_type", "car"],
+        ["vehicle_type", "motorcycle"],
       ]);
     });
 
@@ -842,7 +842,7 @@ describe("TreeSelect", () => {
       const user = userEvent.setup();
       const onChange = jest.fn();
       renderMulti({
-        value: ["vehicle_type/car", "vehicle_type/motorcycle"],
+        value: [["vehicle_type", "car"], ["vehicle_type", "motorcycle"]],
         onChange,
       });
 
@@ -852,28 +852,28 @@ describe("TreeSelect", () => {
       });
       await user.click(selectedItems[0]);
 
-      expect(onChange).toHaveBeenCalledWith(["vehicle_type/motorcycle"]);
+      expect(onChange).toHaveBeenCalledWith([["vehicle_type", "motorcycle"]]);
     });
 
     it("removes a path when clicking the pill remove button", async () => {
       const user = userEvent.setup();
       const onChange = jest.fn();
       renderMulti({
-        value: ["vehicle_type/car", "vehicle_type/motorcycle"],
+        value: [["vehicle_type", "car"], ["vehicle_type", "motorcycle"]],
         onChange,
       });
 
       const removeButtons = screen.getAllByLabelText("Remove");
       await user.click(removeButtons[0]);
 
-      expect(onChange).toHaveBeenCalledWith(["vehicle_type/motorcycle"]);
+      expect(onChange).toHaveBeenCalledWith([["vehicle_type", "motorcycle"]]);
     });
 
     it("clears all selections when the clear button is clicked", async () => {
       const user = userEvent.setup();
       const onChange = jest.fn();
       renderMulti({
-        value: ["vehicle_type/car", "vehicle_type/motorcycle"],
+        value: [["vehicle_type", "car"], ["vehicle_type", "motorcycle"]],
         onChange,
       });
 
@@ -898,7 +898,7 @@ describe("TreeSelect", () => {
     it("renders checkboxes in multi mode instead of check icons", async () => {
       const user = userEvent.setup();
       renderMulti({
-        value: ["vehicle_type/car"],
+        value: [["vehicle_type", "car"]],
       });
 
       await user.click(getInput());
@@ -909,7 +909,7 @@ describe("TreeSelect", () => {
 
     it("renders check icon in single mode (not checkboxes)", async () => {
       const user = userEvent.setup();
-      renderTreeSelect({ value: "vehicle_type/car" });
+      renderTreeSelect({ value: ["vehicle_type", "car"] });
 
       await user.click(getInput());
 
@@ -927,7 +927,7 @@ describe("TreeSelect", () => {
       expect(onChange).not.toHaveBeenCalled();
 
       await user.click(screen.getByText("motorcycle"));
-      expect(onChange).toHaveBeenCalledWith(["vehicle_type/motorcycle"]);
+      expect(onChange).toHaveBeenCalledWith([["vehicle_type", "motorcycle"]]);
     });
 
     it("shows placeholder when no values are selected", () => {
@@ -938,7 +938,7 @@ describe("TreeSelect", () => {
 
     it("hides placeholder when values are selected", () => {
       renderMulti({
-        value: ["vehicle_type/car"],
+        value: [["vehicle_type", "car"]],
         placeholder: "Pick vehicles",
       });
 
@@ -948,7 +948,7 @@ describe("TreeSelect", () => {
     it("renders indeterminate checkboxes on ancestor branches of a deep selection", async () => {
       const user = userEvent.setup();
       renderMulti({
-        value: ["vehicle_type/car/make/Honda/model/Civic"],
+        value: [["vehicle_type", "car", "make", "Honda", "model", "Civic"]],
         defaultExpanded: true,
       });
 
@@ -975,7 +975,7 @@ describe("TreeSelect", () => {
     it("does not render indeterminate checkboxes in single mode", async () => {
       const user = userEvent.setup();
       renderTreeSelect({
-        value: "vehicle_type/car/make/Honda/model/Civic",
+        value: ["vehicle_type", "car", "make", "Honda", "model", "Civic"],
         defaultExpanded: true,
       });
 
@@ -1076,7 +1076,7 @@ describe("TreeSelect", () => {
 
     it("calls loadChildren with the full path when a lazy branch chevron is clicked", async () => {
       const user = userEvent.setup();
-      const loadChildren = jest.fn<Promise<TreeNode[]>, [string]>(
+      const loadChildren = jest.fn<Promise<TreeNode[]>, [TreePath]>(
         () => new Promise(() => {})
       );
       renderTreeSelect({ root: lazyTree, loadChildren });
@@ -1090,13 +1090,13 @@ describe("TreeSelect", () => {
       await user.click(lazyChevron);
 
       expect(loadChildren).toHaveBeenCalledTimes(1);
-      expect(loadChildren).toHaveBeenCalledWith("root/lazy_branch");
+      expect(loadChildren).toHaveBeenCalledWith(["root", "lazy_branch"]);
     });
 
     it("renders loaded children after loadChildren resolves", async () => {
       const user = userEvent.setup();
       let resolve!: (value: TreeNode[]) => void;
-      const loadChildren = jest.fn<Promise<TreeNode[]>, [string]>(
+      const loadChildren = jest.fn<Promise<TreeNode[]>, [TreePath]>(
         () =>
           new Promise((r) => {
             resolve = r;
@@ -1123,7 +1123,7 @@ describe("TreeSelect", () => {
 
     it("does not call loadChildren for non-lazy branches", async () => {
       const user = userEvent.setup();
-      const loadChildren = jest.fn<Promise<TreeNode[]>, [string]>(() =>
+      const loadChildren = jest.fn<Promise<TreeNode[]>, [TreePath]>(() =>
         Promise.resolve([])
       );
       renderTreeSelect({ root: lazyTree, loadChildren });
@@ -1140,7 +1140,7 @@ describe("TreeSelect", () => {
 
     it("de-duplicates in-flight requests on rapid clicks", async () => {
       const user = userEvent.setup();
-      const loadChildren = jest.fn<Promise<TreeNode[]>, [string]>(
+      const loadChildren = jest.fn<Promise<TreeNode[]>, [TreePath]>(
         () => new Promise(() => {})
       );
       renderTreeSelect({ root: lazyTree, loadChildren });
@@ -1159,7 +1159,7 @@ describe("TreeSelect", () => {
 
     it("renders a spinner icon while a lazy branch is loading", async () => {
       const user = userEvent.setup();
-      const loadChildren = jest.fn<Promise<TreeNode[]>, [string]>(
+      const loadChildren = jest.fn<Promise<TreeNode[]>, [TreePath]>(
         () => new Promise(() => {})
       );
       renderTreeSelect({ root: lazyTree, loadChildren });
@@ -1178,7 +1178,7 @@ describe("TreeSelect", () => {
     it("removes spinner and shows children after loadChildren resolves", async () => {
       const user = userEvent.setup();
       let resolve!: (value: TreeNode[]) => void;
-      const loadChildren = jest.fn<Promise<TreeNode[]>, [string]>(
+      const loadChildren = jest.fn<Promise<TreeNode[]>, [TreePath]>(
         () =>
           new Promise((r) => {
             resolve = r;
@@ -1215,7 +1215,7 @@ describe("TreeSelect", () => {
     it("renders a retry icon on error and retries when clicked", async () => {
       const user = userEvent.setup();
       let reject!: (reason: Error) => void;
-      const loadChildren = jest.fn<Promise<TreeNode[]>, [string]>(
+      const loadChildren = jest.fn<Promise<TreeNode[]>, [TreePath]>(
         () =>
           new Promise((_r, rej) => {
             reject = rej;
@@ -1267,7 +1267,7 @@ describe("TreeSelect", () => {
 
     it("search only finds matches in already-loaded subtrees", async () => {
       const user = userEvent.setup();
-      const loadChildren = jest.fn<Promise<TreeNode[]>, [string]>(
+      const loadChildren = jest.fn<Promise<TreeNode[]>, [TreePath]>(
         () => new Promise(() => {})
       );
       renderTreeSelect({ root: lazyTree, loadChildren });
@@ -1294,7 +1294,7 @@ describe("TreeSelect", () => {
       ],
     };
 
-    it("fires onChange with the encoded path when a slashed node is clicked", async () => {
+    it("fires onChange with the raw TreePath when a slashed node is clicked", async () => {
       const user = userEvent.setup();
       const onChange = jest.fn();
       renderTreeSelect({ root: slashTree, onChange });
@@ -1302,13 +1302,25 @@ describe("TreeSelect", () => {
       await user.click(getInput());
       await user.click(screen.getByText("AC/DC"));
 
-      expect(onChange).toHaveBeenCalledWith("root/AC%2FDC");
+      expect(onChange).toHaveBeenCalledWith(["root", "AC/DC"]);
     });
 
-    it("displays the decoded node name in the trigger when value is the encoded path", () => {
-      renderTreeSelect({ root: slashTree, value: "root/AC%2FDC" });
+    it("displays the raw node name in the trigger when value is a TreePath", () => {
+      renderTreeSelect({ root: slashTree, value: ["root", "AC/DC"] });
 
       expect(getInput()).toHaveValue("AC/DC");
+    });
+
+    it("allows selecting a child of a node with a slash in its name", async () => {
+      const user = userEvent.setup();
+      const onChange = jest.fn();
+      renderTreeSelect({ root: slashTree, onChange });
+
+      await user.click(getInput());
+      await user.click(screen.getByLabelText("Expand AC/DC"));
+      await user.click(screen.getByText("Back in Black"));
+
+      expect(onChange).toHaveBeenCalledWith(["root", "AC/DC", "Back in Black"]);
     });
   });
 });

@@ -4,6 +4,15 @@ import type { SelectAnchor } from "@/components/Select";
 import type { ZIndex } from "@/types";
 
 /**
+ * An ordered list of node names from root to the target node.
+ *
+ * Each element is the raw {@link TreeNode.name} — no encoding is needed.
+ * For example, a path to an "AC/DC" node under "rock" under "music"
+ * is simply `["music", "rock", "AC/DC"]`.
+ */
+export type TreePath = readonly string[];
+
+/**
  * A node within a tree.
  *
  * `values` has three meaningful states:
@@ -90,74 +99,74 @@ interface TreeSelectBaseProps extends Omit<
   panelMaxHeight?: string;
   /**
    * Custom formatter for the trigger display text when a value is selected.
-   * Receives the selected path and the corresponding {@link TreeNode}.
+   * Receives the selected path (as a {@link TreePath} of raw node names)
+   * and the corresponding {@link TreeNode}.
    * When omitted, the node name is shown (e.g. `"Civic"`).
    */
-  displayValue?: (path: string, node: TreeNode) => string;
+  displayValue?: (path: TreePath, node: TreeNode) => string;
   /**
    * Fetches children for a lazy branch (a node whose `values` is an empty
    * array). Called exactly once per lazy branch on first user-initiated
-   * expand. The returned children are spliced into the tree and cached for
+   * expand. Receives a {@link TreePath} of raw node names.
+   * The returned children are spliced into the tree and cached for
    * the lifetime of `root`. Errors set the branch to an "error" state with
    * an inline retry control.
    */
-  loadChildren?: (path: string) => Promise<TreeNode[]>;
+  loadChildren?: (path: TreePath) => Promise<TreeNode[]>;
   /**
    * Branches to expand when the panel first opens. Unlike `forceOpenPaths`
    * (which prevents collapsing), these paths are user-collapsible and
    * restored on panel re-open.
    *
-   * - `Set<string>` — explicit branch paths to start expanded.
+   * - `TreePath[]` — explicit branch paths (each a {@link TreePath} of
+   *   raw node names) to start expanded.
    * - `true` — expand every branch in the tree.
    * - `false` / `undefined` — expand nothing (default).
    */
-  defaultExpanded?: Set<string> | boolean;
+  defaultExpanded?: readonly TreePath[] | boolean;
 }
 
 /**
- * Single-select mode (default). `value` is a single path string and
+ * Single-select mode (default). `value` is a {@link TreePath} and
  * `onChange` fires with the selected path or `null` on clear.
  */
 interface TreeSelectSingleProps extends TreeSelectBaseProps {
   multiSelect?: false;
   /**
-   * Currently selected node path (slash-delimited). Node names that contain
-   * `/` are encoded as `%2F`, so paths may include percent-encoded sequences.
-   * Use `splitPath` to decode a path back into individual node names, or
-   * `encodePath` to construct a path programmatically from node names.
+   * Currently selected node path as a {@link TreePath} — an ordered array
+   * of raw node names from root to the selected node. No encoding needed.
    */
-  value?: string;
+  value?: TreePath;
   /**
-   * Fires when the user selects or clears a node. The path argument uses the
-   * same encoding as `value` — node names containing `/` are encoded as `%2F`.
+   * Fires when the user selects or clears a node. The path argument is a
+   * {@link TreePath} of raw node names, or `null` when cleared.
    */
-  onChange?: (path: string | null) => void;
+  onChange?: (path: TreePath | null) => void;
 }
 
 /**
- * Multi-select mode. `value` is an array of selected path strings and
+ * Multi-select mode. `value` is an array of {@link TreePath} entries and
  * `onChange` fires with the full updated array on every toggle.
  */
 interface TreeSelectMultiProps extends TreeSelectBaseProps {
   multiSelect: true;
   /**
-   * Currently selected node paths (slash-delimited). Node names that contain
-   * `/` are encoded as `%2F`. Use `splitPath` to decode or `encodePath` to
-   * construct paths programmatically.
+   * Currently selected node paths. Each entry is a {@link TreePath} —
+   * an ordered array of raw node names. No encoding needed.
    */
-  value?: string[];
+  value?: readonly TreePath[];
   /**
-   * Fires with the updated array whenever a node is toggled. Paths use the
-   * same encoding as `value` — node names containing `/` are encoded as `%2F`.
+   * Fires with the updated array whenever a node is toggled. Each entry
+   * is a {@link TreePath} of raw node names.
    */
-  onChange?: (paths: string[]) => void;
+  onChange?: (paths: TreePath[]) => void;
 }
 
 /**
  * Props for {@link TreeSelect}.
  *
  * Discriminated on `multiSelect`:
- * - `multiSelect?: false` (default) — single-select; `value` is `string`, `onChange` fires `string | null`.
- * - `multiSelect: true` — multi-select; `value` is `string[]`, `onChange` fires `string[]`.
+ * - `multiSelect?: false` (default) — single-select; `value` is `TreePath`, `onChange` fires `TreePath | null`.
+ * - `multiSelect: true` — multi-select; `value` is `readonly TreePath[]`, `onChange` fires `TreePath[]`.
  */
 export type TreeSelectProps = TreeSelectSingleProps | TreeSelectMultiProps;

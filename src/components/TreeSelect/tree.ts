@@ -1,4 +1,4 @@
-import type { ResolvedNode, TreeNode } from "./types";
+import type { ResolvedNode, TreeNode, TreePath } from "./types";
 
 const PATH_SEPARATOR = "/";
 
@@ -29,26 +29,19 @@ function joinPath(segments: string[]): string {
 }
 
 /**
- * Constructs a path string from an ordered array of raw node names.
- *
- * Node names that contain `/` or `%` are encoded automatically, so the
- * resulting path is always safe to pass to {@link getNodeByPath},
- * {@link TreeSelectProps.value}, {@link TreeSelectProps.defaultExpanded}, etc.
- *
- * Use this when building a path programmatically rather than by selecting
- * a node in the UI (which produces an already-encoded path via `onChange`).
- *
- * @example
- * ```ts
- * encodePath(["bands", "AC/DC"]);
- * // "bands/AC%2FDC"
- *
- * encodePath(["root", "50% off", "deal"]);
- * // "root/50%25 off/deal"
- * ```
+ * Converts a {@link TreePath} of raw node names to an internal encoded string.
+ * @internal
  */
-export function encodePath(segments: string[]): string {
-  return joinPath(segments);
+export function toInternalPath(segments: TreePath): string {
+  return joinPath([...segments]);
+}
+
+/**
+ * Converts an internal encoded path string to a {@link TreePath} of raw node names.
+ * @internal
+ */
+export function fromInternalPath(path: string): TreePath {
+  return splitPath(path);
 }
 
 /**
@@ -224,29 +217,28 @@ export function filterTreeForQuery(
 }
 
 /**
- * Resolves a slash-delimited path back to the corresponding
+ * Resolves a {@link TreePath} back to the corresponding
  * {@link TreeNode} in the original tree.
  *
  * @returns The matching node, or `undefined` if the path doesn't match.
  *
  * @example
  * ```ts
- * const node = getNodeByPath(root, "vehicle_type/car/make/Honda");
+ * const node = getNodeByPath(root, ["vehicle_type", "car", "make", "Honda"]);
  * // node?.name === "Honda"
  * ```
  */
 export function getNodeByPath(
   root: TreeNode,
-  path: string
+  path: TreePath
 ): TreeNode | undefined {
-  const segments = splitPath(path);
-  if (segments.length === 0) return undefined;
+  if (path.length === 0) return undefined;
 
-  if (segments[0] !== root.name) return undefined;
+  if (path[0] !== root.name) return undefined;
 
   let current: TreeNode = root;
-  for (let i = 1; i < segments.length; i++) {
-    const child = current.values?.find((v) => v.name === segments[i]);
+  for (let i = 1; i < path.length; i++) {
+    const child = current.values?.find((v) => v.name === path[i]);
     if (!child) return undefined;
     current = child;
   }
@@ -255,31 +247,31 @@ export function getNodeByPath(
 }
 
 /**
- * Splits a path string into its individual node-name segments.
- *
- * Segments are returned in their original (decoded) form — any `/` or `%`
- * characters that were encoded during path construction are restored here.
- *
- * Useful for rendering breadcrumbs: each segment can be resolved to its
- * {@link TreeNode} by calling {@link getNodeByPath} with the prefix path.
- *
- * @example
- * ```ts
- * splitPath("vehicle_type/car/make/Honda");
- * // ["vehicle_type", "car", "make", "Honda"]
- *
- * splitPath("bands/AC%2FDC");
- * // ["bands", "AC/DC"]
- * ```
+ * Internal variant of {@link getNodeByPath} that accepts an encoded
+ * internal path string. Used by `TreeSelect.tsx` to resolve nodes from
+ * the encoded paths stored on {@link ResolvedNode}.
+ * @internal
  */
-export function splitPath(path: string): string[] {
+export function getNodeByInternalPath(
+  root: TreeNode,
+  internalPath: string
+): TreeNode | undefined {
+  return getNodeByPath(root, splitPath(internalPath));
+}
+
+/**
+ * Splits an internal encoded path string into decoded node-name segments.
+ * @internal
+ */
+function splitPath(path: string): string[] {
   if (!path) return [];
   return path.split(PATH_SEPARATOR).map(decodeSegment);
 }
 
 /**
- * Returns the parent path by stripping the last segment, or `undefined`
- * for root-level paths (single segment).
+ * Returns the parent of an internal encoded path by stripping the last
+ * segment, or `undefined` for root-level paths (single segment).
+ * @internal
  */
 export function getParentPath(path: string): string | undefined {
   const idx = path.lastIndexOf(PATH_SEPARATOR);
@@ -338,14 +330,17 @@ export function collectBranchPaths(root: ResolvedNode): Set<string> {
 }
 
 /**
- * Formats a path as a human-readable breadcrumb string.
+ * Formats a {@link TreePath} as a human-readable breadcrumb string.
  *
  * @example
  * ```ts
- * formatBreadcrumb("vehicle_type/car/make/Honda");
+ * formatBreadcrumb(["vehicle_type", "car", "make", "Honda"]);
  * // "vehicle_type / car / make / Honda"
+ *
+ * formatBreadcrumb(["music", "rock", "AC/DC"]);
+ * // "music / rock / AC/DC"
  * ```
  */
-export function formatBreadcrumb(path: string): string {
-  return splitPath(path).join(" / ");
+export function formatBreadcrumb(path: TreePath): string {
+  return path.join(" / ");
 }
