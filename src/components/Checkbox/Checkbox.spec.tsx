@@ -62,4 +62,18 @@ describe("Checkbox", () => {
     const checkbox = screen.getByRole("checkbox");
     expect(checkbox).toHaveClass("w-6", "h-6", "checked:after:text-lg");
   });
+
+  describe("indeterminate", () => {
+    it("sets aria-checked to mixed when indeterminate and not checked", () => {
+      render(<Checkbox indeterminate label={checkboxLabel} />);
+      const checkbox = screen.getByRole("checkbox");
+      expect(checkbox).toHaveAttribute("aria-checked", "mixed");
+    });
+
+    it("ignores indeterminate when checked is true", () => {
+      render(<Checkbox checked indeterminate label={checkboxLabel} />);
+      const checkbox = screen.getByRole("checkbox");
+      expect(checkbox).not.toHaveAttribute("aria-checked", "mixed");
+    });
+  });
 });
