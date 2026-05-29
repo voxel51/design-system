@@ -73,7 +73,9 @@ const Drawer: React.FC<DrawerProps> = ({
     onSizeChange,
   });
 
-  const contentWrapperSizeStyle = isVertical ? { height: size } : { width: size };
+  const contentWrapperSizeStyle = isVertical
+    ? { height: size }
+    : { width: size };
 
   return (
     <div
@@ -85,9 +87,7 @@ const Drawer: React.FC<DrawerProps> = ({
         {...dragHandleProps}
       />
       {header && (
-        <div className={styles.header}>
-          {header({ open, toggle })}
-        </div>
+        <div className={styles.header}>{header({ open, toggle })}</div>
       )}
       <div
         className={styles.contentWrapper}

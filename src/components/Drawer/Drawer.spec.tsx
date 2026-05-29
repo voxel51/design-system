@@ -23,15 +23,27 @@ beforeEach(() => {
 
 function pointerDown(element: Element, clientY: number, clientX = 0) {
   const event = createEvent.pointerDown(element);
-  Object.defineProperty(event, "clientY", { value: clientY, configurable: true });
-  Object.defineProperty(event, "clientX", { value: clientX, configurable: true });
+  Object.defineProperty(event, "clientY", {
+    value: clientY,
+    configurable: true,
+  });
+  Object.defineProperty(event, "clientX", {
+    value: clientX,
+    configurable: true,
+  });
   fireEvent(element, event);
 }
 
 function pointerMove(element: Element, clientY: number, clientX = 0) {
   const event = createEvent.pointerMove(element);
-  Object.defineProperty(event, "clientY", { value: clientY, configurable: true });
-  Object.defineProperty(event, "clientX", { value: clientX, configurable: true });
+  Object.defineProperty(event, "clientY", {
+    value: clientY,
+    configurable: true,
+  });
+  Object.defineProperty(event, "clientX", {
+    value: clientX,
+    configurable: true,
+  });
   fireEvent(element, event);
 }
 
@@ -116,7 +128,10 @@ describe("Drawer", () => {
           )}
         />
       );
-      expect(screen.getByRole("button")).toHaveAttribute("aria-expanded", "true");
+      expect(screen.getByRole("button")).toHaveAttribute(
+        "aria-expanded",
+        "true"
+      );
     });
 
     it("should pass open=false to header when closed", () => {
@@ -131,7 +146,10 @@ describe("Drawer", () => {
           )}
         />
       );
-      expect(screen.getByRole("button")).toHaveAttribute("aria-expanded", "false");
+      expect(screen.getByRole("button")).toHaveAttribute(
+        "aria-expanded",
+        "false"
+      );
     });
 
     it("should close the drawer when toggle is called via header", async () => {
@@ -149,7 +167,10 @@ describe("Drawer", () => {
       );
       await user.click(screen.getByRole("button"));
       expect(getContentWrapper(container)).toHaveStyle({ height: "0px" });
-      expect(screen.getByRole("button")).toHaveAttribute("aria-expanded", "false");
+      expect(screen.getByRole("button")).toHaveAttribute(
+        "aria-expanded",
+        "false"
+      );
     });
 
     it("should open to content height when toggled open via header", async () => {
@@ -271,7 +292,9 @@ describe("Drawer", () => {
         />
       );
       await user.click(screen.getByRole("button")); // toggle -> animating
-      expect(getContentWrapper(container)).not.toHaveStyle({ transition: "none" });
+      expect(getContentWrapper(container)).not.toHaveStyle({
+        transition: "none",
+      });
     });
 
     it("disables the transition again once the transition ends", async () => {
@@ -317,7 +340,11 @@ describe("Drawer", () => {
     it("should call onOpenChange when closed by drag", () => {
       const onOpenChange = jest.fn();
       const { container } = render(
-        <Drawer {...defaultProps} onOpenChange={onOpenChange} defaultOpen={true} />
+        <Drawer
+          {...defaultProps}
+          onOpenChange={onOpenChange}
+          defaultOpen={true}
+        />
       );
       const handle = getHandle(container);
       pointerDown(handle, 100);
@@ -329,7 +356,11 @@ describe("Drawer", () => {
     it("should call onSizeChange while dragging", () => {
       const onSizeChange = jest.fn();
       const { container } = render(
-        <Drawer {...defaultProps} onSizeChange={onSizeChange} defaultOpen={true} />
+        <Drawer
+          {...defaultProps}
+          onSizeChange={onSizeChange}
+          defaultOpen={true}
+        />
       );
       const handle = getHandle(container);
       pointerDown(handle, 100);

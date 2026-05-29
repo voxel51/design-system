@@ -298,7 +298,11 @@ describe("useResizableDrawer", () => {
 
     it("uses clientX for the horizontal axis", () => {
       const { result } = renderHook(() =>
-        useResizableDrawer({ ...defaultOptions, axis: "horizontal", invert: false })
+        useResizableDrawer({
+          ...defaultOptions,
+          axis: "horizontal",
+          invert: false,
+        })
       );
       attachContent(result, 600); // auto = 400 (maxSize)
       // non-inverted: clientX delta=-40, adjusted=-40, raw=360, clamped=min(360,400)=360
