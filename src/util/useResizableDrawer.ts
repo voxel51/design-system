@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useLayoutEffect, useRef, useState } from "react";
 
 import {
   UseDisclosureOptions,
@@ -6,149 +6,163 @@ import {
   useDisclosure,
 } from "./useDisclosure";
 import { DragAxis, useDragDelta } from "./useDragDelta";
+import { useElementSize } from "./useElementSize";
 import { useLatest } from "./useLatest";
 
 export type { DragAxis };
 
-/**
- * Options for {@link useResizableDrawer}.
- *
- * Extends {@link UseDisclosureOptions} so the drawer's open state can be
- * controlled or uncontrolled in the same way as {@link useDisclosure}.
- */
 export interface UseResizableDrawerOptions extends UseDisclosureOptions {
   /** Axis the drawer resizes along. `"horizontal"` for left/right drawers, `"vertical"` for top/bottom. */
   axis: DragAxis;
-  /** Initial drawer size in pixels, also used as the restore target after closing. */
-  defaultSize: number;
-  /** Minimum drawer size in pixels while open. */
-  minSize: number;
-  /** Maximum drawer size in pixels. */
+  /**
+   * Maximum content-area size in pixels. The header and handle are excluded —
+   * `maxSize` caps only the scrollable body region.
+   */
   maxSize: number;
-  /** Size at which a drag triggers close. Defaults to 0. */
-  closeThreshold?: number;
   /** Flip the delta sign — use for right-side and bottom-side handles. */
   invert?: boolean;
-  /** Invoked with the new size on every drag-induced resize (not on open/close-only changes). */
+  /** Invoked with the new content-area size on every drag-induced resize. */
   onSizeChange?: (size: number) => void;
 }
 
-/**
- * Return value of {@link useResizableDrawer}. Extends {@link UseDisclosureReturn}
- * with size and drag state.
- */
 export interface UseResizableDrawerReturn extends UseDisclosureReturn {
-  /** Current drawer size in pixels. Reflects the last committed size even while closed. */
+  /** Current content-area size in pixels (0 when closed or not yet measured). */
   size: number;
   /** `true` while the user is actively dragging the resize handle. */
   isDragging: boolean;
+  /**
+   * `true` only when the current size change should be animated — i.e. an
+   * open/close toggle. Content-driven resizes and drags are instant (`false`),
+   * so the size snaps and doesn't fight the header's un-animated layout change.
+   */
+  animating: boolean;
   /** Props to spread onto the drag handle element. */
   dragHandleProps: {
     onPointerDown: (e: React.PointerEvent<HTMLElement>) => void;
     onPointerMove: (e: React.PointerEvent<HTMLElement>) => void;
     onPointerUp: () => void;
   };
+  /**
+   * Attach the size-bearing wrapper's `onTransitionEnd` to this so `animating`
+   * clears when the open/close transition completes.
+   */
+  onTransitionEnd: () => void;
+  /**
+   * Attach to the content element. The hook observes it via ResizeObserver and
+   * keeps the open size equal to `min(contentHeight, maxSize)` automatically.
+   */
+  contentRef: (el: HTMLElement | null) => void;
 }
 
-/**
- * Hook which models a drawer that can be opened, closed, and resized by
- * dragging a handle.
- *
- * Behavior:
- * - Dragging below `closeThreshold` (default `0`) closes the drawer.
- * - Dragging above `closeThreshold` while closed reopens the drawer.
- * - Sizes are clamped to `[minSize, maxSize]` while open.
- * - `toggle()` restores the last dragged size when reopening.
- *
- * @example
- * ```tsx
- * const { open, size, toggle, dragHandleProps } = useResizableDrawer({
- *   axis: "horizontal",
- *   defaultSize: 320,
- *   minSize: 200,
- *   maxSize: 600,
- * });
- * return (
- *   <aside style={{ width: open ? size : 0 }}>
- *     <div {...dragHandleProps} />
- *   </aside>
- * );
- * ```
- */
 export function useResizableDrawer({
   axis,
-  defaultSize,
-  minSize,
   maxSize,
-  closeThreshold = 0,
   invert = false,
   onSizeChange,
   ...disclosureOptions
 }: UseResizableDrawerOptions): UseResizableDrawerReturn {
   const { open, setOpen } = useDisclosure(disclosureOptions);
-  const [size, setSize] = useState(defaultSize);
+  // Measured natural content height (synced every commit, below).
+  const [contentHeight, setContentHeight] = useState(0);
+  // Manual drag override in pixels; `null` means "auto-size to content".
+  const [userSize, setUserSize] = useState<number | null>(null);
+  // Only open/close toggles animate. Drags and content resizes are instant.
+  const [animating, setAnimating] = useState(false);
 
-  // Latest-value refs so drag callbacks are stable and always read current values.
+  // useElementSize's ResizeObserver re-renders on *external* content changes
+  // (image/font load, reflow). We capture the element to measure it
+  // synchronously on every commit (below). Its reported height is unused.
+  const { ref: observeRef } = useElementSize();
+  const contentElRef = useRef<HTMLElement | null>(null);
+  const contentRef = useCallback(
+    (el: HTMLElement | null) => {
+      contentElRef.current = el;
+      observeRef(el);
+    },
+    [observeRef]
+  );
+
+  // Derived sizes:
+  // - autoSize: the natural open size — content height, capped at maxSize.
+  // - openSize: a manual drag can only shrink *below* autoSize; otherwise follow content.
+  // - size: collapses to 0 when closed.
+  const autoSize = Math.min(contentHeight, maxSize);
+  const openSize = userSize != null ? Math.min(userSize, autoSize) : autoSize;
+  const size = open ? openSize : 0;
+
   const openRef = useLatest(open);
   const sizeRef = useLatest(size);
-  const closeThresholdRef = useLatest(closeThreshold);
   const invertRef = useLatest(invert);
-  const minSizeRef = useLatest(minSize);
   const maxSizeRef = useLatest(maxSize);
   const onSizeChangeRef = useLatest(onSizeChange);
 
-  // Cross-event mutable state, not mirrors.
-  const savedSizeRef = useRef(defaultSize);
-  const dragStartSizeRef = useRef(defaultSize);
+  const dragStartSizeRef = useRef(0);
+  const isDraggingRef = useRef(false);
+
+  // Measure content synchronously on every commit (skipped mid-drag, when the
+  // content can't change). Running in the same commit that changed the
+  // content/header means `size` updates before paint — no one-frame flicker.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useLayoutEffect(() => {
+    if (isDraggingRef.current) return;
+    const h = contentElRef.current?.offsetHeight ?? 0;
+    setContentHeight((prev) => (prev === h ? prev : h));
+  });
 
   const onDragStart = useCallback(() => {
-    dragStartSizeRef.current = openRef.current
-      ? sizeRef.current
-      : closeThresholdRef.current;
-  }, [closeThresholdRef, openRef, sizeRef]);
+    isDraggingRef.current = true;
+    setAnimating(false);
+    dragStartSizeRef.current = openRef.current ? sizeRef.current : 0;
+  }, [openRef, sizeRef]);
 
   const onDelta = useCallback(
     (delta: number) => {
       const adjusted = invertRef.current ? -delta : delta;
       const raw = dragStartSizeRef.current + adjusted;
-      if (raw <= closeThresholdRef.current) {
-        if (openRef.current) setOpen(false);
-      } else {
-        const clamped = Math.min(
-          maxSizeRef.current,
-          Math.max(minSizeRef.current, raw)
-        );
-        setSize(clamped);
-        if (!openRef.current) setOpen(true);
-        savedSizeRef.current = clamped;
-        onSizeChangeRef.current?.(clamped);
+      if (raw <= 0) {
+        // Dragged shut: close and drop the manual override so reopening auto-sizes.
+        if (openRef.current) {
+          setOpen(false);
+          setUserSize(null);
+        }
+        return;
       }
+      const auto = Math.min(
+        contentElRef.current?.offsetHeight ?? 0,
+        maxSizeRef.current
+      );
+      const clamped = Math.min(raw, auto);
+      // Dragging all the way up to the natural size re-enters auto mode.
+      setUserSize(clamped >= auto ? null : clamped);
+      if (!openRef.current) setOpen(true);
+      onSizeChangeRef.current?.(clamped);
     },
-    [
-      closeThresholdRef,
-      invertRef,
-      maxSizeRef,
-      minSizeRef,
-      onSizeChangeRef,
-      openRef,
-      setOpen,
-    ]
+    [invertRef, maxSizeRef, onSizeChangeRef, openRef, setOpen]
   );
+
+  const onDragEnd = useCallback(() => {
+    isDraggingRef.current = false;
+  }, []);
 
   const { isDragging, handleProps } = useDragDelta({
     axis,
     onDragStart,
     onDelta,
+    onDragEnd,
   });
 
   const toggle = useCallback(() => {
-    if (!openRef.current) {
-      setSize(savedSizeRef.current);
-      setOpen(true);
-    } else {
-      setOpen(false);
-    }
+    setAnimating(true);
+    // Both directions clear the manual override: reopening always auto-sizes
+    // (no memory of the last dragged size) and closing renders size 0.
+    setUserSize(null);
+    setOpen(!openRef.current);
   }, [openRef, setOpen]);
+
+  // Clear `animating` once the open/close transition finishes.
+  const onTransitionEnd = useCallback(() => {
+    if (!isDraggingRef.current) setAnimating(false);
+  }, []);
 
   return {
     open,
@@ -156,6 +170,9 @@ export function useResizableDrawer({
     setOpen,
     size,
     isDragging,
+    animating,
+    onTransitionEnd,
     dragHandleProps: handleProps,
+    contentRef,
   };
 }

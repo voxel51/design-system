@@ -3,43 +3,35 @@ import userEvent from "@testing-library/user-event";
 
 import Drawer from "./Drawer";
 
-// HANDLE_SIZE(4) — jsdom doesn't measure real element heights,
-// so headerHeight is always 0 and closedSize is always HANDLE_SIZE.
-const CLOSED_SIZE = 4;
+// jsdom doesn't lay out elements, so stub offsetHeight. The content element is
+// what the hook measures; with this stub every element reports CONTENT_HEIGHT.
+const CONTENT_HEIGHT = 200;
 
 beforeEach(() => {
   Element.prototype.setPointerCapture = jest.fn();
+  Object.defineProperty(HTMLElement.prototype, "offsetHeight", {
+    configurable: true,
+    get() {
+      return CONTENT_HEIGHT;
+    },
+  });
   globalThis.ResizeObserver = jest.fn().mockImplementation(() => ({
     observe: jest.fn(),
     disconnect: jest.fn(),
   }));
 });
 
-// jsdom's PointerEvent constructor doesn't propagate clientX/Y from its init
-// object, so we create events via createEvent and patch the property directly.
 function pointerDown(element: Element, clientY: number, clientX = 0) {
   const event = createEvent.pointerDown(element);
-  Object.defineProperty(event, "clientY", {
-    value: clientY,
-    configurable: true,
-  });
-  Object.defineProperty(event, "clientX", {
-    value: clientX,
-    configurable: true,
-  });
+  Object.defineProperty(event, "clientY", { value: clientY, configurable: true });
+  Object.defineProperty(event, "clientX", { value: clientX, configurable: true });
   fireEvent(element, event);
 }
 
 function pointerMove(element: Element, clientY: number, clientX = 0) {
   const event = createEvent.pointerMove(element);
-  Object.defineProperty(event, "clientY", {
-    value: clientY,
-    configurable: true,
-  });
-  Object.defineProperty(event, "clientX", {
-    value: clientX,
-    configurable: true,
-  });
+  Object.defineProperty(event, "clientY", { value: clientY, configurable: true });
+  Object.defineProperty(event, "clientX", { value: clientX, configurable: true });
   fireEvent(element, event);
 }
 
@@ -51,7 +43,11 @@ function getHandle(container: HTMLElement) {
   return container.firstChild!.firstChild as HTMLElement;
 }
 
-const defaultProps = { defaultSize: 200, minSize: 50, maxSize: 400 };
+function getContentWrapper(container: HTMLElement) {
+  return container.querySelector("[class*='contentWrapper']") as HTMLElement;
+}
+
+const defaultProps = { maxSize: 400 };
 
 describe("Drawer", () => {
   describe("rendering", () => {
@@ -120,10 +116,7 @@ describe("Drawer", () => {
           )}
         />
       );
-      expect(screen.getByRole("button")).toHaveAttribute(
-        "aria-expanded",
-        "true"
-      );
+      expect(screen.getByRole("button")).toHaveAttribute("aria-expanded", "true");
     });
 
     it("should pass open=false to header when closed", () => {
@@ -138,22 +131,7 @@ describe("Drawer", () => {
           )}
         />
       );
-      expect(screen.getByRole("button")).toHaveAttribute(
-        "aria-expanded",
-        "false"
-      );
-    });
-
-    it("should wrap header output in a measured div", () => {
-      const { container } = render(
-        <Drawer
-          {...defaultProps}
-          header={(state) => <button onClick={state.toggle}>toggle</button>}
-        />
-      );
-      const headerDiv = container.querySelector("[class*='header']");
-      expect(headerDiv).toBeInTheDocument();
-      expect(headerDiv).toContainElement(screen.getByRole("button"));
+      expect(screen.getByRole("button")).toHaveAttribute("aria-expanded", "false");
     });
 
     it("should close the drawer when toggle is called via header", async () => {
@@ -170,14 +148,11 @@ describe("Drawer", () => {
         />
       );
       await user.click(screen.getByRole("button"));
-      expect(container.firstChild).toHaveStyle({ height: `${CLOSED_SIZE}px` });
-      expect(screen.getByRole("button")).toHaveAttribute(
-        "aria-expanded",
-        "false"
-      );
+      expect(getContentWrapper(container)).toHaveStyle({ height: "0px" });
+      expect(screen.getByRole("button")).toHaveAttribute("aria-expanded", "false");
     });
 
-    it("should restore saved size when toggled open via header", async () => {
+    it("should open to content height when toggled open via header", async () => {
       const user = userEvent.setup();
       const { container } = render(
         <Drawer
@@ -190,18 +165,11 @@ describe("Drawer", () => {
           )}
         />
       );
-      const root = container.firstChild as HTMLElement;
-      const handle = getHandle(container);
-
-      // drag to save size=150 (delta=+50, adjusted=-50, raw=150)
-      pointerDown(handle, 100);
-      pointerMove(handle, 150);
-      pointerUp(handle);
-
-      await user.click(screen.getByRole("button"));
-      await user.click(screen.getByRole("button"));
-
-      expect(root).toHaveStyle({ height: "150px" });
+      await user.click(screen.getByRole("button")); // close
+      await user.click(screen.getByRole("button")); // open
+      expect(getContentWrapper(container)).toHaveStyle({
+        height: `${CONTENT_HEIGHT}px`,
+      });
     });
 
     it("should not render a header wrapper when no header prop is provided", () => {
@@ -213,51 +181,34 @@ describe("Drawer", () => {
   });
 
   describe("open/close state", () => {
-    it("should be open by default", () => {
+    it("content wrapper is content-height tall when open", () => {
       const { container } = render(<Drawer {...defaultProps} />);
-      expect(container.firstChild).toHaveStyle({ height: "200px" });
+      expect(getContentWrapper(container)).toHaveStyle({
+        height: `${CONTENT_HEIGHT}px`,
+      });
     });
 
-    it("should be closed when defaultOpen is false", () => {
+    it("content wrapper collapses to 0 when defaultOpen is false", () => {
       const { container } = render(
         <Drawer {...defaultProps} defaultOpen={false} />
       );
-      expect(container.firstChild).toHaveStyle({ height: `${CLOSED_SIZE}px` });
+      expect(getContentWrapper(container)).toHaveStyle({ height: "0px" });
     });
 
-    it("should respect controlled open prop", () => {
+    it("respects controlled open=false", () => {
       const { container } = render(<Drawer {...defaultProps} open={false} />);
-      expect(container.firstChild).toHaveStyle({ height: `${CLOSED_SIZE}px` });
+      expect(getContentWrapper(container)).toHaveStyle({ height: "0px" });
     });
   });
 
   describe("dimension style", () => {
-    it("should set height for bottom drawer when open", () => {
-      const { container } = render(
-        <Drawer {...defaultProps} side="bottom" defaultOpen={true} />
-      );
-      expect(container.firstChild).toHaveStyle({ height: "200px" });
-    });
-
-    it("should set height for bottom drawer when closed", () => {
-      const { container } = render(
-        <Drawer {...defaultProps} side="bottom" defaultOpen={false} />
-      );
-      expect(container.firstChild).toHaveStyle({ height: `${CLOSED_SIZE}px` });
-    });
-
-    it("should set width for left drawer when open", () => {
+    it("uses width (not height) for a left drawer", () => {
       const { container } = render(
         <Drawer {...defaultProps} side="left" defaultOpen={true} />
       );
-      expect(container.firstChild).toHaveStyle({ width: "200px" });
-    });
-
-    it("should set width for left drawer when closed", () => {
-      const { container } = render(
-        <Drawer {...defaultProps} side="left" defaultOpen={false} />
-      );
-      expect(container.firstChild).toHaveStyle({ width: `${CLOSED_SIZE}px` });
+      expect(getContentWrapper(container)).toHaveStyle({
+        width: `${CONTENT_HEIGHT}px`,
+      });
     });
   });
 
@@ -276,115 +227,75 @@ describe("Drawer", () => {
       expect(getHandle(container)).not.toHaveClass("handleDisabled");
     });
 
-    it("should decrease height when dragged down on a bottom drawer", () => {
-      const { container } = render(
-        <Drawer {...defaultProps} side="bottom" defaultOpen={true} />
-      );
-      const root = container.firstChild as HTMLElement;
-      const handle = getHandle(container);
-
-      pointerDown(handle, 100);
-      pointerMove(handle, 150); // delta=+50, adjusted=-50 → 200-50=150
-      pointerUp(handle);
-
-      expect(root).toHaveStyle({ height: "150px" });
-    });
-
-    it("should increase height when dragged up on a bottom drawer", () => {
-      const { container } = render(
-        <Drawer {...defaultProps} side="bottom" defaultOpen={true} />
-      );
-      const root = container.firstChild as HTMLElement;
-      const handle = getHandle(container);
-
-      pointerDown(handle, 100);
-      pointerMove(handle, 60); // delta=-40, adjusted=+40 → 200+40=240
-      pointerUp(handle);
-
-      expect(root).toHaveStyle({ height: "240px" });
-    });
-
-    it("should clamp height to maxSize", () => {
+    it("should decrease content height when dragged down, and persist after release", () => {
       const { container } = render(
         <Drawer {...defaultProps} side="bottom" defaultOpen={true} />
       );
       const handle = getHandle(container);
 
       pointerDown(handle, 100);
-      pointerMove(handle, -9999);
+      pointerMove(handle, 150); // delta=+50, adjusted=-50 -> 200-50=150
       pointerUp(handle);
-
-      expect(container.firstChild).toHaveStyle({ height: "400px" });
+      // a manual drag persists (it does not snap back to content height)
+      expect(getContentWrapper(container)).toHaveStyle({ height: "150px" });
     });
 
-    it("should clamp to raw size when above minSize", () => {
+    it("should close (handle disabled, height 0) when dragged shut", () => {
       const { container } = render(
         <Drawer {...defaultProps} side="bottom" defaultOpen={true} />
       );
       const handle = getHandle(container);
 
-      // delta=+140, adjusted=-140, raw=60 — above closeThreshold(4) and above minSize(50)
       pointerDown(handle, 100);
-      pointerMove(handle, 240);
+      pointerMove(handle, 10000); // raw < 0 -> close
       pointerUp(handle);
 
-      expect(container.firstChild).toHaveStyle({ height: "60px" });
-    });
-
-    it("should close when dragged past the close threshold", () => {
-      const { container } = render(
-        <Drawer {...defaultProps} side="bottom" defaultOpen={true} />
-      );
-      const root = container.firstChild as HTMLElement;
-      const handle = getHandle(container);
-
-      pointerDown(handle, 100);
-      pointerMove(handle, 10000);
-      pointerUp(handle);
-
-      expect(root).toHaveStyle({ height: `${CLOSED_SIZE}px` });
-    });
-
-    it("should increase width when dragged right on a left drawer", () => {
-      const { container } = render(
-        <Drawer {...defaultProps} side="left" defaultOpen={true} />
-      );
-      const root = container.firstChild as HTMLElement;
-      const handle = getHandle(container);
-
-      pointerDown(handle, 0, 100);
-      pointerMove(handle, 0, 140); // delta=+40, adjusted=+40 → 200+40=240
-      pointerUp(handle);
-
-      expect(root).toHaveStyle({ width: "240px" });
+      expect(getHandle(container)).toHaveClass("handleDisabled");
+      expect(getContentWrapper(container)).toHaveStyle({ height: "0px" });
     });
   });
 
   describe("transition", () => {
-    it("should not set transition override when not dragging", () => {
+    it("disables the transition when idle (auto-sized, not animating)", () => {
       const { container } = render(<Drawer {...defaultProps} />);
-      expect(container.firstChild).not.toHaveStyle({ transition: "none" });
+      expect(getContentWrapper(container)).toHaveStyle({ transition: "none" });
     });
 
-    it("should set transition to none while dragging", () => {
+    it("enables the transition while toggling (animating)", async () => {
+      const user = userEvent.setup();
+      const { container } = render(
+        <Drawer
+          {...defaultProps}
+          defaultOpen={true}
+          header={(state) => <button onClick={state.toggle}>toggle</button>}
+        />
+      );
+      await user.click(screen.getByRole("button")); // toggle -> animating
+      expect(getContentWrapper(container)).not.toHaveStyle({ transition: "none" });
+    });
+
+    it("disables the transition again once the transition ends", async () => {
+      const user = userEvent.setup();
+      const { container } = render(
+        <Drawer
+          {...defaultProps}
+          defaultOpen={true}
+          header={(state) => <button onClick={state.toggle}>toggle</button>}
+        />
+      );
+      await user.click(screen.getByRole("button"));
+      fireEvent.transitionEnd(getContentWrapper(container));
+      expect(getContentWrapper(container)).toHaveStyle({ transition: "none" });
+    });
+
+    it("disables the transition while dragging", () => {
       const { container } = render(
         <Drawer {...defaultProps} defaultOpen={true} />
       );
       const handle = getHandle(container);
-
       pointerDown(handle, 100);
-      expect(container.firstChild).toHaveStyle({ transition: "none" });
-    });
-
-    it("should remove transition override after drag ends", () => {
-      const { container } = render(
-        <Drawer {...defaultProps} defaultOpen={true} />
-      );
-      const handle = getHandle(container);
-
-      pointerDown(handle, 100);
+      expect(getContentWrapper(container)).toHaveStyle({ transition: "none" });
       pointerUp(handle);
-      expect(container.firstChild).not.toHaveStyle({ transition: "none" });
     });
   });
 
@@ -406,36 +317,24 @@ describe("Drawer", () => {
     it("should call onOpenChange when closed by drag", () => {
       const onOpenChange = jest.fn();
       const { container } = render(
-        <Drawer
-          {...defaultProps}
-          onOpenChange={onOpenChange}
-          defaultOpen={true}
-        />
+        <Drawer {...defaultProps} onOpenChange={onOpenChange} defaultOpen={true} />
       );
       const handle = getHandle(container);
-
       pointerDown(handle, 100);
       pointerMove(handle, 10000);
       pointerUp(handle);
-
       expect(onOpenChange).toHaveBeenCalledWith(false);
     });
 
-    it("should call onSizeChange when size changes via drag", () => {
+    it("should call onSizeChange while dragging", () => {
       const onSizeChange = jest.fn();
       const { container } = render(
-        <Drawer
-          {...defaultProps}
-          onSizeChange={onSizeChange}
-          defaultOpen={true}
-        />
+        <Drawer {...defaultProps} onSizeChange={onSizeChange} defaultOpen={true} />
       );
       const handle = getHandle(container);
-
       pointerDown(handle, 100);
       pointerMove(handle, 150);
       pointerUp(handle);
-
       expect(onSizeChange).toHaveBeenCalledWith(150);
     });
   });
