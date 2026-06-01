@@ -23,6 +23,7 @@ export * from "./Radio";
 export * from "./RichButton";
 export * from "./RichButtonGroup";
 export * from "./RichList";
+export * from "./Scrubber";
 export * from "./Select";
 export * from "./Slider";
 export * from "./Spinner";
