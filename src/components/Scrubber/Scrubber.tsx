@@ -11,10 +11,17 @@ import {
   useState,
 } from "react";
 
+import { Input } from "@/components/Input";
 import { ScrubberThumb } from "@/components/Scrubber/ScrubberThumb";
 import { ScrubberTick } from "@/components/Scrubber/ScrubberTick";
 import radiusStyles from "@/styles/radius";
-import { BackgroundColor, bgColorClass, Orientation, Radius } from "@/types";
+import {
+  BackgroundColor,
+  bgColorClass,
+  Orientation,
+  Radius,
+  Size,
+} from "@/types";
 
 export type ScrubberLabelMode = "always" | "scrubbing" | "hover";
 
@@ -315,44 +322,65 @@ export function Scrubber<T>({
       .filter(<U,>(x: U | null): x is U => x !== null);
   }, [maxPos, minPos, range, ticks, toPosition]);
 
+  // Visible track sits flush against the inward-facing edge of the outer
+  // wrapper. The wrapper itself is thicker than the track so pointer
+  // events (and the floating label / editable input) get useful room to
+  // breathe even though we hug the parent's edge.
+  const OUTER_THICKNESS_PX = 80;
+  const outerStyle: CSSProperties = horizontal
+    ? { height: OUTER_THICKNESS_PX, width: "100%" }
+    : { width: OUTER_THICKNESS_PX, height: "100%" };
   const trackStyle: CSSProperties = horizontal
-    ? { height: TRACK_THICKNESS_PX, width: "100%" }
-    : { width: TRACK_THICKNESS_PX, height: "100%" };
+    ? {
+        position: "absolute",
+        left: 0,
+        right: 0,
+        bottom: 0,
+        height: TRACK_THICKNESS_PX,
+      }
+    : {
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        right: 0,
+        width: TRACK_THICKNESS_PX,
+      };
 
   return (
-    // Outer wrapper has no padding — the scrubber's bounding box is just
-    // the track. Thumb, tick labels, and the floating label all overflow
-    // inward (above the track in Row mode, to the left in Column mode).
-    // Parent containers should hug the relevant edge of their layout.
+    // Outer wrapper provides the interactive surface and the room above
+    // (Row) or left of (Column) the track for the thumb, labels, and
+    // editable input. The visible track sits flush against the inward
+    // edge; everything else extends INWARD into the wrapper.
     <div
       className={clsx(
-        "relative select-none",
+        "relative select-none cursor-pointer touch-none",
         horizontal ? "w-full" : "h-full inline-flex flex-col",
         className
       )}
+      style={outerStyle}
+      role="slider"
+      tabIndex={0}
+      aria-label={ariaLabel}
+      aria-valuemin={minPos}
+      aria-valuemax={maxPos}
+      aria-valuenow={valuePos}
+      aria-orientation={horizontal ? "horizontal" : "vertical"}
       onPointerEnter={() => setHovered(true)}
       onPointerLeave={() => setHovered(false)}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
+      onKeyDown={handleKeyDown}
     >
       <div
         ref={trackRef}
-        role="slider"
-        tabIndex={0}
-        aria-label={ariaLabel}
-        aria-valuemin={minPos}
-        aria-valuemax={maxPos}
-        aria-valuenow={valuePos}
-        aria-orientation={horizontal ? "horizontal" : "vertical"}
+        aria-hidden="true"
         className={clsx(
-          "relative cursor-pointer touch-none",
           bgColorClass(BackgroundColor.Muted),
           radiusStyles(Radius.Full)
         )}
         style={trackStyle}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onPointerCancel={handlePointerUp}
-        onKeyDown={handleKeyDown}
       >
         {tickEntries.map(({ value: v, index, fraction }) => (
           <ScrubberTick
@@ -367,6 +395,7 @@ export function Scrubber<T>({
         <ScrubberThumb
           position={position}
           orientation={orientation}
+          active={hovered || scrubbing}
           label={
             showsLabel && !(editable && (hovered || editing))
               ? (renderLabel?.(value) ?? String(value))
@@ -375,59 +404,57 @@ export function Scrubber<T>({
         />
 
         {editable && (hovered || editing) && (
-          <input
-            ref={inputRef}
-            value={inputText}
-            onChange={(e) => {
-              setEditing(true);
-              setInputText(e.target.value);
-            }}
-            onFocus={() => setEditing(true)}
-            onBlur={() => {
-              setEditing(false);
-              const parsed = parseInput(inputText);
-              if (parsed !== null && parsed !== undefined) onChange(parsed);
-              else
-                setInputText(
-                  formatInput ? formatInput(value) : String(value)
-                );
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                (e.target as HTMLInputElement).blur();
-              } else if (e.key === "Escape") {
-                e.preventDefault();
-                setEditing(false);
-                setInputText(
-                  formatInput ? formatInput(value) : String(value)
-                );
-                (e.target as HTMLInputElement).blur();
-              }
-            }}
-            onPointerDown={(e) => e.stopPropagation()}
-            aria-label={ariaLabel ? `${ariaLabel} value` : "Scrubber value"}
-            className={clsx(
-              "absolute z-30 text-xs font-medium",
-              "px-1.5 py-0.5 w-20 outline-none",
-              bgColorClass(BackgroundColor.Background),
-              radiusStyles(Radius.Sm),
-              "border border-strong focus:border-primary"
-            )}
+          <div
+            className="absolute z-30 w-32"
             style={
               horizontal
                 ? {
                     left: `${position * 100}%`,
                     bottom: "100%",
-                    transform: "translate(-50%, -10px)",
+                    transform: "translate(-50%, -52px)",
                   }
                 : {
                     top: `${position * 100}%`,
-                    left: "100%",
-                    transform: "translate(10px, -50%)",
+                    right: "100%",
+                    transform: "translate(-52px, -50%)",
                   }
             }
-          />
+            onPointerDown={(e) => e.stopPropagation()}
+          >
+            <Input
+              size={Size.Sm}
+              radius={Radius.Sm}
+              value={inputText}
+              onChange={(e) => {
+                setEditing(true);
+                setInputText(e.target.value);
+              }}
+              onFocus={() => setEditing(true)}
+              onBlur={() => {
+                setEditing(false);
+                const parsed = parseInput(inputText);
+                if (parsed !== null && parsed !== undefined) onChange(parsed);
+                else
+                  setInputText(
+                    formatInput ? formatInput(value) : String(value)
+                  );
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  (e.target as HTMLInputElement).blur();
+                } else if (e.key === "Escape") {
+                  e.preventDefault();
+                  setEditing(false);
+                  setInputText(
+                    formatInput ? formatInput(value) : String(value)
+                  );
+                  (e.target as HTMLInputElement).blur();
+                }
+              }}
+              aria-label={ariaLabel ? `${ariaLabel} value` : "Scrubber value"}
+            />
+          </div>
         )}
       </div>
     </div>

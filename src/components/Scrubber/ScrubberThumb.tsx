@@ -10,6 +10,11 @@ interface ScrubberThumbProps {
   orientation: Orientation;
   /** Floating label shown next to the thumb. Omit to hide the label. */
   label?: ReactNode;
+  /**
+   * When `true` (hover or active scrub), the pin scales up slightly with a
+   * short transition so users get tactile feedback on interaction.
+   */
+  active?: boolean;
 }
 
 /**
@@ -25,6 +30,7 @@ export const ScrubberThumb: FC<ScrubberThumbProps> = ({
   position,
   orientation,
   label,
+  active,
 }) => {
   const horizontal = orientation === Orientation.Row;
   const pct = `${position * 100}%`;
@@ -33,8 +39,18 @@ export const ScrubberThumb: FC<ScrubberThumbProps> = ({
   // anchors at the track's inward-facing edge and extends INTO the content
   // area — upward in Row mode (track sits at container bottom), leftward
   // in Column mode (track sits at container right).
-  const PIN_THICKNESS_PX = 4;
-  const PIN_LENGTH_PX = 36;
+  // Pin sized at rest; the active state scales it via GPU transform so
+  // both thickness (1.4×) and length (1.67×, i.e. 30→50) ease in
+  // together without layout thrash. `transformOrigin` keeps the pin
+  // anchored at the inward edge of the track.
+  const PIN_THICKNESS_PX = 5;
+  const PIN_LENGTH_PX = 30;
+  const SCALE_THICKNESS = 1.4;
+  const SCALE_LENGTH = 50 / PIN_LENGTH_PX;
+
+  const activeTransform = horizontal
+    ? `scaleX(${SCALE_THICKNESS}) scaleY(${SCALE_LENGTH})`
+    : `scaleY(${SCALE_THICKNESS}) scaleX(${SCALE_LENGTH})`;
 
   const thumbStyle: CSSProperties = horizontal
     ? {
@@ -42,25 +58,30 @@ export const ScrubberThumb: FC<ScrubberThumbProps> = ({
         bottom: "0",
         width: PIN_THICKNESS_PX,
         height: PIN_LENGTH_PX,
-        transform: "translateX(-50%)",
+        transform: `translateX(-50%) ${active ? activeTransform : ""}`,
+        transformOrigin: "bottom center",
       }
     : {
         top: pct,
         right: "0",
         width: PIN_LENGTH_PX,
         height: PIN_THICKNESS_PX,
-        transform: "translateY(-50%)",
+        transform: `translateY(-50%) ${active ? activeTransform : ""}`,
+        transformOrigin: "center right",
       };
 
+  // Label is anchored at the *active* length so it doesn't jump as the
+  // pin grows past it on hover.
+  const labelOffsetPx = PIN_LENGTH_PX * SCALE_LENGTH + 8;
   const labelStyle: CSSProperties = horizontal
     ? {
         left: pct,
-        bottom: `${PIN_LENGTH_PX + 4}px`,
+        bottom: `${labelOffsetPx}px`,
         transform: "translateX(-50%)",
       }
     : {
         top: pct,
-        right: `${PIN_LENGTH_PX + 4}px`,
+        right: `${labelOffsetPx}px`,
         transform: "translateY(-50%)",
       };
 
@@ -69,6 +90,7 @@ export const ScrubberThumb: FC<ScrubberThumbProps> = ({
       <div
         className={clsx(
           "absolute z-10 pointer-events-none",
+          "transition-transform duration-300 ease-out",
           bgColorClass(BrandColor.Primary),
           radiusStyles(Radius.Full),
           "shadow-sm"
