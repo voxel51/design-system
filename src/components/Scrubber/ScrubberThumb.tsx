@@ -29,38 +29,39 @@ export const ScrubberThumb: FC<ScrubberThumbProps> = ({
   const horizontal = orientation === Orientation.Row;
   const pct = `${position * 100}%`;
 
-  // Pin: thin along the primary axis, tall along the cross axis. In Row
-  // mode that's a narrow vertical bar straddling the track; in Column mode
-  // it's a narrow horizontal bar.
-  const PIN_THICKNESS_PX = 2;
-  const PIN_LENGTH_PX = 16;
+  // Pin: thin along the primary axis, long along the cross axis. The pin
+  // anchors at the track's inward-facing edge and extends INTO the content
+  // area — upward in Row mode (track sits at container bottom), leftward
+  // in Column mode (track sits at container right).
+  const PIN_THICKNESS_PX = 4;
+  const PIN_LENGTH_PX = 36;
 
   const thumbStyle: CSSProperties = horizontal
     ? {
         left: pct,
-        top: "50%",
+        bottom: "0",
         width: PIN_THICKNESS_PX,
         height: PIN_LENGTH_PX,
-        transform: "translate(-50%, -50%)",
+        transform: "translateX(-50%)",
       }
     : {
         top: pct,
-        left: "50%",
+        right: "0",
         width: PIN_LENGTH_PX,
         height: PIN_THICKNESS_PX,
-        transform: "translate(-50%, -50%)",
+        transform: "translateY(-50%)",
       };
 
   const labelStyle: CSSProperties = horizontal
     ? {
         left: pct,
-        bottom: "100%",
-        transform: "translate(-50%, -10px)",
+        bottom: `${PIN_LENGTH_PX + 4}px`,
+        transform: "translateX(-50%)",
       }
     : {
         top: pct,
-        left: "100%",
-        transform: "translate(10px, -50%)",
+        right: `${PIN_LENGTH_PX + 4}px`,
+        transform: "translateY(-50%)",
       };
 
   return (

@@ -35,18 +35,22 @@ export const ScrubberTick: FC<ScrubberTickProps> = ({
   const horizontal = orientation === Orientation.Row;
   const pct = `${position * 100}%`;
 
+  // The scrubber hugs the bottom (Row) or right (Column) of its container.
+  // Tick marks and labels extend INWARD only — above the track in Row mode,
+  // to the left of the track in Column mode — so nothing overflows the
+  // hugged edge.
   const tickStyle: CSSProperties = horizontal
     ? {
         left: pct,
-        top: "-4px",
-        bottom: "-4px",
+        bottom: "0",
+        height: 8,
         width: 1,
         transform: "translateX(-50%)",
       }
     : {
         top: pct,
-        left: "-4px",
-        right: "-4px",
+        right: "0",
+        width: 8,
         height: 1,
         transform: "translateY(-50%)",
       };
@@ -54,13 +58,13 @@ export const ScrubberTick: FC<ScrubberTickProps> = ({
   const labelStyle: CSSProperties = horizontal
     ? {
         left: pct,
-        top: "100%",
-        transform: "translate(-50%, 4px)",
+        bottom: "calc(100% + 4px)",
+        transform: "translateX(-50%)",
       }
     : {
-        // Anchor the label's right edge a small gap from the track and give
-        // it an explicit cross-axis box so long labels can be right-aligned
-        // and grow leftward instead of overflowing into the track.
+        // Right edge of the label sits a small gap to the left of the track;
+        // text is right-aligned so longer labels grow leftward instead of
+        // drifting away from the tick.
         top: pct,
         right: "calc(100% + 4px)",
         width: "5rem",

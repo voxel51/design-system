@@ -320,12 +320,14 @@ export function Scrubber<T>({
     : { width: TRACK_THICKNESS_PX, height: "100%" };
 
   return (
+    // Outer wrapper has no padding — the scrubber's bounding box is just
+    // the track. Thumb, tick labels, and the floating label all overflow
+    // inward (above the track in Row mode, to the left in Column mode).
+    // Parent containers should hug the relevant edge of their layout.
     <div
       className={clsx(
         "relative select-none",
-        horizontal
-          ? "w-full py-4 px-2"
-          : "h-full px-4 py-2 inline-flex flex-col",
+        horizontal ? "w-full" : "h-full inline-flex flex-col",
         className
       )}
       onPointerEnter={() => setHovered(true)}
