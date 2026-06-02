@@ -1,11 +1,12 @@
 import clsx from "clsx";
 import { CSSProperties, FC, ReactNode } from "react";
 
+import radiusStyles from "@/styles/radius";
 import {
   BackgroundColor,
   bgColorClass,
-  BrandColor,
   Orientation,
+  Radius,
   textColorClass,
   TextColor,
 } from "@/types";
@@ -18,6 +19,12 @@ interface ScrubberTickProps {
   label?: ReactNode;
   /** Whether this tick coincides with the current scrubber value. */
   active?: boolean;
+  /**
+   * Whether the tick label should be visible. The Scrubber sets this from
+   * its own hover/scrub state so labels only appear when the user is
+   * interacting with the pin — keeping the bar quiet at rest.
+   */
+  showLabel?: boolean;
 }
 
 /**
@@ -31,6 +38,7 @@ export const ScrubberTick: FC<ScrubberTickProps> = ({
   orientation,
   label,
   active,
+  showLabel,
 }) => {
   const horizontal = orientation === Orientation.Row;
   const pct = `${position * 100}%`;
@@ -62,12 +70,11 @@ export const ScrubberTick: FC<ScrubberTickProps> = ({
         transform: "translateX(-50%)",
       }
     : {
-        // Right edge of the label sits a small gap to the left of the track;
-        // text is right-aligned so longer labels grow leftward instead of
-        // drifting away from the tick.
+        // Right edge of the label sits a small gap to the left of the
+        // track. The label box hugs its text (no fixed width); labels
+        // grow leftward naturally because we anchor the right edge.
         top: pct,
         right: "calc(100% + 4px)",
-        width: "5rem",
         transform: "translateY(-50%)",
       };
 
@@ -76,23 +83,34 @@ export const ScrubberTick: FC<ScrubberTickProps> = ({
       <div
         className={clsx(
           "absolute pointer-events-none",
-          active
-            ? bgColorClass(BrandColor.Primary)
-            : bgColorClass(BackgroundColor.Muted)
+          // Always render ticks in the muted color. The thumb is the
+          // source of truth for "current value" — coloring the tick under
+          // the thumb the same primary brand color used to read as two
+          // overlapping orange markers when the value happened to land on
+          // a tick boundary.
+          bgColorClass(BackgroundColor.Muted)
         )}
         style={tickStyle}
       />
-      {label !== undefined && (
+      {label !== undefined && showLabel && (
         <div
           className={clsx(
-            "absolute text-[10px] leading-none pointer-events-none whitespace-nowrap",
-            // In Column mode the label sits to the left of the track via
-            // `right: 100%`. Right-aligning anchors the text against the
-            // track, so varying-length labels grow leftward instead of
-            // drifting away from the tick.
+            "absolute text-xs leading-none pointer-events-none whitespace-nowrap",
+            // Subtle padded chip with a semi-transparent surface so the
+            // label reads cleanly over grid content without fully blocking
+            // the underlying view.
+            "px-1.5 py-0.5",
+            radiusStyles(Radius.Sm),
+            bgColorClass(BackgroundColor.Card1),
+            "opacity-90",
+            // In Column mode the label sits to the left of the track. Right-
+            // aligning anchors the text against the track so varying-length
+            // labels grow leftward instead of drifting away.
             !horizontal && "text-right",
-            active ? "font-semibold" : "opacity-70",
-            textColorClass(TextColor.Secondary)
+            // Lighter text — Primary in our scheme is the highest-contrast
+            // value and reads as crisp white in dark mode.
+            active ? "font-semibold" : "",
+            textColorClass(TextColor.Primary)
           )}
           style={labelStyle}
         >

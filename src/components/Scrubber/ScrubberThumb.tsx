@@ -15,6 +15,13 @@ interface ScrubberThumbProps {
    * short transition so users get tactile feedback on interaction.
    */
   active?: boolean;
+  /**
+   * When `true`, transitions the primary-axis position so external value
+   * changes (e.g. the host scrolling the underlying content) glide instead
+   * of jumping. Should be `false` while the user is actively dragging,
+   * otherwise the pin lags behind the cursor.
+   */
+  animatePosition?: boolean;
 }
 
 /**
@@ -31,9 +38,18 @@ export const ScrubberThumb: FC<ScrubberThumbProps> = ({
   orientation,
   label,
   active,
+  animatePosition,
 }) => {
   const horizontal = orientation === Orientation.Row;
   const pct = `${position * 100}%`;
+
+  // Single transition string instead of the tailwind `transition-transform`
+  // class so we can opt the position property in/out. During an active
+  // drag we MUST NOT transition `top`/`left` — the pin would lag the
+  // cursor and feel sticky.
+  const transition = animatePosition
+    ? `transform 300ms ease-out, ${horizontal ? "left" : "top"} 200ms ease-out`
+    : "transform 300ms ease-out";
 
   // Pin: thin along the primary axis, long along the cross axis. The pin
   // anchors at the track's inward-facing edge and extends INTO the content
@@ -60,6 +76,7 @@ export const ScrubberThumb: FC<ScrubberThumbProps> = ({
         height: PIN_LENGTH_PX,
         transform: `translateX(-50%) ${active ? activeTransform : ""}`,
         transformOrigin: "bottom center",
+        transition,
       }
     : {
         top: pct,
@@ -68,6 +85,7 @@ export const ScrubberThumb: FC<ScrubberThumbProps> = ({
         height: PIN_THICKNESS_PX,
         transform: `translateY(-50%) ${active ? activeTransform : ""}`,
         transformOrigin: "center right",
+        transition,
       };
 
   // Label is anchored at the *active* length so it doesn't jump as the
@@ -90,7 +108,6 @@ export const ScrubberThumb: FC<ScrubberThumbProps> = ({
       <div
         className={clsx(
           "absolute z-10 pointer-events-none",
-          "transition-transform duration-300 ease-out",
           bgColorClass(BrandColor.Primary),
           radiusStyles(Radius.Full),
           "shadow-sm"

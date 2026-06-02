@@ -86,6 +86,17 @@ export interface ScrubberProps<T> {
    * Defaults to `String(value)`.
    */
   formatInput?: (value: T) => string;
+  /**
+   * Fired when the user begins a scrub (pointer-down on the track).
+   * Pairs with {@link onScrubEnd} so consumers can show transient UI
+   * (e.g. falling pixels in the grid) for the duration of the drag.
+   */
+  onScrubStart?: () => void;
+  /**
+   * Fired when the user finishes a scrub (pointer-up). Always fires
+   * exactly once per {@link onScrubStart}.
+   */
+  onScrubEnd?: () => void;
   className?: string;
   "aria-label"?: string;
 }
@@ -154,12 +165,20 @@ export function Scrubber<T>({
   editable = false,
   parseInput = defaultParseInput,
   formatInput,
+  onScrubStart,
+  onScrubEnd,
   className,
   "aria-label": ariaLabel,
 }: ScrubberProps<T>) {
   const trackRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [hovered, setHovered] = useState(false);
+  // `pressing` = pointer is down on the track. `scrubbing` = the user has
+  // also moved at least one pixel since pressing. We separate the two so a
+  // pure click jumps to the new value without firing the scrub-start /
+  // scrub-end callbacks (which consumers wire to expensive UI like the
+  // grid's falling-pixels overlay).
+  const [pressing, setPressing] = useState(false);
   const [scrubbing, setScrubbing] = useState(false);
   const [editing, setEditing] = useState(false);
   const [inputText, setInputText] = useState<string>("");
@@ -224,41 +243,61 @@ export function Scrubber<T>({
 
   const handlePointerDown = useCallback(
     (event: ReactPointerEvent<HTMLDivElement>) => {
-      const track = trackRef.current;
-      if (!track) return;
-      track.setPointerCapture(event.pointerId);
-      setScrubbing(true);
+      // Capture on the same element the listener is bound to (the outer
+      // wrapper). Capturing on the inner track meant pointermove events
+      // got routed to the track but the listener lives on outer — so
+      // drags lost their move events and the scrubber appeared "stuck".
+      event.currentTarget.setPointerCapture(event.pointerId);
+      // Arm a potential drag, but don't promote to "scrubbing" until the
+      // pointer actually moves. This keeps a pure click cheap — no
+      // `onScrubStart`/`onScrubEnd`, no transient consumer UI.
+      setPressing(true);
       lastEmittedPosRef.current = valuePos;
-      emit(
-        valueFromFraction(pointerFraction(event.clientX, event.clientY)),
-        true
-      );
     },
-    [emit, pointerFraction, valueFromFraction, valuePos]
+    [valuePos]
   );
 
   const handlePointerMove = useCallback(
     (event: ReactPointerEvent<HTMLDivElement>) => {
-      if (!scrubbing) return;
+      if (!pressing) return;
+      // First move after press → promote to scrubbing and fire start.
+      if (!scrubbing) {
+        setScrubbing(true);
+        onScrubStart?.();
+      }
       emit(
         valueFromFraction(pointerFraction(event.clientX, event.clientY)),
         true
       );
     },
-    [emit, pointerFraction, scrubbing, valueFromFraction]
+    [
+      emit,
+      onScrubStart,
+      pointerFraction,
+      pressing,
+      scrubbing,
+      valueFromFraction,
+    ]
   );
 
   const handlePointerUp = useCallback(
     (event: ReactPointerEvent<HTMLDivElement>) => {
-      if (!scrubbing) return;
-      trackRef.current?.releasePointerCapture(event.pointerId);
+      if (!pressing) return;
+      event.currentTarget.releasePointerCapture(event.pointerId);
+      const wasScrubbing = scrubbing;
+      setPressing(false);
       setScrubbing(false);
+      // Commit the final value regardless of whether we scrubbed — a pure
+      // click is a "jump to here" gesture.
       emit(
         valueFromFraction(pointerFraction(event.clientX, event.clientY)),
         false
       );
+      // Only fire `onScrubEnd` if we'd actually fired `onScrubStart` —
+      // callbacks must stay paired so consumers can rely on the contract.
+      if (wasScrubbing) onScrubEnd?.();
     },
-    [emit, pointerFraction, scrubbing, valueFromFraction]
+    [emit, onScrubEnd, pointerFraction, pressing, scrubbing, valueFromFraction]
   );
 
   // Keep ref in sync when value changes externally between drags.
@@ -389,6 +428,9 @@ export function Scrubber<T>({
             orientation={orientation}
             label={renderTickLabel?.(v, index)}
             active={Math.abs(fraction - position) < 1e-6}
+            // Labels appear only while the user is engaging the pin —
+            // hover or active scrub — so the bar stays quiet at rest.
+            showLabel={hovered || scrubbing}
           />
         ))}
 
@@ -396,6 +438,12 @@ export function Scrubber<T>({
           position={position}
           orientation={orientation}
           active={hovered || scrubbing}
+          // Animate the thumb's primary-axis position only when the user
+          // is NOT touching it — that's when external value changes
+          // (e.g. the host's scroll position) should glide smoothly.
+          // During an active press/drag we let the thumb track the
+          // cursor exactly.
+          animatePosition={!pressing && !scrubbing}
           label={
             showsLabel && !(editable && (hovered || editing))
               ? (renderLabel?.(value) ?? String(value))
@@ -405,7 +453,15 @@ export function Scrubber<T>({
 
         {editable && (hovered || editing) && (
           <div
-            className="absolute z-30 w-32"
+            className={clsx(
+              // Semi-transparent surface behind the (otherwise see-through)
+              // Input so the typed value reads cleanly over grid content,
+              // while the underlying view stays partially visible.
+              "absolute z-30 w-36 backdrop-blur-sm",
+              radiusStyles(Radius.Md),
+              bgColorClass(BackgroundColor.Card1),
+              "opacity-90 shadow-md"
+            )}
             style={
               horizontal
                 ? {
@@ -422,8 +478,8 @@ export function Scrubber<T>({
             onPointerDown={(e) => e.stopPropagation()}
           >
             <Input
-              size={Size.Sm}
-              radius={Radius.Sm}
+              size={Size.Md}
+              radius={Radius.Md}
               value={inputText}
               onChange={(e) => {
                 setEditing(true);
