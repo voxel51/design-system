@@ -52,9 +52,12 @@ import RadioIcon from "@/img/Radio.svg?react";
 import RedoIcon from "@/img/Redo.svg?react";
 import RefreshIcon from "@/img/Refresh.svg?react";
 import RemoveIcon from "@/img/Remove.svg?react";
+import ResizeIcon from "@/img/Resize.svg?react";
+import ScrubberIcon from "@/img/Scrubber.svg?react";
 import SearchIcon from "@/img/Search.svg?react";
 import SettingsIcon from "@/img/Settings.svg?react";
 import SliderIcon from "@/img/Slider.svg?react";
+import SwimlanesIcon from "@/img/Swimlanes.svg?react";
 import TagIcon from "@/img/Tag.svg?react";
 import TextIcon from "@/img/Text.svg?react";
 import ToggleIcon from "@/img/Toggle.svg?react";
@@ -65,6 +68,7 @@ import UnsupportedIcon from "@/img/Unsupported.svg?react";
 import VALIcon from "@/img/VAL.svg?react";
 import WarningIcon from "@/img/Warning.svg?react";
 import WorkspacesIcon from "@/img/Workspaces.svg?react";
+import ZoomIcon from "@/img/Zoom.svg?react";
 import { BrandColor, IconColor, TextColor, textColorClass } from "@/types";
 import { IconName } from "@/types/icons";
 import { Size } from "@/types/size";
@@ -131,9 +135,12 @@ export const iconMap: Record<
   [IconName.Redo]: RedoIcon,
   [IconName.Refresh]: RefreshIcon,
   [IconName.Remove]: RemoveIcon,
+  [IconName.Resize]: ResizeIcon,
+  [IconName.Scrubber]: ScrubberIcon,
   [IconName.Search]: SearchIcon,
   [IconName.Settings]: SettingsIcon,
   [IconName.Slider]: SliderIcon,
+  [IconName.Swimlanes]: SwimlanesIcon,
   [IconName.Tag]: TagIcon,
   [IconName.Text]: TextIcon,
   [IconName.Toggle]: ToggleIcon,
@@ -144,6 +151,7 @@ export const iconMap: Record<
   [IconName.VAL]: VALIcon,
   [IconName.Warning]: WarningIcon,
   [IconName.Workspaces]: WorkspacesIcon,
+  [IconName.Zoom]: ZoomIcon,
 };
 
 type IconSize = Exclude<Size, "Xs">;

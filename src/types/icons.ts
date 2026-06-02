@@ -49,10 +49,13 @@ export enum IconName {
   Redo = "Redo",
   Refresh = "Refresh",
   Remove = "Remove",
+  Resize = "Resize",
+  Scrubber = "Scrubber",
   Search = "Search",
   Settings = "Settings",
   Slider = "Slider",
   Spinner = "Spinner",
+  Swimlanes = "Swimlanes",
   Tag = "Tag",
   Text = "Text",
   Toggle = "Toggle",
@@ -63,6 +66,7 @@ export enum IconName {
   VAL = "VAL",
   Warning = "Warning",
   Workspaces = "Workspaces",
+  Zoom = "Zoom",
 }
 
 export default IconName;
