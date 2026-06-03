@@ -659,7 +659,10 @@ describe("useTree", () => {
 
   describe("scrollActiveIntoView", () => {
     it("calls scrollIntoView when scrollActiveIntoView=true and activePath changes", () => {
-      const { result } = setup({ idPrefix: "scroll-test", scrollActiveIntoView: true });
+      const { result } = setup({
+        idPrefix: "scroll-test",
+        scrollActiveIntoView: true,
+      });
 
       // Create a DOM element matching the encoded row ID for the active path.
       const el = document.createElement("div");

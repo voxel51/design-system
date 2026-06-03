@@ -182,9 +182,13 @@ describe("Toolbar", () => {
     renderToolbar();
     const toolbar = screen.getByRole("toolbar");
     const dragHandle = toolbar.firstChild as HTMLElement;
-    expect(screen.getByRole("button", { name: "Action 1" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Action 1" })
+    ).toBeInTheDocument();
     fireEvent.keyDown(dragHandle, { key: "Enter" });
-    expect(screen.queryByRole("button", { name: "Action 1" })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "Action 1" })
+    ).not.toBeInTheDocument();
   });
 
   it("collapses content when Space is pressed on the drag handle", () => {
@@ -192,7 +196,9 @@ describe("Toolbar", () => {
     const toolbar = screen.getByRole("toolbar");
     const dragHandle = toolbar.firstChild as HTMLElement;
     fireEvent.keyDown(dragHandle, { key: " " });
-    expect(screen.queryByRole("button", { name: "Action 1" })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "Action 1" })
+    ).not.toBeInTheDocument();
   });
 
   it("does not collapse on other key presses on the drag handle", () => {
@@ -200,7 +206,9 @@ describe("Toolbar", () => {
     const toolbar = screen.getByRole("toolbar");
     const dragHandle = toolbar.firstChild as HTMLElement;
     fireEvent.keyDown(dragHandle, { key: "Escape" });
-    expect(screen.getByRole("button", { name: "Action 1" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Action 1" })
+    ).toBeInTheDocument();
   });
 
   describe("dragging", () => {

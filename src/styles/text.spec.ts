@@ -7,9 +7,12 @@ describe("textStyles", () => {
     expect(textStyles(null as unknown as TextVariant)).toBeNull();
   });
 
-  it.each(Object.values(TextVariant))("returns correct class for %s", (variant) => {
-    expect(textStyles(variant)).toBe(TEXT_STYLES[variant]);
-  });
+  it.each(Object.values(TextVariant))(
+    "returns correct class for %s",
+    (variant) => {
+      expect(textStyles(variant)).toBe(TEXT_STYLES[variant]);
+    }
+  );
 });
 
 describe("textColor", () => {

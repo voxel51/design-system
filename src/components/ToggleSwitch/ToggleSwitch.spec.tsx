@@ -91,7 +91,10 @@ describe("ToggleSwitch", () => {
 
   it("should render a single tab (isFirst and isLast both true)", () => {
     const singleTab = [
-      { id: "only", data: { label: "Only Tab", content: <div>Only Content</div> } },
+      {
+        id: "only",
+        data: { label: "Only Tab", content: <div>Only Content</div> },
+      },
     ];
     render(<ToggleSwitch tabs={singleTab} />);
     expect(screen.getByText("Only Tab")).toBeInTheDocument();
@@ -100,7 +103,11 @@ describe("ToggleSwitch", () => {
 
   it("should render with Soft variant and apply tab padding from softSizeStyles", () => {
     const { container } = render(
-      <ToggleSwitch tabs={tabs} variant={ToggleSwitchVariant.Soft} size={Size.Md} />
+      <ToggleSwitch
+        tabs={tabs}
+        variant={ToggleSwitchVariant.Soft}
+        size={Size.Md}
+      />
     );
     const tabButtons = container.querySelectorAll('[role="tab"]');
     expect(tabButtons.length).toBe(3);
@@ -134,6 +141,8 @@ describe("ToggleSwitch", () => {
     const { container } = render(
       <ToggleSwitch tabs={tabs} tabListClassName="custom-tab-list" />
     );
-    expect(container.querySelector('[role="tablist"]')).toHaveClass("custom-tab-list");
+    expect(container.querySelector('[role="tablist"]')).toHaveClass(
+      "custom-tab-list"
+    );
   });
 });

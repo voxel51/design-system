@@ -9,7 +9,9 @@ describe("shadowStyles", () => {
   });
 
   it("returns the plain class when elementState is None", () => {
-    expect(shadowStyles(Shadow.Md, ElementState.None)).toBe(SHADOW_STYLES[Shadow.Md]);
+    expect(shadowStyles(Shadow.Md, ElementState.None)).toBe(
+      SHADOW_STYLES[Shadow.Md]
+    );
   });
 
   it("returns the plain class when no elementState is provided", () => {
@@ -22,7 +24,10 @@ describe("shadowStyles", () => {
     expect(result).toContain(ElementState.Hover);
   });
 
-  it.each(Object.values(Shadow))("SHADOW_STYLES contains a class for %s", (shadow) => {
-    expect(SHADOW_STYLES[shadow]).toBeTruthy();
-  });
+  it.each(Object.values(Shadow))(
+    "SHADOW_STYLES contains a class for %s",
+    (shadow) => {
+      expect(SHADOW_STYLES[shadow]).toBeTruthy();
+    }
+  );
 });
