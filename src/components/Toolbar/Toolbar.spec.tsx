@@ -163,7 +163,7 @@ describe("Toolbar", () => {
     const parentKeyDown = jest.fn();
     const ownKeyDown = jest.fn();
     render(
-      <div onKeyDown={parentKeyDown}>
+      <div role="presentation" onKeyDown={parentKeyDown}>
         <Toolbar aria-label="Test toolbar" onKeyDown={ownKeyDown}>
           <ToolbarGroup>
             <ToolbarAction aria-label="Action">
