@@ -3,6 +3,7 @@ import {
   CSSProperties,
   KeyboardEvent,
   PointerEvent as ReactPointerEvent,
+  ReactElement,
   ReactNode,
   useCallback,
   useEffect,
@@ -103,10 +104,10 @@ export interface ScrubberProps<T> {
 
 const TRACK_THICKNESS_PX = 4;
 
-const identity = <T,>(v: T) => v as unknown as number;
-const inverseIdentity = <T,>(p: number) => p as unknown as T;
+const identity = <T,>(v: T): number => v as unknown as number;
+const inverseIdentity = <T,>(p: number): T => p as unknown as T;
 
-const clamp = (value: number, min: number, max: number) =>
+const clamp = (value: number, min: number, max: number): number =>
   Math.min(Math.max(value, min), max);
 
 /**
@@ -169,9 +170,8 @@ export function Scrubber<T>({
   onScrubEnd,
   className,
   "aria-label": ariaLabel,
-}: ScrubberProps<T>) {
+}: ScrubberProps<T>): ReactElement {
   const trackRef = useRef<HTMLDivElement | null>(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
   const [hovered, setHovered] = useState(false);
   // `pressing` = pointer is down on the track. `scrubbing` = the user has
   // also moved at least one pixel since pressing. We separate the two so a
