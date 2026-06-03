@@ -656,4 +656,30 @@ describe("useTree", () => {
       expect(onExpand).not.toHaveBeenCalled();
     });
   });
+
+  describe("scrollActiveIntoView", () => {
+    it("calls scrollIntoView when scrollActiveIntoView=true and activePath changes", () => {
+      const { result } = setup({ idPrefix: "scroll-test", scrollActiveIntoView: true });
+
+      // Create a DOM element matching the encoded row ID for the active path.
+      const el = document.createElement("div");
+      el.id = "scroll-test-vehicle_type-car";
+      const scrollIntoView = jest.fn();
+      el.scrollIntoView = scrollIntoView;
+      document.body.appendChild(el);
+
+      act(() => result.current.setActivePath("vehicle_type/car"));
+
+      expect(scrollIntoView).toHaveBeenCalledWith({ block: "nearest" });
+
+      document.body.removeChild(el);
+    });
+
+    it("does not throw when scrollActiveIntoView=true but no element exists", () => {
+      const { result } = setup({ scrollActiveIntoView: true });
+      expect(() => {
+        act(() => result.current.setActivePath("vehicle_type/car"));
+      }).not.toThrow();
+    });
+  });
 });
