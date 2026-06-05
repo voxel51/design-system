@@ -232,13 +232,18 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
           );
 
           return data.tooltip ? (
-            <Tooltip key={id} content={data.tooltip}>
+            <Tooltip
+              key={id}
+              content={data.tooltip}
+              wrapperClassName="flex-1 flex"
+              portal
+            >
               {tab}
             </Tooltip>
           ) : (
-            <Tab disabled={data.disabled} className={tabClassName} key={id}>
-              {data.label}
-            </Tab>
+            <div key={id} className="flex-1 flex">
+              {tab}
+            </div>
           );
         })}
       </TabList>
