@@ -1,4 +1,3 @@
-import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import clsx from "clsx";
 import { FC, HTMLAttributes, ReactNode, useState } from "react";
 
@@ -10,6 +9,8 @@ import {
   bgColorClass,
   Radius,
   Shadow,
+  TextColor,
+  textColorClass,
   ZIndex,
   zIndexStyles,
 } from "@/types";
@@ -20,22 +21,19 @@ export type TooltipAnchor = Extract<
   Anchor.Top | Anchor.Right | Anchor.Bottom | Anchor.Left
 >;
 
-export interface TooltipProps extends Omit<
-  HTMLAttributes<HTMLDivElement>,
-  "content"
-> {
+export interface TooltipProps extends Omit<HTMLAttributes<HTMLDivElement>, "content"> {
   anchor?: TooltipAnchor;
   content: ReactNode;
   portal?: boolean;
-  /** Drop shadow. Use Shadow.Xs through Shadow.Xl. */
   shadow?: Shadow;
+  wrapperClassName?: string;
 }
 
-const anchorStyles: Record<TooltipAnchor, string> = {
-  [Anchor.Top]: "-translate-y-2",
-  [Anchor.Right]: "translate-x-4",
-  [Anchor.Bottom]: "translate-y-2",
-  [Anchor.Left]: "-translate-x-4",
+const panelPositionStyles: Record<TooltipAnchor, string> = {
+  [Anchor.Top]: "bottom-full left-1/2 -translate-x-1/2 -translate-y-2",
+  [Anchor.Right]: "left-full top-1/2 -translate-y-1/2 translate-x-4",
+  [Anchor.Bottom]: "top-full left-1/2 -translate-x-1/2 translate-y-2",
+  [Anchor.Left]: "right-full top-1/2 -translate-y-1/2 -translate-x-4",
 };
 
 const rotatedSquareStyles: Record<TooltipAnchor, string> = {
@@ -72,9 +70,10 @@ const RotatedSquare: FC<{ anchor: TooltipAnchor }> = ({ anchor }) => {
  * @param anchor Position to anchor the tooltip relative to its content. See {@link Anchor}.
  * @param content The content of the tooltip.
  * @param children The content which this component wraps; this acts as the element anchor and the hover trigger.
- * @param className `class` overrides to apply to the component.
+ * @param className `class` overrides to apply to the tooltip panel.
  * @param portal If `true`, applies a high z-index to ensure visibility in stacked contexts.
  * @param shadow The shadow to apply to the tooltip. See {@link Shadow}.
+ * @param wrapperClassName Additional classes to apply to the outer wrapper element.
  * @param props Additional HTML properties to apply to the component.
  */
 export const Tooltip: FC<TooltipProps> = ({
@@ -84,42 +83,40 @@ export const Tooltip: FC<TooltipProps> = ({
   className,
   portal = false,
   shadow = Shadow.Lg,
+  wrapperClassName,
   ...props
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
-    <Popover className="relative" {...props}>
-      <PopoverButton
-        as="div"
-        onMouseEnter={() => setIsOpen(true)}
-        onMouseLeave={() => setIsOpen(false)}
-        className="focus:outline-none"
-      >
-        {children}
-      </PopoverButton>
-
+    <div
+      {...props}
+      className={cn("relative", wrapperClassName)}
+      onMouseEnter={() => setIsOpen(true)}
+      onMouseLeave={() => setIsOpen(false)}
+    >
+      {children}
       {isOpen && (
-        <PopoverPanel
-          static
-          anchor={anchor}
+        <div
           className={cn(
+            "absolute",
+            "w-max",
+            panelPositionStyles[anchor],
             portal && zIndexStyles(ZIndex.AboveModal),
-            "relative",
             "py-0.75 px-2.5",
             "!overflow-visible",
             bgColorClass(BackgroundColor.Card2),
+            textColorClass(TextColor.Primary),
             radiusStyles(Radius.Sm),
             shadowStyles(shadow),
-            anchorStyles[anchor],
             className
           )}
         >
           <div className="max-w-[500px] break-words">{content}</div>
           <RotatedSquare anchor={anchor} />
-        </PopoverPanel>
+        </div>
       )}
-    </Popover>
+    </div>
   );
 };
 
