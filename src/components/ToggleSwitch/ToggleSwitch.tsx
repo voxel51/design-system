@@ -16,11 +16,14 @@ import {
   textColorClass,
   TextVariant,
 } from "@/types";
+import { Tooltip } from "@/components/Tooltip";
 import { cn } from "@/util/classes";
 
 export interface ToggleSwitchTab {
   label: ReactNode;
   content: ReactNode;
+  disabled?: boolean;
+  tooltip?: string;
 }
 
 export enum ToggleSwitchVariant {
@@ -157,6 +160,7 @@ const getTabTextColorClass = (selected: boolean): string => {
  * ```
  *
  * @param tabs List of component descriptors which will be used to create {@link ToggleSwitchTab} children.
+ *  Each tab supports optional `disabled` and `tooltip` fields. See {@link ToggleSwitchTab}.
  * @param variant Variant of the tabs.
  *  The variants have the following behaviors:
  *    - {@link ToggleSwitchVariant.Default} - tabs are bordered and have visible boundaries;
@@ -203,6 +207,7 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
           const isLast = index === tabs.length - 1;
           return (
             <Tab
+              disabled={data.disabled}
               className={({ selected }) =>
                 cn(
                   "cursor-pointer",
@@ -218,13 +223,21 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
                   ),
                   getTabTextColorClass(selected),
                   "data-[focus]:outline-none",
+                  "data-[disabled]:opacity-50",
+                  "data-[disabled]:cursor-not-allowed",
                   getTabBorderRadius(variant, isFirst, isLast),
                   getTabStyles(variant, size)
                 )
               }
               key={id}
             >
-              {data.label}
+              {data.tooltip ? (
+                <Tooltip content={data.tooltip}>
+                  <span>{data.label}</span>
+                </Tooltip>
+              ) : (
+                data.label
+              )}
             </Tab>
           );
         })}
