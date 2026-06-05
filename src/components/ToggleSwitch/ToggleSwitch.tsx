@@ -2,6 +2,7 @@ import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import clsx from "clsx";
 import type { FC, HTMLAttributes, ReactNode } from "react";
 
+import { Tooltip } from "@/components/Tooltip";
 import { textStyles } from "@/styles/text";
 import {
   BackgroundColor,
@@ -16,7 +17,6 @@ import {
   textColorClass,
   TextVariant,
 } from "@/types";
-import { Tooltip } from "@/components/Tooltip";
 import { cn } from "@/util/classes";
 
 export interface ToggleSwitchTab {
@@ -205,7 +205,7 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
         {tabs.map(({ id, data }, index) => {
           const isFirst = index === 0;
           const isLast = index === tabs.length - 1;
-          const tabClassName = ({ selected }: { selected: boolean }) =>
+          const tabClassName = ({ selected }: { selected: boolean }): string =>
             cn(
               "cursor-pointer",
               "flex-1",

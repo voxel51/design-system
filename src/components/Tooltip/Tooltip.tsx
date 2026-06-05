@@ -21,7 +21,10 @@ export type TooltipAnchor = Extract<
   Anchor.Top | Anchor.Right | Anchor.Bottom | Anchor.Left
 >;
 
-export interface TooltipProps extends Omit<HTMLAttributes<HTMLDivElement>, "content"> {
+export interface TooltipProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "content"
+> {
   anchor?: TooltipAnchor;
   content: ReactNode;
   portal?: boolean;
