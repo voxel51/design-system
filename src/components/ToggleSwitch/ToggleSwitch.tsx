@@ -23,7 +23,7 @@ export interface ToggleSwitchTab {
   label: ReactNode;
   content: ReactNode;
   disabled?: boolean;
-  tooltip?: string;
+  tooltip?: ReactNode;
 }
 
 export enum ToggleSwitchVariant {
@@ -205,39 +205,39 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
         {tabs.map(({ id, data }, index) => {
           const isFirst = index === 0;
           const isLast = index === tabs.length - 1;
-          return (
-            <Tab
-              disabled={data.disabled}
-              className={({ selected }) =>
-                cn(
-                  "cursor-pointer",
-                  "flex-1",
-                  "flex items-center justify-center",
-                  "font-medium",
-                  "outline-none",
-                  "transition-colors",
-                  "bg-transparent",
-                  bgColorClass(
-                    BackgroundColor.CardElevated,
-                    ElementState.Selected
-                  ),
-                  getTabTextColorClass(selected),
-                  "data-[focus]:outline-none",
-                  "data-[disabled]:opacity-50",
-                  "data-[disabled]:cursor-not-allowed",
-                  getTabBorderRadius(variant, isFirst, isLast),
-                  getTabStyles(variant, size)
-                )
-              }
-              key={id}
-            >
-              {data.tooltip ? (
-                <Tooltip content={data.tooltip}>
-                  <span>{data.label}</span>
-                </Tooltip>
-              ) : (
-                data.label
-              )}
+          const tabClassName = ({ selected }: { selected: boolean }) =>
+            cn(
+              "cursor-pointer",
+              "flex-1",
+              "flex items-center justify-center",
+              "whitespace-nowrap",
+              "font-medium",
+              "outline-none",
+              "transition-colors",
+              "bg-transparent",
+              bgColorClass(BackgroundColor.CardElevated, ElementState.Selected),
+              getTabTextColorClass(selected),
+              data.disabled && "hover:!text-content-text-secondary",
+              "data-[focus]:outline-none",
+              "data-[disabled]:opacity-50",
+              "data-[disabled]:cursor-not-allowed",
+              getTabBorderRadius(variant, isFirst, isLast),
+              getTabStyles(variant, size)
+            );
+
+          const tab = (
+            <Tab disabled={data.disabled} className={tabClassName}>
+              {data.label}
+            </Tab>
+          );
+
+          return data.tooltip ? (
+            <Tooltip key={id} content={data.tooltip}>
+              {tab}
+            </Tooltip>
+          ) : (
+            <Tab disabled={data.disabled} className={tabClassName} key={id}>
+              {data.label}
             </Tab>
           );
         })}
