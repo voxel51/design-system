@@ -135,7 +135,7 @@ export const TreeSelectTrigger: FC<TreeSelectTriggerProps> = ({
           inputStyle({ disabled }),
           "relative flex flex-wrap items-center gap-1",
           "h-auto",
-          "w-full cursor-pointer",
+          disabled ? "cursor-not-allowed" : "cursor-pointer",
           hasValue ? "pr-14" : "pr-8"
         )}
       >
