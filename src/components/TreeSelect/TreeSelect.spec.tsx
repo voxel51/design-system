@@ -1336,4 +1336,43 @@ describe("TreeSelect", () => {
       expect(onChange).toHaveBeenCalledWith(["root", "AC/DC", "Back in Black"]);
     });
   });
+
+  describe("multi-select trigger keyboard navigation", () => {
+    function renderMulti(overrides: Record<string, unknown> = {}) {
+      return renderTreeSelect({ multiSelect: true, ...overrides });
+    }
+
+    it("opens the panel when Enter is pressed on the multi-select trigger", async () => {
+      const user = userEvent.setup();
+      renderMulti();
+
+      const trigger = screen.getByRole("combobox");
+      trigger.focus();
+      await user.keyboard("{Enter}");
+
+      expect(screen.getByRole("tree")).toBeInTheDocument();
+    });
+
+    it("opens the panel when Space is pressed on the multi-select trigger", async () => {
+      const user = userEvent.setup();
+      renderMulti();
+
+      const trigger = screen.getByRole("combobox");
+      trigger.focus();
+      await user.keyboard(" ");
+
+      expect(screen.getByRole("tree")).toBeInTheDocument();
+    });
+
+    it("does not open the panel when a disabled multi-select trigger receives Enter", async () => {
+      const user = userEvent.setup();
+      renderMulti({ disabled: true });
+
+      const trigger = screen.getByRole("combobox");
+      trigger.focus();
+      await user.keyboard("{Enter}");
+
+      expect(screen.queryByRole("tree")).not.toBeInTheDocument();
+    });
+  });
 });

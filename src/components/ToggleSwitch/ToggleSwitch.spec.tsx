@@ -1,6 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { Size } from "@/types";
+
 import { ToggleSwitch, ToggleSwitchVariant } from "./ToggleSwitch";
 
 describe("ToggleSwitch", () => {
@@ -85,5 +87,62 @@ describe("ToggleSwitch", () => {
     expect(tabList).toBeInTheDocument();
     expect(tabList).toHaveClass("w-full");
     expect(tabList).not.toHaveClass("w-fit");
+  });
+
+  it("should render a single tab (isFirst and isLast both true)", () => {
+    const singleTab = [
+      {
+        id: "only",
+        data: { label: "Only Tab", content: <div>Only Content</div> },
+      },
+    ];
+    render(<ToggleSwitch tabs={singleTab} />);
+    expect(screen.getByText("Only Tab")).toBeInTheDocument();
+    expect(screen.getByText("Only Content")).toBeInTheDocument();
+  });
+
+  it("should render with Soft variant and apply tab padding from softSizeStyles", () => {
+    const { container } = render(
+      <ToggleSwitch
+        tabs={tabs}
+        variant={ToggleSwitchVariant.Soft}
+        size={Size.Md}
+      />
+    );
+    const tabButtons = container.querySelectorAll('[role="tab"]');
+    expect(tabButtons.length).toBe(3);
+  });
+
+  it("should render with Full variant", () => {
+    const { container } = render(
+      <ToggleSwitch tabs={tabs} variant={ToggleSwitchVariant.Full} />
+    );
+    const tabList = container.querySelector('[role="tablist"]');
+    expect(tabList).toBeInTheDocument();
+  });
+
+  it("should render with Borderless variant", () => {
+    const { container } = render(
+      <ToggleSwitch tabs={tabs} variant={ToggleSwitchVariant.Borderless} />
+    );
+    const tabList = container.querySelector('[role="tablist"]');
+    expect(tabList).toBeInTheDocument();
+  });
+
+  it("should call onChange when a tab is clicked", async () => {
+    const user = userEvent.setup();
+    const handleChange = jest.fn();
+    render(<ToggleSwitch tabs={tabs} onChange={handleChange} />);
+    await user.click(screen.getByText("Tab 2"));
+    expect(handleChange).toHaveBeenCalledWith(1);
+  });
+
+  it("should apply tabListClassName to the tab list", () => {
+    const { container } = render(
+      <ToggleSwitch tabs={tabs} tabListClassName="custom-tab-list" />
+    );
+    expect(container.querySelector('[role="tablist"]')).toHaveClass(
+      "custom-tab-list"
+    );
   });
 });

@@ -1,6 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { Size } from "@/types";
+
 import { Toggle } from "./Toggle";
 
 describe("Toggle", () => {
@@ -53,5 +55,40 @@ describe("Toggle", () => {
     await user.click(toggle);
 
     expect(handleChange).toHaveBeenCalledTimes(1);
+  });
+
+  it("should render disabled toggle", () => {
+    render(<Toggle disabled label={toggleLabel} />);
+    const toggle = screen.getByRole("switch");
+    expect(toggle).toBeDisabled();
+  });
+
+  it("should not call onChange when disabled", async () => {
+    const handleChange = jest.fn();
+    render(<Toggle disabled onChange={handleChange} label={toggleLabel} />);
+    const user = userEvent.setup();
+    await user.click(screen.getByRole("switch"));
+    expect(handleChange).not.toHaveBeenCalled();
+  });
+
+  it("should render with size Sm", () => {
+    render(<Toggle size={Size.Sm} label={toggleLabel} />);
+    expect(screen.getByRole("switch")).toBeInTheDocument();
+  });
+
+  it("should render with size Md", () => {
+    render(<Toggle size={Size.Md} label={toggleLabel} />);
+    expect(screen.getByRole("switch")).toBeInTheDocument();
+  });
+
+  it("should render UnsetHint when showUnsetHint is true and checked is undefined", () => {
+    render(<Toggle showUnsetHint label={toggleLabel} />);
+    expect(screen.getByRole("switch")).toBeInTheDocument();
+    expect(screen.getByText(/click the toggle/i)).toBeInTheDocument();
+  });
+
+  it("should not render UnsetHint when showUnsetHint is false", () => {
+    render(<Toggle showUnsetHint={false} label={toggleLabel} />);
+    expect(screen.queryByText(/click the toggle/i)).not.toBeInTheDocument();
   });
 });

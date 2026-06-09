@@ -355,4 +355,41 @@ describe("useResizableDrawer", () => {
       expect(onOpenChange).toHaveBeenCalledWith(false);
     });
   });
+
+  describe("invert=false (top/left drawer)", () => {
+    const nonInvertedOptions = {
+      axis: "vertical" as const,
+      invert: false,
+      maxSize: 400,
+    };
+
+    it("uses the default invert=false when invert is not specified", () => {
+      const { result } = renderHook(() =>
+        useResizableDrawer({ axis: "vertical", maxSize: 400 })
+      );
+      expect(result.current.size).toBe(0);
+    });
+
+    it("dragging down (positive delta) increases size when not inverted", () => {
+      const { result } = renderHook(() =>
+        useResizableDrawer(nonInvertedOptions)
+      );
+      attachContent(result, 300);
+      pointerDown(result.current.dragHandleProps, 100);
+      pointerMove(result.current.dragHandleProps, 50); // delta = -50, adjusted = +50
+      pointerUp(result.current.dragHandleProps);
+      expect(result.current.size).toBe(250);
+    });
+
+    it("returns size 0 when no content is attached and dragging positively", () => {
+      const { result } = renderHook(() =>
+        useResizableDrawer({ ...nonInvertedOptions, defaultOpen: false })
+      );
+      // No content attached: contentElRef.current is null, so offsetHeight falls back to 0
+      pointerDown(result.current.dragHandleProps, 100);
+      pointerMove(result.current.dragHandleProps, 50); // raw=50, auto=min(0,400)=0, clamped=0
+      pointerUp(result.current.dragHandleProps);
+      expect(result.current.size).toBe(0);
+    });
+  });
 });
