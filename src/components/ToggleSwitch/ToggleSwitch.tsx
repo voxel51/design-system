@@ -2,6 +2,7 @@ import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import clsx from "clsx";
 import type { FC, HTMLAttributes, ReactNode } from "react";
 
+import { Tooltip } from "@/components/Tooltip";
 import { textStyles } from "@/styles/text";
 import {
   BackgroundColor,
@@ -21,6 +22,8 @@ import { cn } from "@/util/classes";
 export interface ToggleSwitchTab {
   label: ReactNode;
   content: ReactNode;
+  disabled?: boolean;
+  tooltip?: ReactNode;
 }
 
 export enum ToggleSwitchVariant {
@@ -157,6 +160,7 @@ const getTabTextColorClass = (selected: boolean): string => {
  * ```
  *
  * @param tabs List of component descriptors which will be used to create {@link ToggleSwitchTab} children.
+ *  Each tab supports optional `disabled` and `tooltip` fields. See {@link ToggleSwitchTab}.
  * @param variant Variant of the tabs.
  *  The variants have the following behaviors:
  *    - {@link ToggleSwitchVariant.Default} - tabs are bordered and have visible boundaries;
@@ -201,31 +205,45 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
         {tabs.map(({ id, data }, index) => {
           const isFirst = index === 0;
           const isLast = index === tabs.length - 1;
-          return (
-            <Tab
-              className={({ selected }) =>
-                cn(
-                  "cursor-pointer",
-                  "flex-1",
-                  "flex items-center justify-center",
-                  "font-medium",
-                  "outline-none",
-                  "transition-colors",
-                  "bg-transparent",
-                  bgColorClass(
-                    BackgroundColor.CardElevated,
-                    ElementState.Selected
-                  ),
-                  getTabTextColorClass(selected),
-                  "data-[focus]:outline-none",
-                  getTabBorderRadius(variant, isFirst, isLast),
-                  getTabStyles(variant, size)
-                )
-              }
-              key={id}
-            >
+          const tabClassName = ({ selected }: { selected: boolean }): string =>
+            cn(
+              "cursor-pointer",
+              "flex-1",
+              "flex items-center justify-center",
+              "whitespace-nowrap",
+              "font-medium",
+              "outline-none",
+              "transition-colors",
+              "bg-transparent",
+              bgColorClass(BackgroundColor.CardElevated, ElementState.Selected),
+              getTabTextColorClass(selected),
+              data.disabled && "hover:!text-content-text-secondary",
+              "data-[focus]:outline-none",
+              "data-[disabled]:opacity-50",
+              "data-[disabled]:cursor-not-allowed",
+              getTabBorderRadius(variant, isFirst, isLast),
+              getTabStyles(variant, size)
+            );
+
+          const tab = (
+            <Tab disabled={data.disabled} className={tabClassName}>
               {data.label}
             </Tab>
+          );
+
+          return data.tooltip ? (
+            <Tooltip
+              key={id}
+              content={data.tooltip}
+              wrapperClassName="flex-1 flex"
+              portal
+            >
+              {tab}
+            </Tooltip>
+          ) : (
+            <div key={id} className="flex-1 flex">
+              {tab}
+            </div>
           );
         })}
       </TabList>

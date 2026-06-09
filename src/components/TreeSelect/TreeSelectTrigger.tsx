@@ -1,4 +1,4 @@
-import React, { type FC } from "react";
+import React, { type FC, useState } from "react";
 
 import { Icon } from "@/components/Icons";
 import { inputStyle } from "@/components/Input";
@@ -108,6 +108,8 @@ export const TreeSelectTrigger: FC<TreeSelectTriggerProps> = ({
   onClear,
   onRemoveOne,
 }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   const handleClear = (e: React.MouseEvent): void => {
     e.stopPropagation();
     onClear();
@@ -131,11 +133,13 @@ export const TreeSelectTrigger: FC<TreeSelectTriggerProps> = ({
             onToggle();
           }
         }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         className={cn(
           inputStyle({ disabled }),
           "relative flex flex-wrap items-center gap-1",
-          "h-auto",
-          "w-full cursor-pointer",
+          "h-auto min-h-[2.25rem]",
+          disabled ? "cursor-not-allowed" : "cursor-pointer",
           hasValue ? "pr-14" : "pr-8"
         )}
       >
@@ -156,13 +160,20 @@ export const TreeSelectTrigger: FC<TreeSelectTriggerProps> = ({
           </span>
         )}
         <ChevronIndicator isOpen={isOpen} disabled={disabled} />
-        {hasValue && !disabled && <ClearButton onClick={handleClear} />}
+        {hasValue && !disabled && isHovered && (
+          <ClearButton onClick={handleClear} />
+        )}
       </div>
     );
   }
 
   return (
-    <Stack align={Align.Center} className="relative">
+    <Stack
+      align={Align.Center}
+      className="relative"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <input
         readOnly
         autoComplete="off"
@@ -181,7 +192,9 @@ export const TreeSelectTrigger: FC<TreeSelectTriggerProps> = ({
         )}
       />
       <ChevronIndicator isOpen={isOpen} disabled={disabled} />
-      {hasValue && !disabled && <ClearButton onClick={handleClear} />}
+      {hasValue && !disabled && isHovered && (
+        <ClearButton onClick={handleClear} />
+      )}
     </Stack>
   );
 };

@@ -1,4 +1,4 @@
-import { act, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
 
@@ -790,7 +790,8 @@ describe("TreeSelect", () => {
       await user.click(getInput());
       await user.type(getSearchInput(), "car");
 
-      await user.click(screen.getByLabelText("Clear selection"));
+      fireEvent.mouseEnter(getInput());
+      fireEvent.click(screen.getByLabelText("Clear selection"));
 
       expect(onChange).toHaveBeenCalledWith(null);
     });
@@ -878,8 +879,7 @@ describe("TreeSelect", () => {
       expect(onChange).toHaveBeenCalledWith([["vehicle_type", "motorcycle"]]);
     });
 
-    it("clears all selections when the clear button is clicked", async () => {
-      const user = userEvent.setup();
+    it("clears all selections when the clear button is clicked", () => {
       const onChange = jest.fn();
       renderMulti({
         value: [
@@ -889,7 +889,8 @@ describe("TreeSelect", () => {
         onChange,
       });
 
-      await user.click(screen.getByLabelText("Clear selection"));
+      fireEvent.mouseEnter(getInput());
+      fireEvent.click(screen.getByLabelText("Clear selection"));
 
       expect(onChange).toHaveBeenCalledWith([]);
     });
