@@ -27,6 +27,7 @@ import {
   zIndexStyles,
 } from "@/types";
 import { IconName } from "@/types/icons";
+import { cn } from "@/util/classes";
 
 import { Option } from "./Option";
 
@@ -213,7 +214,7 @@ export const Select: FC<SelectProps> = ({
   );
 
   return (
-    <div className={clsx(className, "w-full")} {...props}>
+    <div className={cn("w-full", className)} {...props}>
       <Combobox
         disabled={disabled}
         value={value}

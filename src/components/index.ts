@@ -18,6 +18,7 @@ export * from "./ImageList";
 export * from "./Input";
 export * from "./ListItem";
 export * from "./Menu";
+export * from "./PaginationBar";
 export * from "./Pill";
 export * from "./Radio";
 export * from "./RichButton";
