@@ -1,17 +1,12 @@
 import { FloatingPortal } from "@floating-ui/react";
-import { useVirtualizer } from "@tanstack/react-virtual";
 import {
   type CSSProperties,
   type FC,
   type ReactElement,
   type ReactNode,
   type RefObject,
-  useEffect,
-  useRef,
 } from "react";
 
-import { Stack } from "@/components/Stack";
-import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
 import {
@@ -19,19 +14,15 @@ import {
   bgColorClass,
   BorderColor,
   borderColorClass,
-  Justify,
   Radius,
   Shadow,
-  TextColor,
-  TextVariant,
   ZIndex,
   zIndexStyles,
 } from "@/types";
 import { cn } from "@/util/classes";
 import type { UseTreeReturn } from "@/util/useTree";
 
-import { TreeItem } from "./TreeItem";
-import { TreeSearchInput } from "./TreeSearchInput";
+import { TreeBody } from "./TreeBody";
 
 function getZIndexClass(zIndex?: ZIndex, portal?: boolean): string {
   if (portal) {
@@ -74,18 +65,12 @@ export interface TreeSelectPanelProps {
 }
 
 /**
- * Floating panel for TreeSelect. Renders the dropdown shell containing
- * the search input and the tree body (or "No matches found").
- *
- * The search input sits outside the scroll container so the virtualizer's
- * coordinate system aligns with the scrollable area without needing
- * scrollMargin adjustments.
+ * Floating panel for TreeSelect. Provides the dropdown shell (border,
+ * shadow, z-index, portal, max-height) and delegates the tree body
+ * rendering to {@link TreeBody}.
  *
  * @internal For use by TreeSelect.
  */
-const ROW_HEIGHT_ESTIMATE = 36;
-const VIRTUALIZER_OVERSCAN = 8;
-
 export const TreeSelectPanel: FC<TreeSelectPanelProps> = ({
   floatingRef,
   floatingStyles,
@@ -102,26 +87,6 @@ export const TreeSelectPanel: FC<TreeSelectPanelProps> = ({
   onRetryLoad,
   panelMaxHeight,
 }) => {
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  const rowVirtualizer = useVirtualizer({
-    count: tree.visibleNodes.length,
-    getScrollElement: () => scrollRef.current,
-    estimateSize: () => ROW_HEIGHT_ESTIMATE,
-    overscan: VIRTUALIZER_OVERSCAN,
-    getItemKey: (index) => tree.visibleNodes[index].path,
-  });
-
-  useEffect(() => {
-    if (!tree.activePath) return;
-    const idx = tree.visibleNodes.findIndex((n) => n.path === tree.activePath);
-    if (idx >= 0) {
-      rowVirtualizer.scrollToIndex(idx, { align: "auto" });
-    }
-  }, [tree.activePath, tree.visibleNodes, rowVirtualizer]);
-
-  const noMatches = debouncedQuery && !filteredTree;
-
   return (
     <PortalWrapper portal={portal}>
       <div
@@ -141,63 +106,17 @@ export const TreeSelectPanel: FC<TreeSelectPanelProps> = ({
           "focus:outline-none"
         )}
       >
-        <TreeSearchInput
-          value={query}
-          onChange={onQueryChange}
-          onKeyDown={tree.handleKeyDown}
-          inputRef={searchInputRef}
-          activeDescendantId={tree.activeDescendantId}
+        <TreeBody
+          tree={tree}
+          query={query}
+          onQueryChange={onQueryChange}
+          debouncedQuery={debouncedQuery}
+          filteredTree={filteredTree}
+          multiSelect={multiSelect}
+          onRetryLoad={onRetryLoad}
+          searchInputRef={searchInputRef}
+          showSearch
         />
-
-        <div ref={scrollRef} className="flex-1 min-h-0 overflow-auto">
-          <div className="p-1.5 pt-0">
-            {noMatches ? (
-              <Stack justify={Justify.Center}>
-                <Text
-                  variant={TextVariant.Sm}
-                  color={TextColor.Tertiary}
-                  className="px-3 py-2"
-                >
-                  No matches found
-                </Text>
-              </Stack>
-            ) : (
-              <div
-                style={{
-                  height: rowVirtualizer.getTotalSize(),
-                  minWidth: "100%",
-                  position: "relative",
-                }}
-              >
-                {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-                  const node = tree.visibleNodes[virtualRow.index];
-                  return (
-                    <div
-                      key={node.path}
-                      ref={rowVirtualizer.measureElement}
-                      data-index={virtualRow.index}
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        minWidth: "100%",
-                        transform: `translateY(${virtualRow.start}px)`,
-                      }}
-                    >
-                      <TreeItem
-                        resolved={node}
-                        tree={tree}
-                        query={filteredTree ? query : undefined}
-                        multiSelect={multiSelect}
-                        onRetryLoad={onRetryLoad}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        </div>
       </div>
     </PortalWrapper>
   );
