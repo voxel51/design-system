@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import radiusStyles from "@/styles/radius";
 import { textStyles } from "@/styles/text";
@@ -99,5 +100,47 @@ describe("Table", () => {
       textColorClass(TextColor.Primary)
     );
     expect(screen.getByRole("cell")).toHaveClass(textStyles(TextVariant.Md)!);
+  });
+
+  it("should add hover cursor styles when TableRow has an onClick handler", () => {
+    render(
+      <Table>
+        <TableBody>
+          <TableRow onClick={jest.fn()}>
+            <TableCell>clickable</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    );
+    expect(screen.getByRole("row")).toHaveClass("hover:cursor-pointer");
+  });
+
+  it("should call onClick when a clickable TableRow is clicked", async () => {
+    const handleClick = jest.fn();
+    const user = userEvent.setup();
+    render(
+      <Table>
+        <TableBody>
+          <TableRow onClick={handleClick}>
+            <TableCell>clickable</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    );
+    await user.click(screen.getByRole("row"));
+    expect(handleClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("should not add hover cursor styles when TableRow has no onClick handler", () => {
+    render(
+      <Table>
+        <TableBody>
+          <TableRow>
+            <TableCell>static</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    );
+    expect(screen.getByRole("row")).not.toHaveClass("hover:cursor-pointer");
   });
 });

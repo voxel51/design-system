@@ -4,10 +4,12 @@ import {
   filterTreeForQuery,
   flattenVisible,
   formatBreadcrumb,
+  fromInternalPath,
+  getNodeByInternalPath,
   getNodeByPath,
   getParentPath,
   isSelectable,
-  splitPath,
+  toInternalPath,
 } from "./tree";
 import type { TreeNode } from "./types";
 
@@ -75,11 +77,11 @@ describe("isSelectable", () => {
 
   it("returns false for branch nodes when leavesOnly is true", () => {
     const branch: TreeNode = { name: "car", values: [{ name: "Civic" }] };
-    expect(isSelectable(branch, { leavesOnly: true })).toBe(false);
+    expect(isSelectable(branch, true)).toBe(false);
   });
 
   it("returns true for leaf nodes when leavesOnly is true", () => {
-    expect(isSelectable({ name: "Civic" }, { leavesOnly: true })).toBe(true);
+    expect(isSelectable({ name: "Civic" }, true)).toBe(true);
   });
 
   it("returns false when can_select is false even with leavesOnly false", () => {
@@ -88,7 +90,7 @@ describe("isSelectable", () => {
       can_select: false,
       values: [{ name: "Honda" }],
     };
-    expect(isSelectable(node, { leavesOnly: false })).toBe(false);
+    expect(isSelectable(node, false)).toBe(false);
   });
 });
 
@@ -376,58 +378,43 @@ function collectNames(node: ReturnType<typeof buildResolvedTree>): string[] {
 
 describe("getNodeByPath", () => {
   it("returns the root node for the root path", () => {
-    const node = getNodeByPath(vehicleTree, "vehicle_type");
+    const node = getNodeByPath(vehicleTree, ["vehicle_type"]);
     expect(node).toBe(vehicleTree);
   });
 
   it("resolves a deeply nested node", () => {
-    const node = getNodeByPath(
-      vehicleTree,
-      "vehicle_type/car/make/Honda/model/Civic"
-    );
+    const node = getNodeByPath(vehicleTree, [
+      "vehicle_type",
+      "car",
+      "make",
+      "Honda",
+      "model",
+      "Civic",
+    ]);
     expect(node).toBeDefined();
     expect(node!.name).toBe("Civic");
   });
 
   it("returns undefined for a non-existent path", () => {
-    const node = getNodeByPath(vehicleTree, "vehicle_type/truck");
+    const node = getNodeByPath(vehicleTree, ["vehicle_type", "truck"]);
     expect(node).toBeUndefined();
   });
 
   it("returns undefined when root name doesn't match", () => {
-    const node = getNodeByPath(vehicleTree, "wrong_root/car");
+    const node = getNodeByPath(vehicleTree, ["wrong_root", "car"]);
     expect(node).toBeUndefined();
   });
 
   it("returns undefined for an empty path", () => {
-    const node = getNodeByPath(vehicleTree, "");
+    const node = getNodeByPath(vehicleTree, []);
     expect(node).toBeUndefined();
   });
 
   it("resolves intermediate branch nodes", () => {
-    const node = getNodeByPath(vehicleTree, "vehicle_type/car/make");
+    const node = getNodeByPath(vehicleTree, ["vehicle_type", "car", "make"]);
     expect(node).toBeDefined();
     expect(node!.name).toBe("make");
     expect(node!.can_select).toBe(false);
-  });
-});
-
-describe("splitPath", () => {
-  it("splits a multi-segment path", () => {
-    expect(splitPath("vehicle_type/car/make/Honda")).toEqual([
-      "vehicle_type",
-      "car",
-      "make",
-      "Honda",
-    ]);
-  });
-
-  it("returns a single-element array for a root-only path", () => {
-    expect(splitPath("vehicle_type")).toEqual(["vehicle_type"]);
-  });
-
-  it("returns empty array for empty string", () => {
-    expect(splitPath("")).toEqual([]);
   });
 });
 
@@ -483,17 +470,139 @@ describe("flattenVisible", () => {
 
 describe("formatBreadcrumb", () => {
   it("formats a path with spaced separators", () => {
-    expect(formatBreadcrumb("vehicle_type/car/make/Honda")).toBe(
+    expect(formatBreadcrumb(["vehicle_type", "car", "make", "Honda"])).toBe(
       "vehicle_type / car / make / Honda"
     );
   });
 
   it("returns the name as-is for a single segment", () => {
-    expect(formatBreadcrumb("vehicle_type")).toBe("vehicle_type");
+    expect(formatBreadcrumb(["vehicle_type"])).toBe("vehicle_type");
   });
 
   it("returns empty string for empty path", () => {
-    expect(formatBreadcrumb("")).toBe("");
+    expect(formatBreadcrumb([])).toBe("");
+  });
+});
+
+describe("special characters in node names", () => {
+  const slashTree: TreeNode = {
+    name: "root",
+    values: [
+      {
+        name: "AC/DC",
+        values: [{ name: "Back in Black" }, { name: "Highway to Hell" }],
+      },
+      { name: "normal" },
+    ],
+  };
+
+  const percentTree: TreeNode = {
+    name: "root",
+    values: [{ name: "50% off", values: [{ name: "deal" }] }],
+  };
+
+  describe("internal encoding (buildResolvedTree paths)", () => {
+    it("encodes slashes in names as %2F in the internal path", () => {
+      const resolved = buildResolvedTree(slashTree);
+      const child = resolved.children[0];
+      expect(child.path).toBe("root/AC%2FDC");
+      expect(child.node.name).toBe("AC/DC");
+    });
+
+    it("encodes percent signs in names as %25 in the internal path", () => {
+      const resolved = buildResolvedTree(percentTree);
+      const child = resolved.children[0];
+      expect(child.path).toBe("root/50%25 off");
+      expect(child.node.name).toBe("50% off");
+    });
+
+    it("preserves grandchild paths correctly under an encoded branch", () => {
+      const resolved = buildResolvedTree(slashTree);
+      const grandchild = resolved.children[0].children[0];
+      expect(grandchild.path).toBe("root/AC%2FDC/Back in Black");
+    });
+  });
+
+  describe("toInternalPath / fromInternalPath round-trip", () => {
+    it("round-trips a path with / in a segment", () => {
+      const segments = ["root", "AC/DC"];
+      expect(fromInternalPath(toInternalPath(segments))).toEqual(segments);
+    });
+
+    it("round-trips a path with % in a segment", () => {
+      const segments = ["root", "50% off"];
+      expect(fromInternalPath(toInternalPath(segments))).toEqual(segments);
+    });
+
+    it("round-trips a path with both / and % in a segment", () => {
+      const segments = ["root", "50%/50"];
+      expect(fromInternalPath(toInternalPath(segments))).toEqual(segments);
+    });
+  });
+
+  describe("getNodeByPath (public, TreePath)", () => {
+    it("resolves a node whose name contains /", () => {
+      const node = getNodeByPath(slashTree, ["root", "AC/DC"]);
+      expect(node).toBeDefined();
+      expect(node!.name).toBe("AC/DC");
+    });
+
+    it("resolves a grandchild under a slashed-name branch", () => {
+      const node = getNodeByPath(slashTree, ["root", "AC/DC", "Back in Black"]);
+      expect(node).toBeDefined();
+      expect(node!.name).toBe("Back in Black");
+    });
+
+    it("resolves a node whose name contains %", () => {
+      const node = getNodeByPath(percentTree, ["root", "50% off"]);
+      expect(node).toBeDefined();
+      expect(node!.name).toBe("50% off");
+    });
+  });
+
+  describe("getNodeByInternalPath", () => {
+    it("resolves a node from an encoded internal path", () => {
+      const node = getNodeByInternalPath(slashTree, "root/AC%2FDC");
+      expect(node).toBeDefined();
+      expect(node!.name).toBe("AC/DC");
+    });
+  });
+
+  describe("getParentPath (internal)", () => {
+    it("returns the correct parent for an encoded path", () => {
+      expect(getParentPath("root/AC%2FDC")).toBe("root");
+    });
+
+    it("returns the correct parent for a deeply encoded path", () => {
+      expect(getParentPath("root/AC%2FDC/Back in Black")).toBe("root/AC%2FDC");
+    });
+  });
+
+  describe("formatBreadcrumb (public, TreePath)", () => {
+    it("renders slashes in names correctly", () => {
+      expect(formatBreadcrumb(["root", "AC/DC"])).toBe("root / AC/DC");
+    });
+
+    it("renders percent signs in names correctly", () => {
+      expect(formatBreadcrumb(["root", "50% off"])).toBe("root / 50% off");
+    });
+  });
+
+  describe("filterTreeForQuery", () => {
+    it("matches a query against a node name containing /", () => {
+      const resolved = buildResolvedTree(slashTree);
+      const result = filterTreeForQuery(resolved, "AC/DC");
+      expect(result).not.toBeNull();
+      const names = result!.tree.children.map((c) => c.node.name);
+      expect(names).toContain("AC/DC");
+    });
+
+    it("force-opens the correct encoded ancestor path", () => {
+      const resolved = buildResolvedTree(slashTree);
+      const result = filterTreeForQuery(resolved, "Back in Black");
+      expect(result).not.toBeNull();
+      expect(result!.forceOpenPaths.has("root/AC%2FDC")).toBe(true);
+    });
   });
 });
 

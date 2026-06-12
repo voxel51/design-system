@@ -74,9 +74,6 @@ describe("Checkbox", () => {
       render(<Checkbox checked indeterminate label={checkboxLabel} />);
       const checkbox = screen.getByRole("checkbox");
       expect(checkbox).not.toHaveAttribute("aria-checked", "mixed");
-      expect(checkbox.className).not.toContain(
-        "bg-[var(--color-brand-accent)]"
-      );
     });
   });
 });

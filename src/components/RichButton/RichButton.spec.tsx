@@ -79,4 +79,26 @@ describe("RichButton", () => {
 
     expect(callback).toHaveBeenCalledTimes(1);
   });
+
+  it("should apply a background color when active", () => {
+    render(<RichButton {...defaultProps} active />);
+
+    expect(screen.getByTestId(testId).style.backgroundColor).toContain(
+      "color-mix"
+    );
+  });
+
+  it("should not apply a background color when inactive", () => {
+    render(<RichButton {...defaultProps} />);
+
+    expect(screen.getByTestId(testId).style.backgroundColor).toBe("");
+  });
+
+  it("should merge a caller-provided style with the active background", () => {
+    render(<RichButton {...defaultProps} active style={{ margin: "4px" }} />);
+
+    const el = screen.getByTestId(testId);
+    expect(el.style.backgroundColor).toContain("color-mix");
+    expect(el.style.margin).toBe("4px");
+  });
 });

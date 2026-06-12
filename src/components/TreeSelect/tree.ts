@@ -1,6 +1,48 @@
-import type { ResolvedNode, TreeNode } from "./types";
+import type { ResolvedNode, TreeNode, TreePath } from "./types";
 
 const PATH_SEPARATOR = "/";
+
+/**
+ * Encode a single node name for use as a path segment. Only `/` and `%`
+ * are encoded — the two characters that would break path parsing.
+ * All other characters pass through unchanged, keeping paths readable.
+ */
+function encodeSegment(name: string): string {
+  return name.replace(/%/g, "%25").replace(/\//g, "%2F");
+}
+
+/**
+ * Decode a single encoded path segment back to the original node name.
+ * Decoding order is the reverse of encoding: `%2F` first, then `%25`.
+ */
+function decodeSegment(seg: string): string {
+  return seg.replace(/%2F/gi, "/").replace(/%25/gi, "%");
+}
+
+/**
+ * Join an array of (raw, unencoded) node names into a safe path string.
+ * Each segment is encoded before joining so slashes in names cannot be
+ * mistaken for path separators.
+ */
+function joinPath(segments: string[]): string {
+  return segments.map(encodeSegment).join(PATH_SEPARATOR);
+}
+
+/**
+ * Converts a {@link TreePath} of raw node names to an internal encoded string.
+ * @internal
+ */
+export function toInternalPath(segments: TreePath): string {
+  return joinPath([...segments]);
+}
+
+/**
+ * Converts an internal encoded path string to a {@link TreePath} of raw node names.
+ * @internal
+ */
+export function fromInternalPath(path: string): TreePath {
+  return splitPath(path);
+}
 
 /**
  * Whether a node counts as a leaf (has no children).
@@ -21,12 +63,9 @@ function nodeIsLeaf(node: TreeNode): boolean {
  * 1. Its `can_select` is not explicitly `false` (defaults to `true`).
  * 2. If `leavesOnly` is enabled, the node must be a leaf.
  */
-export function isSelectable(
-  node: TreeNode,
-  options: { leavesOnly?: boolean } = {}
-): boolean {
+export function isSelectable(node: TreeNode, leavesOnly = false): boolean {
   if (node.can_select === false) return false;
-  if (options.leavesOnly && !nodeIsLeaf(node)) return false;
+  if (leavesOnly && !nodeIsLeaf(node)) return false;
   return true;
 }
 
@@ -55,8 +94,8 @@ export function buildResolvedTree(
     siblingCount: number
   ): ResolvedNode {
     const path = parentPath
-      ? `${parentPath}${PATH_SEPARATOR}${node.name}`
-      : node.name;
+      ? `${parentPath}${PATH_SEPARATOR}${encodeSegment(node.name)}`
+      : encodeSegment(node.name);
 
     const isLeaf = nodeIsLeaf(node);
     const cached = loadedChildren?.get(path);
@@ -77,7 +116,7 @@ export function buildResolvedTree(
       node,
       path,
       depth,
-      selectable: isSelectable(node, options),
+      selectable: isSelectable(node, options.leavesOnly),
       isLeaf,
       isLazyBranch,
       children,
@@ -125,9 +164,8 @@ export function filterTreeForQuery(
 
   function addAncestors(path: string): void {
     const segments = splitPath(path);
-    let current = "";
     for (let i = 0; i < segments.length - 1; i++) {
-      current = current ? `${current}/${segments[i]}` : segments[i];
+      const current = joinPath(segments.slice(0, i + 1));
       includedPaths.add(current);
       forceOpenPaths.add(current);
     }
@@ -179,29 +217,28 @@ export function filterTreeForQuery(
 }
 
 /**
- * Resolves a slash-delimited path back to the corresponding
+ * Resolves a {@link TreePath} back to the corresponding
  * {@link TreeNode} in the original tree.
  *
  * @returns The matching node, or `undefined` if the path doesn't match.
  *
  * @example
  * ```ts
- * const node = getNodeByPath(root, "vehicle_type/car/make/Honda");
+ * const node = getNodeByPath(root, ["vehicle_type", "car", "make", "Honda"]);
  * // node?.name === "Honda"
  * ```
  */
 export function getNodeByPath(
   root: TreeNode,
-  path: string
+  path: TreePath
 ): TreeNode | undefined {
-  const segments = splitPath(path);
-  if (segments.length === 0) return undefined;
+  if (path.length === 0) return undefined;
 
-  if (segments[0] !== root.name) return undefined;
+  if (path[0] !== root.name) return undefined;
 
   let current: TreeNode = root;
-  for (let i = 1; i < segments.length; i++) {
-    const child = current.values?.find((v) => v.name === segments[i]);
+  for (let i = 1; i < path.length; i++) {
+    const child = current.values?.find((v) => v.name === path[i]);
     if (!child) return undefined;
     current = child;
   }
@@ -210,25 +247,31 @@ export function getNodeByPath(
 }
 
 /**
- * Splits a path string into its individual node-name segments.
- *
- * Useful for rendering breadcrumbs: each segment can be resolved to its
- * {@link TreeNode} by calling {@link getNodeByPath} with the prefix path.
- *
- * @example
- * ```ts
- * splitPath("vehicle_type/car/make/Honda");
- * // ["vehicle_type", "car", "make", "Honda"]
- * ```
+ * Internal variant of {@link getNodeByPath} that accepts an encoded
+ * internal path string. Used by `TreeSelect.tsx` to resolve nodes from
+ * the encoded paths stored on {@link ResolvedNode}.
+ * @internal
  */
-export function splitPath(path: string): string[] {
-  if (!path) return [];
-  return path.split(PATH_SEPARATOR);
+export function getNodeByInternalPath(
+  root: TreeNode,
+  internalPath: string
+): TreeNode | undefined {
+  return getNodeByPath(root, splitPath(internalPath));
 }
 
 /**
- * Returns the parent path by stripping the last segment, or `undefined`
- * for root-level paths (single segment).
+ * Splits an internal encoded path string into decoded node-name segments.
+ * @internal
+ */
+function splitPath(path: string): string[] {
+  if (!path) return [];
+  return path.split(PATH_SEPARATOR).map(decodeSegment);
+}
+
+/**
+ * Returns the parent of an internal encoded path by stripping the last
+ * segment, or `undefined` for root-level paths (single segment).
+ * @internal
  */
 export function getParentPath(path: string): string | undefined {
   const idx = path.lastIndexOf(PATH_SEPARATOR);
@@ -287,14 +330,17 @@ export function collectBranchPaths(root: ResolvedNode): Set<string> {
 }
 
 /**
- * Formats a path as a human-readable breadcrumb string.
+ * Formats a {@link TreePath} as a human-readable breadcrumb string.
  *
  * @example
  * ```ts
- * formatBreadcrumb("vehicle_type/car/make/Honda");
+ * formatBreadcrumb(["vehicle_type", "car", "make", "Honda"]);
  * // "vehicle_type / car / make / Honda"
+ *
+ * formatBreadcrumb(["music", "rock", "AC/DC"]);
+ * // "music / rock / AC/DC"
  * ```
  */
-export function formatBreadcrumb(path: string): string {
-  return splitPath(path).join(" / ");
+export function formatBreadcrumb(path: TreePath): string {
+  return path.join(" / ");
 }

@@ -8,7 +8,9 @@ import radiusStyles from "@/styles/radius";
 import {
   BorderColor,
   borderColorClass,
+  BrandColor,
   ElementState,
+  getColorCssVar,
   IconColor,
   IconName,
   Radius,
@@ -62,6 +64,7 @@ export const RichButton: FC<RichButtonProps> = ({
   label,
   onClick,
   className,
+  style,
   ...props
 }) => (
   <Clickable>
@@ -76,6 +79,12 @@ export const RichButton: FC<RichButtonProps> = ({
         radiusStyles(Radius.Md),
         className
       )}
+      style={{
+        ...(active && {
+          backgroundColor: `color-mix(in srgb, var(${getColorCssVar(BrandColor.Primary)}) 10%, transparent)`,
+        }),
+        ...style,
+      }}
       onClick={onClick}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
