@@ -30,8 +30,8 @@ import {
 import { cn } from "@/util/classes";
 import type { UseTreeReturn } from "@/util/useTree";
 
-import { TreeSelectNode } from "./TreeSelectNode";
-import { TreeSelectSearchInput } from "./TreeSelectSearchInput";
+import { TreeItem } from "./TreeItem";
+import { TreeSearchInput } from "./TreeSearchInput";
 
 function getZIndexClass(zIndex?: ZIndex, portal?: boolean): string {
   if (portal) {
@@ -141,7 +141,7 @@ export const TreeSelectPanel: FC<TreeSelectPanelProps> = ({
           "focus:outline-none"
         )}
       >
-        <TreeSelectSearchInput
+        <TreeSearchInput
           value={query}
           onChange={onQueryChange}
           onKeyDown={tree.handleKeyDown}
@@ -184,7 +184,7 @@ export const TreeSelectPanel: FC<TreeSelectPanelProps> = ({
                         transform: `translateY(${virtualRow.start}px)`,
                       }}
                     >
-                      <TreeSelectNode
+                      <TreeItem
                         resolved={node}
                         tree={tree}
                         query={filteredTree ? query : undefined}

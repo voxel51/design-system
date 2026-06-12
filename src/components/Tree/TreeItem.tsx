@@ -28,7 +28,7 @@ import type { ResolvedNode } from "./types";
 
 const DEPTH_INDENT = "var(--spacing-md)";
 
-export interface TreeSelectNodeProps {
+export interface TreeItemViewProps {
   resolved: ResolvedNode;
   tree: UseTreeReturn;
   query?: string;
@@ -62,9 +62,9 @@ function highlightMatch(text: string, query?: string): React.ReactNode {
  * All state is driven by the `tree` hook — this component is purely
  * presentational.
  *
- * @internal For use by TreeSelectPanel.
+ * @internal Shared by TreeSelectPanel and TreeBody.
  */
-export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
+export const TreeItem: FC<TreeItemViewProps> = ({
   resolved,
   tree,
   query,
@@ -226,4 +226,4 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
   );
 };
 
-TreeSelectNode.displayName = "TreeSelectNode";
+TreeItem.displayName = "TreeItem";

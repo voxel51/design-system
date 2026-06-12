@@ -15,7 +15,7 @@ import {
 import { IconName } from "@/types/icons";
 import { cn } from "@/util/classes";
 
-export interface TreeSelectSearchInputProps {
+export interface TreeSearchInputProps {
   value: string;
   onChange: (value: string) => void;
   onKeyDown: (e: KeyboardEvent) => void;
@@ -24,12 +24,12 @@ export interface TreeSelectSearchInputProps {
 }
 
 /**
- * Sticky search bar rendered at the top of the TreeSelect panel.
+ * Sticky search bar rendered at the top of a tree panel.
  * Owns the magnifier icon, text input, and clear button.
  *
- * @internal For use by TreeSelectPanel.
+ * @internal Shared by TreeSelectPanel and TreeBody.
  */
-export const TreeSelectSearchInput: FC<TreeSelectSearchInputProps> = ({
+export const TreeSearchInput: FC<TreeSearchInputProps> = ({
   value,
   onChange,
   onKeyDown,
@@ -94,4 +94,4 @@ export const TreeSelectSearchInput: FC<TreeSelectSearchInputProps> = ({
   );
 };
 
-TreeSelectSearchInput.displayName = "TreeSelectSearchInput";
+TreeSearchInput.displayName = "TreeSearchInput";

@@ -12,8 +12,8 @@ import {
   collectBranchPaths,
   flattenVisible,
   getParentPath,
-} from "@/components/TreeSelect/tree";
-import type { ResolvedNode } from "@/components/TreeSelect/types";
+} from "@/components/Tree/tree";
+import type { ResolvedNode } from "@/components/Tree/types";
 
 function encodeRowId(prefix: string, path: string): string {
   return `${prefix}-${path.replace(/\//g, "-")}`;
@@ -145,7 +145,7 @@ export interface UseTreeReturn {
  * keyboard navigation per WAI-ARIA treeview semantics, ARIA prop generation,
  * and scroll-into-view. Owns no rendering or styling.
  *
- * Designed to be consumed by `TreeSelect` and `TreeSelectNode` but generic
+ * Designed to be consumed by `TreeSelect` and `TreeItem` but generic
  * enough for any component that renders a tree of `ResolvedNode`s.
  */
 export function useTree(options: UseTreeOptions): UseTreeReturn {
