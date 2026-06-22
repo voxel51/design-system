@@ -3,7 +3,7 @@ import type { FC, HTMLAttributes, ReactNode } from "react";
 
 import { Stack } from "@/components/Stack";
 import { Text } from "@/components/Text";
-import { Orientation, Spacing, TextColor } from "@/types";
+import { Orientation, Spacing, TextColor, TextVariant } from "@/types";
 
 export interface FormFieldProps extends HTMLAttributes<HTMLDivElement> {
   control: ReactNode;
@@ -53,7 +53,9 @@ export interface FormFieldProps extends HTMLAttributes<HTMLDivElement> {
  *
  * @param control The form control to use in this field. This can be any component.
  * @param label Optional label to display for the form field.
- * @param description Optional description to display for the form field.
+ * @param description Optional description to display for the form field. It appears between the label
+ *  and the control (below the title, above the field) with a smaller, more subdued treatment. A
+ *  description is only rendered when a `label` is also provided.
  * @param disabled If `true`, disables the form field.
  * @param error Optional error message to display for the form field.
  * @param spacing Spacing between elements in the field. Defaults to {@link Spacing.Sm}.
@@ -73,15 +75,22 @@ export const FormField: FC<FormFieldProps> = ({
   return (
     <Field disabled={disabled} className={className}>
       <Stack orientation={Orientation.Column} spacing={spacing} {...props}>
+        {/*
+          Group the title + description tightly so the description reads as part
+          of the label block (rather than floating midway to the control). The
+          larger outer Stack spacing then separates this block from the control.
+          The description is only shown when a label is also present.
+        */}
         {label && (
-          <Stack orientation={Orientation.Row} spacing={Spacing.Sm}>
+          <Stack orientation={Orientation.Column} spacing={Spacing.Xs}>
             <Label>
               <Text color={TextColor.Primary}>{label}</Text>
             </Label>
-
             {description && (
               <Description>
-                <Text color={TextColor.Secondary}>{description}</Text>
+                <Text color={TextColor.Tertiary} variant={TextVariant.Caption}>
+                  {description}
+                </Text>
               </Description>
             )}
           </Stack>
