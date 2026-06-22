@@ -94,6 +94,19 @@ export const TreeItem: FC<TreeItemViewProps> = ({
     paddingLeft: `calc(${depth - 1} * ${DEPTH_INDENT} + var(--spacing-xs))`,
   };
 
+  // Horizontal offset of where the title text begins within the label row, so
+  // the description can be left-aligned with the title rather than with the
+  // chevron/checkbox. The title row is a horizontal Stack with `gap-xs` between
+  // children: the chevron (`size-5`) is always present, and in multiSelect the
+  // checkbox (`size-5` + `pr-1` wrapper) sits between the chevron and title.
+  const showCheckbox =
+    !!multiSelect && (resolved.selectable || showIndeterminate);
+  const descriptionIndent = showCheckbox
+    ? // chevron + gap + (checkbox + pr-1) + gap
+      "calc(1.25rem + var(--spacing-xs) + (1.25rem + var(--spacing-xs)) + var(--spacing-xs))"
+    : // chevron + gap
+      "calc(1.25rem + var(--spacing-xs))";
+
   const rowClasses = cn(
     "flex-nowrap",
     "py-1",
@@ -176,7 +189,7 @@ export const TreeItem: FC<TreeItemViewProps> = ({
       <Stack orientation={Orientation.Column} className="min-w-0 flex-1">
         <Stack align={Align.Center} spacing={Spacing.Xs}>
           {chevron}
-          {multiSelect && (resolved.selectable || showIndeterminate) && (
+          {showCheckbox && (
             <div className="pr-1">
               <Checkbox
                 checked={isSelected}
@@ -200,9 +213,7 @@ export const TreeItem: FC<TreeItemViewProps> = ({
             variant={TextVariant.Xs}
             color={TextColor.Tertiary}
             className="whitespace-nowrap"
-            style={{
-              paddingLeft: `calc(var(--spacing-md) + var(--spacing-xs) * 2)`,
-            }}
+            style={{ paddingLeft: descriptionIndent }}
           >
             {node.description}
           </Text>

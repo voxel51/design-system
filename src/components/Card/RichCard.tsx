@@ -1,7 +1,7 @@
 import type { FC } from "react";
 import React from "react";
 
-import { Card, CardBackground, CardProps } from "@/components/Card";
+import { Card, CardProps } from "@/components/Card";
 import { type IconProps } from "@/components/Icons";
 import { Stack } from "@/components/Stack";
 import { Text } from "@/components/Text";
@@ -10,7 +10,6 @@ import {
   BrandColor,
   Justify,
   Orientation,
-  Shadow,
   Size,
   Spacing,
   TextColor,
@@ -76,19 +75,10 @@ export const RichCard: FC<RichCardProps> = ({
         >
           <Stack
             spacing={compact ? Spacing.Sm : Spacing.Md}
-            align={Align.Center}
+            align={badge ? Align.Start : Align.Center}
           >
-            {IconContent && !compact && (
-              <Card
-                compact
-                background={CardBackground.Elevated}
-                shadow={Shadow.None}
-              >
-                <IconContent size={Size.Xl} color={BrandColor.Accent} />
-              </Card>
-            )}
-            {IconContent && compact && (
-              <IconContent size={Size.Xl} color={BrandColor.Accent} />
+            {IconContent && (
+              <IconContent size={Size.Lg} color={BrandColor.Accent} />
             )}
             <Stack
               orientation={Orientation.Column}
