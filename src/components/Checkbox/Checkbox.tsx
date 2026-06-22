@@ -107,6 +107,7 @@ export const Checkbox: FC<CheckboxProps> = ({
         indeterminate={showIndeterminate}
         className={cn(
           "group",
+          "peer",
           "relative",
           "cursor-pointer",
           "appearance-none",
@@ -142,7 +143,9 @@ export const Checkbox: FC<CheckboxProps> = ({
       {label && (
         <Label
           className={cn(
+            // Figma: label is white when enabled, tertiary when disabled
             textColorClass(TextColor.Primary),
+            "peer-data-disabled:text-content-text-tertiary",
             TEXT_STYLES[size],
             "cursor-pointer",
             labelClassName

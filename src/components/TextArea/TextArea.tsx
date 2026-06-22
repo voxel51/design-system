@@ -3,7 +3,17 @@ import clsx from "clsx";
 import { type FC, TextareaHTMLAttributes } from "react";
 
 import radiusStyles from "@/styles/radius";
-import { Radius, Size } from "@/types";
+import {
+  BackgroundColor,
+  bgColorClass,
+  BorderColor,
+  borderColorClass,
+  ElementState,
+  Radius,
+  Size,
+  TextColor,
+  textColorClass,
+} from "@/types";
 import { cn } from "@/util/classes";
 
 export enum ResizeBehavior {
@@ -15,12 +25,17 @@ export enum ResizeBehavior {
 
 export interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   size?: Size;
-  radius?: Radius;
   className?: string;
   containerClassName?: string;
   error?: boolean;
   resize?: ResizeBehavior;
 }
+
+/**
+ * Fixed border radius applied to all textareas for visual consistency with the
+ * rest of the form components.
+ */
+const TEXTAREA_RADIUS = Radius.Sm;
 
 const sizeStyles: Record<Size, string> = {
   [Size.Xs]: clsx("px-2.5 py-1.5", "text-xs/5"),
@@ -60,7 +75,6 @@ const resizeStyles: Record<ResizeBehavior, string> = {
  *
  * @param size The size of the textarea; this controls the size of the text itself and container padding.
  *  See {@link Size}.
- * @param radius The border radius to apply to the textarea. See {@link Radius}.
  * @param error If `true`, renders the textarea in an error state.
  * @param resize Resize behavior. See {@link ResizeBehavior}.
  * @param rows The number of text rows to display in the textarea.
@@ -71,7 +85,6 @@ const resizeStyles: Record<ResizeBehavior, string> = {
  */
 export const TextArea: FC<TextAreaProps> = ({
   size = Size.Md,
-  radius = Radius.Sm,
   error = false,
   resize = ResizeBehavior.Vertical,
   rows = 3,
@@ -88,30 +101,34 @@ export const TextArea: FC<TextAreaProps> = ({
         className={cn(
           "w-full",
           "appearance-none",
+          "transition-colors",
           "border",
 
-          "bg-content-bg-card-1",
-          "border-content-border-secondary-primary",
-          "text-content-text-primary",
+          bgColorClass(BackgroundColor.Card1),
+          textColorClass(TextColor.Primary),
           "placeholder:text-content-text-tertiary",
 
-          "hover:border-content-border-secondary-secondary",
+          // Default and focus border tokens mirror the `Input` component so all
+          // form controls stay visually consistent.
+          error
+            ? borderColorClass(BorderColor.Error)
+            : borderColorClass(BorderColor.Default),
+          !disabled &&
+            !error &&
+            borderColorClass(BorderColor.Hover, ElementState.Hover),
 
           "focus:outline-none",
-          "focus:ring-2",
-          "focus:ring-action-primary-primary",
-          "focus:ring-offset-2",
-          "focus:border-action-primary-primary",
+          error
+            ? borderColorClass(BorderColor.Error, ElementState.Focus)
+            : borderColorClass(BorderColor.Focus, ElementState.Focus),
 
           "disabled:opacity-50",
           "disabled:cursor-not-allowed",
-          "disabled:bg-content-bg-muted",
-
-          error && "border-semantic-destructive",
-          error && "focus:ring-semantic-destructive",
+          bgColorClass(BackgroundColor.Muted, ElementState.Disabled),
+          borderColorClass(BorderColor.Disabled, ElementState.Disabled),
 
           sizeStyles[size],
-          radiusStyles(radius),
+          radiusStyles(TEXTAREA_RADIUS),
           resizeStyles[resize],
           className
         )}

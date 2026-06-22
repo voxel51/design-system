@@ -5,11 +5,10 @@ import type { FC, HTMLAttributes, ReactNode } from "react";
 import { Tooltip } from "@/components/Tooltip";
 import { textStyles } from "@/styles/text";
 import {
-  BackgroundColor,
+  ActionColor,
   bgColorClass,
   BorderColor,
   borderColorClass,
-  BrandColor,
   Descriptor,
   ElementState,
   Size,
@@ -69,14 +68,23 @@ const tabPaddingStyles: Record<ToggleSwitchSize, string> = {
 };
 
 const tabVariantStyles: Record<ToggleSwitchVariant, string> = {
+  // Figma: the selected tab uses a neutral surface (#232526) with white text —
+  // not the brand accent. The selected background is applied in tabClassName
+  // via action-secondary-primary, so variants only handle layout/text.
   [ToggleSwitchVariant.Soft]: clsx(
     "m-1",
     "py-1 px-1.5",
     "rounded-sm",
-    textColorClass(BrandColor.Accent, ElementState.Selected)
+    textColorClass(TextColor.Primary, ElementState.Selected)
   ),
-  [ToggleSwitchVariant.Default]: clsx(),
+  [ToggleSwitchVariant.Default]: clsx(
+    // transparent border reserves layout space; selection is shown by the bg
+    "border",
+    "border-transparent"
+  ),
   [ToggleSwitchVariant.Full]: clsx(
+    "border",
+    "border-transparent",
     textColorClass(TextColor.Primary, ElementState.Selected)
   ),
   [ToggleSwitchVariant.Borderless]: clsx(
@@ -226,7 +234,7 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
               "outline-none",
               "transition-colors",
               "bg-transparent",
-              bgColorClass(BackgroundColor.CardElevated, ElementState.Selected),
+              bgColorClass(ActionColor.SecondaryDefault, ElementState.Selected),
               getTabTextColorClass(selected),
               data.disabled && "hover:!text-content-text-secondary",
               "data-[focus]:outline-none",

@@ -45,6 +45,9 @@ export const Option: FC<OptionProps> = ({
         "py-2 px-3",
         radiusStyles(Radius.Sm),
         cn(
+          // Use a single subtle base surface for all rows instead of aggressive
+          // alternating backgrounds; selection is conveyed via the dedicated
+          // `Selected` surface token plus the accent check icon.
           bgColorClass(BackgroundColor.Card1),
           selected && bgColorClass(BackgroundColor.Selected)
         ),
