@@ -1,6 +1,7 @@
 export enum IconName {
   Add = "Add",
   AI = "AI",
+  Annotate = "Annotate",
   ArrowDown = "ArrowDown",
   ArrowLeft = "ArrowLeft",
   ArrowRight = "ArrowRight",

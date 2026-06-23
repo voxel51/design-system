@@ -4,6 +4,7 @@ import React, { type FC } from "react";
 import { Spinner } from "@/components/Spinner";
 import AIIcon from "@/img/AI.svg?react";
 import AddIcon from "@/img/Add.svg?react";
+import AnnotateIcon from "@/img/Annotate.svg?react";
 import ArrowDownIcon from "@/img/ArrowDown.svg?react";
 import ArrowLeftIcon from "@/img/ArrowLeft.svg?react";
 import ArrowRightIcon from "@/img/ArrowRight.svg?react";
@@ -92,6 +93,7 @@ export const iconMap: Record<
 > = {
   [IconName.Add]: AddIcon,
   [IconName.AI]: AIIcon,
+  [IconName.Annotate]: AnnotateIcon,
   [IconName.ArrowDown]: ArrowDownIcon,
   [IconName.ArrowLeft]: ArrowLeftIcon,
   [IconName.ArrowRight]: ArrowRightIcon,
