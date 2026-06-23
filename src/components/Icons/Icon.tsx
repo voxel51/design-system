@@ -58,6 +58,7 @@ import RadioIcon from "@/img/Radio.svg?react";
 import RedoIcon from "@/img/Redo.svg?react";
 import RefreshIcon from "@/img/Refresh.svg?react";
 import RemoveIcon from "@/img/Remove.svg?react";
+import ReviewIcon from "@/img/Review.svg?react";
 import SearchIcon from "@/img/Search.svg?react";
 import SettingsIcon from "@/img/Settings.svg?react";
 import SliderIcon from "@/img/Slider.svg?react";
@@ -145,6 +146,7 @@ export const iconMap: Record<
   [IconName.Redo]: RedoIcon,
   [IconName.Refresh]: RefreshIcon,
   [IconName.Remove]: RemoveIcon,
+  [IconName.Review]: ReviewIcon,
   [IconName.Search]: SearchIcon,
   [IconName.Settings]: SettingsIcon,
   [IconName.Slider]: SliderIcon,

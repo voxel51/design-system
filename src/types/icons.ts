@@ -55,6 +55,7 @@ export enum IconName {
   Redo = "Redo",
   Refresh = "Refresh",
   Remove = "Remove",
+  Review = "Review",
   Search = "Search",
   Settings = "Settings",
   Slider = "Slider",
