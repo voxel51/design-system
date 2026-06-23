@@ -60,6 +60,41 @@ describe("RichButtonGroup", () => {
       }
     });
 
+    describe("when controlled", () => {
+      it("should render specified buttons as active", () => {
+        const activeIdxs = [0, 1];
+        const active = activeIdxs.map((idx) => buttons[idx].id);
+
+        render(
+          <RichButtonGroup
+            {...defaultProps}
+            buttons={buttons}
+            activeIds={active}
+          />
+        );
+
+        const group = screen.getByTestId(testId);
+
+        // validate active buttons
+        activeIdxs.forEach((idx) => {
+          expect(within(group).getByTestId(buttons[idx].id)).toHaveClass(
+            "data-active"
+          );
+        });
+
+        // validate inactive buttons
+        new Array(buttons.length)
+          .fill(0)
+          .map((_, i) => i)
+          .filter((idx) => !activeIdxs.includes(idx))
+          .forEach((idx) => {
+            expect(within(group).getByTestId(buttons[idx].id)).not.toHaveClass(
+              "data-active"
+            );
+          });
+      });
+    });
+
     describe("selection", () => {
       let onChange: (active: string[]) => void;
 

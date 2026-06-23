@@ -1,22 +1,28 @@
 import { FC, HTMLAttributes, useCallback, useState } from "react";
 
 import { RichButton, RichButtonProps } from "@/components/RichButton";
-import { Descriptor } from "@/types";
-import { cn } from "@/util/classes";
+import { Stack } from "@/components/Stack";
+import { Align, Descriptor, Justify, Orientation, Spacing } from "@/types";
 
 export interface RichButtonGroupProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   "onChange"
 > {
+  activeIds?: string[];
+  align?: Align;
   buttons: Descriptor<RichButtonProps>[];
   exclusive?: boolean;
+  justify?: Justify;
   onChange?: (active: string[]) => void;
+  orientation?: Orientation;
+  spacing?: Spacing;
 }
 
 /**
  * A grouping of {@link RichButton} components with linked selection state.
  *
- * This component operates exclusively as an uncontrolled component.
+ * This component operates as both a controlled and uncontrolled component.
+ * See `active`/`onChange` for controlled behavior.
  *
  * @example
  * ```tsx
@@ -41,6 +47,7 @@ export interface RichButtonGroupProps extends Omit<
  *
  *   return (
  *     <RichButtonGroup
+ *       activeIds={activeButtons}
  *       buttons={buttons}
  *       exclusive={true}
  *       onChange={onChange}
@@ -49,51 +56,77 @@ export interface RichButtonGroupProps extends Omit<
  * };
  * ```
  *
+ * @param activeIds List of descriptor IDs which should be active; this allows for controlled behavior.
+ * @param align Optional alignment of buttons within their flex container. Defaults to {@link Align.Center}.
  * @param buttons List of component descriptors which will be used to create {@link RichButton} child components.
- * @param className `class` overrides to apply to the group's container.
  * @param exclusive If `true`, enforces mutual exclusion in child selection state.
+ * @param justify Optional justification of buttons within their flex container.
  * @param onChange Callback triggered when child selection state changes.
+ * @param orientation Optional orientation of button group. Defaults to {@link Orientation.Row}.
+ * @param spacing Optional spacing between buttons. Defaults to {@link Spacing.Md}.
  * @param props Additional HTML properties to apply to the component.
  */
 export const RichButtonGroup: FC<RichButtonGroupProps> = ({
+  activeIds,
+  align = Align.Center,
   buttons,
-  className,
   exclusive,
+  justify,
   onChange,
+  orientation = Orientation.Row,
+  spacing = Spacing.Md,
   ...props
 }) => {
-  const [active, setActive] = useState<string[]>(() => []);
+  const isControlled = activeIds !== undefined;
+  const [internalActive, setInternalActive] = useState<string[]>([]);
+  const transientActive = isControlled ? activeIds : internalActive;
+  const setTransientActive = useCallback(
+    (v: string[]) => {
+      // always trigger onChange; uncontrolled callers can still listen
+      onChange?.(v);
+
+      if (!isControlled) {
+        setInternalActive(v);
+      }
+    },
+    [isControlled, onChange]
+  );
 
   const activate = useCallback(
     (id: string) => {
-      if (!active.includes(id)) {
-        const newActiveArray = exclusive ? [id] : [...active, id];
-        setActive(newActiveArray);
-        onChange?.(newActiveArray);
+      if (!transientActive.includes(id)) {
+        const newActiveArray = exclusive ? [id] : [...transientActive, id];
+        setTransientActive(newActiveArray);
       }
     },
-    [active, exclusive, onChange]
+    [transientActive, exclusive, setTransientActive]
   );
+
   const deactivate = useCallback(
     (id: string) => {
-      if (active.includes(id)) {
-        const newActiveArray = active.filter((elem) => elem !== id);
-        setActive(newActiveArray);
-        onChange?.(newActiveArray);
+      if (transientActive.includes(id)) {
+        const newActiveArray = transientActive.filter((elem) => elem !== id);
+        setTransientActive(newActiveArray);
       }
     },
-    [active, onChange]
+    [transientActive, setTransientActive]
   );
 
   return (
-    <div className={cn("flex", "gap-x-md", className)} {...props}>
+    <Stack
+      align={align}
+      justify={justify}
+      orientation={orientation}
+      spacing={spacing}
+      {...props}
+    >
       {buttons.map((buttonProps) => (
         <RichButton
           key={buttonProps.id}
           {...buttonProps.data}
-          active={active.includes(buttonProps.id)}
+          active={transientActive.includes(buttonProps.id)}
           onClick={() => {
-            if (active.includes(buttonProps.id)) {
+            if (transientActive.includes(buttonProps.id)) {
               deactivate(buttonProps.id);
             } else {
               activate(buttonProps.id);
@@ -103,7 +136,7 @@ export const RichButtonGroup: FC<RichButtonGroupProps> = ({
           }}
         />
       ))}
-    </div>
+    </Stack>
   );
 };
 

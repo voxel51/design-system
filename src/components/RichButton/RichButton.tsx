@@ -3,9 +3,11 @@ import type { FC, HTMLAttributes, ReactNode } from "react";
 
 import { Clickable } from "@/components/Clickable";
 import { IconWrapper } from "@/components/Icons";
+import { Stack } from "@/components/Stack";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
 import {
+  Align,
   BorderColor,
   borderColorClass,
   BrandColor,
@@ -13,7 +15,9 @@ import {
   getColorCssVar,
   IconColor,
   IconName,
+  Orientation,
   Radius,
+  Spacing,
   TextColor,
   textColorClass,
 } from "@/types";
@@ -75,6 +79,7 @@ export const RichButton: FC<RichButtonProps> = ({
           ? borderColorClass(BorderColor.Active)
           : borderColorClass(BorderColor.Default),
         !active && borderColorClass(BorderColor.Hover, ElementState.Hover),
+        active && "data-active",
         "p-3",
         radiusStyles(Radius.Md),
         className
@@ -96,8 +101,12 @@ export const RichButton: FC<RichButtonProps> = ({
       tabIndex={0}
       {...props}
     >
-      <div className="flex flex-col">
-        <span className="flex gap-x-md items-center">
+      <Stack orientation={Orientation.Column} spacing={Spacing.None}>
+        <Stack
+          orientation={Orientation.Row}
+          spacing={Spacing.Md}
+          align={Align.Center}
+        >
           <IconWrapper
             content={icon}
             className={cn(
@@ -108,10 +117,10 @@ export const RichButton: FC<RichButtonProps> = ({
             )}
           />
           {label && <Text>{label}</Text>}
-        </span>
+        </Stack>
 
         {description && <Text color={TextColor.Secondary}>{description}</Text>}
-      </div>
+      </Stack>
     </div>
   </Clickable>
 );
