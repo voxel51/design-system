@@ -30,6 +30,7 @@ export enum BackgroundColor {
   Popover = "bg-popover",
   Selected = "bg-selected",
   Secondary = "bg-secondary",
+  Raised = "bg-raised",
 }
 
 export enum BorderColor {
@@ -130,6 +131,7 @@ const textColorMap: Record<Color, string> = {
   [BackgroundColor.Popover]: "text-content-bg-popover",
   [BackgroundColor.Secondary]: "text-content-bg-secondary",
   [BackgroundColor.Selected]: "text-content-bg-selected",
+  [BackgroundColor.Raised]: "text-content-bg-raised",
   [BackgroundColor.Transparent]: "text-transparent",
 
   [BrandColor.Accent]: "text-brand-accent",
@@ -199,6 +201,7 @@ const backgroundColorMap: Record<Color, string> = {
   [BackgroundColor.Popover]: "bg-content-bg-popover",
   [BackgroundColor.Secondary]: "bg-content-bg-secondary",
   [BackgroundColor.Selected]: "bg-content-bg-selected",
+  [BackgroundColor.Raised]: "bg-content-bg-raised",
 
   [BrandColor.Accent]: "bg-brand-accent",
   [BrandColor.Primary]: "bg-brand-primary",

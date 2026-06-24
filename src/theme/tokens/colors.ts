@@ -24,6 +24,7 @@ export const colors = {
         popover: "#141618",
         secondary: "#1C1D1E",
         selected: "#FF6D041E",
+        raised: "#2F3234",
       },
       text: {
         fg: "#FFF9F5",
@@ -111,6 +112,9 @@ export const colors = {
         popover: "#FFF",
         secondary: "#E8E7E6",
         selected: "#FF6D041E",
+        // provisional light value (Figma is dark-authored); verify against
+        // light-mode Figma when available
+        raised: "#E8E7E6",
       },
       text: {
         fg: "#000",
