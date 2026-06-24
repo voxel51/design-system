@@ -74,8 +74,8 @@ export const colors = {
     action: {
       primary: {
         primary: "#FF6D04",
-        secondary: "#FF9950",
-        tertiary: "#D05700",
+        secondary: "#D05700",
+        tertiary: "#9B4200",
         text: "#FFF",
       },
       secondary: {
@@ -86,14 +86,14 @@ export const colors = {
       },
       success: {
         primary: "#1E7D45",
-        secondary: "#7AB87C",
-        tertiary: "#166638",
+        secondary: "#166638",
+        tertiary: "#0E4E2B",
         text: "#FFF",
       },
       danger: {
         primary: "#C33636",
-        secondary: "#FF6767",
-        tertiary: "#9B2727",
+        secondary: "#9B2727",
+        tertiary: "#751D1D",
         text: "#FFF",
       },
     },
