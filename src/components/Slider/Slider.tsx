@@ -34,6 +34,7 @@ export interface SliderProps extends Omit<
   maxLabel?: ReactNode;
   multi?: boolean;
   onChange?: ChangeHandler;
+  onChangeCommitted?: ChangeHandler;
   showUnsetHint?: boolean;
   step?: number;
   value?: number | number[];
@@ -41,17 +42,19 @@ export interface SliderProps extends Omit<
 
 export interface SingleValueSliderProps extends Omit<
   SliderProps,
-  "multi" | "onChange" | "value"
+  "multi" | "onChange" | "onChangeCommitted" | "value"
 > {
   onChange?: (value: number) => void;
+  onChangeCommitted?: (value: number) => void;
   value?: number;
 }
 
 export interface MultiValueSliderProps extends Omit<
   SliderProps,
-  "multi" | "onChange" | "value"
+  "multi" | "onChange" | "onChangeCommitted" | "value"
 > {
   onChange?: (value: number[]) => void;
+  onChangeCommitted?: (value: number[]) => void;
   value?: number[];
 }
 
@@ -102,6 +105,11 @@ const clamp = (value: number, min: number, max: number): number =>
  *    - The user clicks on the slider track.
  *  If `multi` is `true`, this callback emits a value of the form `[low, high]`;
  *  otherwise, this callback emits a single numeric value.
+ * @param onChangeCommitted Callback triggered once when an interaction completes —
+ *  a drag release, a track click, or an input blur — rather than continuously.
+ *  Pair it with a responsive `onChange` (e.g. `debounceDelay={0}`) to get live
+ *  updates during a drag while committing only once on release. Emits the same
+ *  value shape as `onChange`.
  * @param step Numeric step size for slider increments.
  * @param value The controlled value of the slider.
  *  If `multi` is `true`, this must be of the form `[low, high]`;
@@ -122,6 +130,7 @@ export const BaseSlider: FC<SliderProps> = ({
   minLabel,
   multi,
   onChange,
+  onChangeCommitted,
   step = 0.001,
   value,
   showUnsetHint,
@@ -205,6 +214,19 @@ export const BaseSlider: FC<SliderProps> = ({
     [handleChange, isValidRange, maxValue, minValue, multi]
   );
 
+  // commit the current input value(s) once editing settles (blur / Enter)
+  const handleInputCommit = useCallback(() => {
+    const maxNum = Number.parseFloat(maxValue);
+    if (multi) {
+      const minNum = Number.parseFloat(minValue);
+      if (isValidRange(minNum, maxNum)) {
+        onChangeCommitted?.([minNum, maxNum]);
+      }
+    } else if (Number.isFinite(maxNum)) {
+      onChangeCommitted?.(maxNum);
+    }
+  }, [isValidRange, maxValue, minValue, multi, onChangeCommitted]);
+
   const hint = bare
     ? "Click on the slider to set a value"
     : "Click on the slider or enter a number to set a value";
@@ -235,6 +257,7 @@ export const BaseSlider: FC<SliderProps> = ({
         step={step}
         value={transientValue}
         onChange={handleChange}
+        onChangeCommitted={onChangeCommitted}
       />
 
       {!bare && (
@@ -246,6 +269,7 @@ export const BaseSlider: FC<SliderProps> = ({
                 <Input
                   value={minValue}
                   onChange={handleMinInputChange}
+                  onBlur={handleInputCommit}
                   error={!isValidRange(minValue, maxValue)}
                 />
               }
@@ -257,6 +281,7 @@ export const BaseSlider: FC<SliderProps> = ({
               <Input
                 value={maxValue}
                 onChange={handleMaxInputChange}
+                onBlur={handleInputCommit}
                 error={!isValidRange(minValue, maxValue)}
               />
             }
@@ -303,6 +328,7 @@ export const BaseSlider: FC<SliderProps> = ({
  */
 export const SingleValueSlider: FC<SingleValueSliderProps> = ({
   onChange,
+  onChangeCommitted,
   max,
   min,
   ...props
@@ -313,6 +339,7 @@ export const SingleValueSlider: FC<SingleValueSliderProps> = ({
     {...props}
     multi={false}
     onChange={onChange as ChangeHandler}
+    onChangeCommitted={onChangeCommitted as ChangeHandler}
   />
 );
 
@@ -351,6 +378,7 @@ export const SingleValueSlider: FC<SingleValueSliderProps> = ({
  */
 export const MultiValueSlider: FC<MultiValueSliderProps> = ({
   onChange,
+  onChangeCommitted,
   max,
   min,
   ...props
@@ -361,6 +389,7 @@ export const MultiValueSlider: FC<MultiValueSliderProps> = ({
     {...props}
     multi={true}
     onChange={onChange as ChangeHandler}
+    onChangeCommitted={onChangeCommitted as ChangeHandler}
   />
 );
 

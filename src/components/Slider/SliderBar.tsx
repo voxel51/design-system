@@ -15,6 +15,7 @@ interface SliderBarProps extends Omit<
   max: number;
   multi?: boolean;
   onChange?: (value: number | number[]) => void;
+  onChangeCommitted?: (value: number | number[]) => void;
   step: number;
   value?: number | number[];
 }
@@ -42,11 +43,15 @@ export const SliderBar: FC<SliderBarProps> = ({
   min,
   multi,
   onChange,
+  onChangeCommitted,
   step,
   value,
   ...props
 }) => {
   const sliderTrackRef = useRef<HTMLDivElement>(null);
+  // tracks the latest value emitted during a drag so the drag-end handler can
+  // commit it (the document `mouseup` that ends the drag carries no position)
+  const lastValueRef = useRef<number | number[] | undefined>(value);
 
   const values = Array.isArray(value) ? value : [min, value ?? max];
   const minValue = values[0];
@@ -102,18 +107,24 @@ export const SliderBar: FC<SliderBarProps> = ({
       const relativePosition = getRelativeX(mouseX);
       const newValue = cleanFloat(getKnobValue(relativePosition));
 
+      let next: number | number[] | undefined;
       if (multi) {
         if (knob === "min") {
           if (newValue <= maxValue) {
-            onChange?.([newValue, maxValue]);
+            next = [newValue, maxValue];
           }
         } else {
           if (newValue >= minValue) {
-            onChange?.([minValue, newValue]);
+            next = [minValue, newValue];
           }
         }
       } else {
-        onChange?.(newValue);
+        next = newValue;
+      }
+
+      if (next !== undefined) {
+        lastValueRef.current = next;
+        onChange?.(next);
       }
     },
     [getKnobValue, getRelativeX, maxValue, minValue, multi, onChange]
@@ -132,12 +143,16 @@ export const SliderBar: FC<SliderBarProps> = ({
       const handleMouseUp = (): void => {
         document.removeEventListener("mousemove", handleMouseMove);
         document.removeEventListener("mouseup", handleMouseUp);
+        // drag ended — commit the final value once
+        if (lastValueRef.current !== undefined) {
+          onChangeCommitted?.(lastValueRef.current);
+        }
       };
 
       document.addEventListener("mousemove", handleMouseMove);
       document.addEventListener("mouseup", handleMouseUp);
     },
-    [handleDrag]
+    [handleDrag, onChangeCommitted]
   );
 
   /**
@@ -154,6 +169,7 @@ export const SliderBar: FC<SliderBarProps> = ({
       const clickPos = getRelativeX(e.clientX);
       const clickValue = getKnobValue(clickPos);
 
+      let next: number | number[];
       if (multi) {
         const minKnobPos = getKnobPosition(minValue);
         const maxKnobPos = getKnobPosition(maxValue);
@@ -162,13 +178,18 @@ export const SliderBar: FC<SliderBarProps> = ({
         const maxKnobDist = Math.abs(clickPos - maxKnobPos);
 
         if (clickPos < minKnobPos || minKnobDist < maxKnobDist) {
-          onChange?.([clickValue, maxValue]);
+          next = [clickValue, maxValue];
         } else {
-          onChange?.([minValue, clickValue]);
+          next = [minValue, clickValue];
         }
       } else {
-        onChange?.(clickValue);
+        next = clickValue;
       }
+
+      lastValueRef.current = next;
+      onChange?.(next);
+      // a track click is a complete interaction — commit immediately
+      onChangeCommitted?.(next);
     },
     [
       getRelativeX,
@@ -178,6 +199,7 @@ export const SliderBar: FC<SliderBarProps> = ({
       minValue,
       maxValue,
       onChange,
+      onChangeCommitted,
     ]
   );
 
