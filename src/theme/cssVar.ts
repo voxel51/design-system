@@ -104,7 +104,15 @@ export const cssVar = {
       "9": "var(--color-content-palette-9)",
       "10": "var(--color-content-palette-10)",
       "11": "var(--color-content-palette-11)",
-      "12": "var(--color-content-palette-12)"
+      "12": "var(--color-content-palette-12)",
+      "orange": "var(--color-content-palette-orange)",
+      "blue": "var(--color-content-palette-blue)",
+      "green": "var(--color-content-palette-green)",
+      "purple": "var(--color-content-palette-purple)",
+      "pink": "var(--color-content-palette-pink)",
+      "yellow": "var(--color-content-palette-yellow)",
+      "teal": "var(--color-content-palette-teal)",
+      "red": "var(--color-content-palette-red)"
     },
     "skeleton": {
       "base": "var(--color-content-skeleton-base)",

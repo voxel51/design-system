@@ -9,7 +9,7 @@
  *
  * Values are sourced from the Figma "Theme" variable collection (both modes).
  */
-const primitives = {
+export const primitives = {
   neutral: {
     0: "#FFFFFF",
     25: "#FFF9F5",
