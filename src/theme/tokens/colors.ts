@@ -176,12 +176,12 @@ export const colors = {
         info: primitives.blue[300],
       },
       overlay: {
-        default: "#00000099",
-        light: "#00000066",
-        heavy: "#000000CC",
+        default: `color-mix(in srgb, ${primitives.neutral[1000]} 60%, transparent)`,
+        light: `color-mix(in srgb, ${primitives.neutral[1000]} 40%, transparent)`,
+        heavy: `color-mix(in srgb, ${primitives.neutral[1000]} 80%, transparent)`,
       },
       focus: {
-        ring: "#FF6D0480",
+        ring: `color-mix(in srgb, ${primitives.orange[500]} 50%, transparent)`,
       },
       link: {
         default: primitives.blue[300],
@@ -221,7 +221,7 @@ export const colors = {
         "thumb-hover": primitives.neutral[600],
       },
       selection: {
-        bg: "#FF6D044D",
+        bg: `color-mix(in srgb, ${primitives.orange[500]} 30%, transparent)`,
         text: primitives.neutral[0],
       },
     },
@@ -318,12 +318,12 @@ export const colors = {
         info: primitives.blue[500],
       },
       overlay: {
-        default: "#00000080",
-        light: "#0000004D",
-        heavy: "#000000B2",
+        default: `color-mix(in srgb, ${primitives.neutral[1000]} 50%, transparent)`,
+        light: `color-mix(in srgb, ${primitives.neutral[1000]} 30%, transparent)`,
+        heavy: `color-mix(in srgb, ${primitives.neutral[1000]} 70%, transparent)`,
       },
       focus: {
-        ring: "#FF6D0480",
+        ring: `color-mix(in srgb, ${primitives.orange[500]} 50%, transparent)`,
       },
       link: {
         default: primitives.blue[500],
@@ -363,7 +363,7 @@ export const colors = {
         "thumb-hover": primitives.neutral[250],
       },
       selection: {
-        bg: "#FF6D0433",
+        bg: `color-mix(in srgb, ${primitives.orange[500]} 20%, transparent)`,
         text: primitives.neutral[1000],
       },
     },
