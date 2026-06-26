@@ -135,6 +135,8 @@ export const colors = {
         destructive: primitives.red[400],
         info: primitives.blue[300],
         warning: primitives.yellow[300],
+        accent: primitives.orange[400],
+        decorative: primitives.orange[300],
       },
       border: {
         default: primitives.neutral[750],
@@ -147,6 +149,9 @@ export const colors = {
         success: primitives.green[300],
         warning: primitives.yellow[300],
         disabled: primitives.neutral[875],
+        input: primitives.neutral[750],
+        "input-hover": primitives.neutral[600],
+        "input-focus": primitives.neutral[500],
       },
       status: {
         approved: primitives.green[300],
@@ -163,6 +168,7 @@ export const colors = {
         disabled: primitives.neutral[550],
         decorative: primitives.orange[400],
         brand: primitives.orange[500],
+        dark: primitives.neutral[925],
         "brand-accent": primitives.orange[400],
         success: primitives.green[300],
         destructive: primitives.red[400],
@@ -222,6 +228,8 @@ export const colors = {
         destructive: primitives.red[600],
         info: primitives.blue[600],
         warning: primitives.yellow[700],
+        accent: primitives.yellow[500],
+        decorative: primitives.orange[400],
       },
       border: {
         default: primitives.neutral[150],
@@ -234,6 +242,9 @@ export const colors = {
         success: primitives.green[500],
         warning: primitives.yellow[500],
         disabled: primitives.neutral[100],
+        input: primitives.neutral[200],
+        "input-hover": primitives.neutral[250],
+        "input-focus": primitives.neutral[350],
       },
       status: {
         approved: primitives.green[500],
@@ -250,6 +261,7 @@ export const colors = {
         disabled: primitives.neutral[300],
         decorative: primitives.orange[600],
         brand: primitives.orange[500],
+        dark: primitives.neutral[925],
         "brand-accent": primitives.orange[400],
         success: primitives.green[500],
         destructive: primitives.red[500],

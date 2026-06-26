@@ -44,6 +44,9 @@ export enum BorderColor {
   Warning = "border-warning",
   Disabled = "border-disabled",
   CardElevated = "bg-card-elevated",
+  Input = "border-input",
+  InputHover = "border-input-hover",
+  InputFocus = "border-input-focus",
 }
 
 export enum BrandColor {
@@ -64,6 +67,7 @@ export enum IconColor {
   Destructive = "icon-destructive",
   Warning = "icon-warning",
   Info = "icon-info",
+  Dark = "icon-dark",
 }
 
 export enum SemanticColor {
@@ -92,6 +96,8 @@ export enum TextColor {
   Destructive = "text-destructive",
   Warning = "text-warning",
   Info = "text-info",
+  Accent = "text-accent",
+  Decorative = "text-decorative",
 }
 
 export type Color =
@@ -169,6 +175,9 @@ const textColorMap: Record<Color, string> = {
   [TextColor.Success]: "text-content-text-success",
   [TextColor.Tertiary]: "text-content-text-tertiary",
   [TextColor.Warning]: "text-content-text-warning",
+  [TextColor.Accent]: "text-content-text-accent",
+  [TextColor.Decorative]: "text-content-text-decorative",
+  [IconColor.Dark]: "text-content-icon-dark",
 };
 
 const backgroundColorMap: Record<Color, string> = {
@@ -237,6 +246,9 @@ const backgroundColorMap: Record<Color, string> = {
   [TextColor.Success]: "bg-content-text-success",
   [TextColor.Tertiary]: "bg-content-text-tertiary",
   [TextColor.Warning]: "bg-content-text-warning",
+  [TextColor.Accent]: "bg-content-text-accent",
+  [TextColor.Decorative]: "bg-content-text-decorative",
+  [IconColor.Dark]: "bg-content-icon-dark",
 };
 
 const borderColorMap: Record<BorderColor, string> = {
@@ -251,6 +263,9 @@ const borderColorMap: Record<BorderColor, string> = {
   [BorderColor.Subtle]: "border-content-border-subtle",
   [BorderColor.Success]: "border-content-border-success",
   [BorderColor.Warning]: "border-content-border-warning",
+  [BorderColor.Input]: "border-content-border-input",
+  [BorderColor.InputHover]: "border-content-border-input-hover",
+  [BorderColor.InputFocus]: "border-content-border-input-focus",
 };
 
 export const bgColorClass = (
