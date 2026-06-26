@@ -44,49 +44,43 @@ const allColors = [
 ];
 
 const allBorderColors = Object.values(BorderColor);
-const allStates = Object.values(ElementState).filter(
-  (s) => s !== ElementState.None
-);
+
+// Only safelist the element-states actually used with color helpers in the
+// components. Open / Dragging / AutoFocus are never paired with a color (e.g.
+// Dragging is only used with shadowStyles), so generating ~3 states × every
+// color × bg/text/border was pure bloat. If a component starts using one of
+// these with a color helper, add it back here and regenerate.
+const colorStates = [
+  ElementState.Hover,
+  ElementState.Focus,
+  ElementState.Active,
+  ElementState.Selected,
+  ElementState.Checked,
+  ElementState.Disabled,
+];
 
 /**
- * We need to generate all permutations of classes for:
- * States and Background/Borders/Text colors
- * @returns an array of all possible color classes
+ * Generate the exact set of color classes the components build dynamically
+ * (which Tailwind can't see statically). Base classes come straight from the
+ * color maps via the helpers — no guessed prefixes — plus one entry per used
+ * element-state.
+ * @returns an array of all needed color classes
  */
 function generateClasses(): Array<string> {
   const classes = new Set<string>();
 
-  // Background colors
   allColors.forEach((color) => {
-    // Base states
-    classes.add(`bg-${color}`);
-    classes.add(`bg-content-${color}`); // Add content- prefix version too
-
-    // handle variable syntax
-    allStates.forEach((state) => {
+    classes.add(bgColorClass(color)); // exact base (from map)
+    classes.add(textColorClass(color));
+    colorStates.forEach((state) => {
       classes.add(bgColorClass(color, state));
-    });
-  });
-
-  // Text colors
-  allColors.forEach((color) => {
-    // Base state
-    classes.add(`text-${color}`);
-    classes.add(`text-content-${color}`);
-
-    // handle variable syntax
-    allStates.forEach((state) => {
       classes.add(textColorClass(color, state));
     });
   });
 
-  // Border colors
   allBorderColors.forEach((color) => {
-    // Base state
-    classes.add(`border-content-${color}`);
-
-    // handle variable syntax
-    allStates.forEach((state) => {
+    classes.add(borderColorClass(color));
+    colorStates.forEach((state) => {
       classes.add(borderColorClass(color, state));
     });
   });
