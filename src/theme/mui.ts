@@ -10,19 +10,47 @@ import { cssVar } from "./cssVar";
  * a `var(--…)` reference, you never embed a hardcoded Voodo color.
  *
  * Voodo intentionally takes **no dependency** on `@mui/material`; pass this
- * object straight into MUI's `createTheme`:
+ * object straight into MUI's `createTheme`.
  *
- * ```ts
- * import { createTheme } from "@mui/material/styles";
+ * @example Set up the theme once at the app root
+ * ```tsx
+ * import { createTheme, ThemeProvider } from "@mui/material/styles";
  * import { voodoMuiThemeOptions } from "@voxel51/voodo";
- * import "@voxel51/voodo/theme.css"; // defines the CSS variables
+ * import "@voxel51/voodo/theme.css"; // REQUIRED — defines the CSS variables
  *
  * const theme = createTheme(voodoMuiThemeOptions);
- * // or merge app overrides: createTheme(deepmerge(voodoMuiThemeOptions, {...}))
+ *
+ * export function App() {
+ *   return (
+ *     <ThemeProvider theme={theme}>
+ *       <Root />
+ *     </ThemeProvider>
+ *   );
+ * }
+ * ```
+ *
+ * @example MUI components are then Voodo-styled automatically
+ * ```tsx
+ * <Paper />                                  // background = Voodo card surface
+ * <Button color="primary">Save</Button>      // Voodo brand orange
+ * <Typography color="text.secondary">Hi</Typography>
+ * ```
+ *
+ * @example Merge app-specific overrides
+ * ```ts
+ * import { deepmerge } from "@mui/utils";
+ *
+ * const theme = createTheme(
+ *   deepmerge(voodoMuiThemeOptions, {
+ *     shape: { borderRadius: 8 },
+ *     components: { MuiButton: { defaultProps: { disableElevation: true } } },
+ *   })
+ * );
  * ```
  *
  * Light/dark follows Voodo's `.dark` class on an ancestor — not MUI's
- * `palette.mode` — since the variables themselves switch.
+ * `palette.mode` — since the variables themselves switch. Toggle dark by
+ * adding/removing `.dark` on a wrapping element; Voodo and MUI flip together.
  *
  * Caveat: MUI can't mathematically derive shades or alpha tints from
  * `var(--…)` colors, so every palette shade is supplied explicitly and some
