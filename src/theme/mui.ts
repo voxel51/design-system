@@ -23,6 +23,11 @@ import { cssVar } from "./cssVar";
  *
  * Light/dark follows Voodo's `.dark` class on an ancestor — not MUI's
  * `palette.mode` — since the variables themselves switch.
+ *
+ * Caveat: MUI can't mathematically derive shades or alpha tints from
+ * `var(--…)` colors, so every palette shade is supplied explicitly and some
+ * MUI auto-effects (computed hover/ripple overlays) may differ from a
+ * hex-based theme.
  */
 const c = cssVar.color;
 
@@ -34,15 +39,32 @@ export const voodoMuiThemeOptions = {
       dark: c.action.primary.tertiary,
       contrastText: c.action.primary.text,
     },
+    // NOTE: every palette color provides main+light+dark+contrastText.
+    // MUI computes missing shades via lighten()/darken(), which parse the
+    // color — and they CANNOT parse a `var(--…)` value (it throws). Supplying
+    // all four means MUI never tries to compute, so var-based colors work.
     error: {
       main: c.action.danger.primary,
+      light: c.action.danger.secondary,
       dark: c.action.danger.tertiary,
       contrastText: c.action.danger.text,
     },
-    warning: { main: c.semantic.warning },
-    info: { main: c.semantic.info },
+    // warning/info have no hover/pressed ramp in Voodo yet, so shades are flat.
+    warning: {
+      main: c.semantic.warning,
+      light: c.semantic.warning,
+      dark: c.semantic.warning,
+      contrastText: c.action.primary.text,
+    },
+    info: {
+      main: c.semantic.info,
+      light: c.semantic.info,
+      dark: c.semantic.info,
+      contrastText: c.action.primary.text,
+    },
     success: {
       main: c.action.success.primary,
+      light: c.action.success.secondary,
       dark: c.action.success.tertiary,
       contrastText: c.action.success.text,
     },
