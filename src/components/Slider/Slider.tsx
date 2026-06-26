@@ -216,14 +216,16 @@ export const BaseSlider: FC<SliderProps> = ({
 
   // commit the current input value(s) once editing settles (blur / Enter)
   const handleInputCommit = useCallback(() => {
+    if (!onChangeCommitted) return;
+
     const maxNum = Number.parseFloat(maxValue);
     if (multi) {
       const minNum = Number.parseFloat(minValue);
       if (isValidRange(minNum, maxNum)) {
-        onChangeCommitted?.([minNum, maxNum]);
+        onChangeCommitted([minNum, maxNum]);
       }
     } else if (Number.isFinite(maxNum)) {
-      onChangeCommitted?.(maxNum);
+      onChangeCommitted(maxNum);
     }
   }, [isValidRange, maxValue, minValue, multi, onChangeCommitted]);
 
