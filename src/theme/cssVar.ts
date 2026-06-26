@@ -6,93 +6,93 @@
  * track token renames. Requires Voodo's CSS (`@voxel51/voodo/theme.css`).
  */
 export const cssVar = {
-  "color": {
-    "brand": {
-      "primary": "var(--color-brand-primary)",
-      "accent": "var(--color-brand-accent)"
+  color: {
+    brand: {
+      primary: "var(--color-brand-primary)",
+      accent: "var(--color-brand-accent)",
     },
-    "semantic": {
-      "success": "var(--color-semantic-success)",
-      "destructive": "var(--color-semantic-destructive)",
-      "info": "var(--color-semantic-info)",
-      "warning": "var(--color-semantic-warning)"
+    semantic: {
+      success: "var(--color-semantic-success)",
+      destructive: "var(--color-semantic-destructive)",
+      info: "var(--color-semantic-info)",
+      warning: "var(--color-semantic-warning)",
     },
-    "bg": {
-      "background": "var(--color-content-bg-background)",
-      "card": {
+    bg: {
+      background: "var(--color-content-bg-background)",
+      card: {
         "1": "var(--color-content-bg-card-1)",
         "2": "var(--color-content-bg-card-2)",
-        "elevated": "var(--color-content-bg-card-elevated)"
+        elevated: "var(--color-content-bg-card-elevated)",
       },
-      "muted": "var(--color-content-bg-muted)",
-      "popover": "var(--color-content-bg-popover)",
-      "secondary": "var(--color-content-bg-secondary)"
+      muted: "var(--color-content-bg-muted)",
+      popover: "var(--color-content-bg-popover)",
+      secondary: "var(--color-content-bg-secondary)",
     },
-    "text": {
-      "fg": "var(--color-content-text-fg)",
-      "primary": "var(--color-content-text-primary)",
-      "secondary": "var(--color-content-text-secondary)",
-      "tertiary": "var(--color-content-text-tertiary)",
-      "muted": "var(--color-content-text-muted)",
-      "placeholder": "var(--color-content-text-placeholder)",
-      "success": "var(--color-content-text-success)",
-      "destructive": "var(--color-content-text-destructive)",
-      "info": "var(--color-content-text-info)",
-      "warning": "var(--color-content-text-warning)",
-      "accent": "var(--color-content-text-accent)",
-      "decorative": "var(--color-content-text-decorative)"
+    text: {
+      fg: "var(--color-content-text-fg)",
+      primary: "var(--color-content-text-primary)",
+      secondary: "var(--color-content-text-secondary)",
+      tertiary: "var(--color-content-text-tertiary)",
+      muted: "var(--color-content-text-muted)",
+      placeholder: "var(--color-content-text-placeholder)",
+      success: "var(--color-content-text-success)",
+      destructive: "var(--color-content-text-destructive)",
+      info: "var(--color-content-text-info)",
+      warning: "var(--color-content-text-warning)",
+      accent: "var(--color-content-text-accent)",
+      decorative: "var(--color-content-text-decorative)",
     },
-    "border": {
-      "default": "var(--color-content-border-default)",
-      "strong": "var(--color-content-border-strong)",
-      "hover": "var(--color-content-border-hover)",
-      "focus": "var(--color-content-border-focus)",
-      "subtle": "var(--color-content-border-subtle)",
-      "active": "var(--color-content-border-active)",
-      "error": "var(--color-content-border-error)",
-      "success": "var(--color-content-border-success)",
-      "warning": "var(--color-content-border-warning)",
-      "disabled": "var(--color-content-border-disabled)",
-      "input": "var(--color-content-border-input)",
+    border: {
+      default: "var(--color-content-border-default)",
+      strong: "var(--color-content-border-strong)",
+      hover: "var(--color-content-border-hover)",
+      focus: "var(--color-content-border-focus)",
+      subtle: "var(--color-content-border-subtle)",
+      active: "var(--color-content-border-active)",
+      error: "var(--color-content-border-error)",
+      success: "var(--color-content-border-success)",
+      warning: "var(--color-content-border-warning)",
+      disabled: "var(--color-content-border-disabled)",
+      input: "var(--color-content-border-input)",
       "input-hover": "var(--color-content-border-input-hover)",
-      "input-focus": "var(--color-content-border-input-focus)"
+      "input-focus": "var(--color-content-border-input-focus)",
     },
-    "status": {
-      "approved": "var(--color-content-status-approved)",
-      "review": "var(--color-content-status-review)",
-      "progress": "var(--color-content-status-progress)",
-      "default": "var(--color-content-status-default)",
-      "failed": "var(--color-content-status-failed)"
+    status: {
+      approved: "var(--color-content-status-approved)",
+      review: "var(--color-content-status-review)",
+      progress: "var(--color-content-status-progress)",
+      default: "var(--color-content-status-default)",
+      failed: "var(--color-content-status-failed)",
     },
-    "icon": {
-      "default": "var(--color-content-icon-default)",
-      "subtle": "var(--color-content-icon-subtle)",
-      "emphasis": "var(--color-content-icon-emphasis)",
-      "muted": "var(--color-content-icon-muted)",
-      "disabled": "var(--color-content-icon-disabled)",
-      "decorative": "var(--color-content-icon-decorative)",
-      "brand": "var(--color-content-icon-brand)",
-      "dark": "var(--color-content-icon-dark)",
+    icon: {
+      default: "var(--color-content-icon-default)",
+      subtle: "var(--color-content-icon-subtle)",
+      emphasis: "var(--color-content-icon-emphasis)",
+      muted: "var(--color-content-icon-muted)",
+      disabled: "var(--color-content-icon-disabled)",
+      decorative: "var(--color-content-icon-decorative)",
+      brand: "var(--color-content-icon-brand)",
+      dark: "var(--color-content-icon-dark)",
       "brand-accent": "var(--color-content-icon-brand-accent)",
-      "success": "var(--color-content-icon-success)",
-      "destructive": "var(--color-content-icon-destructive)",
-      "warning": "var(--color-content-icon-warning)",
-      "info": "var(--color-content-icon-info)"
+      success: "var(--color-content-icon-success)",
+      destructive: "var(--color-content-icon-destructive)",
+      warning: "var(--color-content-icon-warning)",
+      info: "var(--color-content-icon-info)",
     },
-    "overlay": {
-      "default": "var(--color-content-overlay-default)",
-      "light": "var(--color-content-overlay-light)",
-      "heavy": "var(--color-content-overlay-heavy)"
+    overlay: {
+      default: "var(--color-content-overlay-default)",
+      light: "var(--color-content-overlay-light)",
+      heavy: "var(--color-content-overlay-heavy)",
     },
-    "focus": {
-      "ring": "var(--color-content-focus-ring)"
+    focus: {
+      ring: "var(--color-content-focus-ring)",
     },
-    "link": {
-      "default": "var(--color-content-link-default)",
-      "hover": "var(--color-content-link-hover)",
-      "visited": "var(--color-content-link-visited)"
+    link: {
+      default: "var(--color-content-link-default)",
+      hover: "var(--color-content-link-hover)",
+      visited: "var(--color-content-link-visited)",
     },
-    "palette": {
+    palette: {
       "1": "var(--color-content-palette-1)",
       "2": "var(--color-content-palette-2)",
       "3": "var(--color-content-palette-3)",
@@ -105,117 +105,117 @@ export const cssVar = {
       "10": "var(--color-content-palette-10)",
       "11": "var(--color-content-palette-11)",
       "12": "var(--color-content-palette-12)",
-      "orange": "var(--color-content-palette-orange)",
-      "blue": "var(--color-content-palette-blue)",
-      "green": "var(--color-content-palette-green)",
-      "purple": "var(--color-content-palette-purple)",
-      "pink": "var(--color-content-palette-pink)",
-      "yellow": "var(--color-content-palette-yellow)",
-      "teal": "var(--color-content-palette-teal)",
-      "red": "var(--color-content-palette-red)"
+      orange: "var(--color-content-palette-orange)",
+      blue: "var(--color-content-palette-blue)",
+      green: "var(--color-content-palette-green)",
+      purple: "var(--color-content-palette-purple)",
+      pink: "var(--color-content-palette-pink)",
+      yellow: "var(--color-content-palette-yellow)",
+      teal: "var(--color-content-palette-teal)",
+      red: "var(--color-content-palette-red)",
     },
-    "skeleton": {
-      "base": "var(--color-content-skeleton-base)",
-      "shimmer": "var(--color-content-skeleton-shimmer)"
+    skeleton: {
+      base: "var(--color-content-skeleton-base)",
+      shimmer: "var(--color-content-skeleton-shimmer)",
     },
-    "tooltip": {
-      "bg": "var(--color-content-tooltip-bg)",
-      "text": "var(--color-content-tooltip-text)"
+    tooltip: {
+      bg: "var(--color-content-tooltip-bg)",
+      text: "var(--color-content-tooltip-text)",
     },
-    "code": {
-      "bg": "var(--color-content-code-bg)",
-      "text": "var(--color-content-code-text)",
-      "border": "var(--color-content-code-border)"
+    code: {
+      bg: "var(--color-content-code-bg)",
+      text: "var(--color-content-code-text)",
+      border: "var(--color-content-code-border)",
     },
-    "scrollbar": {
-      "track": "var(--color-content-scrollbar-track)",
-      "thumb": "var(--color-content-scrollbar-thumb)",
-      "thumb-hover": "var(--color-content-scrollbar-thumb-hover)"
+    scrollbar: {
+      track: "var(--color-content-scrollbar-track)",
+      thumb: "var(--color-content-scrollbar-thumb)",
+      "thumb-hover": "var(--color-content-scrollbar-thumb-hover)",
     },
-    "selection": {
-      "bg": "var(--color-content-selection-bg)",
-      "text": "var(--color-content-selection-text)"
+    selection: {
+      bg: "var(--color-content-selection-bg)",
+      text: "var(--color-content-selection-text)",
     },
-    "action": {
-      "primary": {
-        "primary": "var(--color-action-primary-primary)",
-        "secondary": "var(--color-action-primary-secondary)",
-        "tertiary": "var(--color-action-primary-tertiary)",
-        "text": "var(--color-action-primary-text)"
+    action: {
+      primary: {
+        primary: "var(--color-action-primary-primary)",
+        secondary: "var(--color-action-primary-secondary)",
+        tertiary: "var(--color-action-primary-tertiary)",
+        text: "var(--color-action-primary-text)",
       },
-      "secondary": {
-        "primary": "var(--color-action-secondary-primary)",
-        "secondary": "var(--color-action-secondary-secondary)",
-        "tertiary": "var(--color-action-secondary-tertiary)",
-        "text": "var(--color-action-secondary-text)"
+      secondary: {
+        primary: "var(--color-action-secondary-primary)",
+        secondary: "var(--color-action-secondary-secondary)",
+        tertiary: "var(--color-action-secondary-tertiary)",
+        text: "var(--color-action-secondary-text)",
       },
-      "success": {
-        "primary": "var(--color-action-success-primary)",
-        "secondary": "var(--color-action-success-secondary)",
-        "tertiary": "var(--color-action-success-tertiary)",
-        "text": "var(--color-action-success-text)"
+      success: {
+        primary: "var(--color-action-success-primary)",
+        secondary: "var(--color-action-success-secondary)",
+        tertiary: "var(--color-action-success-tertiary)",
+        text: "var(--color-action-success-text)",
       },
-      "danger": {
-        "primary": "var(--color-action-danger-primary)",
-        "secondary": "var(--color-action-danger-secondary)",
-        "tertiary": "var(--color-action-danger-tertiary)",
-        "text": "var(--color-action-danger-text)"
-      }
-    }
-  },
-  "spacing": {
-    "xs": "var(--spacing-xs)",
-    "sm": "var(--spacing-sm)",
-    "md": "var(--spacing-md)",
-    "lg": "var(--spacing-lg)",
-    "xl": "var(--spacing-xl)"
-  },
-  "text": {
-    "xxs": "var(--text-xxs)",
-    "xs": "var(--text-xs)",
-    "sm": "var(--text-sm)",
-    "md": "var(--text-md)",
-    "lg": "var(--text-lg)",
-    "xl": "var(--text-xl)",
-    "xxl": "var(--text-xxl)"
-  },
-  "fontFamily": {
-    "sans": "var(--font-sans)",
-    "mono": "var(--font-mono)"
-  },
-  "z": {
-    "default": "var(--z-default)",
-    "low": "var(--z-low)",
-    "medium": "var(--z-medium)",
-    "high": "var(--z-high)",
-    "above-modal": "var(--z-above-modal)"
-  },
-  "transition": {
-    "duration": {
-      "instant": "var(--transition-duration-instant)",
-      "fast": "var(--transition-duration-fast)",
-      "normal": "var(--transition-duration-normal)",
-      "moderate": "var(--transition-duration-moderate)",
-      "slow": "var(--transition-duration-slow)",
-      "deliberate": "var(--transition-duration-deliberate)"
+      danger: {
+        primary: "var(--color-action-danger-primary)",
+        secondary: "var(--color-action-danger-secondary)",
+        tertiary: "var(--color-action-danger-tertiary)",
+        text: "var(--color-action-danger-text)",
+      },
     },
-    "easing": {
-      "linear": "var(--transition-easing-linear)",
-      "in": "var(--transition-easing-in)",
-      "out": "var(--transition-easing-out)",
+  },
+  spacing: {
+    xs: "var(--spacing-xs)",
+    sm: "var(--spacing-sm)",
+    md: "var(--spacing-md)",
+    lg: "var(--spacing-lg)",
+    xl: "var(--spacing-xl)",
+  },
+  text: {
+    xxs: "var(--text-xxs)",
+    xs: "var(--text-xs)",
+    sm: "var(--text-sm)",
+    md: "var(--text-md)",
+    lg: "var(--text-lg)",
+    xl: "var(--text-xl)",
+    xxl: "var(--text-xxl)",
+  },
+  fontFamily: {
+    sans: "var(--font-sans)",
+    mono: "var(--font-mono)",
+  },
+  z: {
+    default: "var(--z-default)",
+    low: "var(--z-low)",
+    medium: "var(--z-medium)",
+    high: "var(--z-high)",
+    "above-modal": "var(--z-above-modal)",
+  },
+  transition: {
+    duration: {
+      instant: "var(--transition-duration-instant)",
+      fast: "var(--transition-duration-fast)",
+      normal: "var(--transition-duration-normal)",
+      moderate: "var(--transition-duration-moderate)",
+      slow: "var(--transition-duration-slow)",
+      deliberate: "var(--transition-duration-deliberate)",
+    },
+    easing: {
+      linear: "var(--transition-easing-linear)",
+      in: "var(--transition-easing-in)",
+      out: "var(--transition-easing-out)",
       "in-out": "var(--transition-easing-in-out)",
-      "spring": "var(--transition-easing-spring)",
-      "sharp": "var(--transition-easing-sharp)"
+      spring: "var(--transition-easing-spring)",
+      sharp: "var(--transition-easing-sharp)",
     },
-    "preset": {
-      "colors": "var(--transition-preset-colors)",
-      "opacity": "var(--transition-preset-opacity)",
-      "transform": "var(--transition-preset-transform)",
-      "shadow": "var(--transition-preset-shadow)",
-      "menu": "var(--transition-preset-menu)",
-      "panel": "var(--transition-preset-panel)",
-      "overlay": "var(--transition-preset-overlay)",
-      "all": "var(--transition-preset-all)"
-    }
-  }
+    preset: {
+      colors: "var(--transition-preset-colors)",
+      opacity: "var(--transition-preset-opacity)",
+      transform: "var(--transition-preset-transform)",
+      shadow: "var(--transition-preset-shadow)",
+      menu: "var(--transition-preset-menu)",
+      panel: "var(--transition-preset-panel)",
+      overlay: "var(--transition-preset-overlay)",
+      all: "var(--transition-preset-all)",
+    },
+  },
 } as const;
