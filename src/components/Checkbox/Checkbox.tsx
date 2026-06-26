@@ -11,7 +11,6 @@ import {
   bgColorClass,
   BorderColor,
   borderColorClass,
-  BrandColor,
   ElementState,
   Radius,
   Size,
@@ -129,14 +128,13 @@ export const Checkbox: FC<CheckboxProps> = ({
       >
         {showIndeterminate ? (
           <RemoveIcon
-            color={BrandColor.Primary}
-            className="absolute inset-0 w-full h-full"
+            // white mark on the brand-colored fill (fixed in both themes)
+            className="absolute inset-0 w-full h-full text-white"
           />
         ) : (
           <CheckIcon
-            color={TextColor.Primary}
             className={clsx(
-              "absolute inset-0 w-full h-full opacity-0 group-data-checked:opacity-100"
+              "absolute inset-0 w-full h-full text-white opacity-0 group-data-checked:opacity-100"
             )}
           />
         )}
