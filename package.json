@@ -35,7 +35,7 @@
     "format": "prettier --write '**/*.{ts,tsx}'",
     "format:check": "prettier --check '**/*.{ts,tsx}'",
     "generate-icons": "tsx utils/generate-icons.ts && prettier --write src/components/Icons/icons.tsx --log-level warn",
-    "generate-tailwind-theme": "tsx utils/generate-color-classes.ts && tsx utils/generate-tailwind-theme.ts",
+    "generate-tailwind-theme": "tsx utils/generate-color-classes.ts && tsx utils/generate-tailwind-theme.ts && tsx utils/generate-css-vars.ts",
     "lint": "eslint src --max-warnings 0",
     "lint:fix": "eslint src --fix",
     "prebuild": "npm run generate-tailwind-theme",
@@ -52,6 +52,7 @@
     "@headlessui/react": "^2.2.9",
     "@tanstack/react-virtual": "^3.13.24",
     "clsx": "^2.1.1",
+    "date-fns-tz": "^3.2.0",
     "lodash.debounce": "^4.0.8",
     "react-datepicker": "^9.1.0",
     "tailwind-merge": "^3.4.0"
