@@ -27,8 +27,10 @@ export enum CardBackground {
   Elevated = "elevated",
 }
 
-export interface CardProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
+export interface CardProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "title"
+> {
   background?: CardBackground;
   border?: boolean;
   className?: string;
