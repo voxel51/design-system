@@ -175,6 +175,55 @@ export const colors = {
         warning: primitives.yellow[300],
         info: primitives.blue[300],
       },
+      overlay: {
+        default: "#00000099",
+        light: "#00000066",
+        heavy: "#000000CC",
+      },
+      focus: {
+        ring: "#FF6D0480",
+      },
+      link: {
+        default: primitives.blue[300],
+        hover: primitives.blue[400],
+        visited: primitives.purple[400],
+      },
+      palette: {
+        1: primitives.orange[500],
+        2: primitives.blue[500],
+        3: primitives.green[500],
+        4: primitives.purple[500],
+        5: primitives.pink[500],
+        6: primitives.yellow[500],
+        7: primitives.teal[500],
+        8: primitives.purple[600],
+        9: primitives.purple[700],
+        10: primitives.red[500],
+        11: primitives.yellow[600],
+        12: primitives.green[600],
+      },
+      skeleton: {
+        base: primitives.neutral[825],
+        shimmer: primitives.neutral[750],
+      },
+      tooltip: {
+        bg: primitives.neutral[800],
+        text: primitives.neutral[25],
+      },
+      code: {
+        bg: primitives.neutral[950],
+        text: primitives.orange[400],
+        border: primitives.neutral[750],
+      },
+      scrollbar: {
+        track: primitives.neutral[925],
+        thumb: primitives.neutral[700],
+        "thumb-hover": primitives.neutral[600],
+      },
+      selection: {
+        bg: "#FF6D044D",
+        text: primitives.neutral[0],
+      },
     },
     action: {
       primary: {
@@ -267,6 +316,55 @@ export const colors = {
         destructive: primitives.red[500],
         warning: primitives.yellow[500],
         info: primitives.blue[500],
+      },
+      overlay: {
+        default: "#00000080",
+        light: "#0000004D",
+        heavy: "#000000B2",
+      },
+      focus: {
+        ring: "#FF6D0480",
+      },
+      link: {
+        default: primitives.blue[500],
+        hover: primitives.blue[600],
+        visited: primitives.purple[600],
+      },
+      palette: {
+        1: primitives.orange[500],
+        2: primitives.blue[500],
+        3: primitives.green[500],
+        4: primitives.purple[500],
+        5: primitives.pink[500],
+        6: primitives.yellow[500],
+        7: primitives.teal[500],
+        8: primitives.purple[600],
+        9: primitives.purple[700],
+        10: primitives.red[500],
+        11: primitives.yellow[600],
+        12: primitives.green[600],
+      },
+      skeleton: {
+        base: primitives.neutral[100],
+        shimmer: primitives.neutral[150],
+      },
+      tooltip: {
+        bg: primitives.neutral[925],
+        text: primitives.neutral[25],
+      },
+      code: {
+        bg: primitives.neutral[75],
+        text: primitives.orange[600],
+        border: primitives.neutral[150],
+      },
+      scrollbar: {
+        track: primitives.neutral[75],
+        thumb: primitives.neutral[200],
+        "thumb-hover": primitives.neutral[250],
+      },
+      selection: {
+        bg: "#FF6D0433",
+        text: primitives.neutral[1000],
       },
     },
     action: {

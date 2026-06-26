@@ -1,6 +1,15 @@
 import * as fs from "fs";
 import {
   ActionColor,
+  CodeColor,
+  FocusColor,
+  LinkColor,
+  OverlayColor,
+  PaletteColor,
+  ScrollbarColor,
+  SelectionColor,
+  SkeletonColor,
+  TooltipColor,
   BackgroundColor,
   bgColorClass,
   BorderColor,
@@ -23,6 +32,15 @@ const allColors = [
   ...Object.values(SemanticColor),
   ...Object.values(StatusColor),
   ...Object.values(TextColor),
+  ...Object.values(OverlayColor),
+  ...Object.values(FocusColor),
+  ...Object.values(LinkColor),
+  ...Object.values(PaletteColor),
+  ...Object.values(SkeletonColor),
+  ...Object.values(TooltipColor),
+  ...Object.values(CodeColor),
+  ...Object.values(ScrollbarColor),
+  ...Object.values(SelectionColor),
 ];
 
 const allBorderColors = Object.values(BorderColor);

@@ -100,6 +100,64 @@ export enum TextColor {
   Decorative = "text-decorative",
 }
 
+export enum OverlayColor {
+  Default = "overlay-default",
+  Light = "overlay-light",
+  Heavy = "overlay-heavy",
+}
+
+export enum FocusColor {
+  Ring = "focus-ring",
+}
+
+export enum LinkColor {
+  Default = "link-default",
+  Hover = "link-hover",
+  Visited = "link-visited",
+}
+
+export enum PaletteColor {
+  P1 = "palette-1",
+  P2 = "palette-2",
+  P3 = "palette-3",
+  P4 = "palette-4",
+  P5 = "palette-5",
+  P6 = "palette-6",
+  P7 = "palette-7",
+  P8 = "palette-8",
+  P9 = "palette-9",
+  P10 = "palette-10",
+  P11 = "palette-11",
+  P12 = "palette-12",
+}
+
+export enum SkeletonColor {
+  Base = "skeleton-base",
+  Shimmer = "skeleton-shimmer",
+}
+
+export enum TooltipColor {
+  Bg = "tooltip-bg",
+  Text = "tooltip-text",
+}
+
+export enum CodeColor {
+  Bg = "code-bg",
+  Text = "code-text",
+  Border = "code-border",
+}
+
+export enum ScrollbarColor {
+  Track = "scrollbar-track",
+  Thumb = "scrollbar-thumb",
+  ThumbHover = "scrollbar-thumb-hover",
+}
+
+export enum SelectionColor {
+  Bg = "selection-bg",
+  Text = "selection-text",
+}
+
 export type Color =
   | ActionColor
   | BackgroundColor
@@ -107,7 +165,16 @@ export type Color =
   | IconColor
   | SemanticColor
   | StatusColor
-  | TextColor;
+  | TextColor
+  | OverlayColor
+  | FocusColor
+  | LinkColor
+  | PaletteColor
+  | SkeletonColor
+  | TooltipColor
+  | CodeColor
+  | ScrollbarColor
+  | SelectionColor;
 
 const textColorMap: Record<Color, string> = {
   [ActionColor.IconDefault]: "text-content-text-secondary",
@@ -178,6 +245,37 @@ const textColorMap: Record<Color, string> = {
   [TextColor.Accent]: "text-content-text-accent",
   [TextColor.Decorative]: "text-content-text-decorative",
   [IconColor.Dark]: "text-content-icon-dark",
+  [OverlayColor.Default]: "text-content-overlay-default",
+  [OverlayColor.Light]: "text-content-overlay-light",
+  [OverlayColor.Heavy]: "text-content-overlay-heavy",
+  [FocusColor.Ring]: "text-content-focus-ring",
+  [LinkColor.Default]: "text-content-link-default",
+  [LinkColor.Hover]: "text-content-link-hover",
+  [LinkColor.Visited]: "text-content-link-visited",
+  [PaletteColor.P1]: "text-content-palette-1",
+  [PaletteColor.P2]: "text-content-palette-2",
+  [PaletteColor.P3]: "text-content-palette-3",
+  [PaletteColor.P4]: "text-content-palette-4",
+  [PaletteColor.P5]: "text-content-palette-5",
+  [PaletteColor.P6]: "text-content-palette-6",
+  [PaletteColor.P7]: "text-content-palette-7",
+  [PaletteColor.P8]: "text-content-palette-8",
+  [PaletteColor.P9]: "text-content-palette-9",
+  [PaletteColor.P10]: "text-content-palette-10",
+  [PaletteColor.P11]: "text-content-palette-11",
+  [PaletteColor.P12]: "text-content-palette-12",
+  [SkeletonColor.Base]: "text-content-skeleton-base",
+  [SkeletonColor.Shimmer]: "text-content-skeleton-shimmer",
+  [TooltipColor.Bg]: "text-content-tooltip-bg",
+  [TooltipColor.Text]: "text-content-tooltip-text",
+  [CodeColor.Bg]: "text-content-code-bg",
+  [CodeColor.Text]: "text-content-code-text",
+  [CodeColor.Border]: "text-content-code-border",
+  [ScrollbarColor.Track]: "text-content-scrollbar-track",
+  [ScrollbarColor.Thumb]: "text-content-scrollbar-thumb",
+  [ScrollbarColor.ThumbHover]: "text-content-scrollbar-thumb-hover",
+  [SelectionColor.Bg]: "text-content-selection-bg",
+  [SelectionColor.Text]: "text-content-selection-text",
 };
 
 const backgroundColorMap: Record<Color, string> = {
@@ -249,6 +347,37 @@ const backgroundColorMap: Record<Color, string> = {
   [TextColor.Accent]: "bg-content-text-accent",
   [TextColor.Decorative]: "bg-content-text-decorative",
   [IconColor.Dark]: "bg-content-icon-dark",
+  [OverlayColor.Default]: "bg-content-overlay-default",
+  [OverlayColor.Light]: "bg-content-overlay-light",
+  [OverlayColor.Heavy]: "bg-content-overlay-heavy",
+  [FocusColor.Ring]: "bg-content-focus-ring",
+  [LinkColor.Default]: "bg-content-link-default",
+  [LinkColor.Hover]: "bg-content-link-hover",
+  [LinkColor.Visited]: "bg-content-link-visited",
+  [PaletteColor.P1]: "bg-content-palette-1",
+  [PaletteColor.P2]: "bg-content-palette-2",
+  [PaletteColor.P3]: "bg-content-palette-3",
+  [PaletteColor.P4]: "bg-content-palette-4",
+  [PaletteColor.P5]: "bg-content-palette-5",
+  [PaletteColor.P6]: "bg-content-palette-6",
+  [PaletteColor.P7]: "bg-content-palette-7",
+  [PaletteColor.P8]: "bg-content-palette-8",
+  [PaletteColor.P9]: "bg-content-palette-9",
+  [PaletteColor.P10]: "bg-content-palette-10",
+  [PaletteColor.P11]: "bg-content-palette-11",
+  [PaletteColor.P12]: "bg-content-palette-12",
+  [SkeletonColor.Base]: "bg-content-skeleton-base",
+  [SkeletonColor.Shimmer]: "bg-content-skeleton-shimmer",
+  [TooltipColor.Bg]: "bg-content-tooltip-bg",
+  [TooltipColor.Text]: "bg-content-tooltip-text",
+  [CodeColor.Bg]: "bg-content-code-bg",
+  [CodeColor.Text]: "bg-content-code-text",
+  [CodeColor.Border]: "bg-content-code-border",
+  [ScrollbarColor.Track]: "bg-content-scrollbar-track",
+  [ScrollbarColor.Thumb]: "bg-content-scrollbar-thumb",
+  [ScrollbarColor.ThumbHover]: "bg-content-scrollbar-thumb-hover",
+  [SelectionColor.Bg]: "bg-content-selection-bg",
+  [SelectionColor.Text]: "bg-content-selection-text",
 };
 
 const borderColorMap: Record<BorderColor, string> = {
