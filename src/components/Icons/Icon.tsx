@@ -4,6 +4,7 @@ import React, { type FC } from "react";
 import { Spinner } from "@/components/Spinner";
 import AIIcon from "@/img/AI.svg?react";
 import AddIcon from "@/img/Add.svg?react";
+import AnnotateIcon from "@/img/Annotate.svg?react";
 import ArrowDownIcon from "@/img/ArrowDown.svg?react";
 import ArrowLeftIcon from "@/img/ArrowLeft.svg?react";
 import ArrowRightIcon from "@/img/ArrowRight.svg?react";
@@ -58,6 +59,7 @@ import RadioIcon from "@/img/Radio.svg?react";
 import RedoIcon from "@/img/Redo.svg?react";
 import RefreshIcon from "@/img/Refresh.svg?react";
 import RemoveIcon from "@/img/Remove.svg?react";
+import ReviewIcon from "@/img/Review.svg?react";
 import SearchIcon from "@/img/Search.svg?react";
 import SettingsIcon from "@/img/Settings.svg?react";
 import SliderIcon from "@/img/Slider.svg?react";
@@ -91,6 +93,7 @@ export const iconMap: Record<
 > = {
   [IconName.Add]: AddIcon,
   [IconName.AI]: AIIcon,
+  [IconName.Annotate]: AnnotateIcon,
   [IconName.ArrowDown]: ArrowDownIcon,
   [IconName.ArrowLeft]: ArrowLeftIcon,
   [IconName.ArrowRight]: ArrowRightIcon,
@@ -145,6 +148,7 @@ export const iconMap: Record<
   [IconName.Redo]: RedoIcon,
   [IconName.Refresh]: RefreshIcon,
   [IconName.Remove]: RemoveIcon,
+  [IconName.Review]: ReviewIcon,
   [IconName.Search]: SearchIcon,
   [IconName.Settings]: SettingsIcon,
   [IconName.Slider]: SliderIcon,
