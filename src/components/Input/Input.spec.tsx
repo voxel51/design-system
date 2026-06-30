@@ -107,21 +107,21 @@ describe("Input", () => {
     expect(input.type).toBe("email");
   });
 
-  // The error state is surfaced via the border color (Headless UI's Input does
-  // not pass through `aria-invalid` in this version), so assert on that class.
+  // The error state is surfaced via `aria-invalid` (set on the DOM node directly,
+  // since Headless UI's Input doesn't forward the prop) plus the error border color.
   describe("error prop", () => {
-    it("renders the error border when error is true", () => {
+    it("marks the input invalid when error is true", () => {
       render(<Input error data-testid="input" />);
-      expect(screen.getByTestId("input").className).toContain(
-        "border-content-border-error"
-      );
+      const input = screen.getByTestId("input");
+      expect(input).toHaveAttribute("aria-invalid", "true");
+      expect(input.className).toContain("border-content-border-error");
     });
 
-    it("renders the default border by default", () => {
+    it("is not marked invalid by default", () => {
       render(<Input data-testid="input" />);
       const input = screen.getByTestId("input");
+      expect(input).not.toHaveAttribute("aria-invalid");
       expect(input.className).toContain("border-content-border-default");
-      expect(input.className).not.toContain("border-content-border-error");
     });
   });
 
@@ -134,9 +134,7 @@ describe("Input", () => {
 
     it("does not flag an empty email", () => {
       render(<Input type={InputType.Email} data-testid="input" />);
-      expect(screen.getByTestId("input").className).toContain(
-        "border-content-border-default"
-      );
+      expect(screen.getByTestId("input")).not.toHaveAttribute("aria-invalid");
     });
 
     it("flags a malformed email typed into an uncontrolled input", async () => {
@@ -145,6 +143,7 @@ describe("Input", () => {
 
       await user.type(input, "not-an-email");
 
+      expect(input).toHaveAttribute("aria-invalid", "true");
       expect(input.className).toContain("border-content-border-error");
     });
 
@@ -154,8 +153,8 @@ describe("Input", () => {
 
       await user.type(input, "user@example.com");
 
+      expect(input).not.toHaveAttribute("aria-invalid");
       expect(input.className).toContain("border-content-border-default");
-      expect(input.className).not.toContain("border-content-border-error");
     });
 
     it("validates a controlled value", () => {
@@ -167,8 +166,9 @@ describe("Input", () => {
           data-testid="input"
         />
       );
-      expect(screen.getByTestId("input").className).toContain(
-        "border-content-border-error"
+      expect(screen.getByTestId("input")).toHaveAttribute(
+        "aria-invalid",
+        "true"
       );
     });
 
@@ -178,7 +178,7 @@ describe("Input", () => {
 
       await user.type(input, "not-an-email");
 
-      expect(input.className).toContain("border-content-border-default");
+      expect(input).not.toHaveAttribute("aria-invalid");
     });
   });
 
