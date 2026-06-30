@@ -106,4 +106,139 @@ describe("Input", () => {
     expect(input.name).toBe("username");
     expect(input.type).toBe("email");
   });
+
+  // The error state is surfaced via the border color (Headless UI's Input does
+  // not pass through `aria-invalid` in this version), so assert on that class.
+  describe("error prop", () => {
+    it("renders the error border when error is true", () => {
+      render(<Input error data-testid="input" />);
+      expect(screen.getByTestId("input").className).toContain(
+        "border-content-border-error"
+      );
+    });
+
+    it("renders the default border by default", () => {
+      render(<Input data-testid="input" />);
+      const input = screen.getByTestId("input");
+      expect(input.className).toContain("border-content-border-default");
+      expect(input.className).not.toContain("border-content-border-error");
+    });
+  });
+
+  describe("email validation", () => {
+    let user: UserEvent;
+
+    beforeEach(() => {
+      user = userEvent.setup();
+    });
+
+    it("does not flag an empty email", () => {
+      render(<Input type={InputType.Email} data-testid="input" />);
+      expect(screen.getByTestId("input").className).toContain(
+        "border-content-border-default"
+      );
+    });
+
+    it("flags a malformed email typed into an uncontrolled input", async () => {
+      render(<Input type={InputType.Email} data-testid="input" />);
+      const input = screen.getByTestId("input");
+
+      await user.type(input, "not-an-email");
+
+      expect(input.className).toContain("border-content-border-error");
+    });
+
+    it("clears the error once the email is valid", async () => {
+      render(<Input type={InputType.Email} data-testid="input" />);
+      const input = screen.getByTestId("input");
+
+      await user.type(input, "user@example.com");
+
+      expect(input.className).toContain("border-content-border-default");
+      expect(input.className).not.toContain("border-content-border-error");
+    });
+
+    it("validates a controlled value", () => {
+      render(
+        <Input
+          type={InputType.Email}
+          value="bad"
+          readOnly
+          data-testid="input"
+        />
+      );
+      expect(screen.getByTestId("input").className).toContain(
+        "border-content-border-error"
+      );
+    });
+
+    it("does not flag other input types", async () => {
+      render(<Input type={InputType.Text} data-testid="input" />);
+      const input = screen.getByTestId("input");
+
+      await user.type(input, "not-an-email");
+
+      expect(input.className).toContain("border-content-border-default");
+    });
+  });
+
+  describe("tel input", () => {
+    let user: UserEvent;
+
+    beforeEach(() => {
+      user = userEvent.setup();
+    });
+
+    it("blocks non-numeric characters", async () => {
+      render(<Input type={InputType.Tel} data-testid="input" />);
+      const input = screen.getByTestId("input") as HTMLInputElement;
+
+      await user.type(input, "1a2b3");
+
+      expect(input.value).toBe("123");
+    });
+
+    it("allows common phone formatting characters", async () => {
+      render(<Input type={InputType.Tel} data-testid="input" />);
+      const input = screen.getByTestId("input") as HTMLInputElement;
+
+      await user.type(input, "+1 (555) 123-4567");
+
+      expect(input.value).toBe("+1 (555) 123-4567");
+    });
+  });
+
+  describe("password toggle", () => {
+    let user: UserEvent;
+
+    beforeEach(() => {
+      user = userEvent.setup();
+    });
+
+    it("toggles the rendered type between password and text", async () => {
+      const { container } = render(<Input type={InputType.Password} />);
+      const input = container.querySelector("input") as HTMLInputElement;
+      expect(input.type).toBe("password");
+
+      await user.click(screen.getByRole("button", { name: /show password/i }));
+      expect(input.type).toBe("text");
+
+      await user.click(screen.getByRole("button", { name: /hide password/i }));
+      expect(input.type).toBe("password");
+    });
+
+    it("does not render a toggle for non-password inputs", () => {
+      render(<Input type={InputType.Text} />);
+      expect(screen.queryByRole("button")).not.toBeInTheDocument();
+    });
+  });
+
+  describe("number input", () => {
+    it("renders type=number and hides the native spinners", () => {
+      render(<Input type={InputType.Number} data-testid="input" />);
+      const input = screen.getByTestId("input") as HTMLInputElement;
+      expect(input.type).toBe("number");
+      expect(input.className).toContain("appearance-none");
+    });
+  });
 });
