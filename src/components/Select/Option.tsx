@@ -32,12 +32,7 @@ export interface OptionProps extends HTMLAttributes<HTMLDivElement> {
  *
  * @internal For use by {@link Select}.
  */
-export const Option: FC<OptionProps> = ({
-  children,
-  selected,
-  value,
-  ...props
-}) => (
+export const Option: FC<OptionProps> = ({ children, selected, value, ...props }) => (
   <ComboboxOption value={value} {...props}>
     <div
       className={clsx(
@@ -47,9 +42,9 @@ export const Option: FC<OptionProps> = ({
         radiusStyles(Radius.Sm),
         cn(
           bgColorClass(BackgroundColor.Card1),
-          selected && bgColorClass(BackgroundColor.CardElevated)
+          selected && bgColorClass(BackgroundColor.Selected)
         ),
-        bgColorClass(BackgroundColor.Card2, ElementState.Hover)
+        bgColorClass(BackgroundColor.CardElevated, ElementState.Hover)
       )}
     >
       <Text>{children}</Text>
