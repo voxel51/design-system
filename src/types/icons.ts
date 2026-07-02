@@ -1,6 +1,7 @@
 export enum IconName {
   Add = "Add",
   AI = "AI",
+  Annotate = "Annotate",
   ArrowDown = "ArrowDown",
   ArrowLeft = "ArrowLeft",
   ArrowRight = "ArrowRight",
@@ -55,6 +56,7 @@ export enum IconName {
   Redo = "Redo",
   Refresh = "Refresh",
   Remove = "Remove",
+  Review = "Review",
   Search = "Search",
   Settings = "Settings",
   Slider = "Slider",
