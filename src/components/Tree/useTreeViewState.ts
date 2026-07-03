@@ -21,7 +21,7 @@ export interface UseTreeViewStateOptions {
   value?: TreePath | readonly TreePath[];
   onChange?: ((p: TreePath | null) => void) | ((p: TreePath[]) => void);
   onEscape?: () => void;
-  onAfterSelect?: () => void;
+  onAfterSelect?: (internalPath: string) => void;
   /**
    * When provided, the hook treats query as controlled and skips
    * internal query state. The consumer must also provide `onQueryChange`.
@@ -52,7 +52,7 @@ export interface UseTreeViewStateReturn {
  * - `useTree` wiring
  *
  * Consumed by both `TreeSelect` and `TreeView`. Each consumer composes
- * its own chrome around the returned `tree` and query state.
+ * its own UI around the returned `tree` and query state.
  *
  * @internal
  */
@@ -164,7 +164,7 @@ export function useTreeViewState(
           | undefined;
         singleOnChange?.(fromInternalPath(selected));
       }
-      onAfterSelect?.();
+      onAfterSelect?.(selected);
     },
     [multiSelect, selection, onChange, onAfterSelect, setQuery]
   );
