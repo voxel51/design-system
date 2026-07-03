@@ -260,11 +260,10 @@ export const Select: FC<SelectProps> = ({
         </div>
 
         <ComboboxOptions
-          anchor={anchor}
+          anchor={{ to: anchor, gap: 2 }}
           portal={portal}
           style={triggerWidth ? { width: triggerWidth } : undefined}
           className={clsx(
-            "mt-1",
             "p-1",
             "border",
             borderColorClass(BorderColor.Default),
