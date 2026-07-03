@@ -60,10 +60,14 @@ export interface ResolvedNode {
   setsize: number;
 }
 
+// ---------------------------------------------------------------------------
+// Shared prop mixins
+// ---------------------------------------------------------------------------
+
 /**
- * Props shared by single-select and multi-select modes.
+ * Data-layer props shared by all tree consumers (`TreeSelect` and `TreeView`).
  */
-interface TreeSelectBaseProps extends Omit<
+export interface TreeDataProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   "onChange"
 > {
@@ -75,6 +79,32 @@ interface TreeSelectBaseProps extends Omit<
    * @default false
    */
   leavesOnly?: boolean;
+  /**
+   * Fetches children for a lazy branch (a node whose `values` is an empty
+   * array). Called exactly once per lazy branch on first user-initiated
+   * expand. Receives a {@link TreePath} of raw node names.
+   * The returned children are spliced into the tree and cached for
+   * the lifetime of `root`. Errors set the branch to an "error" state with
+   * an inline retry control.
+   */
+  loadChildren?: (path: TreePath) => Promise<TreeNode[]>;
+  /**
+   * Branches to expand when the component first renders (or when the
+   * TreeSelect panel first opens). These paths are user-collapsible and
+   * restored on panel re-open (TreeSelect) or component remount (TreeView).
+   *
+   * - `TreePath[]` — explicit branch paths (each a {@link TreePath} of
+   *   raw node names) to start expanded.
+   * - `true` — expand every branch in the tree.
+   * - `false` / `undefined` — expand nothing (default).
+   */
+  defaultExpanded?: readonly TreePath[] | boolean;
+}
+
+/**
+ * UI props specific to TreeSelect (trigger + floating panel).
+ */
+interface TreeSelectUIProps {
   /** If `true`, the entire component is disabled. */
   disabled?: boolean;
   /** Placeholder text shown in the input when no value is selected. */
@@ -104,33 +134,15 @@ interface TreeSelectBaseProps extends Omit<
    * When omitted, the node name is shown (e.g. `"Civic"`).
    */
   displayValue?: (path: TreePath, node: TreeNode) => string;
-  /**
-   * Fetches children for a lazy branch (a node whose `values` is an empty
-   * array). Called exactly once per lazy branch on first user-initiated
-   * expand. Receives a {@link TreePath} of raw node names.
-   * The returned children are spliced into the tree and cached for
-   * the lifetime of `root`. Errors set the branch to an "error" state with
-   * an inline retry control.
-   */
-  loadChildren?: (path: TreePath) => Promise<TreeNode[]>;
-  /**
-   * Branches to expand when the panel first opens. Unlike `forceOpenPaths`
-   * (which prevents collapsing), these paths are user-collapsible and
-   * restored on panel re-open.
-   *
-   * - `TreePath[]` — explicit branch paths (each a {@link TreePath} of
-   *   raw node names) to start expanded.
-   * - `true` — expand every branch in the tree.
-   * - `false` / `undefined` — expand nothing (default).
-   */
-  defaultExpanded?: readonly TreePath[] | boolean;
 }
 
-/**
- * Single-select mode (default). `value` is a {@link TreePath} and
- * `onChange` fires with the selected path or `null` on clear.
- */
-interface TreeSelectSingleProps extends TreeSelectBaseProps {
+interface TreeSelectBaseProps extends TreeDataProps, TreeSelectUIProps {}
+
+// ---------------------------------------------------------------------------
+// Selection mixins
+// ---------------------------------------------------------------------------
+
+interface TreeSingleSelection {
   multiSelect?: false;
   /**
    * Currently selected node path as a {@link TreePath} — an ordered array
@@ -144,11 +156,7 @@ interface TreeSelectSingleProps extends TreeSelectBaseProps {
   onChange?: (path: TreePath | null) => void;
 }
 
-/**
- * Multi-select mode. `value` is an array of {@link TreePath} entries and
- * `onChange` fires with the full updated array on every toggle.
- */
-interface TreeSelectMultiProps extends TreeSelectBaseProps {
+interface TreeMultiSelection {
   multiSelect: true;
   /**
    * Currently selected node paths. Each entry is a {@link TreePath} —
@@ -162,6 +170,10 @@ interface TreeSelectMultiProps extends TreeSelectBaseProps {
   onChange?: (paths: TreePath[]) => void;
 }
 
+// ---------------------------------------------------------------------------
+// TreeSelect props
+// ---------------------------------------------------------------------------
+
 /**
  * Props for {@link TreeSelect}.
  *
@@ -169,4 +181,67 @@ interface TreeSelectMultiProps extends TreeSelectBaseProps {
  * - `multiSelect?: false` (default) — single-select; `value` is `TreePath`, `onChange` fires `TreePath | null`.
  * - `multiSelect: true` — multi-select; `value` is `readonly TreePath[]`, `onChange` fires `TreePath[]`.
  */
-export type TreeSelectProps = TreeSelectSingleProps | TreeSelectMultiProps;
+export type TreeSelectProps =
+  | (TreeSelectBaseProps & TreeSingleSelection)
+  | (TreeSelectBaseProps & TreeMultiSelection);
+
+// ---------------------------------------------------------------------------
+// TreeView props
+// ---------------------------------------------------------------------------
+
+interface TreeViewSharedProps extends TreeDataProps {
+  /** Show the built-in search input. @default true */
+  showSearch?: boolean;
+  /**
+   * Controlled search query. When provided, `onQueryChange` is required
+   * and the built-in search input is hidden — the consumer renders their
+   * own search UI.
+   */
+  query?: string;
+  /** Required when `query` is controlled. */
+  onQueryChange?: (q: string) => void;
+  maxHeight?: string;
+  className?: string;
+}
+
+/**
+ * Navigation mode (default). `onChange` fires per leaf click; no value is
+ * tracked, no checkboxes, no "selected" highlight. Clicking a branch
+ * toggles its expansion.
+ */
+interface TreeViewNavigateProps extends TreeViewSharedProps {
+  selectable?: false;
+  multiSelect?: never;
+  value?: never;
+  /** Fires when the user clicks a selectable node. */
+  onChange?: (path: TreePath) => void;
+}
+
+/** Single-select mode. */
+interface TreeViewSingleSelectProps extends TreeViewSharedProps {
+  selectable: true;
+  multiSelect?: false;
+  value?: TreePath;
+  onChange?: (path: TreePath | null) => void;
+}
+
+/** Multi-select mode. */
+interface TreeViewMultiSelectProps extends TreeViewSharedProps {
+  selectable: true;
+  multiSelect: true;
+  value?: readonly TreePath[];
+  onChange?: (paths: TreePath[]) => void;
+}
+
+/**
+ * Props for {@link TreeView}.
+ *
+ * Discriminated on `selectable` and `multiSelect`:
+ * - `selectable?: false` (default) — navigation mode; `onChange` fires `TreePath` per click, no selection state tracked.
+ * - `selectable: true, multiSelect?: false` — single-select; `value` is `TreePath`, `onChange` fires `TreePath | null`.
+ * - `selectable: true, multiSelect: true` — multi-select; `value` is `readonly TreePath[]`, `onChange` fires `TreePath[]`.
+ */
+export type TreeViewProps =
+  | TreeViewNavigateProps
+  | TreeViewSingleSelectProps
+  | TreeViewMultiSelectProps;
