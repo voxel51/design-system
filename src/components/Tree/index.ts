@@ -1,3 +1,9 @@
 export { TreeSelect } from "./TreeSelect";
-export type { TreeNode, TreePath, TreeSelectProps } from "./types";
+export { TreeView } from "./TreeView";
+export type {
+  TreeNode,
+  TreePath,
+  TreeSelectProps,
+  TreeViewProps,
+} from "./types";
 export { formatBreadcrumb, getNodeByPath } from "./tree";
