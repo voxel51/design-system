@@ -32,7 +32,12 @@ export interface OptionProps extends HTMLAttributes<HTMLDivElement> {
  *
  * @internal For use by {@link Select}.
  */
-export const Option: FC<OptionProps> = ({ children, selected, value, ...props }) => (
+export const Option: FC<OptionProps> = ({
+  children,
+  selected,
+  value,
+  ...props
+}) => (
   <ComboboxOption value={value} {...props}>
     <div
       className={clsx(

@@ -97,9 +97,9 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
     radiusStyles(Radius.Sm),
     "cursor-pointer",
     bgColorClass(BackgroundColor.Card1),
-    isSelected && bgColorClass(BackgroundColor.CardElevated),
-    bgColorClass(BackgroundColor.Card2, ElementState.Hover),
-    bgColorClass(BackgroundColor.Card2, ElementState.Active)
+    isSelected && bgColorClass(BackgroundColor.Selected),
+    bgColorClass(BackgroundColor.CardElevated, ElementState.Hover),
+    bgColorClass(BackgroundColor.CardElevated, ElementState.Active)
   );
 
   const chevronButton = (
