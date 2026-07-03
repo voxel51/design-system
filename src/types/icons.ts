@@ -73,6 +73,16 @@ export enum IconName {
   VAL = "VAL",
   Warning = "Warning",
   Workspaces = "Workspaces",
+  // Settings-sidebar icons (from lucide)
+  Cloud = "Cloud",
+  IdCard = "IdCard",
+  Key = "Key",
+  Puzzle = "Puzzle",
+  Server = "Server",
+  ShieldCheck = "ShieldCheck",
+  User = "User",
+  Users = "Users",
+  UsersRound = "UsersRound",
 }
 
 export default IconName;

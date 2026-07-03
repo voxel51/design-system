@@ -75,6 +75,15 @@ import UploadIcon from "@/img/Upload.svg?react";
 import VALIcon from "@/img/VAL.svg?react";
 import WarningIcon from "@/img/Warning.svg?react";
 import WorkspacesIcon from "@/img/Workspaces.svg?react";
+import CloudIcon from "@/img/Cloud.svg?react";
+import IdCardIcon from "@/img/IdCard.svg?react";
+import KeyIcon from "@/img/Key.svg?react";
+import PuzzleIcon from "@/img/Puzzle.svg?react";
+import ServerIcon from "@/img/Server.svg?react";
+import ShieldCheckIcon from "@/img/ShieldCheck.svg?react";
+import UserIcon from "@/img/User.svg?react";
+import UsersIcon from "@/img/Users.svg?react";
+import UsersRoundIcon from "@/img/UsersRound.svg?react";
 import { BrandColor, IconColor, TextColor, textColorClass } from "@/types";
 import { IconName } from "@/types/icons";
 import { Size } from "@/types/size";
@@ -164,6 +173,15 @@ export const iconMap: Record<
   [IconName.VAL]: VALIcon,
   [IconName.Warning]: WarningIcon,
   [IconName.Workspaces]: WorkspacesIcon,
+  [IconName.Cloud]: CloudIcon,
+  [IconName.IdCard]: IdCardIcon,
+  [IconName.Key]: KeyIcon,
+  [IconName.Puzzle]: PuzzleIcon,
+  [IconName.Server]: ServerIcon,
+  [IconName.ShieldCheck]: ShieldCheckIcon,
+  [IconName.User]: UserIcon,
+  [IconName.Users]: UsersIcon,
+  [IconName.UsersRound]: UsersRoundIcon,
 };
 
 type IconSize = Exclude<Size, "Xs">;
