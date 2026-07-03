@@ -5,7 +5,7 @@ import { Stack } from "@/components/Stack";
 import { Text } from "@/components/Text";
 import { Justify, TextColor, TextVariant } from "@/types";
 import { cn } from "@/util/classes";
-import type { UseTreeReturn } from "@/util/useTree";
+import type { UseTreeReturn } from "./useTree";
 
 import { TreeItem } from "./TreeItem";
 import { TreeSearchInput } from "./TreeSearchInput";

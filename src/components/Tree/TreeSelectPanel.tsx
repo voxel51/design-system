@@ -20,7 +20,7 @@ import {
   zIndexStyles,
 } from "@/types";
 import { cn } from "@/util/classes";
-import type { UseTreeReturn } from "@/util/useTree";
+import type { UseTreeReturn } from "./useTree";
 
 import { TreeBody } from "./TreeBody";
 

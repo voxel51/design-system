@@ -141,12 +141,19 @@ export interface UseTreeReturn {
 }
 
 /**
- * Headless hook that manages tree state: expansion, active (keyboard) path,
- * keyboard navigation per WAI-ARIA treeview semantics, ARIA prop generation,
- * and scroll-into-view. Owns no rendering or styling.
+ * **UI mechanics layer** — sits below {@link useTreeViewState} in the stack.
  *
- * Designed to be consumed by `TreeSelect` and `TreeItem` but generic
- * enough for any component that renders a tree of `ResolvedNode`s.
+ * Headless hook that manages pure interaction state: which branches are
+ * expanded, which node has the keyboard cursor (`activePath`), keyboard
+ * navigation per WAI-ARIA treeview semantics, ARIA prop generation, and
+ * scroll-into-view. Owns no data fetching, search, filtering, or selection
+ * values — it operates on a pre-resolved, pre-filtered `ResolvedNode` tree
+ * that the caller is responsible for producing.
+ *
+ * {@link useTreeViewState} calls this hook after handling search, debouncing,
+ * async `loadChildren`, and selection bookkeeping. Neither `TreeSelect` nor
+ * `TreeView` calls `useTree` directly — they receive its return value via
+ * `state.tree` from `useTreeViewState`.
  */
 export function useTree(options: UseTreeOptions): UseTreeReturn {
   const {

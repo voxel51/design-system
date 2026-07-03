@@ -1,7 +1,7 @@
 import { type RefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useDebouncedCallback } from "@/util/useDebouncedCallback";
-import { type UseTreeReturn, useTree } from "@/util/useTree";
+import { type UseTreeReturn, useTree } from "./useTree";
 
 import {
   buildResolvedTree,
@@ -44,15 +44,18 @@ export interface UseTreeViewStateReturn {
 }
 
 /**
+ * **Data layer** — sits above {@link useTree} in the stack.
+ *
  * Shared data-layer hook for tree components. Manages:
  * - Search query (internal or controlled) + 200ms debounce
  * - Async `loadChildren` with loading/error state and retry
  * - `buildResolvedTree` / `filterTreeForQuery` memoization
  * - Selection logic (single/multi) with `toInternalPath` encoding
- * - `useTree` wiring
+ * - Wiring into {@link useTree} (the UI mechanics layer below)
  *
  * Consumed by both `TreeSelect` and `TreeView`. Each consumer composes
- * its own UI around the returned `tree` and query state.
+ * its own UI around the returned `tree` and query state. Neither component
+ * calls `useTree` directly — they receive its return value via `state.tree`.
  *
  * @internal
  */
