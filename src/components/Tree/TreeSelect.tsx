@@ -157,7 +157,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
       window.requestAnimationFrame(() => state.searchInputRef.current?.focus());
       const singleValue = multiSelect ? undefined : value;
       const singleInternal = singleValue?.length
-        ? toInternalPath(singleValue as TreePath)
+        ? toInternalPath(singleValue)
         : undefined;
       const initial =
         singleInternal &&
@@ -200,21 +200,23 @@ export const TreeSelect: FC<TreeSelectProps> = ({
 
   const hasValue = !!value?.length;
 
+  // Narrow value to its concrete type for each mode. TypeScript loses the
+  // discriminated-union narrowing after destructuring, so we re-assert here.
+  const multiValue = value as readonly TreePath[] | undefined;
+  const singleValue = value as TreePath | undefined;
+
   const removeOne = useCallback(
     (pathToRemove: string) => {
       if (!multiSelect) return;
       const multiOnChange = onChange as
         | ((paths: TreePath[]) => void)
         | undefined;
-      const currentValue = value as readonly TreePath[] | undefined;
-      const currentInternal = currentValue?.map(toInternalPath) ?? [];
+      const currentInternal = multiValue?.map(toInternalPath) ?? [];
       multiOnChange?.(
-        currentInternal
-          .filter((p) => p !== pathToRemove)
-          .map(fromInternalPath)
+        currentInternal.filter((p) => p !== pathToRemove).map(fromInternalPath)
       );
     },
-    [multiSelect, value, onChange]
+    [multiSelect, multiValue, onChange]
   );
 
   const panelId = state.tree.rowId("panel");
@@ -225,9 +227,9 @@ export const TreeSelect: FC<TreeSelectProps> = ({
         multiSelect={multiSelect}
         value={
           multiSelect
-            ? (value as readonly TreePath[] | undefined)?.map(toInternalPath)
-            : (value as TreePath | undefined)?.length
-              ? toInternalPath(value as TreePath)
+            ? multiValue?.map(toInternalPath)
+            : singleValue?.length
+              ? toInternalPath(singleValue)
               : undefined
         }
         disabled={disabled}

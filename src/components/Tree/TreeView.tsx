@@ -56,9 +56,7 @@ export const TreeView: FC<TreeViewProps> = (props) => {
   const handleNavigate = useCallback(
     (internalPath: string) => {
       if (isSelectable) return;
-      const onChange = props.onChange as
-        | ((p: TreePath) => void)
-        | undefined;
+      const onChange = props.onChange as ((p: TreePath) => void) | undefined;
       onChange?.(fromInternalPath(internalPath));
     },
     [isSelectable, props.onChange]
@@ -66,9 +64,7 @@ export const TreeView: FC<TreeViewProps> = (props) => {
 
   const state = useTreeViewState({
     root,
-    value: isSelectable
-      ? (props.value as TreePath | readonly TreePath[] | undefined)
-      : undefined,
+    value: isSelectable ? props.value : undefined,
     onChange: isSelectable
       ? (props.onChange as
           | ((p: TreePath | null) => void)

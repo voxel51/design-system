@@ -45,9 +45,7 @@ beforeAll(() => {
           {
             target,
             contentRect: rect,
-            borderBoxSize: [
-              { inlineSize: rect.width, blockSize: rect.height },
-            ],
+            borderBoxSize: [{ inlineSize: rect.width, blockSize: rect.height }],
             contentBoxSize: [
               { inlineSize: rect.width, blockSize: rect.height },
             ],
@@ -230,7 +228,9 @@ describe("TreeView", () => {
       renderTreeView();
 
       await user.click(screen.getByText("motorcycle"));
-      const motorcycleItem = screen.getByText("motorcycle").closest("[role='treeitem']");
+      const motorcycleItem = screen
+        .getByText("motorcycle")
+        .closest("[role='treeitem']");
       expect(motorcycleItem).not.toHaveAttribute("aria-selected", "true");
     });
   });
@@ -334,7 +334,7 @@ describe("TreeView", () => {
   });
 
   describe("keyboard navigation", () => {
-    it("supports arrow-down navigation with search visible", async () => {
+    it("supports arrow-down navigation with search visible", () => {
       renderTreeView();
 
       const searchInput = screen.getByRole("textbox", { name: "Search tree" });
@@ -397,6 +397,7 @@ describe("TreeView", () => {
       expect(loadChildren).toHaveBeenCalledTimes(1);
       expect(loadChildren).toHaveBeenCalledWith(["root", "lazy_branch"]);
 
+      // eslint-disable-next-line @typescript-eslint/require-await
       await React.act(async () => {
         resolveLoad!([{ name: "child_a" }, { name: "child_b" }]);
       });

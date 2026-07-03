@@ -1,7 +1,13 @@
-import { type RefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  type RefObject,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import { useDebouncedCallback } from "@/util/useDebouncedCallback";
-import { type UseTreeReturn, useTree } from "./useTree";
 
 import {
   buildResolvedTree,
@@ -11,6 +17,7 @@ import {
   toInternalPath,
 } from "./tree";
 import type { TreeNode, TreePath } from "./types";
+import { type UseTreeReturn, useTree } from "./useTree";
 
 export interface UseTreeViewStateOptions {
   root: TreeNode;

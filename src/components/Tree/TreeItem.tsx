@@ -22,9 +22,9 @@ import {
   textColorClass,
 } from "@/types";
 import { cn } from "@/util/classes";
-import type { UseTreeReturn } from "./useTree";
 
 import type { ResolvedNode } from "./types";
+import type { UseTreeReturn } from "./useTree";
 
 const DEPTH_INDENT = "var(--spacing-md)";
 
