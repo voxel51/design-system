@@ -20,6 +20,7 @@ import ChevronRightIcon from "@/img/ChevronRight.svg?react";
 import ChevronTopIcon from "@/img/ChevronTop.svg?react";
 import CircleIcon from "@/img/Circle.svg?react";
 import CloseIcon from "@/img/Close.svg?react";
+import CloudIcon from "@/img/Cloud.svg?react";
 import CodeIcon from "@/img/Code.svg?react";
 import ContentCopyIcon from "@/img/ContentCopy.svg?react";
 import DateRangeIcon from "@/img/DateRange.svg?react";
@@ -38,11 +39,13 @@ import FineTuneIcon from "@/img/FineTune.svg?react";
 import FullscreenIcon from "@/img/Fullscreen.svg?react";
 import GridViewIcon from "@/img/GridView.svg?react";
 import HistoryIcon from "@/img/History.svg?react";
+import IdCardIcon from "@/img/IdCard.svg?react";
 import ImageSearchIcon from "@/img/ImageSearch.svg?react";
 import InfoIcon from "@/img/Info.svg?react";
 import InsightsIcon from "@/img/Insights.svg?react";
 import InspectIcon from "@/img/Inspect.svg?react";
 import JSONIcon from "@/img/JSON.svg?react";
+import KeyIcon from "@/img/Key.svg?react";
 import LabelIcon from "@/img/Label.svg?react";
 import LockIcon from "@/img/Lock.svg?react";
 import LogsIcon from "@/img/Logs.svg?react";
@@ -55,13 +58,16 @@ import OrchestratorIcon from "@/img/Orchestrator.svg?react";
 import PencilIcon from "@/img/Pencil.svg?react";
 import PinIcon from "@/img/Pin.svg?react";
 import PolylineIcon from "@/img/Polyline.svg?react";
+import PuzzleIcon from "@/img/Puzzle.svg?react";
 import RadioIcon from "@/img/Radio.svg?react";
 import RedoIcon from "@/img/Redo.svg?react";
 import RefreshIcon from "@/img/Refresh.svg?react";
 import RemoveIcon from "@/img/Remove.svg?react";
 import ReviewIcon from "@/img/Review.svg?react";
 import SearchIcon from "@/img/Search.svg?react";
+import ServerIcon from "@/img/Server.svg?react";
 import SettingsIcon from "@/img/Settings.svg?react";
+import ShieldCheckIcon from "@/img/ShieldCheck.svg?react";
 import SliderIcon from "@/img/Slider.svg?react";
 import SlidersIcon from "@/img/Sliders.svg?react";
 import TagIcon from "@/img/Tag.svg?react";
@@ -72,18 +78,12 @@ import UnfoldMoreIcon from "@/img/UnfoldMore.svg?react";
 import UnlockIcon from "@/img/Unlock.svg?react";
 import UnsupportedIcon from "@/img/Unsupported.svg?react";
 import UploadIcon from "@/img/Upload.svg?react";
-import VALIcon from "@/img/VAL.svg?react";
-import WarningIcon from "@/img/Warning.svg?react";
-import WorkspacesIcon from "@/img/Workspaces.svg?react";
-import CloudIcon from "@/img/Cloud.svg?react";
-import IdCardIcon from "@/img/IdCard.svg?react";
-import KeyIcon from "@/img/Key.svg?react";
-import PuzzleIcon from "@/img/Puzzle.svg?react";
-import ServerIcon from "@/img/Server.svg?react";
-import ShieldCheckIcon from "@/img/ShieldCheck.svg?react";
 import UserIcon from "@/img/User.svg?react";
 import UsersIcon from "@/img/Users.svg?react";
 import UsersRoundIcon from "@/img/UsersRound.svg?react";
+import VALIcon from "@/img/VAL.svg?react";
+import WarningIcon from "@/img/Warning.svg?react";
+import WorkspacesIcon from "@/img/Workspaces.svg?react";
 import { BrandColor, IconColor, TextColor, textColorClass } from "@/types";
 import { IconName } from "@/types/icons";
 import { Size } from "@/types/size";
@@ -118,6 +118,7 @@ export const iconMap: Record<
   [IconName.ChevronTop]: ChevronTopIcon,
   [IconName.Circle]: CircleIcon,
   [IconName.Close]: CloseIcon,
+  [IconName.Cloud]: CloudIcon,
   [IconName.Code]: CodeIcon,
   [IconName.ContentCopy]: ContentCopyIcon,
   [IconName.DateRange]: DateRangeIcon,
@@ -136,11 +137,13 @@ export const iconMap: Record<
   [IconName.Fullscreen]: FullscreenIcon,
   [IconName.GridView]: GridViewIcon,
   [IconName.History]: HistoryIcon,
+  [IconName.IdCard]: IdCardIcon,
   [IconName.ImageSearch]: ImageSearchIcon,
   [IconName.Info]: InfoIcon,
   [IconName.Insights]: InsightsIcon,
   [IconName.Inspect]: InspectIcon,
   [IconName.JSON]: JSONIcon,
+  [IconName.Key]: KeyIcon,
   [IconName.Label]: LabelIcon,
   [IconName.Lock]: LockIcon,
   [IconName.Logs]: LogsIcon,
@@ -153,13 +156,16 @@ export const iconMap: Record<
   [IconName.Pencil]: PencilIcon,
   [IconName.Pin]: PinIcon,
   [IconName.Polyline]: PolylineIcon,
+  [IconName.Puzzle]: PuzzleIcon,
   [IconName.Radio]: RadioIcon,
   [IconName.Redo]: RedoIcon,
   [IconName.Refresh]: RefreshIcon,
   [IconName.Remove]: RemoveIcon,
   [IconName.Review]: ReviewIcon,
   [IconName.Search]: SearchIcon,
+  [IconName.Server]: ServerIcon,
   [IconName.Settings]: SettingsIcon,
+  [IconName.ShieldCheck]: ShieldCheckIcon,
   [IconName.Slider]: SliderIcon,
   [IconName.Sliders]: SlidersIcon,
   [IconName.Tag]: TagIcon,
@@ -170,18 +176,12 @@ export const iconMap: Record<
   [IconName.Unlock]: UnlockIcon,
   [IconName.Unsupported]: UnsupportedIcon,
   [IconName.Upload]: UploadIcon,
-  [IconName.VAL]: VALIcon,
-  [IconName.Warning]: WarningIcon,
-  [IconName.Workspaces]: WorkspacesIcon,
-  [IconName.Cloud]: CloudIcon,
-  [IconName.IdCard]: IdCardIcon,
-  [IconName.Key]: KeyIcon,
-  [IconName.Puzzle]: PuzzleIcon,
-  [IconName.Server]: ServerIcon,
-  [IconName.ShieldCheck]: ShieldCheckIcon,
   [IconName.User]: UserIcon,
   [IconName.Users]: UsersIcon,
   [IconName.UsersRound]: UsersRoundIcon,
+  [IconName.VAL]: VALIcon,
+  [IconName.Warning]: WarningIcon,
+  [IconName.Workspaces]: WorkspacesIcon,
 };
 
 type IconSize = Exclude<Size, "Xs">;
