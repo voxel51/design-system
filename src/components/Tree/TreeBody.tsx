@@ -1,5 +1,5 @@
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { type FC, type RefObject, useEffect, useRef } from "react";
+import { type FC, type RefObject, useCallback, useEffect, useRef } from "react";
 
 import { Stack } from "@/components/Stack";
 import { Text } from "@/components/Text";
@@ -69,10 +69,19 @@ export const TreeBody: FC<TreeBodyProps> = ({
 
   const wrapperRef = useRef<HTMLDivElement>(null);
 
+  const handleMouseEnter = useCallback(() => {
+    if (showSearch) {
+      searchInputRef.current?.focus({ preventScroll: true });
+    } else {
+      wrapperRef.current?.focus({ preventScroll: true });
+    }
+  }, [showSearch, searchInputRef]);
+
   return (
     <div
       ref={wrapperRef}
-      className={cn("flex flex-col overflow-hidden", className)}
+      className={cn("flex flex-col overflow-hidden outline-none", className)}
+      onMouseEnter={handleMouseEnter}
       {...(!showSearch && {
         tabIndex: 0,
         onKeyDown: tree.handleKeyDown,
