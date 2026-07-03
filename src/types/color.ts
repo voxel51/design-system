@@ -28,6 +28,7 @@ export enum BackgroundColor {
   CardElevated = "bg-card-elevated",
   Muted = "bg-muted",
   Popover = "bg-popover",
+  Selected = "bg-selected",
   Secondary = "bg-secondary",
 }
 
@@ -128,6 +129,7 @@ const textColorMap: Record<Color, string> = {
   [BackgroundColor.Muted]: "text-content-bg-muted",
   [BackgroundColor.Popover]: "text-content-bg-popover",
   [BackgroundColor.Secondary]: "text-content-bg-secondary",
+  [BackgroundColor.Selected]: "text-content-bg-selected",
   [BackgroundColor.Transparent]: "text-transparent",
 
   [BrandColor.Accent]: "text-brand-accent",
@@ -196,6 +198,7 @@ const backgroundColorMap: Record<Color, string> = {
   [BackgroundColor.Muted]: "bg-content-bg-muted",
   [BackgroundColor.Popover]: "bg-content-bg-popover",
   [BackgroundColor.Secondary]: "bg-content-bg-secondary",
+  [BackgroundColor.Selected]: "bg-content-bg-selected",
 
   [BrandColor.Accent]: "bg-brand-accent",
   [BrandColor.Primary]: "bg-brand-primary",

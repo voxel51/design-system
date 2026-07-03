@@ -47,6 +47,30 @@ describe("ToggleSwitch", () => {
     expect(screen.queryByText("Content 1")).not.toBeInTheDocument();
   });
 
+  it("should render the controlled tab when index is provided", () => {
+    render(<ToggleSwitch tabs={tabs} index={2} />);
+
+    expect(screen.getByText("Content 3")).toBeInTheDocument();
+    expect(screen.queryByText("Content 1")).not.toBeInTheDocument();
+  });
+
+  it("should reflect a controlled index change from the parent", () => {
+    const { rerender } = render(<ToggleSwitch tabs={tabs} index={0} />);
+    expect(screen.getByText("Content 1")).toBeInTheDocument();
+
+    // an external update (not a user click) must move the active tab
+    rerender(<ToggleSwitch tabs={tabs} index={1} />);
+    expect(screen.getByText("Content 2")).toBeInTheDocument();
+    expect(screen.queryByText("Content 1")).not.toBeInTheDocument();
+  });
+
+  it("should let a controlled index override defaultIndex", () => {
+    render(<ToggleSwitch tabs={tabs} defaultIndex={0} index={2} />);
+
+    expect(screen.getByText("Content 3")).toBeInTheDocument();
+    expect(screen.queryByText("Content 1")).not.toBeInTheDocument();
+  });
+
   it("should pass through additional props", () => {
     render(
       <ToggleSwitch

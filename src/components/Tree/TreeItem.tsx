@@ -93,13 +93,13 @@ export const TreeItem: FC<TreeItemViewProps> = ({
 
   const rowClasses = cn(
     "flex-nowrap",
-    "py-1.5",
+    "py-1",
     radiusStyles(Radius.Sm),
     "cursor-pointer",
     bgColorClass(BackgroundColor.Card1),
-    isSelected && bgColorClass(BackgroundColor.CardElevated),
-    bgColorClass(BackgroundColor.Card2, ElementState.Hover),
-    bgColorClass(BackgroundColor.Card2, ElementState.Active)
+    isSelected && bgColorClass(BackgroundColor.Selected),
+    bgColorClass(BackgroundColor.CardElevated, ElementState.Hover),
+    bgColorClass(BackgroundColor.CardElevated, ElementState.Active)
   );
 
   const chevronButton = (
@@ -201,7 +201,7 @@ export const TreeItem: FC<TreeItemViewProps> = ({
         <span
           className={cn(
             "size-5 shrink-0 flex items-center",
-            textColorClass(TextColor.Secondary)
+            textColorClass(BrandColor.Primary)
           )}
         >
           {isSelected && <Icon name={IconName.Check} size={Size.Sm} />}
