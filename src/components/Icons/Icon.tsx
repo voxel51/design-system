@@ -22,6 +22,7 @@ import CircleIcon from "@/img/Circle.svg?react";
 import CircleUserIcon from "@/img/CircleUser.svg?react";
 import CloseIcon from "@/img/Close.svg?react";
 import CloudIcon from "@/img/Cloud.svg?react";
+import CloudCogIcon from "@/img/CloudCog.svg?react";
 import CodeIcon from "@/img/Code.svg?react";
 import ContentCopyIcon from "@/img/ContentCopy.svg?react";
 import DateRangeIcon from "@/img/DateRange.svg?react";
@@ -37,6 +38,7 @@ import ErrorIcon from "@/img/Error.svg?react";
 import ExitWorkspaceIcon from "@/img/ExitWorkspace.svg?react";
 import ExternalLinkIcon from "@/img/ExternalLink.svg?react";
 import FineTuneIcon from "@/img/FineTune.svg?react";
+import FingerprintIcon from "@/img/Fingerprint.svg?react";
 import FullscreenIcon from "@/img/Fullscreen.svg?react";
 import GridViewIcon from "@/img/GridView.svg?react";
 import HistoryIcon from "@/img/History.svg?react";
@@ -121,6 +123,7 @@ export const iconMap: Record<
   [IconName.CircleUser]: CircleUserIcon,
   [IconName.Close]: CloseIcon,
   [IconName.Cloud]: CloudIcon,
+  [IconName.CloudCog]: CloudCogIcon,
   [IconName.Code]: CodeIcon,
   [IconName.ContentCopy]: ContentCopyIcon,
   [IconName.DateRange]: DateRangeIcon,
@@ -136,6 +139,7 @@ export const iconMap: Record<
   [IconName.ExitWorkspace]: ExitWorkspaceIcon,
   [IconName.ExternalLink]: ExternalLinkIcon,
   [IconName.FineTune]: FineTuneIcon,
+  [IconName.Fingerprint]: FingerprintIcon,
   [IconName.Fullscreen]: FullscreenIcon,
   [IconName.GridView]: GridViewIcon,
   [IconName.History]: HistoryIcon,
