@@ -23,6 +23,7 @@ export const colors = {
         muted: "#1F2021",
         popover: "#141618",
         secondary: "#1C1D1E",
+        selected: "#FF6D041E",
       },
       text: {
         fg: "#FFF9F5",
@@ -109,6 +110,7 @@ export const colors = {
         muted: "#EEEDEC",
         popover: "#FFF",
         secondary: "#E8E7E6",
+        selected: "#FF6D041E",
       },
       text: {
         fg: "#000",
