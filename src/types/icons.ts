@@ -16,6 +16,7 @@ export enum IconName {
   ChevronRight = "ChevronRight",
   ChevronTop = "ChevronTop",
   Circle = "Circle",
+  CircleUser = "CircleUser",
   Close = "Close",
   Cloud = "Cloud",
   Code = "Code",
