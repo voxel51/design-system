@@ -116,6 +116,7 @@ export enum IconName {
   FiberManualRecord = "FiberManualRecord",
   FileCopy = "FileCopy",
   FileDownloadOutlined = "FileDownloadOutlined",
+  FileUploadOutlined = "FileUploadOutlined",
   FilterAlt = "FilterAlt",
   FilterAltOff = "FilterAltOff",
   FilterDrama = "FilterDrama",

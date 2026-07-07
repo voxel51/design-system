@@ -119,6 +119,7 @@ import FeedbackIcon from "@/img/Feedback.svg?react";
 import FiberManualRecordIcon from "@/img/FiberManualRecord.svg?react";
 import FileCopyIcon from "@/img/FileCopy.svg?react";
 import FileDownloadOutlinedIcon from "@/img/FileDownloadOutlined.svg?react";
+import FileUploadOutlinedIcon from "@/img/FileUploadOutlined.svg?react";
 import FilterAltIcon from "@/img/FilterAlt.svg?react";
 import FilterAltOffIcon from "@/img/FilterAltOff.svg?react";
 import FilterDramaIcon from "@/img/FilterDrama.svg?react";
@@ -421,6 +422,7 @@ export const iconMap: Record<
   [IconName.FiberManualRecord]: FiberManualRecordIcon,
   [IconName.FileCopy]: FileCopyIcon,
   [IconName.FileDownloadOutlined]: FileDownloadOutlinedIcon,
+  [IconName.FileUploadOutlined]: FileUploadOutlinedIcon,
   [IconName.FilterAlt]: FilterAltIcon,
   [IconName.FilterAltOff]: FilterAltOffIcon,
   [IconName.FilterDrama]: FilterDramaIcon,
