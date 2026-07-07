@@ -1,4 +1,5 @@
 export enum IconName {
+  Activity = "Activity",
   Add = "Add",
   AI = "AI",
   Annotate = "Annotate",
@@ -21,6 +22,8 @@ export enum IconName {
   Cloud = "Cloud",
   CloudCog = "CloudCog",
   Code = "Code",
+  Cog = "Cog",
+  Contact = "Contact",
   ContentCopy = "ContentCopy",
   DateRange = "DateRange",
   Draw = "Draw",
@@ -34,6 +37,7 @@ export enum IconName {
   Error = "Error",
   ExitWorkspace = "ExitWorkspace",
   ExternalLink = "ExternalLink",
+  FileClock = "FileClock",
   FineTune = "FineTune",
   Fingerprint = "Fingerprint",
   Fullscreen = "Fullscreen",
@@ -46,6 +50,8 @@ export enum IconName {
   Inspect = "Inspect",
   JSON = "JSON",
   Key = "Key",
+  KeyRound = "KeyRound",
+  KeySquare = "KeySquare",
   Label = "Label",
   Lock = "Lock",
   Logs = "Logs",
@@ -84,6 +90,7 @@ export enum IconName {
   UsersRound = "UsersRound",
   VAL = "VAL",
   Warning = "Warning",
+  Waypoints = "Waypoints",
   Workspaces = "Workspaces",
 }
 

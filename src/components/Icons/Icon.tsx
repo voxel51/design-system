@@ -3,6 +3,7 @@ import React, { type FC } from "react";
 
 import { Spinner } from "@/components/Spinner";
 import AIIcon from "@/img/AI.svg?react";
+import ActivityIcon from "@/img/Activity.svg?react";
 import AddIcon from "@/img/Add.svg?react";
 import AnnotateIcon from "@/img/Annotate.svg?react";
 import ArrowDownIcon from "@/img/ArrowDown.svg?react";
@@ -24,6 +25,8 @@ import CloseIcon from "@/img/Close.svg?react";
 import CloudIcon from "@/img/Cloud.svg?react";
 import CloudCogIcon from "@/img/CloudCog.svg?react";
 import CodeIcon from "@/img/Code.svg?react";
+import CogIcon from "@/img/Cog.svg?react";
+import ContactIcon from "@/img/Contact.svg?react";
 import ContentCopyIcon from "@/img/ContentCopy.svg?react";
 import DateRangeIcon from "@/img/DateRange.svg?react";
 import DeleteIcon from "@/img/Delete.svg?react";
@@ -37,6 +40,7 @@ import EnterIcon from "@/img/Enter.svg?react";
 import ErrorIcon from "@/img/Error.svg?react";
 import ExitWorkspaceIcon from "@/img/ExitWorkspace.svg?react";
 import ExternalLinkIcon from "@/img/ExternalLink.svg?react";
+import FileClockIcon from "@/img/FileClock.svg?react";
 import FineTuneIcon from "@/img/FineTune.svg?react";
 import FingerprintIcon from "@/img/Fingerprint.svg?react";
 import FullscreenIcon from "@/img/Fullscreen.svg?react";
@@ -49,6 +53,8 @@ import InsightsIcon from "@/img/Insights.svg?react";
 import InspectIcon from "@/img/Inspect.svg?react";
 import JSONIcon from "@/img/JSON.svg?react";
 import KeyIcon from "@/img/Key.svg?react";
+import KeyRoundIcon from "@/img/KeyRound.svg?react";
+import KeySquareIcon from "@/img/KeySquare.svg?react";
 import LabelIcon from "@/img/Label.svg?react";
 import LockIcon from "@/img/Lock.svg?react";
 import LogsIcon from "@/img/Logs.svg?react";
@@ -86,6 +92,7 @@ import UsersIcon from "@/img/Users.svg?react";
 import UsersRoundIcon from "@/img/UsersRound.svg?react";
 import VALIcon from "@/img/VAL.svg?react";
 import WarningIcon from "@/img/Warning.svg?react";
+import WaypointsIcon from "@/img/Waypoints.svg?react";
 import WorkspacesIcon from "@/img/Workspaces.svg?react";
 import { BrandColor, IconColor, TextColor, textColorClass } from "@/types";
 import { IconName } from "@/types/icons";
@@ -103,6 +110,7 @@ export const iconMap: Record<
   Exclude<IconName, IconName.Spinner>,
   SvgComponent
 > = {
+  [IconName.Activity]: ActivityIcon,
   [IconName.Add]: AddIcon,
   [IconName.AI]: AIIcon,
   [IconName.Annotate]: AnnotateIcon,
@@ -125,6 +133,8 @@ export const iconMap: Record<
   [IconName.Cloud]: CloudIcon,
   [IconName.CloudCog]: CloudCogIcon,
   [IconName.Code]: CodeIcon,
+  [IconName.Cog]: CogIcon,
+  [IconName.Contact]: ContactIcon,
   [IconName.ContentCopy]: ContentCopyIcon,
   [IconName.DateRange]: DateRangeIcon,
   [IconName.Delete]: DeleteIcon,
@@ -138,6 +148,7 @@ export const iconMap: Record<
   [IconName.Error]: ErrorIcon,
   [IconName.ExitWorkspace]: ExitWorkspaceIcon,
   [IconName.ExternalLink]: ExternalLinkIcon,
+  [IconName.FileClock]: FileClockIcon,
   [IconName.FineTune]: FineTuneIcon,
   [IconName.Fingerprint]: FingerprintIcon,
   [IconName.Fullscreen]: FullscreenIcon,
@@ -150,6 +161,8 @@ export const iconMap: Record<
   [IconName.Inspect]: InspectIcon,
   [IconName.JSON]: JSONIcon,
   [IconName.Key]: KeyIcon,
+  [IconName.KeyRound]: KeyRoundIcon,
+  [IconName.KeySquare]: KeySquareIcon,
   [IconName.Label]: LabelIcon,
   [IconName.Lock]: LockIcon,
   [IconName.Logs]: LogsIcon,
@@ -187,6 +200,7 @@ export const iconMap: Record<
   [IconName.UsersRound]: UsersRoundIcon,
   [IconName.VAL]: VALIcon,
   [IconName.Warning]: WarningIcon,
+  [IconName.Waypoints]: WaypointsIcon,
   [IconName.Workspaces]: WorkspacesIcon,
 };
 
