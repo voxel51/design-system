@@ -24,7 +24,8 @@
     "./theme.css": "./dist/voodo.css"
   },
   "files": [
-    "dist"
+    "dist",
+    "NOTICE"
   ],
   "scripts": {
     "dev": "vite build --watch",

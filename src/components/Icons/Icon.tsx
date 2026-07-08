@@ -179,14 +179,6 @@ import LocalOfferOutlinedIcon from "@/img/LocalOfferOutlined.svg?react";
 import LockIcon from "@/img/Lock.svg?react";
 import LockOpenOutlinedIcon from "@/img/LockOpenOutlined.svg?react";
 import LockOutlinedIcon from "@/img/LockOutlined.svg?react";
-import LogoGoogleIcon from "@/img/LogoGoogle.svg?react";
-import LogoHuggingFaceIcon from "@/img/LogoHuggingFace.svg?react";
-import LogoMetaIcon from "@/img/LogoMeta.svg?react";
-import LogoMicrosoftIcon from "@/img/LogoMicrosoft.svg?react";
-import LogoNvidiaIcon from "@/img/LogoNvidia.svg?react";
-import LogoOpenAIIcon from "@/img/LogoOpenAI.svg?react";
-import LogoPyTorchIcon from "@/img/LogoPyTorch.svg?react";
-import LogoUltralyticsIcon from "@/img/LogoUltralytics.svg?react";
 import LogoutIcon from "@/img/Logout.svg?react";
 import LogsIcon from "@/img/Logs.svg?react";
 import MailOutlineIcon from "@/img/MailOutline.svg?react";
@@ -482,14 +474,6 @@ export const iconMap: Record<
   [IconName.Lock]: LockIcon,
   [IconName.LockOpenOutlined]: LockOpenOutlinedIcon,
   [IconName.LockOutlined]: LockOutlinedIcon,
-  [IconName.LogoGoogle]: LogoGoogleIcon,
-  [IconName.LogoHuggingFace]: LogoHuggingFaceIcon,
-  [IconName.LogoMeta]: LogoMetaIcon,
-  [IconName.LogoMicrosoft]: LogoMicrosoftIcon,
-  [IconName.LogoNvidia]: LogoNvidiaIcon,
-  [IconName.LogoOpenAI]: LogoOpenAIIcon,
-  [IconName.LogoPyTorch]: LogoPyTorchIcon,
-  [IconName.LogoUltralytics]: LogoUltralyticsIcon,
   [IconName.Logout]: LogoutIcon,
   [IconName.Logs]: LogsIcon,
   [IconName.MailOutline]: MailOutlineIcon,

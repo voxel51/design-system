@@ -77,3 +77,12 @@ This library is published to NPM via GitHub Actions workflows.
 
 This library is currently in a pre-release state, with versions matching `0.x.y`.
 Standard semantic versioning will be enforced starting with version `1.0.0`.
+
+## License
+
+Copyright 2024-2026 Voxel51, Inc. Licensed under the [Apache License, Version 2.0](LICENSE).
+
+A portion of the icon artwork is derived from
+[Google Material Icons](https://fonts.google.com/icons) (Apache License 2.0),
+extracted via [`@mui/icons-material`](https://mui.com/material-ui/material-icons/)
+(MIT License). See [NOTICE](NOTICE) for attribution details.
