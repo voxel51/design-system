@@ -8,6 +8,9 @@ export enum IconName {
   ArrowRight = "ArrowRight",
   ArrowUp = "ArrowUp",
   ArrowUpRight = "ArrowUpRight",
+  Blocks = "Blocks",
+  Boxes = "Boxes",
+  CalendarClock = "CalendarClock",
   CaretDown = "CaretDown",
   Check = "Check",
   Checkbox = "Checkbox",
@@ -25,6 +28,7 @@ export enum IconName {
   Cog = "Cog",
   Contact = "Contact",
   ContentCopy = "ContentCopy",
+  Database = "Database",
   DateRange = "DateRange",
   Draw = "Draw",
   Delete = "Delete",
@@ -59,6 +63,7 @@ export enum IconName {
   MoreHorizontal = "MoreHorizontal",
   MoreVertical = "MoreVertical",
   Move = "Move",
+  NotebookPen = "NotebookPen",
   Notes = "Notes",
   Orchestrator = "Orchestrator",
   Pencil = "Pencil",
@@ -91,7 +96,9 @@ export enum IconName {
   VAL = "VAL",
   Warning = "Warning",
   Waypoints = "Waypoints",
+  Workflow = "Workflow",
   Workspaces = "Workspaces",
+  Zap = "Zap",
 }
 
 export default IconName;

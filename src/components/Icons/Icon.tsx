@@ -11,6 +11,9 @@ import ArrowLeftIcon from "@/img/ArrowLeft.svg?react";
 import ArrowRightIcon from "@/img/ArrowRight.svg?react";
 import ArrowUpIcon from "@/img/ArrowUp.svg?react";
 import ArrowUpRightIcon from "@/img/ArrowUpRight.svg?react";
+import BlocksIcon from "@/img/Blocks.svg?react";
+import BoxesIcon from "@/img/Boxes.svg?react";
+import CalendarClockIcon from "@/img/CalendarClock.svg?react";
 import CaretDownIcon from "@/img/CaretDown.svg?react";
 import CheckIcon from "@/img/Check.svg?react";
 import CheckboxIcon from "@/img/Checkbox.svg?react";
@@ -28,6 +31,7 @@ import CodeIcon from "@/img/Code.svg?react";
 import CogIcon from "@/img/Cog.svg?react";
 import ContactIcon from "@/img/Contact.svg?react";
 import ContentCopyIcon from "@/img/ContentCopy.svg?react";
+import DatabaseIcon from "@/img/Database.svg?react";
 import DateRangeIcon from "@/img/DateRange.svg?react";
 import DeleteIcon from "@/img/Delete.svg?react";
 import DetectionIcon from "@/img/Detection.svg?react";
@@ -62,6 +66,7 @@ import MenuIcon from "@/img/Menu.svg?react";
 import MoreHorizontalIcon from "@/img/MoreHorizontal.svg?react";
 import MoreVerticalIcon from "@/img/MoreVertical.svg?react";
 import MoveIcon from "@/img/Move.svg?react";
+import NotebookPenIcon from "@/img/NotebookPen.svg?react";
 import NotesIcon from "@/img/Notes.svg?react";
 import OrchestratorIcon from "@/img/Orchestrator.svg?react";
 import PencilIcon from "@/img/Pencil.svg?react";
@@ -93,7 +98,9 @@ import UsersRoundIcon from "@/img/UsersRound.svg?react";
 import VALIcon from "@/img/VAL.svg?react";
 import WarningIcon from "@/img/Warning.svg?react";
 import WaypointsIcon from "@/img/Waypoints.svg?react";
+import WorkflowIcon from "@/img/Workflow.svg?react";
 import WorkspacesIcon from "@/img/Workspaces.svg?react";
+import ZapIcon from "@/img/Zap.svg?react";
 import { BrandColor, IconColor, TextColor, textColorClass } from "@/types";
 import { IconName } from "@/types/icons";
 import { Size } from "@/types/size";
@@ -119,6 +126,9 @@ export const iconMap: Record<
   [IconName.ArrowRight]: ArrowRightIcon,
   [IconName.ArrowUp]: ArrowUpIcon,
   [IconName.ArrowUpRight]: ArrowUpRightIcon,
+  [IconName.Blocks]: BlocksIcon,
+  [IconName.Boxes]: BoxesIcon,
+  [IconName.CalendarClock]: CalendarClockIcon,
   [IconName.CaretDown]: CaretDownIcon,
   [IconName.Check]: CheckIcon,
   [IconName.Checkbox]: CheckboxIcon,
@@ -136,6 +146,7 @@ export const iconMap: Record<
   [IconName.Cog]: CogIcon,
   [IconName.Contact]: ContactIcon,
   [IconName.ContentCopy]: ContentCopyIcon,
+  [IconName.Database]: DatabaseIcon,
   [IconName.DateRange]: DateRangeIcon,
   [IconName.Delete]: DeleteIcon,
   [IconName.Detection]: DetectionIcon,
@@ -170,6 +181,7 @@ export const iconMap: Record<
   [IconName.MoreHorizontal]: MoreHorizontalIcon,
   [IconName.MoreVertical]: MoreVerticalIcon,
   [IconName.Move]: MoveIcon,
+  [IconName.NotebookPen]: NotebookPenIcon,
   [IconName.Notes]: NotesIcon,
   [IconName.Orchestrator]: OrchestratorIcon,
   [IconName.Pencil]: PencilIcon,
@@ -201,7 +213,9 @@ export const iconMap: Record<
   [IconName.VAL]: VALIcon,
   [IconName.Warning]: WarningIcon,
   [IconName.Waypoints]: WaypointsIcon,
+  [IconName.Workflow]: WorkflowIcon,
   [IconName.Workspaces]: WorkspacesIcon,
+  [IconName.Zap]: ZapIcon,
 };
 
 type IconSize = Exclude<Size, "Xs">;
