@@ -53,10 +53,7 @@ const rotatedSquareStyles: Record<TooltipAnchor, string> = {
 
 const ANCHOR_GAP = 8;
 
-function getFixedPosition(
-  rect: DOMRect,
-  anchor: TooltipAnchor
-): CSSProperties {
+function getFixedPosition(rect: DOMRect, anchor: TooltipAnchor): CSSProperties {
   switch (anchor) {
     case Anchor.Top:
       return {
