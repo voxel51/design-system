@@ -9,7 +9,7 @@ import type { FC, HTMLAttributes } from "react";
  * @example
  * ```tsx
  * <Clickable onClick={() => deleteEntry()}}>
- *   <Icon name={IconName.Delete} />
+ *   <DeleteIcon />
  * </Clickable>
  * ```
  *

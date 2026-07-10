@@ -2,16 +2,12 @@ import { render } from "@testing-library/react";
 import { type FC } from "react";
 
 import { Size, TextColor, textColorClass } from "@/types";
-import { IconName } from "@/types/icons";
 
-import { Icon } from "../Icons/Icon";
-import { IconProps } from "../Icons/types";
+import { CheckIcon, type IconProps } from "../Icons";
 
 import { InputIcon } from "./InputIcon";
 
-const CheckmarkIcon: FC<IconProps> = (props) => (
-  <Icon name={IconName.Check} {...(props as any)} />
-);
+const CheckmarkIcon: FC<IconProps> = (props) => <CheckIcon {...props} />;
 
 describe("InputIcon", () => {
   it("should render an FC icon", () => {
@@ -21,10 +17,8 @@ describe("InputIcon", () => {
     expect(container.querySelector("svg")).toBeInTheDocument();
   });
 
-  it("should render a string icon", () => {
-    const { container } = render(
-      <InputIcon icon={IconName.Check} size={Size.Md} />
-    );
+  it("should render a generated icon component", () => {
+    const { container } = render(<InputIcon icon={CheckIcon} size={Size.Md} />);
     expect(container.querySelector("svg")).toBeInTheDocument();
   });
 

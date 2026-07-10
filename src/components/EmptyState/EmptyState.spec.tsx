@@ -1,19 +1,19 @@
 import { render, screen } from "@testing-library/react";
 
-import { IconName } from "@/types";
+import { DrawIcon } from "@/components/Icons";
 
 import { EmptyState } from "./EmptyState";
 
 describe("EmptyState", () => {
   it("should render with icon and title", () => {
-    render(<EmptyState icon={IconName.Draw} title="Example Title" />);
+    render(<EmptyState icon={DrawIcon} title="Example Title" />);
     expect(screen.getByText("Example Title")).toBeInTheDocument();
   });
 
   it("should render with icon, title, and description", () => {
     render(
       <EmptyState
-        icon={IconName.Draw}
+        icon={DrawIcon}
         title="Example Title"
         description="This is an example description."
       />

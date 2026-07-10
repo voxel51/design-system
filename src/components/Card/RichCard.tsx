@@ -2,13 +2,12 @@ import type { FC } from "react";
 import React from "react";
 
 import { Card, CardBackground, CardProps } from "@/components/Card";
-import { Icon } from "@/components/Icons";
+import { type IconProps } from "@/components/Icons";
 import { Stack } from "@/components/Stack";
 import { Text } from "@/components/Text";
 import {
   Align,
   BrandColor,
-  IconName,
   Justify,
   Orientation,
   Shadow,
@@ -24,7 +23,7 @@ export interface RichCardProps extends CardProps {
   badge?: string;
   compact?: boolean;
   description?: string | string[];
-  icon?: IconName;
+  icon?: FC<IconProps>;
   title?: string;
   action?: React.ReactNode;
 }
@@ -36,7 +35,7 @@ export interface RichCardProps extends CardProps {
  * @example
  * ```tsx
  * <RichCard
- *   icon={IconName.Star}
+ *   icon={StarIcon}
  *   title="Getting Started"
  *   description="Follow these steps to set up your workspace."
  *   badge="New"
@@ -46,7 +45,7 @@ export interface RichCardProps extends CardProps {
  * @param badge A small badge for supplementary info such as status or count.
  * @param compact When true, uses a horizontal layout with tighter spacing.
  * @param description Body text. Pass an array of strings to render a bulleted list.
- * @param icon The icon to display beside the title. See {@link IconName}.
+ * @param icon The icon component to display beside the title.
  * @param title The card heading.
  * @param action A React node (e.g. a button) rendered in the action slot.
  * @param children Content displayed inside the card, below the description.
@@ -57,7 +56,7 @@ export const RichCard: FC<RichCardProps> = ({
   action,
   badge,
   description,
-  icon,
+  icon: IconContent,
   title,
   compact,
   ...props
@@ -79,17 +78,17 @@ export const RichCard: FC<RichCardProps> = ({
             spacing={compact ? Spacing.Sm : Spacing.Md}
             align={Align.Center}
           >
-            {icon && !compact && (
+            {IconContent && !compact && (
               <Card
                 compact
                 background={CardBackground.Elevated}
                 shadow={Shadow.None}
               >
-                <Icon name={icon} size={Size.Xl} color={BrandColor.Accent} />
+                <IconContent size={Size.Xl} color={BrandColor.Accent} />
               </Card>
             )}
-            {icon && compact && (
-              <Icon name={icon} size={Size.Xl} color={BrandColor.Accent} />
+            {IconContent && compact && (
+              <IconContent size={Size.Xl} color={BrandColor.Accent} />
             )}
             <Stack
               orientation={Orientation.Column}

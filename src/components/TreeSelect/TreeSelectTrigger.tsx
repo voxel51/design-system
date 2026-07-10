@@ -1,6 +1,6 @@
 import React, { type FC, useState } from "react";
 
-import { Icon } from "@/components/Icons";
+import { ChevronRightIcon, CloseIcon } from "@/components/Icons";
 import { inputStyle } from "@/components/Input";
 import { Pill } from "@/components/Pill";
 import { Stack } from "@/components/Stack";
@@ -13,7 +13,6 @@ import {
   TextColor,
   textColorClass,
 } from "@/types";
-import { IconName } from "@/types/icons";
 import { cn } from "@/util/classes";
 
 export interface TreeSelectTriggerProps {
@@ -47,8 +46,7 @@ function ChevronIndicator({
       )}
       aria-hidden
     >
-      <Icon
-        name={IconName.ChevronRight}
+      <ChevronRightIcon
         size={Size.Sm}
         className={textColorClass(TextColor.Secondary)}
       />
@@ -76,8 +74,7 @@ function ClearButton({
         bgColorClass(BackgroundColor.Card2, ElementState.Hover)
       )}
     >
-      <Icon
-        name={IconName.Close}
+      <CloseIcon
         size={Size.Sm}
         className={cn(
           textColorClass(TextColor.Secondary),

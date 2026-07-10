@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent, { UserEvent } from "@testing-library/user-event";
 
-import { IconName } from "@/types/icons";
+import { CaretDownIcon } from "@/components/Icons";
 
 import DatepickerIconButton from "./DatepickerIconButton";
 
@@ -9,9 +9,7 @@ describe("DatepickerIconButton", () => {
   describe("rendering", () => {
     it("should render a button element", () => {
       const onClick = jest.fn();
-      render(
-        <DatepickerIconButton onClick={onClick} iconName={IconName.CaretDown} />
-      );
+      render(<DatepickerIconButton onClick={onClick} icon={CaretDownIcon} />);
       const button = screen.getByRole("button");
       expect(button).toBeInTheDocument();
     });
@@ -27,9 +25,7 @@ describe("DatepickerIconButton", () => {
     });
 
     it("should call onClick when button is clicked", async () => {
-      render(
-        <DatepickerIconButton onClick={onClick} iconName={IconName.CaretDown} />
-      );
+      render(<DatepickerIconButton onClick={onClick} icon={CaretDownIcon} />);
       const button = screen.getByRole("button");
 
       await user.click(button);
@@ -38,11 +34,7 @@ describe("DatepickerIconButton", () => {
 
     it("should not call onClick when disabled", async () => {
       render(
-        <DatepickerIconButton
-          onClick={onClick}
-          iconName={IconName.CaretDown}
-          disabled
-        />
+        <DatepickerIconButton onClick={onClick} icon={CaretDownIcon} disabled />
       );
       const button = screen.getByRole("button");
 
@@ -54,9 +46,7 @@ describe("DatepickerIconButton", () => {
   describe("button type", () => {
     it("should have type button", () => {
       const onClick = jest.fn();
-      render(
-        <DatepickerIconButton onClick={onClick} iconName={IconName.CaretDown} />
-      );
+      render(<DatepickerIconButton onClick={onClick} icon={CaretDownIcon} />);
       const button = screen.getByRole("button");
       expect(button).toHaveAttribute("type", "button");
     });

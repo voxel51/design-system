@@ -1,7 +1,8 @@
 import React, { type FC } from "react";
 
 import { Checkbox } from "@/components/Checkbox";
-import { Icon } from "@/components/Icons/Icon";
+import { CheckIcon, ChevronRightIcon, RefreshIcon } from "@/components/Icons";
+import { Spinner } from "@/components/Spinner";
 import { Stack } from "@/components/Stack";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
@@ -11,7 +12,6 @@ import {
   BrandColor,
   bgColorClass,
   ElementState,
-  IconName,
   Justify,
   Orientation,
   Radius,
@@ -103,7 +103,7 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
   );
 
   const chevronButton = (
-    iconName: IconName,
+    IconContent: FC<{ size?: Size; className?: string }>,
     extraClassName: string,
     props: ReturnType<typeof tree.getChevronProps> | null,
     onClick?: (e: React.MouseEvent) => void
@@ -120,8 +120,7 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
         bgColorClass(BackgroundColor.CardElevated, ElementState.Hover)
       )}
     >
-      <Icon
-        name={iconName}
+      <IconContent
         size={Size.Sm}
         className={cn(
           "text-content-text-secondary",
@@ -136,13 +135,13 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
   if (!isBranch) {
     chevron = <span className="size-5 shrink-0" />;
   } else if (nodeLoadState === "loading") {
-    chevron = chevronButton(IconName.Spinner, "animate-spin", null, (e) => {
+    chevron = chevronButton(Spinner, "animate-spin", null, (e) => {
       e.stopPropagation();
       e.preventDefault();
     });
   } else if (nodeLoadState === "error") {
     chevron = chevronButton(
-      IconName.Refresh,
+      RefreshIcon,
       textColorClass(BrandColor.Primary),
       null,
       (e) => {
@@ -153,7 +152,7 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
     );
   } else {
     chevron = chevronButton(
-      IconName.ChevronRight,
+      ChevronRightIcon,
       effectiveOpen ? "rotate-90" : "",
       tree.getChevronProps(resolved)
     );
@@ -204,7 +203,7 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
             textColorClass(BrandColor.Primary)
           )}
         >
-          {isSelected && <Icon name={IconName.Check} size={Size.Sm} />}
+          {isSelected && <CheckIcon size={Size.Sm} />}
         </span>
       )}
     </>

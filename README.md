@@ -45,6 +45,21 @@ export const Component = () => {
 Note that you'll need to import this library's theme somewhere in your application for the components
 to be styled correctly. See [CSS Themes](#css-themes).
 
+### Using icons
+
+Every icon is exported as its own component so that bundlers only include the
+icons you actually import (there is intentionally no icon-name enum or runtime
+icon map — that would defeat tree-shaking):
+
+```typescript jsx
+import { CheckIcon, Size } from "@voxel51/voodo";
+
+export const Component = () => <CheckIcon size={Size.Md} />;
+```
+
+To add a new icon, drop the SVG in `src/img` (PascalCase filename) and run
+`npm run generate-icons`.
+
 ### Theming
 
 #### CSS Themes

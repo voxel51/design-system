@@ -1,13 +1,13 @@
 import { type FC } from "react";
 
-import { IconWrapper } from "@/components/Icons";
-import { IconName, Size, TextColor, textColorClass } from "@/types";
+import { type IconProps, IconWrapper } from "@/components/Icons";
+import { Size, TextColor, textColorClass } from "@/types";
 import { cn } from "@/util/classes";
 
 import { iconPaddingStyles } from "./styles";
 
 export interface InputIconProps {
-  icon: FC | IconName;
+  icon: FC<IconProps>;
   size: Size;
   hasText?: boolean;
 }
@@ -15,7 +15,7 @@ export interface InputIconProps {
 /**
  * A wrapper component for properly formatting an icon to display within the {@link Input} component.
  *
- * @param icon Icon reference ({@link FC}) or an {@link IconName} specifying the icon to use.
+ * @param icon Icon component specifying the icon to use.
  * @param size The size of the icon. See {@link Size}.
  * @param hasText If `true`, de-emphasizes the icon in favor of the input text.
  *

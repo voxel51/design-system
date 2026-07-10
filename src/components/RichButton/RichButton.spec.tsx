@@ -1,8 +1,8 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { AddIcon } from "@/components/Icons";
 import { RichButton } from "@/components/RichButton/RichButton.tsx";
-import { IconName } from "@/types";
 import { randomString } from "@/util/random";
 
 const DummyIcon = () => {
@@ -46,7 +46,7 @@ describe("RichButton", () => {
   });
 
   it("should render a provided string icon", () => {
-    render(<RichButton {...defaultProps} icon={IconName.Add} />);
+    render(<RichButton {...defaultProps} icon={AddIcon} />);
 
     expect(screen.getByTestId(testId).innerHTML).toContain("<svg");
   });
