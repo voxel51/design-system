@@ -8,7 +8,7 @@ export const TEXT_STYLES: Record<TextVariant, string> = {
   [TextVariant.Lg]: "text-lg/9",
   [TextVariant.Xl]: "text-xl/11",
   [TextVariant.Xxl]: "text-xxl/13",
-  [TextVariant.Label]: "text-xs/5 text-bold uppercase",
+  [TextVariant.Label]: "text-xs/5 font-bold uppercase",
   [TextVariant.Caption]: "text-xs/5 text-content-text-tertiary",
 };
 

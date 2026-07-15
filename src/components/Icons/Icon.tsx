@@ -3,6 +3,7 @@ import React, { type FC } from "react";
 
 import { Spinner } from "@/components/Spinner";
 import AIIcon from "@/img/AI.svg?react";
+import ActivityIcon from "@/img/Activity.svg?react";
 import AddIcon from "@/img/Add.svg?react";
 import AnnotateIcon from "@/img/Annotate.svg?react";
 import ArrowDownIcon from "@/img/ArrowDown.svg?react";
@@ -10,6 +11,9 @@ import ArrowLeftIcon from "@/img/ArrowLeft.svg?react";
 import ArrowRightIcon from "@/img/ArrowRight.svg?react";
 import ArrowUpIcon from "@/img/ArrowUp.svg?react";
 import ArrowUpRightIcon from "@/img/ArrowUpRight.svg?react";
+import BlocksIcon from "@/img/Blocks.svg?react";
+import BoxesIcon from "@/img/Boxes.svg?react";
+import CalendarClockIcon from "@/img/CalendarClock.svg?react";
 import CaretDownIcon from "@/img/CaretDown.svg?react";
 import CheckIcon from "@/img/Check.svg?react";
 import CheckboxIcon from "@/img/Checkbox.svg?react";
@@ -19,9 +23,15 @@ import ChevronLeftIcon from "@/img/ChevronLeft.svg?react";
 import ChevronRightIcon from "@/img/ChevronRight.svg?react";
 import ChevronTopIcon from "@/img/ChevronTop.svg?react";
 import CircleIcon from "@/img/Circle.svg?react";
+import CircleUserIcon from "@/img/CircleUser.svg?react";
 import CloseIcon from "@/img/Close.svg?react";
+import CloudIcon from "@/img/Cloud.svg?react";
+import CloudCogIcon from "@/img/CloudCog.svg?react";
 import CodeIcon from "@/img/Code.svg?react";
+import CogIcon from "@/img/Cog.svg?react";
+import ContactIcon from "@/img/Contact.svg?react";
 import ContentCopyIcon from "@/img/ContentCopy.svg?react";
+import DatabaseIcon from "@/img/Database.svg?react";
 import DateRangeIcon from "@/img/DateRange.svg?react";
 import DeleteIcon from "@/img/Delete.svg?react";
 import DetectionIcon from "@/img/Detection.svg?react";
@@ -34,15 +44,21 @@ import EnterIcon from "@/img/Enter.svg?react";
 import ErrorIcon from "@/img/Error.svg?react";
 import ExitWorkspaceIcon from "@/img/ExitWorkspace.svg?react";
 import ExternalLinkIcon from "@/img/ExternalLink.svg?react";
+import FileClockIcon from "@/img/FileClock.svg?react";
 import FineTuneIcon from "@/img/FineTune.svg?react";
+import FingerprintIcon from "@/img/Fingerprint.svg?react";
 import FullscreenIcon from "@/img/Fullscreen.svg?react";
 import GridViewIcon from "@/img/GridView.svg?react";
 import HistoryIcon from "@/img/History.svg?react";
+import IdCardIcon from "@/img/IdCard.svg?react";
 import ImageSearchIcon from "@/img/ImageSearch.svg?react";
 import InfoIcon from "@/img/Info.svg?react";
 import InsightsIcon from "@/img/Insights.svg?react";
 import InspectIcon from "@/img/Inspect.svg?react";
 import JSONIcon from "@/img/JSON.svg?react";
+import KeyIcon from "@/img/Key.svg?react";
+import KeyRoundIcon from "@/img/KeyRound.svg?react";
+import KeySquareIcon from "@/img/KeySquare.svg?react";
 import LabelIcon from "@/img/Label.svg?react";
 import LockIcon from "@/img/Lock.svg?react";
 import LogsIcon from "@/img/Logs.svg?react";
@@ -50,18 +66,22 @@ import MenuIcon from "@/img/Menu.svg?react";
 import MoreHorizontalIcon from "@/img/MoreHorizontal.svg?react";
 import MoreVerticalIcon from "@/img/MoreVertical.svg?react";
 import MoveIcon from "@/img/Move.svg?react";
+import NotebookPenIcon from "@/img/NotebookPen.svg?react";
 import NotesIcon from "@/img/Notes.svg?react";
 import OrchestratorIcon from "@/img/Orchestrator.svg?react";
 import PencilIcon from "@/img/Pencil.svg?react";
 import PinIcon from "@/img/Pin.svg?react";
 import PolylineIcon from "@/img/Polyline.svg?react";
+import PuzzleIcon from "@/img/Puzzle.svg?react";
 import RadioIcon from "@/img/Radio.svg?react";
 import RedoIcon from "@/img/Redo.svg?react";
 import RefreshIcon from "@/img/Refresh.svg?react";
 import RemoveIcon from "@/img/Remove.svg?react";
 import ReviewIcon from "@/img/Review.svg?react";
 import SearchIcon from "@/img/Search.svg?react";
+import ServerIcon from "@/img/Server.svg?react";
 import SettingsIcon from "@/img/Settings.svg?react";
+import ShieldCheckIcon from "@/img/ShieldCheck.svg?react";
 import SliderIcon from "@/img/Slider.svg?react";
 import SlidersIcon from "@/img/Sliders.svg?react";
 import TagIcon from "@/img/Tag.svg?react";
@@ -72,9 +92,15 @@ import UnfoldMoreIcon from "@/img/UnfoldMore.svg?react";
 import UnlockIcon from "@/img/Unlock.svg?react";
 import UnsupportedIcon from "@/img/Unsupported.svg?react";
 import UploadIcon from "@/img/Upload.svg?react";
+import UserIcon from "@/img/User.svg?react";
+import UsersIcon from "@/img/Users.svg?react";
+import UsersRoundIcon from "@/img/UsersRound.svg?react";
 import VALIcon from "@/img/VAL.svg?react";
 import WarningIcon from "@/img/Warning.svg?react";
+import WaypointsIcon from "@/img/Waypoints.svg?react";
+import WorkflowIcon from "@/img/Workflow.svg?react";
 import WorkspacesIcon from "@/img/Workspaces.svg?react";
+import ZapIcon from "@/img/Zap.svg?react";
 import { BrandColor, IconColor, TextColor, textColorClass } from "@/types";
 import { IconName } from "@/types/icons";
 import { Size } from "@/types/size";
@@ -91,6 +117,7 @@ export const iconMap: Record<
   Exclude<IconName, IconName.Spinner>,
   SvgComponent
 > = {
+  [IconName.Activity]: ActivityIcon,
   [IconName.Add]: AddIcon,
   [IconName.AI]: AIIcon,
   [IconName.Annotate]: AnnotateIcon,
@@ -99,6 +126,9 @@ export const iconMap: Record<
   [IconName.ArrowRight]: ArrowRightIcon,
   [IconName.ArrowUp]: ArrowUpIcon,
   [IconName.ArrowUpRight]: ArrowUpRightIcon,
+  [IconName.Blocks]: BlocksIcon,
+  [IconName.Boxes]: BoxesIcon,
+  [IconName.CalendarClock]: CalendarClockIcon,
   [IconName.CaretDown]: CaretDownIcon,
   [IconName.Check]: CheckIcon,
   [IconName.Checkbox]: CheckboxIcon,
@@ -108,9 +138,15 @@ export const iconMap: Record<
   [IconName.ChevronRight]: ChevronRightIcon,
   [IconName.ChevronTop]: ChevronTopIcon,
   [IconName.Circle]: CircleIcon,
+  [IconName.CircleUser]: CircleUserIcon,
   [IconName.Close]: CloseIcon,
+  [IconName.Cloud]: CloudIcon,
+  [IconName.CloudCog]: CloudCogIcon,
   [IconName.Code]: CodeIcon,
+  [IconName.Cog]: CogIcon,
+  [IconName.Contact]: ContactIcon,
   [IconName.ContentCopy]: ContentCopyIcon,
+  [IconName.Database]: DatabaseIcon,
   [IconName.DateRange]: DateRangeIcon,
   [IconName.Delete]: DeleteIcon,
   [IconName.Detection]: DetectionIcon,
@@ -123,15 +159,21 @@ export const iconMap: Record<
   [IconName.Error]: ErrorIcon,
   [IconName.ExitWorkspace]: ExitWorkspaceIcon,
   [IconName.ExternalLink]: ExternalLinkIcon,
+  [IconName.FileClock]: FileClockIcon,
   [IconName.FineTune]: FineTuneIcon,
+  [IconName.Fingerprint]: FingerprintIcon,
   [IconName.Fullscreen]: FullscreenIcon,
   [IconName.GridView]: GridViewIcon,
   [IconName.History]: HistoryIcon,
+  [IconName.IdCard]: IdCardIcon,
   [IconName.ImageSearch]: ImageSearchIcon,
   [IconName.Info]: InfoIcon,
   [IconName.Insights]: InsightsIcon,
   [IconName.Inspect]: InspectIcon,
   [IconName.JSON]: JSONIcon,
+  [IconName.Key]: KeyIcon,
+  [IconName.KeyRound]: KeyRoundIcon,
+  [IconName.KeySquare]: KeySquareIcon,
   [IconName.Label]: LabelIcon,
   [IconName.Lock]: LockIcon,
   [IconName.Logs]: LogsIcon,
@@ -139,18 +181,22 @@ export const iconMap: Record<
   [IconName.MoreHorizontal]: MoreHorizontalIcon,
   [IconName.MoreVertical]: MoreVerticalIcon,
   [IconName.Move]: MoveIcon,
+  [IconName.NotebookPen]: NotebookPenIcon,
   [IconName.Notes]: NotesIcon,
   [IconName.Orchestrator]: OrchestratorIcon,
   [IconName.Pencil]: PencilIcon,
   [IconName.Pin]: PinIcon,
   [IconName.Polyline]: PolylineIcon,
+  [IconName.Puzzle]: PuzzleIcon,
   [IconName.Radio]: RadioIcon,
   [IconName.Redo]: RedoIcon,
   [IconName.Refresh]: RefreshIcon,
   [IconName.Remove]: RemoveIcon,
   [IconName.Review]: ReviewIcon,
   [IconName.Search]: SearchIcon,
+  [IconName.Server]: ServerIcon,
   [IconName.Settings]: SettingsIcon,
+  [IconName.ShieldCheck]: ShieldCheckIcon,
   [IconName.Slider]: SliderIcon,
   [IconName.Sliders]: SlidersIcon,
   [IconName.Tag]: TagIcon,
@@ -161,9 +207,15 @@ export const iconMap: Record<
   [IconName.Unlock]: UnlockIcon,
   [IconName.Unsupported]: UnsupportedIcon,
   [IconName.Upload]: UploadIcon,
+  [IconName.User]: UserIcon,
+  [IconName.Users]: UsersIcon,
+  [IconName.UsersRound]: UsersRoundIcon,
   [IconName.VAL]: VALIcon,
   [IconName.Warning]: WarningIcon,
+  [IconName.Waypoints]: WaypointsIcon,
+  [IconName.Workflow]: WorkflowIcon,
   [IconName.Workspaces]: WorkspacesIcon,
+  [IconName.Zap]: ZapIcon,
 };
 
 type IconSize = Exclude<Size, "Xs">;
