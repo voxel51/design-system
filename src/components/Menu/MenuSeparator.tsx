@@ -1,6 +1,6 @@
 import type { FC, HTMLAttributes } from "react";
 
-import { bgColorClass, TextColor } from "@/types";
+import { borderColorClass, BorderColor } from "@/types";
 import { cn } from "@/util/classes";
 
 /**
@@ -32,8 +32,8 @@ export const MenuSeparator: FC<MenuSeparatorProps> = ({
     <div
       role="separator"
       className={cn(
-        "my-1 h-px",
-        bgColorClass(TextColor.Placeholder),
+        "my-1 -mx-1.5 border-t",
+        borderColorClass(BorderColor.Subtle),
         className
       )}
       {...props}
