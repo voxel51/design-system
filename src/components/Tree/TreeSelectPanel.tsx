@@ -116,6 +116,7 @@ export const TreeSelectPanel: FC<TreeSelectPanelProps> = ({
           onRetryLoad={onRetryLoad}
           searchInputRef={searchInputRef}
           showSearch
+          focusOnHover
         />
       </div>
     </PortalWrapper>

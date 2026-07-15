@@ -101,6 +101,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     onEscape: handleEscape,
     onAfterSelect: handleAfterSelect,
     scrollActiveIntoView: false,
+    clearQueryOnSelect: true,
   });
 
   const { refs, floatingStyles } = useFloating({

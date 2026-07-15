@@ -37,6 +37,15 @@ export interface UseTreeViewStateOptions {
   /** Required when `query` is controlled. */
   onQueryChange?: (q: string) => void;
   scrollActiveIntoView?: boolean;
+  /**
+   * When `true`, single-select picks reset the search query. Correct for
+   * TreeSelect, where selecting closes the panel and the query is stale on
+   * re-open. Persistent consumers (TreeView) must leave this off: the tree
+   * stays on screen, so wiping the filter — and firing `onQueryChange("")`
+   * behind a controlled-query consumer's back — discards user state.
+   * @default false
+   */
+  clearQueryOnSelect?: boolean;
 }
 
 export interface UseTreeViewStateReturn {
@@ -82,6 +91,7 @@ export function useTreeViewState(
     query: controlledQuery,
     onQueryChange: controlledOnQueryChange,
     scrollActiveIntoView = false,
+    clearQueryOnSelect = false,
   } = options;
 
   const isControlledQuery = controlledQuery !== undefined;
@@ -168,7 +178,9 @@ export function useTreeViewState(
           : [...currentInternal, selected];
         multiOnChange?.(next.map(fromInternalPath));
       } else {
-        setQuery("");
+        if (clearQueryOnSelect) {
+          setQuery("");
+        }
         const singleOnChange = onChange as
           | ((path: TreePath | null) => void)
           | undefined;
@@ -176,7 +188,14 @@ export function useTreeViewState(
       }
       onAfterSelect?.(selected);
     },
-    [multiSelect, selection, onChange, onAfterSelect, setQuery]
+    [
+      multiSelect,
+      selection,
+      onChange,
+      onAfterSelect,
+      setQuery,
+      clearQueryOnSelect,
+    ]
   );
 
   const clearSelection = useCallback(() => {

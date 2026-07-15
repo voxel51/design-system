@@ -1,4 +1,4 @@
-import type { HTMLAttributes } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 
 import type { SelectAnchor } from "@/components/Select";
 import type { ZIndex } from "@/types";
@@ -189,7 +189,29 @@ export type TreeSelectProps =
 // TreeView props
 // ---------------------------------------------------------------------------
 
+/**
+ * Custom renderer for a row's label content in {@link TreeView}.
+ *
+ * Receives the source node, its {@link TreePath}, and the default label
+ * element (the node name with search-match highlighting applied). The
+ * returned content replaces only the name text — chevron, checkbox, and
+ * `description` rendering are unaffected. The custom content is wrapped in
+ * a flex-1 container, so trailing content (e.g. a count) can be
+ * right-aligned with `justify-between`.
+ */
+export type RenderTreeLabel = (
+  node: TreeNode,
+  path: TreePath,
+  defaultLabel: ReactNode
+) => ReactNode;
+
 interface TreeViewSharedProps extends TreeDataProps {
+  /**
+   * Custom renderer for each row's label content. See
+   * {@link RenderTreeLabel}. When omitted, the node name is rendered with
+   * search-match highlighting.
+   */
+  renderLabel?: RenderTreeLabel;
   /** Show the built-in search input. @default true */
   showSearch?: boolean;
   /**

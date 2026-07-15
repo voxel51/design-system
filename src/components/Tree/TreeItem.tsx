@@ -23,7 +23,8 @@ import {
 } from "@/types";
 import { cn } from "@/util/classes";
 
-import type { ResolvedNode } from "./types";
+import { fromInternalPath } from "./tree";
+import type { RenderTreeLabel, ResolvedNode } from "./types";
 import type { UseTreeReturn } from "./useTree";
 
 const DEPTH_INDENT = "var(--spacing-md)";
@@ -34,6 +35,7 @@ export interface TreeItemViewProps {
   query?: string;
   multiSelect?: boolean;
   onRetryLoad?: (path: string) => void;
+  renderLabel?: RenderTreeLabel;
 }
 
 function highlightMatch(text: string, query?: string): React.ReactNode {
@@ -70,6 +72,7 @@ export const TreeItem: FC<TreeItemViewProps> = ({
   query,
   multiSelect,
   onRetryLoad,
+  renderLabel,
 }) => {
   const { node, path, depth } = resolved;
   const isBranch = !resolved.isLeaf;
@@ -159,6 +162,16 @@ export const TreeItem: FC<TreeItemViewProps> = ({
     );
   }
 
+  const defaultLabel = (
+    <Text
+      variant={TextVariant.Sm}
+      color={textColor}
+      className="whitespace-nowrap"
+    >
+      {highlightMatch(node.name, query)}
+    </Text>
+  );
+
   const labelContent = (
     <>
       <Stack orientation={Orientation.Column} className="min-w-0 flex-1">
@@ -175,13 +188,13 @@ export const TreeItem: FC<TreeItemViewProps> = ({
               />
             </div>
           )}
-          <Text
-            variant={TextVariant.Sm}
-            color={textColor}
-            className="whitespace-nowrap"
-          >
-            {highlightMatch(node.name, query)}
-          </Text>
+          {renderLabel ? (
+            <div className="min-w-0 flex-1">
+              {renderLabel(node, fromInternalPath(path), defaultLabel)}
+            </div>
+          ) : (
+            defaultLabel
+          )}
         </Stack>
         {node.description && (
           <Text

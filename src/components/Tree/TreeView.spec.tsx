@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
 
@@ -366,6 +366,113 @@ describe("TreeView", () => {
         (item) => item.getAttribute("data-active") === "true"
       );
       expect(activeItem).toBeTruthy();
+    });
+  });
+
+  describe("renderLabel", () => {
+    it("renders custom label content per node", () => {
+      renderTreeView({
+        renderLabel: (node: TreeNode, path: readonly string[]) => (
+          <span>
+            {node.name} · {path.length} samples
+          </span>
+        ),
+      });
+
+      expect(screen.getByText("motorcycle · 2 samples")).toBeInTheDocument();
+      expect(screen.getByText("car · 2 samples")).toBeInTheDocument();
+    });
+
+    it("passes the default label so consumers can compose around it", () => {
+      renderTreeView({
+        renderLabel: (
+          node: TreeNode,
+          _path: readonly string[],
+          defaultLabel: React.ReactNode
+        ) => (
+          <span>
+            {defaultLabel}
+            <span data-testid={`count-${node.name}`}>42</span>
+          </span>
+        ),
+      });
+
+      expect(screen.getByText("motorcycle")).toBeInTheDocument();
+      expect(screen.getByTestId("count-motorcycle")).toBeInTheDocument();
+    });
+  });
+
+  describe("hover focus", () => {
+    it("does not steal focus from outside the tree on hover", () => {
+      render(
+        <>
+          <input data-testid="outside-input" />
+          <TreeView root={vehicleTree} data-testid="tree-view" />
+        </>
+      );
+
+      const outside = screen.getByTestId("outside-input");
+      outside.focus();
+
+      const body = screen.getByRole("tree").firstElementChild as HTMLElement;
+      fireEvent.mouseEnter(body);
+
+      expect(document.activeElement).toBe(outside);
+    });
+
+    it("keeps focus inside the tree on hover when already focused within", () => {
+      renderTreeView();
+
+      const searchInput = screen.getByRole("textbox", { name: "Search tree" });
+      searchInput.focus();
+
+      const body = screen.getByRole("tree").firstElementChild as HTMLElement;
+      fireEvent.mouseEnter(body);
+
+      expect(document.activeElement).toBe(searchInput);
+    });
+  });
+
+  describe("query persistence on select", () => {
+    it("does not clear the search query when a node is selected", async () => {
+      const user = userEvent.setup();
+      const onChange = jest.fn();
+      renderTreeView({ selectable: true, onChange });
+
+      const searchInput = screen.getByRole("textbox", { name: "Search tree" });
+      await user.type(searchInput, "motor");
+      await waitFor(() =>
+        expect(screen.queryByText("car")).not.toBeInTheDocument()
+      );
+
+      // The match highlight splits "motorcycle" across spans, so match on
+      // textContent rather than the accessible name.
+      const item = screen
+        .getAllByRole("treeitem")
+        .find((el) => el.textContent === "motorcycle");
+      expect(item).toBeTruthy();
+      await user.click(item!);
+
+      expect(onChange).toHaveBeenCalledWith(["vehicle_type", "motorcycle"]);
+      expect(searchInput).toHaveValue("motor");
+      expect(screen.queryByText("car")).not.toBeInTheDocument();
+    });
+
+    it("does not fire onQueryChange when selecting with a controlled query", async () => {
+      const user = userEvent.setup();
+      const onChange = jest.fn();
+      const onQueryChange = jest.fn();
+      renderTreeView({
+        selectable: true,
+        query: "motor",
+        onQueryChange,
+        onChange,
+      });
+
+      await user.click(screen.getByText("motorcycle"));
+
+      expect(onChange).toHaveBeenCalledWith(["vehicle_type", "motorcycle"]);
+      expect(onQueryChange).not.toHaveBeenCalled();
     });
   });
 

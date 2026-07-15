@@ -8,6 +8,7 @@ import { cn } from "@/util/classes";
 
 import { TreeItem } from "./TreeItem";
 import { TreeSearchInput } from "./TreeSearchInput";
+import type { RenderTreeLabel } from "./types";
 import type { UseTreeReturn } from "./useTree";
 
 const ROW_HEIGHT_ESTIMATE = 36;
@@ -24,6 +25,17 @@ export interface TreeBodyProps {
   searchInputRef: RefObject<HTMLInputElement | null>;
   /** When false, the search input is hidden and the wrapper becomes the keyboard focus target. */
   showSearch?: boolean;
+  /**
+   * When `true`, hovering the tree focuses the search input (or wrapper)
+   * so keyboard navigation works without a click. Only safe inside a
+   * transient surface like the TreeSelect dropdown — an embedded TreeView
+   * must not steal focus from the rest of the page. When `false`, hover
+   * only retargets focus that is already inside the tree.
+   * @default false
+   */
+  focusOnHover?: boolean;
+  /** Custom label renderer forwarded to each {@link TreeItem}. */
+  renderLabel?: RenderTreeLabel;
   className?: string;
 }
 
@@ -45,6 +57,8 @@ export const TreeBody: FC<TreeBodyProps> = ({
   onRetryLoad,
   searchInputRef,
   showSearch = true,
+  focusOnHover = false,
+  renderLabel,
   className,
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -70,12 +84,18 @@ export const TreeBody: FC<TreeBodyProps> = ({
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const handleMouseEnter = useCallback(() => {
+    if (
+      !focusOnHover &&
+      !wrapperRef.current?.contains(document.activeElement)
+    ) {
+      return;
+    }
     if (showSearch) {
       searchInputRef.current?.focus({ preventScroll: true });
     } else {
       wrapperRef.current?.focus({ preventScroll: true });
     }
-  }, [showSearch, searchInputRef]);
+  }, [focusOnHover, showSearch, searchInputRef]);
 
   return (
     <div
@@ -139,6 +159,7 @@ export const TreeBody: FC<TreeBodyProps> = ({
                       query={filteredTree ? query : undefined}
                       multiSelect={multiSelect}
                       onRetryLoad={onRetryLoad}
+                      renderLabel={renderLabel}
                     />
                   </div>
                 );

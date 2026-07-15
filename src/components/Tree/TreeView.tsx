@@ -45,6 +45,7 @@ export const TreeView: FC<TreeViewProps> = (props) => {
     showSearch: showSearchProp,
     query: queryProp,
     onQueryChange: onQueryChangeProp,
+    renderLabel,
     maxHeight,
     className,
     ...rest
@@ -116,6 +117,7 @@ export const TreeView: FC<TreeViewProps> = (props) => {
         onRetryLoad={state.onRetryLoad}
         searchInputRef={state.searchInputRef}
         showSearch={effectiveShowSearch}
+        renderLabel={renderLabel}
       />
     </div>
   );
