@@ -27,7 +27,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
-          node-version: 22.22.0
+          node-version: 24.15.0
 
       - name: Configure git
         run: |
@@ -51,7 +51,7 @@ jobs:
     needs: bump-and-tag
     uses: ./.github/workflows/_run_tests.yaml
     with:
-      node-version: 22.22.0
+      node-version: 24.15.0
       ref: ${{ needs.bump-and-tag.outputs.tag }}
     permissions:
       contents: read
@@ -70,11 +70,8 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
-          node-version: 22.22.0
+          node-version: 24.15.0
           registry-url: https://registry.npmjs.org
-
-      - name: Update NPM
-        run: npm install -g npm@latest
 
       - name: Clean install
         run: npm ci
