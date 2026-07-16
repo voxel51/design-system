@@ -11,7 +11,7 @@ import { IconProps } from "@/components/Icons/types";
  *
  * @internal For use by the {@link ListItem} component.
  */
-export const DragHandleIcon: FC<IconProps> = ({ className, ...props }) => {
+export const DragHandleGripIcon: FC<IconProps> = ({ className, ...props }) => {
   return (
     <svg
       className={clsx(className)}
@@ -30,4 +30,4 @@ export const DragHandleIcon: FC<IconProps> = ({ className, ...props }) => {
   );
 };
 
-DragHandleIcon.displayName = "DragHandleIcon";
+DragHandleGripIcon.displayName = "DragHandleGripIcon";

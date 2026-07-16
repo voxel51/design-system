@@ -5,7 +5,6 @@ export * from "./zIndex";
 export * from "./descriptor";
 export * from "./element";
 export * from "./heading";
-export * from "./icons";
 export * from "./justify";
 export * from "./orientation";
 export * from "./radius";

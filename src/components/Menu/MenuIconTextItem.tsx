@@ -1,7 +1,6 @@
 import { MenuItem } from "@headlessui/react";
 import type { FC, HTMLAttributes, ReactNode } from "react";
 
-import { Icon } from "@/components/Icons";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
 import {
@@ -9,10 +8,9 @@ import {
   bgColorClass,
   ElementState,
   IconColor,
-  IconName,
   Radius,
-  Size,
   TextColor,
+  textColorClass,
   TextVariant,
 } from "@/types";
 import { cn } from "@/util/classes";
@@ -22,7 +20,7 @@ import { cn } from "@/util/classes";
  */
 export interface MenuIconTextItemProps extends HTMLAttributes<HTMLButtonElement> {
   /** Icon to display to the left of the text content. */
-  icon: IconName | ReactNode;
+  icon: ReactNode;
   /** Primary label text. */
   text: string;
   /** Optional secondary description shown below the primary text. */
@@ -41,7 +39,7 @@ export interface MenuIconTextItemProps extends HTMLAttributes<HTMLButtonElement>
  * ```tsx
  * <Dropdown trigger={<DropdownTrigger>Open</DropdownTrigger>}>
  *   <MenuIconTextItem
- *     icon={IconName.ImageSearch}
+ *     icon={<ImageSearchIcon size={Size.Lg} />}
  *     text="Sort by similarity"
  *     subtext="Find visually similar"
  *     onClick={() => {}}
@@ -49,7 +47,7 @@ export interface MenuIconTextItemProps extends HTMLAttributes<HTMLButtonElement>
  * </Dropdown>
  * ```
  *
- * @param icon An {@link IconName} or a custom ReactNode rendered in the leading slot.
+ * @param icon A ReactNode (typically an icon component) rendered in the leading slot.
  * @param text The primary label for the item.
  * @param subtext An optional secondary line rendered below the primary text in muted color.
  * @param disabled If `true`, the item cannot be interacted with.
@@ -90,12 +88,13 @@ export const MenuIconTextItem: FC<MenuIconTextItemProps> = ({
           )}
           {...props}
         >
-          <span className="flex size-5 shrink-0 items-center justify-center">
-            {typeof icon === "string" ? (
-              <Icon name={icon as IconName} size={Size.Lg} color={iconColor} />
-            ) : (
-              icon
+          <span
+            className={cn(
+              "flex size-5 shrink-0 items-center justify-center",
+              textColorClass(iconColor)
             )}
+          >
+            {icon}
           </span>
 
           <span className="flex flex-col gap-0.5 min-w-0">

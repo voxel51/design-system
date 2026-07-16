@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { Dropdown, DropdownTrigger } from "@/components/Dropdown";
-import { IconName } from "@/types";
+import { EditIcon, DeleteIcon } from "@/components/Icons";
 
 import { MenuIconTextItem } from "./MenuIconTextItem";
 
@@ -14,7 +14,7 @@ describe("MenuIconTextItem", () => {
     render(
       <Dropdown trigger={trigger}>
         <MenuIconTextItem
-          icon={IconName.Edit}
+          icon={<EditIcon />}
           text="Edit item"
           subtext="Make changes"
         />
@@ -29,7 +29,7 @@ describe("MenuIconTextItem", () => {
     const user = userEvent.setup();
     render(
       <Dropdown trigger={trigger}>
-        <MenuIconTextItem icon={IconName.Edit} text="Edit item" />
+        <MenuIconTextItem icon={<EditIcon />} text="Edit item" />
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
@@ -55,7 +55,7 @@ describe("MenuIconTextItem", () => {
     const onClick = jest.fn();
     render(
       <Dropdown trigger={trigger}>
-        <MenuIconTextItem icon={IconName.Edit} text="Edit" onClick={onClick} />
+        <MenuIconTextItem icon={<EditIcon />} text="Edit" onClick={onClick} />
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
@@ -67,7 +67,7 @@ describe("MenuIconTextItem", () => {
     const user = userEvent.setup();
     render(
       <Dropdown trigger={trigger}>
-        <MenuIconTextItem icon={IconName.Edit} text="Edit" disabled />
+        <MenuIconTextItem icon={<EditIcon />} text="Edit" disabled />
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
@@ -81,7 +81,7 @@ describe("MenuIconTextItem", () => {
     render(
       <Dropdown trigger={trigger}>
         <MenuIconTextItem
-          icon={IconName.Edit}
+          icon={<EditIcon />}
           text="Edit"
           disabled
           onClick={onClick}
@@ -98,7 +98,7 @@ describe("MenuIconTextItem", () => {
     render(
       <Dropdown trigger={trigger}>
         <MenuIconTextItem
-          icon={IconName.Delete}
+          icon={<DeleteIcon />}
           text="Delete"
           subtext="Permanent"
           destructive
@@ -115,7 +115,7 @@ describe("MenuIconTextItem", () => {
     render(
       <Dropdown trigger={trigger}>
         <MenuIconTextItem
-          icon={IconName.Edit}
+          icon={<EditIcon />}
           text="Edit"
           className="custom-item"
         />

@@ -11,7 +11,7 @@ import {
   useState,
 } from "react";
 
-import { Icon } from "@/components/Icons";
+import { CaretDownIcon } from "@/components/Icons";
 import { inputStyle } from "@/components/Input";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
@@ -30,7 +30,6 @@ import {
   ZIndex,
   zIndexStyles,
 } from "@/types";
-import { IconName } from "@/types/icons";
 import { useElementSize } from "@/util/useElementSize";
 
 import { Option } from "./Option";
@@ -251,8 +250,7 @@ export const Select: FC<SelectProps> = ({
             )}
             aria-hidden
           >
-            <Icon
-              name={IconName.CaretDown}
+            <CaretDownIcon
               size={Size.Sm}
               className={textColorClass(TextColor.Secondary)}
             />
