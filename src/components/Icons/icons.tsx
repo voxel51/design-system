@@ -215,6 +215,7 @@ import OpenInNewSvg from "@/img/OpenInNew.svg?react";
 import OpenWithSvg from "@/img/OpenWith.svg?react";
 import OrchestratorSvg from "@/img/Orchestrator.svg?react";
 import PaletteSvg from "@/img/Palette.svg?react";
+import PauseSvg from "@/img/Pause.svg?react";
 import PencilSvg from "@/img/Pencil.svg?react";
 import PercentSvg from "@/img/Percent.svg?react";
 import PersonAddAltSvg from "@/img/PersonAddAlt.svg?react";
@@ -222,6 +223,7 @@ import PersonAddOutlinedSvg from "@/img/PersonAddOutlined.svg?react";
 import PhotoCameraSvg from "@/img/PhotoCamera.svg?react";
 import PieChartOutlinedSvg from "@/img/PieChartOutlined.svg?react";
 import PinSvg from "@/img/Pin.svg?react";
+import PlaySvg from "@/img/Play.svg?react";
 import PlayArrowSvg from "@/img/PlayArrow.svg?react";
 import PolylineSvg from "@/img/Polyline.svg?react";
 import PsychologySvg from "@/img/Psychology.svg?react";
@@ -301,6 +303,8 @@ import VisibilitySvg from "@/img/Visibility.svg?react";
 import VisibilityOffSvg from "@/img/VisibilityOff.svg?react";
 import VisibilityOffOutlinedSvg from "@/img/VisibilityOffOutlined.svg?react";
 import VisibilityOutlinedSvg from "@/img/VisibilityOutlined.svg?react";
+import VolumeOffSvg from "@/img/VolumeOff.svg?react";
+import VolumeUpSvg from "@/img/VolumeUp.svg?react";
 import WallpaperSvg from "@/img/Wallpaper.svg?react";
 import WarningSvg from "@/img/Warning.svg?react";
 import WarningAmberSvg from "@/img/WarningAmber.svg?react";
@@ -1153,6 +1157,10 @@ export const PaletteIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={PaletteSvg} />
 );
 
+export const PauseIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={PauseSvg} />
+);
+
 export const PencilIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={PencilSvg} />
 );
@@ -1179,6 +1187,10 @@ export const PieChartOutlinedIcon: FC<IconProps> = (props) => (
 
 export const PinIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={PinSvg} />
+);
+
+export const PlayIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={PlaySvg} />
 );
 
 export const PlayArrowIcon: FC<IconProps> = (props) => (
@@ -1495,6 +1507,14 @@ export const VisibilityOffOutlinedIcon: FC<IconProps> = (props) => (
 
 export const VisibilityOutlinedIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={VisibilityOutlinedSvg} />
+);
+
+export const VolumeOffIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={VolumeOffSvg} />
+);
+
+export const VolumeUpIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={VolumeUpSvg} />
 );
 
 export const WallpaperIcon: FC<IconProps> = (props) => (
