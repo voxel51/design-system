@@ -1,8 +1,8 @@
 import { act, renderHook } from "@testing-library/react";
 import React from "react";
 
-import { buildResolvedTree } from "@/components/TreeSelect/tree";
-import type { TreeNode } from "@/components/TreeSelect/types";
+import { buildResolvedTree } from "@/components/Tree/tree";
+import type { TreeNode } from "@/components/Tree/types";
 
 import { useTree, type UseTreeOptions } from "./useTree";
 
