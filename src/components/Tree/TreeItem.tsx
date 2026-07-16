@@ -22,18 +22,20 @@ import {
   textColorClass,
 } from "@/types";
 import { cn } from "@/util/classes";
-import type { UseTreeReturn } from "@/util/useTree";
 
-import type { ResolvedNode } from "./types";
+import { fromInternalPath } from "./tree";
+import type { RenderTreeLabel, ResolvedNode } from "./types";
+import type { UseTreeReturn } from "./useTree";
 
 const DEPTH_INDENT = "var(--spacing-md)";
 
-export interface TreeSelectNodeProps {
+export interface TreeItemViewProps {
   resolved: ResolvedNode;
   tree: UseTreeReturn;
   query?: string;
   multiSelect?: boolean;
   onRetryLoad?: (path: string) => void;
+  renderLabel?: RenderTreeLabel;
 }
 
 function highlightMatch(text: string, query?: string): React.ReactNode {
@@ -62,14 +64,15 @@ function highlightMatch(text: string, query?: string): React.ReactNode {
  * All state is driven by the `tree` hook — this component is purely
  * presentational.
  *
- * @internal For use by TreeSelectPanel.
+ * @internal Shared by TreeSelectPanel and TreeBody.
  */
-export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
+export const TreeItem: FC<TreeItemViewProps> = ({
   resolved,
   tree,
   query,
   multiSelect,
   onRetryLoad,
+  renderLabel,
 }) => {
   const { node, path, depth } = resolved;
   const isBranch = !resolved.isLeaf;
@@ -159,6 +162,16 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
     );
   }
 
+  const defaultLabel = (
+    <Text
+      variant={TextVariant.Sm}
+      color={textColor}
+      className="whitespace-nowrap"
+    >
+      {highlightMatch(node.name, query)}
+    </Text>
+  );
+
   const labelContent = (
     <>
       <Stack orientation={Orientation.Column} className="min-w-0 flex-1">
@@ -175,13 +188,13 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
               />
             </div>
           )}
-          <Text
-            variant={TextVariant.Sm}
-            color={textColor}
-            className="whitespace-nowrap"
-          >
-            {highlightMatch(node.name, query)}
-          </Text>
+          {renderLabel ? (
+            <div className="min-w-0 flex-1">
+              {renderLabel(node, fromInternalPath(path), defaultLabel)}
+            </div>
+          ) : (
+            defaultLabel
+          )}
         </Stack>
         {node.description && (
           <Text
@@ -226,4 +239,4 @@ export const TreeSelectNode: FC<TreeSelectNodeProps> = ({
   );
 };
 
-TreeSelectNode.displayName = "TreeSelectNode";
+TreeItem.displayName = "TreeItem";

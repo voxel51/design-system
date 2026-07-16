@@ -282,7 +282,7 @@ export function getParentPath(path: string): string | undefined {
  * Depth-first walk of a resolved tree returning nodes in DOM render order.
  * Skips the root itself (callers render `root.children`). For each child,
  * includes the child, then if `isOpen(child.path)` returns true, recurses
- * into its children. This mirrors exactly what `TreeSelectNode` renders.
+ * into its children. This mirrors exactly what `TreeItem` renders.
  */
 export function flattenVisible(
   root: ResolvedNode,
