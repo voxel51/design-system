@@ -69,8 +69,10 @@ import MoveIcon from "@/img/Move.svg?react";
 import NotebookPenIcon from "@/img/NotebookPen.svg?react";
 import NotesIcon from "@/img/Notes.svg?react";
 import OrchestratorIcon from "@/img/Orchestrator.svg?react";
+import PauseIcon from "@/img/Pause.svg?react";
 import PencilIcon from "@/img/Pencil.svg?react";
 import PinIcon from "@/img/Pin.svg?react";
+import PlayIcon from "@/img/Play.svg?react";
 import PolylineIcon from "@/img/Polyline.svg?react";
 import PuzzleIcon from "@/img/Puzzle.svg?react";
 import RadioIcon from "@/img/Radio.svg?react";
@@ -96,6 +98,8 @@ import UserIcon from "@/img/User.svg?react";
 import UsersIcon from "@/img/Users.svg?react";
 import UsersRoundIcon from "@/img/UsersRound.svg?react";
 import VALIcon from "@/img/VAL.svg?react";
+import VolumeOffIcon from "@/img/VolumeOff.svg?react";
+import VolumeUpIcon from "@/img/VolumeUp.svg?react";
 import WarningIcon from "@/img/Warning.svg?react";
 import WaypointsIcon from "@/img/Waypoints.svg?react";
 import WorkflowIcon from "@/img/Workflow.svg?react";
@@ -184,8 +188,10 @@ export const iconMap: Record<
   [IconName.NotebookPen]: NotebookPenIcon,
   [IconName.Notes]: NotesIcon,
   [IconName.Orchestrator]: OrchestratorIcon,
+  [IconName.Pause]: PauseIcon,
   [IconName.Pencil]: PencilIcon,
   [IconName.Pin]: PinIcon,
+  [IconName.Play]: PlayIcon,
   [IconName.Polyline]: PolylineIcon,
   [IconName.Puzzle]: PuzzleIcon,
   [IconName.Radio]: RadioIcon,
@@ -211,6 +217,8 @@ export const iconMap: Record<
   [IconName.Users]: UsersIcon,
   [IconName.UsersRound]: UsersRoundIcon,
   [IconName.VAL]: VALIcon,
+  [IconName.VolumeOff]: VolumeOffIcon,
+  [IconName.VolumeUp]: VolumeUpIcon,
   [IconName.Warning]: WarningIcon,
   [IconName.Waypoints]: WaypointsIcon,
   [IconName.Workflow]: WorkflowIcon,
