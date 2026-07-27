@@ -66,6 +66,21 @@ describe("Dropdown", () => {
     expect(screen.queryByText("Item")).not.toBeInTheDocument();
   });
 
+  it("should not scroll-lock the document while open", async () => {
+    const user = userEvent.setup();
+    render(
+      <Dropdown trigger={trigger}>
+        <MenuTextItem>Item</MenuTextItem>
+      </Dropdown>
+    );
+
+    await user.click(screen.getByText("Open menu"));
+    expect(screen.getByText("Item")).toBeInTheDocument();
+
+    expect(document.documentElement.style.overflow).not.toBe("hidden");
+    expect(document.documentElement.style.paddingRight).toBe("");
+  });
+
   it("should expose role=menu when open", async () => {
     const user = userEvent.setup();
     render(
