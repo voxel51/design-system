@@ -137,6 +137,7 @@ export const Dropdown: FC<DropdownProps> = ({
         <MenuItems
           anchor={{ to: anchor, gap: 4 }}
           portal={portal}
+          modal={false}
           className={cn(menuPanelStyles(), panelZIndex)}
         >
           {children}
