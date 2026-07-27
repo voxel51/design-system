@@ -145,6 +145,7 @@ export const ContextMenu: FC<ContextMenuProps> = ({
               <MenuItems
                 anchor={{ to: anchor, gap: 0 }}
                 portal
+                modal={false}
                 className={cn(
                   menuPanelStyles(),
                   zIndexStyles(ZIndex.AboveModal)
