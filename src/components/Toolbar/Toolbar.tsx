@@ -10,7 +10,7 @@ import {
   ReactNode,
 } from "react";
 
-import { DragHandleIcon } from "@/components/Icons";
+import { DragHandleGripIcon } from "@/components/Icons";
 import { Stack } from "@/components/Stack";
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
@@ -222,7 +222,7 @@ export const Toolbar = ({
             }}
             className={dragHandleClass}
           >
-            <DragHandleIcon />
+            <DragHandleGripIcon />
           </div>
         )}
         {!isCollapsed && (

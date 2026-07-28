@@ -5,6 +5,7 @@
   "type": "module",
   "author": "Voxel Engineering <engineering@voxel51.com>",
   "license": "Apache-2.0",
+  "sideEffects": false,
   "repository": {
     "type": "git",
     "url": "https://github.com/voxel51/design-system.git"
@@ -24,7 +25,8 @@
     "./theme.css": "./dist/voodo.css"
   },
   "files": [
-    "dist"
+    "dist",
+    "NOTICE"
   ],
   "scripts": {
     "dev": "vite build --watch",
@@ -32,6 +34,7 @@
     "build:lib": "npm run prepublish && mkdir -p build/lib && npm pack --pack-destination build/lib/",
     "format": "prettier --write '**/*.{ts,tsx}'",
     "format:check": "prettier --check '**/*.{ts,tsx}'",
+    "generate-icons": "tsx utils/generate-icons.ts && prettier --write src/components/Icons/icons.tsx --log-level warn",
     "generate-tailwind-theme": "tsx utils/generate-color-classes.ts && tsx utils/generate-tailwind-theme.ts",
     "lint": "eslint src --max-warnings 0",
     "lint:fix": "eslint src --fix",

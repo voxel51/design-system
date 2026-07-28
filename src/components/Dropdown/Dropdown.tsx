@@ -75,13 +75,13 @@ export interface DropdownProps extends HTMLAttributes<HTMLDivElement> {
  * <Dropdown trigger={<DropdownTrigger>Actions</DropdownTrigger>}>
  *   <MenuSectionTitle>Actions</MenuSectionTitle>
  *   <MenuIconTextItem
- *     icon={IconName.ImageSearch}
+ *     icon={<ImageSearchIcon />}
  *     text="Sort by similarity"
  *     subtext="Find visually similar"
  *     onClick={() => {}}
  *   />
  *   <MenuIconTextItem
- *     icon={IconName.Embeddings}
+ *     icon={<EmbeddingsIcon />}
  *     text="Run embeddings"
  *     subtext="Compute vector embeddings"
  *     onClick={() => {}}

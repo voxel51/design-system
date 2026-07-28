@@ -1,14 +1,13 @@
 import { MenuItem } from "@headlessui/react";
 import type { FC, HTMLAttributes } from "react";
 
-import { Icon } from "@/components/Icons";
+import { CheckIcon } from "@/components/Icons";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
 import {
   BackgroundColor,
   bgColorClass,
   ElementState,
-  IconName,
   Radius,
   Size,
   TextColor,
@@ -78,13 +77,7 @@ export const MenuCheckItem: FC<MenuCheckItemProps> = ({
         >
           {/* Reserved slot so text aligns whether checked or not */}
           <span className="flex size-4 shrink-0 items-center justify-center">
-            {checked && (
-              <Icon
-                name={IconName.Check}
-                size={Size.Sm}
-                color={TextColor.Primary}
-              />
-            )}
+            {checked && <CheckIcon size={Size.Sm} color={TextColor.Primary} />}
           </span>
           <Text
             variant={TextVariant.Sm}

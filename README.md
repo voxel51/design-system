@@ -45,6 +45,21 @@ export const Component = () => {
 Note that you'll need to import this library's theme somewhere in your application for the components
 to be styled correctly. See [CSS Themes](#css-themes).
 
+### Using icons
+
+Every icon is exported as its own component so that bundlers only include the
+icons you actually import (there is intentionally no icon-name enum or runtime
+icon map — that would defeat tree-shaking):
+
+```typescript jsx
+import { CheckIcon, Size } from "@voxel51/voodo";
+
+export const Component = () => <CheckIcon size={Size.Md} />;
+```
+
+To add a new icon, drop the SVG in `src/img` (PascalCase filename) and run
+`npm run generate-icons`.
+
 ### Theming
 
 #### CSS Themes
@@ -77,3 +92,12 @@ This library is published to NPM via GitHub Actions workflows.
 
 This library is currently in a pre-release state, with versions matching `0.x.y`.
 Standard semantic versioning will be enforced starting with version `1.0.0`.
+
+## License
+
+Copyright 2024-2026 Voxel51, Inc. Licensed under the [Apache License, Version 2.0](LICENSE).
+
+A portion of the icon artwork is derived from
+[Google Material Icons](https://fonts.google.com/icons) (Apache License 2.0),
+extracted via [`@mui/icons-material`](https://mui.com/material-ui/material-icons/)
+(MIT License). See [NOTICE](NOTICE) for attribution details.

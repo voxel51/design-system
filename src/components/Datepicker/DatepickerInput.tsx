@@ -1,5 +1,6 @@
 import { type FC, useCallback, useRef } from "react";
 
+import { CaretDownIcon, DateRangeIcon } from "@/components/Icons";
 import radiusStyles from "@/styles/radius";
 import {
   BackgroundColor,
@@ -12,7 +13,6 @@ import {
   TextColor,
   textColorClass,
 } from "@/types";
-import { IconName } from "@/types/icons";
 import { cn } from "@/util/classes";
 
 import { paddingLeftStyles, sizeStyles } from "../Input/styles";
@@ -118,7 +118,7 @@ export const DatepickerInput: FC<DatepickerInputProps> = ({
         hasValue={hasValue}
         size={size}
         position={IconPosition.Leading}
-        iconName={IconName.DateRange}
+        icon={DateRangeIcon}
       />
       <input
         ref={inputRef}
@@ -134,7 +134,7 @@ export const DatepickerInput: FC<DatepickerInputProps> = ({
         hasValue={hasValue}
         size={size}
         position={IconPosition.Trailing}
-        iconName={IconName.CaretDown}
+        icon={CaretDownIcon}
       />
     </div>
   );

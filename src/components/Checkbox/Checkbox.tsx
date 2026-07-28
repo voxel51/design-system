@@ -2,7 +2,7 @@ import { Field, Checkbox as HeadlessCheckbox, Label } from "@headlessui/react";
 import clsx from "clsx";
 import { type FC, InputHTMLAttributes } from "react";
 
-import { Icon } from "@/components/Icons/Icon";
+import { CheckIcon, RemoveIcon } from "@/components/Icons";
 import { UnsetHint } from "@/components/UnsetHint";
 import radiusStyles from "@/styles/radius";
 import { TEXT_STYLES } from "@/styles/text";
@@ -13,7 +13,6 @@ import {
   borderColorClass,
   BrandColor,
   ElementState,
-  IconName,
   Radius,
   Size,
   TextColor,
@@ -129,14 +128,12 @@ export const Checkbox: FC<CheckboxProps> = ({
         {...props}
       >
         {showIndeterminate ? (
-          <Icon
-            name={IconName.Remove}
+          <RemoveIcon
             color={BrandColor.Primary}
             className="absolute inset-0 w-full h-full"
           />
         ) : (
-          <Icon
-            name={IconName.Check}
+          <CheckIcon
             color={TextColor.Primary}
             className={clsx(
               "absolute inset-0 w-full h-full opacity-0 group-data-checked:opacity-100"

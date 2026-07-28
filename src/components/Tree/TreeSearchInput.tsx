@@ -1,6 +1,6 @@
 import { type FC, type KeyboardEvent, type Ref } from "react";
 
-import { Icon } from "@/components/Icons";
+import { CloseIcon, SearchIcon } from "@/components/Icons";
 import { inputStyle } from "@/components/Input";
 import { Stack } from "@/components/Stack";
 import {
@@ -12,7 +12,6 @@ import {
   TextColor,
   textColorClass,
 } from "@/types";
-import { IconName } from "@/types/icons";
 import { cn } from "@/util/classes";
 
 export interface TreeSearchInputProps {
@@ -40,8 +39,7 @@ export const TreeSearchInput: FC<TreeSearchInputProps> = ({
     <div className={cn("shrink-0 p-1.5", bgColorClass(BackgroundColor.Card1))}>
       <Stack align={Align.Center} className="relative">
         <span className="pointer-events-none absolute left-2.5 flex items-center">
-          <Icon
-            name={IconName.Search}
+          <SearchIcon
             size={Size.Sm}
             className={textColorClass(TextColor.Tertiary)}
           />
@@ -78,8 +76,7 @@ export const TreeSearchInput: FC<TreeSearchInputProps> = ({
               bgColorClass(BackgroundColor.Card2, ElementState.Hover)
             )}
           >
-            <Icon
-              name={IconName.Close}
+            <CloseIcon
               size={Size.Sm}
               className={cn(
                 textColorClass(TextColor.Secondary),
