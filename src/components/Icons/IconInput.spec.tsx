@@ -5,9 +5,9 @@ import { Pill } from "@/components/Pill";
 import { Size, TextColor, textColorClass } from "@/types";
 import { IconName } from "@/types/icons";
 
-import { AddIcon } from "./icons";
-import { IconWrapper } from "./IconWrapper";
 import { resolveIconInput } from "./Icon";
+import { IconWrapper } from "./IconWrapper";
+import { AddIcon } from "./icons";
 
 // Bridge behavior: icon props accept both the per-icon components and
 // legacy IconName values, so pre-0.0.40 consumers compile and render
@@ -43,6 +43,7 @@ describe("IconInput bridge", () => {
   it("forwards all icon props (including color) to a legacy icon", () => {
     // regression: the resolver must not drop props the call site passes
     const Legacy = resolveIconInput(IconName.Add);
+    if (!Legacy) throw new Error("expected a component");
     const { container } = render(
       <Legacy size={Size.Sm} color={TextColor.Primary} className="extra" />
     );

@@ -43,6 +43,8 @@ export const DatepickerIconButton: FC<DatepickerIconButtonProps> = ({
   position = IconPosition.Leading,
 }) => {
   const IconContent = resolveIconInput(icon);
+  if (!IconContent) return null;
+
   const positionClasses =
     position === IconPosition.Leading
       ? "absolute left-0"

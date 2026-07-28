@@ -307,10 +307,6 @@ export type IconInput = FC<BaseIconProps> | IconName;
  * legacy {@link IconName} values through the deprecated map-based
  * {@link Icon}.
  */
-export function resolveIconInput(icon: IconInput): FC<BaseIconProps>;
-export function resolveIconInput(
-  icon?: IconInput
-): FC<BaseIconProps> | undefined;
 export function resolveIconInput(
   icon?: IconInput
 ): FC<BaseIconProps> | undefined {
