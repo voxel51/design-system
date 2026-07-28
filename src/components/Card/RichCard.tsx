@@ -2,7 +2,7 @@ import type { FC } from "react";
 import React from "react";
 
 import { Card, CardBackground, CardProps } from "@/components/Card";
-import { type IconProps } from "@/components/Icons";
+import { type IconInput, resolveIconInput } from "@/components/Icons";
 import { Stack } from "@/components/Stack";
 import { Text } from "@/components/Text";
 import {
@@ -23,7 +23,7 @@ export interface RichCardProps extends CardProps {
   badge?: string;
   compact?: boolean;
   description?: string | string[];
-  icon?: FC<IconProps>;
+  icon?: IconInput;
   title?: string;
   action?: React.ReactNode;
 }
@@ -56,11 +56,13 @@ export const RichCard: FC<RichCardProps> = ({
   action,
   badge,
   description,
-  icon: IconContent,
+  icon,
   title,
   compact,
   ...props
 }) => {
+  const IconContent = resolveIconInput(icon);
+
   return (
     <Card {...props}>
       <Stack

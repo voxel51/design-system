@@ -109,6 +109,8 @@ import { BrandColor, IconColor, TextColor, textColorClass } from "@/types";
 import { IconName } from "@/types/icons";
 import { Size } from "@/types/size";
 
+import { type IconProps as BaseIconProps } from "./IconBase";
+
 type SvgComponent = React.FC<React.SVGProps<SVGSVGElement>>;
 
 /**
@@ -291,3 +293,30 @@ export const Icon: FC<LegacyIconProps> = ({
     />
   );
 };
+
+/**
+ * Accepted value for component icon props while the legacy icon API is
+ * bridged: a per-icon component (preferred) or a legacy {@link IconName}.
+ * The IconName form is deprecated and will be removed with the legacy API,
+ * at which point icon props return to plain `FC<IconProps>`.
+ */
+export type IconInput = FC<BaseIconProps> | IconName;
+
+/**
+ * Resolves an {@link IconInput} to a renderable icon component, rendering
+ * legacy {@link IconName} values through the deprecated map-based
+ * {@link Icon}.
+ */
+export function resolveIconInput(icon: IconInput): FC<BaseIconProps>;
+export function resolveIconInput(
+  icon?: IconInput
+): FC<BaseIconProps> | undefined;
+export function resolveIconInput(
+  icon?: IconInput
+): FC<BaseIconProps> | undefined {
+  if (typeof icon === "string") {
+    return (props) => <Icon name={icon} {...props} />;
+  }
+
+  return icon;
+}

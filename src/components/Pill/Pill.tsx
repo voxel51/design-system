@@ -1,7 +1,12 @@
 import clsx from "clsx";
 import type { FC, HTMLAttributes } from "react";
 
-import { CircleIcon, CloseIcon, type IconProps } from "@/components/Icons";
+import {
+  CircleIcon,
+  CloseIcon,
+  type IconInput,
+  resolveIconInput,
+} from "@/components/Icons";
 import { Stack } from "@/components/Stack";
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
@@ -28,7 +33,7 @@ export interface PillProps extends HTMLAttributes<HTMLSpanElement> {
   color?: TextColor;
   isStatus?: boolean;
   backgroundColor?: PillColor;
-  icon?: FC<IconProps>;
+  icon?: IconInput;
   onRemove?: () => void;
 }
 
@@ -64,13 +69,15 @@ export const Pill: FC<PillProps> = ({
   shadow = undefined,
   color = TextColor.Muted,
   backgroundColor = BackgroundColor.Muted,
-  icon: IconContent,
+  icon,
   isStatus = false,
   onRemove,
   className,
   children,
   ...props
 }) => {
+  const IconContent = resolveIconInput(icon);
+
   return (
     <Stack
       spacing={Spacing.Xs}

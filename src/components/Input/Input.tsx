@@ -1,7 +1,7 @@
 import { Field, Input as HeadlessInput } from "@headlessui/react";
 import { type FC, InputHTMLAttributes } from "react";
 
-import { type IconProps } from "@/components/Icons";
+import { type IconInput } from "@/components/Icons";
 import radiusStyles from "@/styles/radius";
 import {
   BackgroundColor,
@@ -40,7 +40,7 @@ export interface InputProps extends ModifiedInputProps {
   className?: string;
   type?: InputType;
   error?: boolean;
-  icon?: FC<IconProps>;
+  icon?: IconInput;
 }
 
 /**
