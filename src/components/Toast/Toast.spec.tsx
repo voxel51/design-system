@@ -1,4 +1,5 @@
 import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import { AddIcon } from "@/components/Icons";
 import { randomString } from "@/util/random";
@@ -70,5 +71,59 @@ describe("Toast", () => {
     expect(
       within(screen.getByTestId(testId)).getByTestId(actions.id)
     ).toBeInTheDocument();
+  });
+
+  describe("close control", () => {
+    it("does not render a close control when onClose is omitted", () => {
+      render(<Toast {...defaultProps} />);
+
+      expect(
+        within(screen.getByTestId(testId)).queryByRole("button", {
+          name: "Close",
+        })
+      ).not.toBeInTheDocument();
+    });
+
+    it("renders a close control when onClose is provided", () => {
+      render(<Toast {...defaultProps} onClose={jest.fn()} />);
+
+      expect(
+        within(screen.getByTestId(testId)).getByRole("button", {
+          name: "Close",
+        })
+      ).toBeInTheDocument();
+    });
+
+    it("fires onClose when the close control is clicked", async () => {
+      const user = userEvent.setup();
+      const onClose = jest.fn();
+      render(<Toast {...defaultProps} onClose={onClose} />);
+
+      await user.click(
+        within(screen.getByTestId(testId)).getByRole("button", {
+          name: "Close",
+        })
+      );
+
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
+    it("renders both the action and the close control together", () => {
+      const actions = makeChild();
+      const Actions = actions.data;
+      render(
+        <Toast
+          {...defaultProps}
+          action={<Actions />}
+          onClose={jest.fn()}
+        />
+      );
+
+      const toast = screen.getByTestId(testId);
+      expect(within(toast).getByTestId(actions.id)).toBeInTheDocument();
+      expect(
+        within(toast).getByRole("button", { name: "Close" })
+      ).toBeInTheDocument();
+    });
   });
 });
