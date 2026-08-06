@@ -264,6 +264,4 @@ interface TreeViewMultiSelectProps extends TreeViewSharedProps {
  * - `selectable: true, multiSelect: true` — multi-select; `value` is `readonly TreePath[]`, `onChange` fires `TreePath[]`.
  */
 export type TreeViewProps =
-  | TreeViewNavigateProps
-  | TreeViewSingleSelectProps
-  | TreeViewMultiSelectProps;
+  TreeViewNavigateProps | TreeViewSingleSelectProps | TreeViewMultiSelectProps;

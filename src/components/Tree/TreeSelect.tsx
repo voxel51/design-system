@@ -210,8 +210,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     (pathToRemove: string) => {
       if (!multiSelect) return;
       const multiOnChange = onChange as
-        | ((paths: TreePath[]) => void)
-        | undefined;
+        ((paths: TreePath[]) => void) | undefined;
       const currentInternal = multiValue?.map(toInternalPath) ?? [];
       multiOnChange?.(
         currentInternal.filter((p) => p !== pathToRemove).map(fromInternalPath)

@@ -112,11 +112,7 @@ describe("Toast", () => {
       const actions = makeChild();
       const Actions = actions.data;
       render(
-        <Toast
-          {...defaultProps}
-          action={<Actions />}
-          onClose={jest.fn()}
-        />
+        <Toast {...defaultProps} action={<Actions />} onClose={jest.fn()} />
       );
 
       const toast = screen.getByTestId(testId);
