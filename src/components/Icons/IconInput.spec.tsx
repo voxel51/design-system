@@ -40,6 +40,12 @@ describe("IconInput bridge", () => {
     expect(resolveIconInput(undefined)).toBeUndefined();
   });
 
+  it("resolves a legacy IconName to a stable component identity", () => {
+    // regression: a fresh wrapper per call changes the element type and
+    // remounts the icon subtree on every parent re-render
+    expect(resolveIconInput(IconName.Add)).toBe(resolveIconInput(IconName.Add));
+  });
+
   it("forwards all icon props (including color) to a legacy icon", () => {
     // regression: the resolver must not drop props the call site passes
     const Legacy = resolveIconInput(IconName.Add);

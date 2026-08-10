@@ -302,6 +302,11 @@ export const Icon: FC<LegacyIconProps> = ({
  */
 export type IconInput = FC<BaseIconProps> | IconName;
 
+// Cached per IconName so repeated resolutions return the same component
+// identity — a fresh wrapper each render would change the element type and
+// remount the icon subtree on every parent re-render.
+const legacyIconCache = new Map<IconName, FC<BaseIconProps>>();
+
 /**
  * Resolves an {@link IconInput} to a renderable icon component, rendering
  * legacy {@link IconName} values through the deprecated map-based
@@ -311,7 +316,12 @@ export function resolveIconInput(
   icon?: IconInput
 ): FC<BaseIconProps> | undefined {
   if (typeof icon === "string") {
-    return (props) => <Icon name={icon} {...props} />;
+    let component = legacyIconCache.get(icon);
+    if (!component) {
+      component = (props) => <Icon name={icon} {...props} />;
+      legacyIconCache.set(icon, component);
+    }
+    return component;
   }
 
   return icon;
