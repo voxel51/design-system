@@ -7,7 +7,7 @@ export const typography = {
     xxs: "9px",
     xs: "11px",
     sm: "12px",
-    md: "14px",
+    md: "13px",
     lg: "15px",
     xl: "18px",
     xxl: "23px",
