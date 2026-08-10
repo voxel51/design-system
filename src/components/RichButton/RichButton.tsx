@@ -2,7 +2,7 @@ import clsx from "clsx";
 import type { FC, HTMLAttributes, ReactNode } from "react";
 
 import { Clickable } from "@/components/Clickable";
-import { type IconProps, IconWrapper } from "@/components/Icons";
+import { type IconInput, IconWrapper } from "@/components/Icons";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
 import {
@@ -21,7 +21,7 @@ import { cn } from "@/util/classes";
 export interface RichButtonProps extends HTMLAttributes<HTMLDivElement> {
   active?: boolean;
   description?: ReactNode;
-  icon?: FC<IconProps>;
+  icon?: IconInput;
   label?: ReactNode;
   onClick?: () => void;
 }

@@ -2,7 +2,7 @@ import { Button as HeadlessButton } from "@headlessui/react";
 import clsx from "clsx";
 import { ButtonHTMLAttributes, FC } from "react";
 
-import { type IconProps, IconWrapper } from "@/components/Icons";
+import { type IconInput, IconWrapper } from "@/components/Icons";
 import radiusStyles from "@/styles/radius";
 import {
   ActionColor,
@@ -24,8 +24,8 @@ type ButtonSize = Exclude<Size, Size.Lg | Size.Xl>;
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
   size?: ButtonSize;
-  leadingIcon?: FC<IconProps>;
-  trailingIcon?: FC<IconProps>;
+  leadingIcon?: IconInput;
+  trailingIcon?: IconInput;
   borderless?: boolean;
 }
 

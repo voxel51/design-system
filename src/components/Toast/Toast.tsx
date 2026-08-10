@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import type { FC, HTMLAttributes, ReactNode } from "react";
 
-import { type IconProps, IconWrapper } from "@/components/Icons";
+import { type IconInput, IconWrapper } from "@/components/Icons";
 import { Stack } from "@/components/Stack";
 import { Text } from "@/components/Text";
 import { ToastContainer } from "@/components/ToastContainer";
@@ -32,7 +32,7 @@ export interface ToastProps extends Omit<
   action?: ReactNode;
   anchor?: Anchor;
   description?: ReactNode;
-  icon?: FC<IconProps>;
+  icon?: IconInput;
   open?: boolean;
   title?: ReactNode;
   variant?: ToastVariant;

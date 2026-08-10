@@ -1,6 +1,6 @@
 import type { FC, HTMLAttributes } from "react";
 
-import { type IconProps, IconWrapper } from "@/components/Icons";
+import { type IconInput, IconWrapper } from "@/components/Icons";
 import { Text } from "@/components/Text";
 import { ToastContainer } from "@/components/ToastContainer";
 import radiusStyles from "@/styles/radius";
@@ -19,7 +19,7 @@ import { cn } from "@/util/classes";
 
 export interface ActivityToastProps extends HTMLAttributes<HTMLDivElement> {
   anchor?: Anchor;
-  icon?: FC<IconProps>;
+  icon?: IconInput;
   message?: string;
   open?: boolean;
   variant?: Variant;

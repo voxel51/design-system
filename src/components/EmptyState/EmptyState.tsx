@@ -1,6 +1,6 @@
 import type { FC } from "react";
 
-import { type IconProps } from "@/components/Icons";
+import { type IconInput, resolveIconInput } from "@/components/Icons";
 import { Stack, StackProps } from "@/components/Stack";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
@@ -18,7 +18,7 @@ import {
 import { cn } from "@/util/classes";
 
 export interface EmptyStateProps extends StackProps {
-  icon?: FC<IconProps>;
+  icon?: IconInput;
   title: string;
   description?: string;
 }
@@ -34,12 +34,14 @@ export interface EmptyStateProps extends StackProps {
  *
  */
 export const EmptyState: FC<EmptyStateProps> = ({
-  icon: IconContent,
+  icon,
   title,
   description,
   className,
   ...props
 }) => {
+  const IconContent = resolveIconInput(icon);
+
   return (
     <Stack
       orientation={Orientation.Column}
