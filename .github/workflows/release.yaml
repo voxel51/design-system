@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       bump:
-        description: Version bump type (pre* publishes a prerelease from the dispatched branch)
+        description: Version bump type (pre* publishes a prerelease from the dispatched branch — develop gets -rc.N, other branches get -dev-<branch>.N; re-dispatch the same bump to increment N)
         required: true
         type: choice
         default: patch
@@ -15,15 +15,6 @@ on:
           - prepatch
           - preminor
           - premajor
-          - prerelease
-      preid:
-        description: Prerelease suffix (pre* bumps only) — rc for release testing, dev for feature-branch builds
-        required: false
-        type: choice
-        default: rc
-        options:
-          - rc
-          - dev
 
 jobs:
   bump-and-tag:
@@ -53,9 +44,35 @@ jobs:
         run: |
           case "${{ inputs.bump }}" in
             pre*)
-              NEW_TAG=$(npm version ${{ inputs.bump }} --preid=${{ inputs.preid }} -m "v%s")
+              if [[ "$GITHUB_REF_NAME" == "develop" ]]; then
+                PREID="rc"
+              else
+                SLUG=$(echo "$GITHUB_REF_NAME" \
+                  | sed -E 's|^[^/]+/||' \
+                  | tr '[:upper:]' '[:lower:]' \
+                  | sed -E 's/[^a-z0-9]+/-/g' \
+                  | cut -c1-30 \
+                  | sed -E 's/^-+//; s/-+$//')
+                PREID="dev${SLUG:+-$SLUG}"
+              fi
+
+              CURRENT=$(node -p "require('./package.json').version")
+              IFS=. read -r MAJOR MINOR PATCH <<< "${CURRENT%%-*}"
+              case "${{ inputs.bump }}" in
+                prepatch) PATCH=$((PATCH + 1)) ;;
+                preminor) MINOR=$((MINOR + 1)); PATCH=0 ;;
+                premajor) MAJOR=$((MAJOR + 1)); MINOR=0; PATCH=0 ;;
+              esac
+              BASE="${MAJOR}.${MINOR}.${PATCH}"
+
+              # Prerelease version commits never land on a branch, so the next
+              # counter comes from already-pushed tags, not package.json.
+              LAST=$(git ls-remote --tags origin "v${BASE}-${PREID}.*" \
+                | awk -F. '!/\^\{\}$/ {print $NF}' | sort -n | tail -1)
+              NEW_TAG=$(npm version "${BASE}-${PREID}.$(( ${LAST:--1} + 1 ))" -m "v%s")
+
               echo "prerelease=true" >> "$GITHUB_OUTPUT"
-              echo "dist_tag=${{ inputs.preid }}" >> "$GITHUB_OUTPUT"
+              echo "dist_tag=${PREID}" >> "$GITHUB_OUTPUT"
               echo "branch=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
               ;;
             *)
