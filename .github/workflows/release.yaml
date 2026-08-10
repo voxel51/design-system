@@ -1,121 +1,28 @@
 name: release
 
 on:
-  workflow_dispatch:
-    inputs:
-      bump:
-        description: Version bump type (pre* publishes a prerelease from the dispatched branch — develop gets -rc.N, other branches get -dev-<branch>.N; re-dispatch the same bump to increment N)
-        required: true
-        type: choice
-        default: patch
-        options:
-          - patch
-          - minor
-          - major
-          - prepatch
-          - preminor
-          - premajor
+  push:
+    tags:
+      - v*
 
 jobs:
-  bump-and-tag:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    outputs:
-      tag: ${{ steps.bump.outputs.tag }}
-      branch: ${{ steps.bump.outputs.branch }}
-      prerelease: ${{ steps.bump.outputs.prerelease }}
-      dist_tag: ${{ steps.bump.outputs.dist_tag }}
-    steps:
-      - uses: actions/checkout@v6
-
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 24.15.0
-
-      - name: Configure git
-        run: |
-          git config user.name "voxel51-bot"
-          git config user.email "bot@voxel51.com"
-
-      - name: Bump version and tag
-        id: bump
-        run: |
-          case "${{ inputs.bump }}" in
-            pre*)
-              if [[ "$GITHUB_REF_NAME" == "develop" ]]; then
-                PREID="rc"
-              else
-                SLUG=$(echo "$GITHUB_REF_NAME" \
-                  | sed -E 's|^[^/]+/||' \
-                  | tr '[:upper:]' '[:lower:]' \
-                  | sed -E 's/[^a-z0-9]+/-/g' \
-                  | cut -c1-30 \
-                  | sed -E 's/^-+//; s/-+$//')
-                PREID="dev${SLUG:+-$SLUG}"
-              fi
-
-              CURRENT=$(node -p "require('./package.json').version")
-              IFS=. read -r MAJOR MINOR PATCH <<< "${CURRENT%%-*}"
-              case "${{ inputs.bump }}" in
-                prepatch) PATCH=$((PATCH + 1)) ;;
-                preminor) MINOR=$((MINOR + 1)); PATCH=0 ;;
-                premajor) MAJOR=$((MAJOR + 1)); MINOR=0; PATCH=0 ;;
-              esac
-              BASE="${MAJOR}.${MINOR}.${PATCH}"
-
-              # Prerelease version commits never land on a branch, so the next
-              # counter comes from already-pushed tags, not package.json.
-              LAST=$(git ls-remote --tags origin "v${BASE}-${PREID}.*" \
-                | awk -F. '!/\^\{\}$/ {print $NF}' | sort -n | tail -1)
-              NEW_TAG=$(npm version "${BASE}-${PREID}.$(( ${LAST:--1} + 1 ))" -m "v%s")
-
-              echo "prerelease=true" >> "$GITHUB_OUTPUT"
-              echo "dist_tag=${PREID}" >> "$GITHUB_OUTPUT"
-              echo "branch=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
-              ;;
-            *)
-              NEW_TAG=$(npm version ${{ inputs.bump }} -m "v%s")
-              git branch "release/${NEW_TAG}"
-              echo "prerelease=false" >> "$GITHUB_OUTPUT"
-              echo "dist_tag=latest" >> "$GITHUB_OUTPUT"
-              echo "branch=release/${NEW_TAG}" >> "$GITHUB_OUTPUT"
-              ;;
-          esac
-          echo "tag=$NEW_TAG" >> "$GITHUB_OUTPUT"
-
-      # Stable: push the release branch with its tag. Prerelease: push only the
-      # tag — the version commit lives under the tag ref and the dispatched
-      # branch is left untouched.
-      - name: Push branch and tag
-        run: |
-          if [[ "${{ steps.bump.outputs.prerelease }}" == "true" ]]; then
-            git push origin "refs/tags/${{ steps.bump.outputs.tag }}"
-          else
-            git push --follow-tags origin "${{ steps.bump.outputs.branch }}"
-          fi
-
   run_tests:
     name: run unit tests
-    needs: bump-and-tag
     uses: ./.github/workflows/_run_tests.yaml
     with:
       node-version: 24.15.0
-      ref: ${{ needs.bump-and-tag.outputs.tag }}
+      ref: ${{ github.ref_name }}
     permissions:
       contents: read
 
   publish:
-    needs: [bump-and-tag, run_tests]
+    needs: run_tests
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
     steps:
       - uses: actions/checkout@v6
-        with:
-          ref: ${{ needs.bump-and-tag.outputs.tag }}
 
       - name: Setup Node
         uses: actions/setup-node@v6
@@ -123,38 +30,29 @@ jobs:
           node-version: 24.15.0
           registry-url: https://registry.npmjs.org
 
+      # Stable tags (vX.Y.Z) must match package.json. Prerelease versions
+      # (vX.Y.Z-<id>.N) never live in source — they are stamped from the tag
+      # and published under dist-tag <id> so `latest` never moves.
+      - name: Resolve version and dist-tag
+        id: version
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          BASE="${VERSION%%-*}"
+          CURRENT=$(node -p "require('./package.json').version")
+          echo "package.json version: ${CURRENT}"
+          echo "tagged version: ${VERSION}"
+          if [[ "$VERSION" == "$BASE" ]]; then
+            test "$CURRENT" = "$VERSION"
+            echo "dist_tag=latest" >> "$GITHUB_OUTPUT"
+          else
+            SUFFIX="${VERSION#*-}"
+            npm version "$VERSION" --no-git-tag-version
+            echo "dist_tag=$(echo "$SUFFIX" | sed -E 's/\.[0-9]+$//')" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Clean install
         run: npm ci
 
       - name: Publish package
         run: | # NODE_AUTH_TOKEN needs to be cleared explicitly; see https://github.com/actions/setup-node/issues/1440
-          NODE_AUTH_TOKEN="" npm publish --provenance --access public --tag "${{ needs.bump-and-tag.outputs.dist_tag }}"
-
-  open-pr:
-    if: needs.bump-and-tag.outputs.prerelease == 'false'
-    needs: [bump-and-tag, publish]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
-      actions: write
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          ref: ${{ needs.bump-and-tag.outputs.branch }}
-
-      - name: Create PR to develop
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh pr create \
-            --base develop \
-            --head "${{ needs.bump-and-tag.outputs.branch }}" \
-            --title "${{ needs.bump-and-tag.outputs.tag }}" \
-            --body "Automated version bump for ${{ needs.bump-and-tag.outputs.tag }}. Already published to npm."
-
-      - name: Dispatch PR checks against release branch
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh workflow run pr_checks.yaml --ref "${{ needs.bump-and-tag.outputs.branch }}"
+          NODE_AUTH_TOKEN="" npm publish --provenance --access public --tag "${{ steps.version.outputs.dist_tag }}"
