@@ -27,6 +27,7 @@
         "paths": {
             "@/*": ["src/*"],
             "#/*": ["utils/*"],
+            "@voxel51/voodo": ["src/index.ts"],
         }
     },
     "include": ["src"],
