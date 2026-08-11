@@ -1,13 +1,13 @@
 import { type FC } from "react";
 
-import { type IconProps, IconWrapper } from "@/components/Icons";
+import { type IconInput, IconWrapper } from "@/components/Icons";
 import { Size, TextColor, textColorClass } from "@/types";
 import { cn } from "@/util/classes";
 
 import { iconPaddingStyles } from "./styles";
 
 export interface InputIconProps {
-  icon: FC<IconProps>;
+  icon: IconInput;
   size: Size;
   hasText?: boolean;
 }

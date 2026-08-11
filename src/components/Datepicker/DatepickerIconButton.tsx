@@ -1,7 +1,7 @@
 import { Button } from "@headlessui/react";
 import { type FC } from "react";
 
-import { type IconProps } from "@/components/Icons";
+import { type IconInput, resolveIconInput } from "@/components/Icons";
 import { IconColor, Size, textColorClass } from "@/types";
 import { cn } from "@/util/classes";
 
@@ -18,7 +18,7 @@ export interface DatepickerIconButtonProps {
   hasValue?: boolean;
   size?: Size;
   ariaLabel?: string;
-  icon: FC<IconProps>;
+  icon: IconInput;
   position?: IconPosition;
 }
 
@@ -39,9 +39,12 @@ export const DatepickerIconButton: FC<DatepickerIconButtonProps> = ({
   disabled,
   size = Size.Md,
   ariaLabel = "Open date picker",
-  icon: IconContent,
+  icon,
   position = IconPosition.Leading,
 }) => {
+  const IconContent = resolveIconInput(icon);
+  if (!IconContent) return null;
+
   const positionClasses =
     position === IconPosition.Leading
       ? "absolute left-0"

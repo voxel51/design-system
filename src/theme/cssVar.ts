@@ -27,6 +27,7 @@ export const cssVar = {
       muted: "var(--color-content-bg-muted)",
       popover: "var(--color-content-bg-popover)",
       secondary: "var(--color-content-bg-secondary)",
+      selected: "var(--color-content-bg-selected)",
     },
     text: {
       fg: "var(--color-content-text-fg)",
