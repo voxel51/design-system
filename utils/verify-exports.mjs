@@ -52,9 +52,26 @@ for (const [entry, names] of Object.entries(EXPECTED)) {
   }
 }
 
+// Every target named in the exports map must exist. A wrong path there fails
+// only in a consumer's build, which is far too late — and is exactly what
+// happened once with `./tokens`, whose `types` pointed at the module's own
+// declaration rather than the entry's.
+const { existsSync, readFileSync } = await import("fs");
+const pkg = JSON.parse(
+  readFileSync(new URL("../package.json", import.meta.url), "utf8")
+);
+
+for (const [subpath, target] of Object.entries(pkg.exports)) {
+  const targets = typeof target === "string" ? [target] : Object.values(target);
+  for (const file of targets) {
+    if (!existsSync(new URL(`../${file}`, import.meta.url))) {
+      failures.push(`exports["${subpath}"] points at missing ${file}`);
+    }
+  }
+}
+
 // The tokens entry must stay free of React and CSS — it exists so workers and
 // other non-UI consumers can read token values
-const { readFileSync } = await import("fs");
 const tokensBundle = readFileSync(
   new URL("../dist/tokens.js", import.meta.url),
   "utf8"

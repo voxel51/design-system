@@ -113,9 +113,8 @@ import { colors, palettePool, primitives } from "@voxel51/voodo/tokens";
 const pool = palettePool.dark;
 ```
 
-For consumers that cannot import JavaScript at all, the same tree is published
-as JSON at `@voxel51/voodo/tokens.json` — this is how FiftyOne's Python package
-generates its default color pool.
+FiftyOne's Python package reads this same entry to generate its default color
+pool, via a script that runs `node` against the installed dependency.
 
 ## Contributing
 

@@ -23,12 +23,11 @@
       "require": "./dist/index.cjs"
     },
     "./tokens": {
-      "types": "./dist/theme/tokens/index.d.ts",
+      "types": "./dist/tokens.d.ts",
       "import": "./dist/tokens.js",
       "require": "./dist/tokens.cjs"
     },
-    "./theme.css": "./dist/voodo.css",
-    "./tokens.json": "./dist/tokens.json"
+    "./theme.css": "./dist/voodo.css"
   },
   "files": [
     "dist",
@@ -41,12 +40,12 @@
     "format": "prettier --write '**/*.{ts,tsx}'",
     "format:check": "prettier --check '**/*.{ts,tsx}'",
     "generate-icons": "tsx utils/generate-icons.ts && prettier --write src/components/Icons/icons.tsx --log-level warn",
-    "generate-tailwind-theme": "tsx utils/generate-color-classes.ts && tsx utils/generate-tailwind-theme.ts && tsx utils/generate-css-vars.ts && tsx utils/generate-tokens-json.ts && prettier --write src/theme/cssVar.ts --log-level silent",
+    "generate-tailwind-theme": "tsx utils/generate-color-classes.ts && tsx utils/generate-tailwind-theme.ts && tsx utils/generate-css-vars.ts && prettier --write src/theme/cssVar.ts --log-level silent",
     "lint": "eslint src --max-warnings 0",
     "lint:fix": "eslint src --fix",
     "prebuild": "npm run generate-tailwind-theme",
     "prebuild-storybook": "npm run generate-tailwind-theme",
-    "postbuild": "cp src/theme/tokens.json dist/tokens.json && node utils/verify-exports.mjs",
+    "postbuild": "node utils/verify-exports.mjs",
     "prepublishOnly": "npm run build",
     "prestorybook": "npm run generate-tailwind-theme",
     "storybook": "storybook dev -p 6006",
