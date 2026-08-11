@@ -73,6 +73,50 @@ application.
 import "@voxel51/voodo/theme.css";
 ```
 
+CSS variables are the preferred way to consume theme values: they react to
+light/dark with no JavaScript involved. Typed references are exported as
+`cssVar`, so you can bind to them from `sx`, emotion, or plain CSS-in-JS
+without hardcoding variable names:
+
+```typescript
+import { cssVar } from "@voxel51/voodo";
+
+<div style={{ color: cssVar.color.text.primary }} />;
+```
+
+#### Literal color values
+
+Some consumers cannot use a `var(--…)`: canvas and WebGL, charting libraries
+that parse colors themselves, and image export. For those, `useColorPalette`
+resolves the palette for the active mode:
+
+```typescript
+import { useColorPalette } from "@voxel51/voodo";
+
+const palette = useColorPalette();
+ctx.strokeStyle = palette.pool[i % palette.pool.length];
+ctx.fillStyle = palette.teal;
+```
+
+`pool` is the ordered palette slots — a palette is N colors, however many the
+tokens define, and the hue-named aliases are not part of it.
+
+#### Tokens outside of React
+
+`@voxel51/voodo/tokens` exports the token values as plain data, with no React
+and no CSS, so it is safe to import from workers, Node tooling, and other
+non-UI contexts where importing the package root is not an option:
+
+```typescript
+import { colors, palettePool, primitives } from "@voxel51/voodo/tokens";
+
+const pool = palettePool.dark;
+```
+
+For consumers that cannot import JavaScript at all, the same tree is published
+as JSON at `@voxel51/voodo/tokens.json` — this is how FiftyOne's Python package
+generates its default color pool.
+
 ## Contributing
 
 This library is based on [HeadlessUI](https://headlessui.com/) and [Tailwind](https://tailwindcss.com/). 

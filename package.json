@@ -46,7 +46,7 @@
     "lint:fix": "eslint src --fix",
     "prebuild": "npm run generate-tailwind-theme",
     "prebuild-storybook": "npm run generate-tailwind-theme",
-    "postbuild": "cp src/theme/tokens.json dist/tokens.json",
+    "postbuild": "cp src/theme/tokens.json dist/tokens.json && node utils/verify-exports.mjs",
     "prepublishOnly": "npm run build",
     "prestorybook": "npm run generate-tailwind-theme",
     "storybook": "storybook dev -p 6006",
