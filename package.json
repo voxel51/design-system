@@ -22,6 +22,11 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
+    "./tokens": {
+      "types": "./dist/theme/tokens/index.d.ts",
+      "import": "./dist/tokens.js",
+      "require": "./dist/tokens.cjs"
+    },
     "./theme.css": "./dist/voodo.css",
     "./tokens.json": "./dist/tokens.json"
   },

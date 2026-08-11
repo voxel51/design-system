@@ -1,11 +1,8 @@
 import { act, renderHook } from "@testing-library/react";
 
 import { colors } from "./tokens/colors";
-import {
-  PALETTE_POOL_KEYS,
-  useColorMode,
-  useColorPalette,
-} from "./useColorPalette";
+import { palettePool, paletteSlots } from "./tokens/palette";
+import { useColorMode, useColorPalette } from "./useColorPalette";
 
 /**
  * Values are asserted against the token source rather than literal hex, so
@@ -75,15 +72,16 @@ describe("useColorPalette", () => {
 
     const { result } = renderHook(() => useColorPalette());
 
-    expect(result.current.pool).toEqual(
-      PALETTE_POOL_KEYS.map((key) => colors.dark.content.palette[key])
-    );
+    expect(result.current.pool).toEqual(palettePool.dark);
   });
 
-  it("exposes twelve pool slots", () => {
+  it("exposes every numbered slot the tokens define, and only those", () => {
     const { result } = renderHook(() => useColorPalette());
 
-    expect(result.current.pool).toHaveLength(12);
+    // A palette is N colors, not a fixed count — assert against the tokens
+    // rather than a hardcoded length, and that named aliases stay out of the
+    // pool even though they sit alongside the slots
+    expect(result.current.pool).toHaveLength(paletteSlots.light.length);
     expect(
       result.current.pool.every((color) => /^#[0-9A-F]{6}$/i.test(color))
     ).toBe(true);

@@ -1,40 +1,24 @@
 import { useMemo, useSyncExternalStore } from "react";
 
 import { colors } from "./tokens/colors";
+import { palettePool } from "./tokens/palette";
 
 /** Resolved color mode. Mirrors the `.dark` class contract in `tailwind.css`. */
 export type ColorMode = "dark" | "light";
 
-/** Ordered palette slots, in the sequence colors should be handed out. */
-export const PALETTE_POOL_KEYS = [
-  "1",
-  "2",
-  "3",
-  "4",
-  "5",
-  "6",
-  "7",
-  "8",
-  "9",
-  "10",
-  "11",
-  "12",
-] as const;
-
-export type PaletteSlot = (typeof PALETTE_POOL_KEYS)[number];
-
-/** Named palette aliases, for when a specific hue is meant rather than a slot. */
-export type PaletteName =
-  "orange" | "blue" | "green" | "purple" | "pink" | "yellow" | "teal" | "red";
-
-type PaletteColors = Record<PaletteSlot | PaletteName, string>;
+/**
+ * The palette's own token shape — every numbered slot and named alias the
+ * tokens define. Derived rather than enumerated, so a palette of N colors
+ * types correctly without touching this file.
+ */
+type PaletteColors = typeof colors.dark.content.palette;
 
 export interface ColorPalette extends PaletteColors {
   /**
    * The ordered slots as an array — the shape wanted by anything that assigns
    * colors by index (label coloring, chart series, legends).
    */
-  pool: string[];
+  pool: readonly string[];
 }
 
 const DEFAULT_MODE: ColorMode = "dark";
@@ -96,12 +80,8 @@ export const useColorMode = (): ColorMode =>
 export const useColorPalette = (): ColorPalette => {
   const mode = useColorMode();
 
-  return useMemo(() => {
-    const palette: PaletteColors = colors[mode].content.palette;
-
-    return {
-      ...palette,
-      pool: PALETTE_POOL_KEYS.map((key) => palette[key]),
-    };
-  }, [mode]);
+  return useMemo(
+    () => ({ ...colors[mode].content.palette, pool: palettePool[mode] }),
+    [mode]
+  );
 };
