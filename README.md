@@ -88,7 +88,27 @@ General rules of thumb:
 
 ## Publishing
 
-This library is published to NPM via GitHub Actions workflows.
+Pushing a `v*` tag publishes to NPM via the `release` workflow.
+
+Stable release, on `main`:
+
+```shell
+npm version minor && git push --follow-tags
+```
+
+The tag must match `package.json` or the workflow fails.
+
+Prerelease, on any branch:
+
+```shell
+git tag v0.2.0-dev-my-feature.0 && git push origin v0.2.0-dev-my-feature.0
+```
+
+Prerelease versions (`vX.Y.Z-<id>.N`) are stamped from the tag — they never
+appear in `package.json` — and publish under NPM dist-tag `<id>`
+(`npm i @voxel51/voodo@dev-my-feature`), so `latest` only moves on stable
+releases. Use `rc` as the id for release candidates from `main` and
+`dev-<branch>` for feature-branch builds.
 
 This library is currently in a pre-release state, with versions matching `0.x.y`.
 Standard semantic versioning will be enforced starting with version `1.0.0`.

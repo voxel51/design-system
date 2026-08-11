@@ -1,71 +1,28 @@
 name: release
 
 on:
-  workflow_dispatch:
-    inputs:
-      bump:
-        description: Version bump type
-        required: true
-        type: choice
-        default: patch
-        options:
-          - patch
-          - minor
-          - major
+  push:
+    tags:
+      - v*
 
 jobs:
-  bump-and-tag:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    outputs:
-      tag: ${{ steps.bump.outputs.tag }}
-      branch: ${{ steps.bump.outputs.branch }}
-    steps:
-      - uses: actions/checkout@v6
-
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 24.15.0
-
-      - name: Configure git
-        run: |
-          git config user.name "voxel51-bot"
-          git config user.email "bot@voxel51.com"
-
-      - name: Bump version and tag on release branch
-        id: bump
-        run: |
-          NEW_TAG=$(npm version ${{ inputs.bump }} -m "v%s")
-          BRANCH="release/${NEW_TAG}"
-          git branch "$BRANCH"
-          echo "tag=$NEW_TAG" >> "$GITHUB_OUTPUT"
-          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
-
-      - name: Push branch and tag
-        run: git push --follow-tags origin "${{ steps.bump.outputs.branch }}"
-
   run_tests:
     name: run unit tests
-    needs: bump-and-tag
     uses: ./.github/workflows/_run_tests.yaml
     with:
       node-version: 24.15.0
-      ref: ${{ needs.bump-and-tag.outputs.tag }}
+      ref: ${{ github.ref_name }}
     permissions:
       contents: read
 
   publish:
-    needs: [bump-and-tag, run_tests]
+    needs: run_tests
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
     steps:
       - uses: actions/checkout@v6
-        with:
-          ref: ${{ needs.bump-and-tag.outputs.tag }}
 
       - name: Setup Node
         uses: actions/setup-node@v6
@@ -73,37 +30,71 @@ jobs:
           node-version: 24.15.0
           registry-url: https://registry.npmjs.org
 
+      # Stable tags (vX.Y.Z) must match package.json. Prerelease versions
+      # (vX.Y.Z-<id>.N) never live in source — they are stamped from the tag
+      # and published under dist-tag <id> so `latest` never moves.
+      - name: Resolve version and dist-tag
+        id: version
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          BASE="${VERSION%%-*}"
+          CURRENT=$(node -p "require('./package.json').version")
+          echo "package.json version: ${CURRENT}"
+          echo "tagged version: ${VERSION}"
+          if [[ "$VERSION" == "$BASE" ]]; then
+            test "$CURRENT" = "$VERSION"
+            echo "dist_tag=latest" >> "$GITHUB_OUTPUT"
+          else
+            SUFFIX="${VERSION#*-}"
+            npm version "$VERSION" --no-git-tag-version
+            echo "dist_tag=$(echo "$SUFFIX" | sed -E 's/\.[0-9]+$//')" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Clean install
         run: npm ci
 
       - name: Publish package
         run: | # NODE_AUTH_TOKEN needs to be cleared explicitly; see https://github.com/actions/setup-node/issues/1440
-          NODE_AUTH_TOKEN="" npm publish --provenance --access public
+          NODE_AUTH_TOKEN="" npm publish --provenance --access public --tag "${{ steps.version.outputs.dist_tag }}"
 
-  open-pr:
-    needs: [bump-and-tag, publish]
+  # Storybook builds against the source at the release tag, so the published
+  # site always matches the released package. Stable tags only — a prerelease
+  # from a feature branch must not overwrite the official site.
+  publish_storybook:
+    if: ${{ !contains(github.ref_name, '-') }}
+    needs: publish
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: write
-      actions: write
+      id-token: write
     steps:
       - uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
         with:
-          ref: ${{ needs.bump-and-tag.outputs.branch }}
+          node-version: 24.15.0
 
-      - name: Create PR to develop
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh pr create \
-            --base develop \
-            --head "${{ needs.bump-and-tag.outputs.branch }}" \
-            --title "${{ needs.bump-and-tag.outputs.tag }}" \
-            --body "Automated version bump for ${{ needs.bump-and-tag.outputs.tag }}. Already published to npm."
+      - name: Clean install
+        run: npm ci
 
-      - name: Dispatch PR checks against release branch
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build Storybook
+        run: npm run build-storybook
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          project_id: computer-vision-team
+          service_account: github-des-sys-docs-workflow@computer-vision-team.iam.gserviceaccount.com
+          workload_identity_provider: ${{ secrets.REPO_GOOGLE_WORKLOAD_IDP }}
+
+      - name: set up gcloud cli
+        uses: google-github-actions/setup-gcloud@v3
+
+      - name: Copy files to bucket
         run: |
-          gh workflow run pr_checks.yaml --ref "${{ needs.bump-and-tag.outputs.branch }}"
+          gcloud storage cp -r ./storybook-static/* gs://voxel51-official-design-ontology-6be6da2312ceebbb/
+
+      - name: Invalidate CDN cache
+        run: |
+          gcloud compute url-maps invalidate-cdn-cache voxel51-official-design-ontology-http-lb --project computer-vision-team --path "/*"

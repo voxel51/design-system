@@ -61,6 +61,7 @@ export default defineConfig({
         "**/*.spec.tsx",
         "**/*.test.tsx",
         "**/*.test.ts",
+        "**/*.stories.tsx",
         "src/setupTests.ts",
       ],
     }),

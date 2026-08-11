@@ -1,5 +1,7 @@
 # Application specific
 *tailwind.css
+storybook-static
+*storybook.log
 
 # Logs
 logs
