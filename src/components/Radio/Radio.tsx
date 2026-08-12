@@ -126,7 +126,8 @@ export const Radio: FC<RadioProps> = ({
       {label && (
         <Label
           className={cn(
-            textColorClass(disabled ? TextColor.Secondary : TextColor.Primary),
+            // Figma: label is white when enabled, tertiary when disabled
+            textColorClass(disabled ? TextColor.Tertiary : TextColor.Primary),
             textSizeStyles[size],
             !disabled && "cursor-pointer",
             labelClassName

@@ -5,7 +5,6 @@ import {
   Button,
   FormField,
   Orientation,
-  Radius,
   ResizeBehavior,
   Size,
   Spacing,
@@ -27,11 +26,6 @@ const meta: Meta<typeof TextArea> = {
       control: "select",
       options: Object.values(Size),
       description: "The size of the textarea",
-    },
-    radius: {
-      control: "select",
-      options: Object.values(Radius),
-      description: "The border radius of the textarea",
     },
     placeholder: {
       control: "text",
@@ -70,7 +64,6 @@ export const Default: Story = {
         onChange={(e) => setValue(e.target.value)}
         placeholder={args.placeholder || "Enter text..."}
         size={args.size || Size.Md}
-        radius={args.radius || Radius.Sm}
       />
     );
   },
@@ -80,7 +73,6 @@ export const WithPlaceholder: Story = {
   args: {
     placeholder: "Enter a description...",
     size: Size.Md,
-    radius: Radius.Sm,
   },
 };
 
@@ -89,7 +81,6 @@ export const WithError: Story = {
     error: true,
     placeholder: "There's been a problem...",
     size: Size.Md,
-    radius: Radius.Sm,
   },
 };
 
@@ -98,7 +89,6 @@ export const Disabled: Story = {
     placeholder: "This textarea is disabled",
     disabled: true,
     size: Size.Md,
-    radius: Radius.Sm,
   },
 };
 
@@ -107,14 +97,12 @@ export const DisabledWithValue: Story = {
     value: "This content cannot be edited",
     disabled: true,
     size: Size.Md,
-    radius: Radius.Sm,
   },
 };
 
 export const Unset: Story = {
   args: {
     size: Size.Md,
-    radius: Radius.Sm,
     placeholder: "Enter text...",
   },
 };
@@ -163,23 +151,10 @@ export const DifferentRows: Story = {
   ),
 };
 
-export const BorderRadii: Story = {
-  render: () => (
-    <Stack orientation={Orientation.Column} spacing={Spacing.Md}>
-      <TextArea placeholder="No border radius" radius={Radius.None} />
-      <TextArea placeholder="Small border radius" radius={Radius.Sm} />
-      <TextArea placeholder="Medium border radius" radius={Radius.Md} />
-      <TextArea placeholder="Large border radius" radius={Radius.Lg} />
-      <TextArea placeholder="Full border radius" radius={Radius.Full} />
-    </Stack>
-  ),
-};
-
 export const WithValue: Story = {
   args: {
     value: "This textarea has a preset value",
     size: Size.Md,
-    radius: Radius.Sm,
   },
 };
 

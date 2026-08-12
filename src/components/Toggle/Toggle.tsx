@@ -129,8 +129,8 @@ export const Toggle: FC<ToggleProps> = ({
           "border",
           borderColorClass(BorderColor.Default),
           "transition-colors",
-          // when hovered
-          "hover:bg-[#999999]", // TODO - current scheme doesn't have a light grey
+          // when hovered (no hover affordance when disabled)
+          "not-disabled:hover:border-content-border-hover", // TODO - current scheme doesn't have a light grey track hover
           "focus:outline-none",
           "focus:ring-0",
           "focus-visible:outline-none",
@@ -138,6 +138,7 @@ export const Toggle: FC<ToggleProps> = ({
           // when disabled
           "disabled:opacity-50",
           "disabled:cursor-not-allowed",
+          "disabled:pointer-events-none",
           // when checked
           "data-checked:bg-action-primary-primary",
           "data-checked:border-action-primary-primary",
@@ -156,9 +157,9 @@ export const Toggle: FC<ToggleProps> = ({
             "-translate-y-1/2",
             "inline-block",
             "rounded-full",
-            "bg-content-bg-card-1",
+            // Figma: off-state thumb is dark (#18191A); turns white when active
+            bgColorClass(BackgroundColor.Background),
             "group-data-checked:bg-white",
-            "shadow-sm",
             "ring-0", // show focus on outside of track
             "transition-transform",
             "translate-x-0.5",
@@ -170,7 +171,7 @@ export const Toggle: FC<ToggleProps> = ({
       {label && (
         <Label
           className={cn(
-            textColorClass(TextColor.Muted),
+            textColorClass(TextColor.Secondary),
             textStyles[size],
             "cursor-pointer",
             labelClassName

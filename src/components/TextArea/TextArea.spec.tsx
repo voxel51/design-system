@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { Radius, Size } from "@/types";
+import { Size } from "@/types";
 
 import { ResizeBehavior, TextArea } from "./TextArea";
 
@@ -84,18 +84,18 @@ describe("TextArea", () => {
     expect(textarea).toHaveClass("px-4", "py-3", "text-lg/9");
   });
 
-  // Radius Variants
-  it("should apply correct radius classes", () => {
-    render(<TextArea radius={Radius.Md} data-testid="radius-textarea" />);
+  // Radius (fixed)
+  it("should apply a fixed border radius", () => {
+    render(<TextArea data-testid="radius-textarea" />);
     const textarea = screen.getByTestId("radius-textarea");
-    expect(textarea).toHaveClass("rounded-md");
+    expect(textarea).toHaveClass("rounded-sm");
   });
 
   // Error State
   it("should apply error styling when error prop is true", () => {
     render(<TextArea error data-testid="error-textarea" />);
     const textarea = screen.getByTestId("error-textarea");
-    expect(textarea).toHaveClass("border-semantic-destructive");
+    expect(textarea).toHaveClass("border-content-border-error");
   });
 
   // Resize Behavior
