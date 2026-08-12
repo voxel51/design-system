@@ -118,9 +118,8 @@ export const Pill: FC<PillProps> = ({
             e.stopPropagation();
             onRemove();
           }}
-          // Fit the icon button to the pill: tight padding + round corners so the hover
-          // affordance is a small circle rather than a large square that fights the pill shape.
-          className="shrink-0 rounded-full p-0.5"
+          // Round corners so the hover affordance is a small circle, matching the pill shape.
+          className="shrink-0 rounded-full"
         />
       )}
     </Stack>

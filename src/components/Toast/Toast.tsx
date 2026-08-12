@@ -146,7 +146,7 @@ export const Toast: FC<ToastProps> = ({
               aria-label="Close"
               leadingIcon={CloseIcon}
               onClick={onClose}
-              className="shrink-0 p-1"
+              className="shrink-0"
             />
           )}
         </Stack>
