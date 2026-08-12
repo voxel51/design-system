@@ -40,11 +40,11 @@ export const primitives = {
     1000: "#000000",
   },
   orange: {
-    300: "#FFD098",
-    400: "#FF9950",
-    500: "#FF6D04",
-    600: "#D05700",
-    700: "#9B4200",
+    300: "#FFBB99",
+    400: "#FF8A3D",
+    500: "#FA5300",
+    600: "#C74200",
+    700: "#943100",
   },
   green: {
     300: "#7AB87C",
@@ -122,7 +122,7 @@ export const colors = {
         muted: primitives.neutral[850],
         popover: primitives.neutral[950],
         secondary: primitives.neutral[900],
-        selected: "#FF6D041E",
+        selected: "#FA53001E",
         raised: primitives.neutral[750],
       },
       text: {
@@ -273,7 +273,7 @@ export const colors = {
         muted: primitives.neutral[100],
         popover: primitives.neutral[0],
         secondary: primitives.neutral[125],
-        selected: "#FF6D041E",
+        selected: "#FA53001E",
         // provisional light value (Figma is dark-authored); verify against
         // light-mode Figma when available
         raised: primitives.neutral[125],
