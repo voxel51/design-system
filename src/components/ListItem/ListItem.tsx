@@ -107,7 +107,16 @@ export const ListItem: FC<ListItemProps> = ({
           </div>
         </div>
 
-        <span>{actions}</span>
+        <span
+          className={cn(
+            "flex flex-nowrap items-center",
+            "gap-x-sm",
+            // Action affordances (e.g. icon Buttons) read as light grey, not white.
+            textColorClass(TextColor.Secondary)
+          )}
+        >
+          {actions}
+        </span>
       </div>
       {additionalContent && (
         <div

@@ -49,7 +49,7 @@ describe("Pill", () => {
     expect(svg).not.toBeInTheDocument();
   });
 
-  describe("onRemove", () => {
+  describe("removable", () => {
     it("renders a remove button when onRemove is provided", () => {
       render(<Pill onRemove={jest.fn()}>{pillText}</Pill>);
       expect(
@@ -57,7 +57,7 @@ describe("Pill", () => {
       ).toBeInTheDocument();
     });
 
-    it("does not render a remove button when onRemove is omitted", () => {
+    it("does not render a remove button when onRemove is omitted (non-removable)", () => {
       render(<Pill>{pillText}</Pill>);
       expect(
         screen.queryByRole("button", { name: "Remove" })

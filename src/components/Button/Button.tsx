@@ -55,7 +55,7 @@ const variantStyles: Record<Variant, string> = {
     bgColorClass(ActionColor.DangerFocus, ElementState.Active)
   ),
   [Variant.Icon]: clsx(
-    "px-2.5 py-2.5",
+    "aspect-square min-w-0 shrink-0 p-2.5", // square icon button, not a rectangle
     "bg-transparent",
     bgColorClass(BackgroundColor.CardElevated, ElementState.Hover)
   ),
