@@ -170,7 +170,8 @@ export function useTreeViewState(
     (selected: string) => {
       if (multiSelect) {
         const multiOnChange = onChange as
-          ((paths: TreePath[]) => void) | undefined;
+          | ((paths: TreePath[]) => void)
+          | undefined;
         const currentInternal = selection ? [...selection] : [];
         const next = currentInternal.includes(selected)
           ? currentInternal.filter((p) => p !== selected)
@@ -181,7 +182,8 @@ export function useTreeViewState(
           setQuery("");
         }
         const singleOnChange = onChange as
-          ((path: TreePath | null) => void) | undefined;
+          | ((path: TreePath | null) => void)
+          | undefined;
         singleOnChange?.(fromInternalPath(selected));
       }
       onAfterSelect?.(selected);
@@ -200,11 +202,13 @@ export function useTreeViewState(
     setQuery("");
     if (multiSelect) {
       const multiOnChange = onChange as
-        ((paths: TreePath[]) => void) | undefined;
+        | ((paths: TreePath[]) => void)
+        | undefined;
       multiOnChange?.([]);
     } else {
       const singleOnChange = onChange as
-        ((path: TreePath | null) => void) | undefined;
+        | ((path: TreePath | null) => void)
+        | undefined;
       singleOnChange?.(null);
     }
   }, [multiSelect, onChange, setQuery]);
