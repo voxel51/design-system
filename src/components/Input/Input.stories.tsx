@@ -137,11 +137,4 @@ export const ReadOnly: Story = {
   },
 };
 
-export const FullRounded: Story = {
-  args: {
-    radius: Radius.Full,
-    placeholder: "Enter text...",
-  },
-};
-
 export default meta;
