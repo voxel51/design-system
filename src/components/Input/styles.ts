@@ -25,3 +25,22 @@ export const paddingLeftStyles: Partial<Record<Size, string>> = {
   [Size.Md]: "pl-8",
   [Size.Lg]: "pl-8.25",
 };
+
+/**
+ * Styling applied to `type="number"` inputs.
+ *
+ * Removes the native browser spinner (up/down) buttons in WebKit/Blink and Firefox so number inputs
+ * visually match the other input types. Without this the spinners add inconsistent right-hand padding
+ * and chrome that differs across browsers.
+ *
+ * NOTE: This hides the spinners only. Exact "Voodoo" number-input specs (custom stepper affordance,
+ * alignment, etc.) require the design document, which was not available.
+ */
+export const numberInputStyles = clsx(
+  "appearance-none",
+  "[&::-webkit-outer-spin-button]:appearance-none",
+  "[&::-webkit-inner-spin-button]:appearance-none",
+  "[&::-webkit-inner-spin-button]:m-0",
+  "[&::-webkit-outer-spin-button]:m-0",
+  "[-moz-appearance:textfield]"
+);

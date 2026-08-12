@@ -123,6 +123,7 @@ export const colors = {
         popover: primitives.neutral[950],
         secondary: primitives.neutral[900],
         selected: "#FF6D041E",
+        raised: primitives.neutral[750],
       },
       text: {
         fg: primitives.neutral[25],
@@ -273,6 +274,9 @@ export const colors = {
         popover: primitives.neutral[0],
         secondary: primitives.neutral[125],
         selected: "#FF6D041E",
+        // provisional light value (Figma is dark-authored); verify against
+        // light-mode Figma when available
+        raised: primitives.neutral[125],
       },
       text: {
         fg: primitives.neutral[1000],
