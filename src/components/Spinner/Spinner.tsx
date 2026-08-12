@@ -19,8 +19,6 @@ const sizeStyles: Record<Size, string> = {
 /**
  * An animated spinner component.
  *
- * Note that this component is also available via the {@link Icon} component with {@link IconName.Spinner}.
- *
  * @example
  * ```tsx
  * <Spinner size={Size.Md} />

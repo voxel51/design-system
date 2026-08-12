@@ -1,10 +1,11 @@
 {
   "name": "@voxel51/voodo",
-  "version": "0.0.31",
+  "version": "0.1.0",
   "description": "Voxel51's official design ontology (VOODO) system",
   "type": "module",
   "author": "Voxel Engineering <engineering@voxel51.com>",
   "license": "Apache-2.0",
+  "sideEffects": false,
   "repository": {
     "type": "git",
     "url": "https://github.com/voxel51/design-system.git"
@@ -24,7 +25,8 @@
     "./theme.css": "./dist/voodo.css"
   },
   "files": [
-    "dist"
+    "dist",
+    "NOTICE"
   ],
   "scripts": {
     "dev": "vite build --watch",
@@ -32,11 +34,16 @@
     "build:lib": "npm run prepublish && mkdir -p build/lib && npm pack --pack-destination build/lib/",
     "format": "prettier --write '**/*.{ts,tsx}'",
     "format:check": "prettier --check '**/*.{ts,tsx}'",
-    "generate-tailwind-theme": "tsx utils/generate-color-classes.ts && tsx utils/generate-tailwind-theme.ts",
+    "generate-icons": "tsx utils/generate-icons.ts && prettier --write src/components/Icons/icons.tsx --log-level warn",
+    "generate-tailwind-theme": "tsx utils/generate-color-classes.ts && tsx utils/generate-tailwind-theme.ts && tsx utils/generate-css-vars.ts && prettier --write src/theme/cssVar.ts --log-level silent",
     "lint": "eslint src --max-warnings 0",
     "lint:fix": "eslint src --fix",
     "prebuild": "npm run generate-tailwind-theme",
+    "prebuild-storybook": "npm run generate-tailwind-theme",
     "prepublishOnly": "npm run build",
+    "prestorybook": "npm run generate-tailwind-theme",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
     "test": "jest",
     "type-check": "tsc --noEmit",
     "validate:all": "npm run lint && npm run format:check && npm run type-check && npm run build && npm run test"
@@ -55,6 +62,11 @@
     "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
+    "@heroicons/react": "^2.2.0",
+    "@storybook/addon-a11y": "^10.2.15",
+    "@storybook/addon-docs": "^10.2.15",
+    "@storybook/addon-mcp": "^0.2.0",
+    "@storybook/react-vite": "^10.2.15",
     "@tailwindcss/postcss": "^4.1.17",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.9.1",
@@ -81,11 +93,13 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^30.2.0",
+    "lorem-ipsum": "^2.0.8",
     "postcss": "^8.5.6",
     "prettier": "^3.6.2",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-is": "^18.0.0",
+    "storybook": "^10.2.15",
     "tailwindcss": "^4.1.17",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",

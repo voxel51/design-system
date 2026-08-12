@@ -63,7 +63,7 @@ export interface RichListProps extends HTMLAttributes<HTMLDivElement> {
  *           secondaryContent: "First item description"
  *           actions: (
  *             <Clickable onClick={() => openSettings("1")}>
- *               <Icon name={IconName.Settings} />
+ *               <SettingsIcon />
  *             </Clickable>
  *           )
  *         },
@@ -75,7 +75,7 @@ export interface RichListProps extends HTMLAttributes<HTMLDivElement> {
  *           secondaryContent: "Second item description"
  *           actions: (
  *            <Clickable onClick={() => openSettings("2")}>
- *               <Icon name={IconName.Settings} />
+ *               <SettingsIcon />
  *             </Clickable>
  *           )
  *         },
@@ -86,7 +86,7 @@ export interface RichListProps extends HTMLAttributes<HTMLDivElement> {
  *           secondaryContent: "Third item description"
  *           actions: (
  *            <Clickable onClick={() => openSettings("3")}>
- *               <Icon name={IconName.Settings} />
+ *               <SettingsIcon />
  *             </Clickable>
  *           )
  *         },

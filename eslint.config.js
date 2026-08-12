@@ -157,6 +157,25 @@ export default [
     },
   },
 
+  // Storybook stories override. CSF render functions are wrapped in a
+  // component by Storybook at runtime, so hooks inside them are valid;
+  // console.log and alert are intentional interaction demos.
+  {
+    files: ["src/**/*.stories.tsx"],
+    languageOptions: {
+      globals: {
+        alert: "readonly",
+        setTimeout: "readonly",
+        clearTimeout: "readonly",
+      },
+    },
+    rules: {
+      "react-hooks/rules-of-hooks": "off",
+      "no-console": "off",
+      "@typescript-eslint/explicit-function-return-type": "off",
+    },
+  },
+
   // Test files override
   {
     files: [

@@ -11,12 +11,16 @@ import {
   useState,
 } from "react";
 
-import { Icon } from "@/components/Icons";
+import { CaretDownIcon } from "@/components/Icons";
 import { inputStyle } from "@/components/Input";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
 import {
+  BackgroundColor,
+  bgColorClass,
+  BorderColor,
+  borderColorClass,
   Descriptor,
   Radius,
   Shadow,
@@ -26,7 +30,7 @@ import {
   ZIndex,
   zIndexStyles,
 } from "@/types";
-import { IconName } from "@/types/icons";
+import { useElementSize } from "@/util/useElementSize";
 
 import { Option } from "./Option";
 
@@ -160,6 +164,7 @@ export const Select: FC<SelectProps> = ({
   const [query, setQuery] = useState("");
   const [selectionState, setSelectionState] = useState<string[]>(() => []);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { ref: triggerRef, width: triggerWidth } = useElementSize();
 
   const filteredOptions = useMemo(
     () =>
@@ -222,7 +227,7 @@ export const Select: FC<SelectProps> = ({
         immediate
         onClose={() => setQuery("")}
       >
-        <div className="relative flex items-center">
+        <div ref={triggerRef} className="relative flex items-center">
           <ComboboxInput
             ref={inputRef}
             autoComplete="off" // interferes with dropdown menu
@@ -245,8 +250,7 @@ export const Select: FC<SelectProps> = ({
             )}
             aria-hidden
           >
-            <Icon
-              name={IconName.CaretDown}
+            <CaretDownIcon
               size={Size.Sm}
               className={textColorClass(TextColor.Secondary)}
             />
@@ -254,14 +258,18 @@ export const Select: FC<SelectProps> = ({
         </div>
 
         <ComboboxOptions
-          anchor={anchor}
+          anchor={{ to: anchor, gap: 2 }}
           portal={portal}
+          modal={false}
+          style={triggerWidth ? { width: triggerWidth } : undefined}
           className={clsx(
-            "mt-1",
-            "w-[var(--anchor-width)]",
+            "p-1",
+            "border",
+            borderColorClass(BorderColor.Default),
+            bgColorClass(BackgroundColor.Card1),
             getZIndexClass(zIndex, portal),
-            radiusStyles(Radius.Md),
-            shadowStyles(Shadow.Md)
+            radiusStyles(Radius.Lg),
+            shadowStyles(Shadow.Lg)
           )}
         >
           {filteredOptions?.map((opt) => {

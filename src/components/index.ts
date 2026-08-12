@@ -38,5 +38,5 @@ export * from "./Toggle";
 export * from "./ToggleSwitch";
 export * from "./Toolbar";
 export * from "./Tooltip";
-export * from "./TreeSelect";
+export * from "./Tree";
 export * from "./UnsetHint";

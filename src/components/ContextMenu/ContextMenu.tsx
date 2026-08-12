@@ -22,7 +22,7 @@ type MenuAnchor = "bottom start" | "bottom end" | "top start" | "top end";
 /**
  * Conservative estimate of the menu panel size (px). Used at right-click
  * time to decide whether to flip the anchor away from the viewport edge.
- * The actual menu is capped at `max-w-xs` (320px); the height bound is a
+ * The actual menu is capped at 320px wide by `menuPanelStyles`; the height bound is a
  * generous worst-case for typical menus (8–10 items + sections).
  */
 const ESTIMATED_MENU_SIZE = { width: 320, height: 320 };
@@ -145,6 +145,7 @@ export const ContextMenu: FC<ContextMenuProps> = ({
               <MenuItems
                 anchor={{ to: anchor, gap: 0 }}
                 portal
+                modal={false}
                 className={cn(
                   menuPanelStyles(),
                   zIndexStyles(ZIndex.AboveModal)

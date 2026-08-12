@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent, { UserEvent } from "@testing-library/user-event";
 
-import { IconName } from "@/types";
+import { AddIcon } from "@/components/Icons";
 
 import { Button } from "./Button";
 
@@ -44,7 +44,7 @@ describe("Button", () => {
   });
 
   it("should render with a string leading icon", () => {
-    render(<Button leadingIcon={IconName.Add}>{buttonText}</Button>);
+    render(<Button leadingIcon={AddIcon}>{buttonText}</Button>);
 
     expect(screen.getByText(buttonText)).toBeInTheDocument();
     const innerHtml = screen.getByRole("button").innerHTML;
@@ -66,7 +66,7 @@ describe("Button", () => {
   });
 
   it("should render with a string trailing icon", () => {
-    render(<Button trailingIcon={IconName.Add}>{buttonText}</Button>);
+    render(<Button trailingIcon={AddIcon}>{buttonText}</Button>);
 
     expect(screen.getByText(buttonText)).toBeInTheDocument();
     const innerHtml = screen.getByRole("button").innerHTML;

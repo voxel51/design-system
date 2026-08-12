@@ -75,13 +75,13 @@ export interface DropdownProps extends HTMLAttributes<HTMLDivElement> {
  * <Dropdown trigger={<DropdownTrigger>Actions</DropdownTrigger>}>
  *   <MenuSectionTitle>Actions</MenuSectionTitle>
  *   <MenuIconTextItem
- *     icon={IconName.ImageSearch}
+ *     icon={<ImageSearchIcon />}
  *     text="Sort by similarity"
  *     subtext="Find visually similar"
  *     onClick={() => {}}
  *   />
  *   <MenuIconTextItem
- *     icon={IconName.Embeddings}
+ *     icon={<EmbeddingsIcon />}
  *     text="Run embeddings"
  *     subtext="Compute vector embeddings"
  *     onClick={() => {}}
@@ -137,6 +137,7 @@ export const Dropdown: FC<DropdownProps> = ({
         <MenuItems
           anchor={{ to: anchor, gap: 4 }}
           portal={portal}
+          modal={false}
           className={cn(menuPanelStyles(), panelZIndex)}
         >
           {children}

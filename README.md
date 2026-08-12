@@ -45,6 +45,21 @@ export const Component = () => {
 Note that you'll need to import this library's theme somewhere in your application for the components
 to be styled correctly. See [CSS Themes](#css-themes).
 
+### Using icons
+
+Every icon is exported as its own component so that bundlers only include the
+icons you actually import (there is intentionally no icon-name enum or runtime
+icon map — that would defeat tree-shaking):
+
+```typescript jsx
+import { CheckIcon, Size } from "@voxel51/voodo";
+
+export const Component = () => <CheckIcon size={Size.Md} />;
+```
+
+To add a new icon, drop the SVG in `src/img` (PascalCase filename) and run
+`npm run generate-icons`.
+
 ### Theming
 
 #### CSS Themes
@@ -73,7 +88,36 @@ General rules of thumb:
 
 ## Publishing
 
-This library is published to NPM via GitHub Actions workflows.
+Pushing a `v*` tag publishes to NPM via the `release` workflow.
+
+Stable release, on `main`:
+
+```shell
+npm version minor && git push --follow-tags
+```
+
+The tag must match `package.json` or the workflow fails.
+
+Prerelease, on any branch:
+
+```shell
+git tag v0.2.0-dev-my-feature.0 && git push origin v0.2.0-dev-my-feature.0
+```
+
+Prerelease versions (`vX.Y.Z-<id>.N`) are stamped from the tag — they never
+appear in `package.json` — and publish under NPM dist-tag `<id>`
+(`npm i @voxel51/voodo@dev-my-feature`), so `latest` only moves on stable
+releases. Use `rc` as the id for release candidates from `main` and
+`dev-<branch>` for feature-branch builds.
 
 This library is currently in a pre-release state, with versions matching `0.x.y`.
 Standard semantic versioning will be enforced starting with version `1.0.0`.
+
+## License
+
+Copyright 2024-2026 Voxel51, Inc. Licensed under the [Apache License, Version 2.0](LICENSE).
+
+A portion of the icon artwork is derived from
+[Google Material Icons](https://fonts.google.com/icons) (Apache License 2.0),
+extracted via [`@mui/icons-material`](https://mui.com/material-ui/material-icons/)
+(MIT License). See [NOTICE](NOTICE) for attribution details.

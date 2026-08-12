@@ -2,16 +2,13 @@ import { render, screen } from "@testing-library/react";
 import userEvent, { UserEvent } from "@testing-library/user-event";
 import { type FC } from "react";
 
-import { IconName, Radius, Size } from "@/types";
+import { Radius, Size } from "@/types";
 
-import { Icon } from "../Icons/Icon";
-import { IconProps } from "../Icons/types";
+import { CheckIcon, type IconProps } from "../Icons";
 
 import { Input, InputType } from "./Input";
 
-const CheckmarkIcon: FC<IconProps> = (props) => (
-  <Icon name={IconName.Check} {...(props as any)} />
-);
+const CheckmarkIcon: FC<IconProps> = (props) => <CheckIcon {...props} />;
 
 describe("Input", () => {
   it("should render an input element", () => {
@@ -98,7 +95,7 @@ describe("Input", () => {
   });
 
   it("should render a string icon if provided", () => {
-    const { container } = render(<Input icon={IconName.Check} />);
+    const { container } = render(<Input icon={CheckIcon} />);
     expect(container.querySelector("svg")).toBeInTheDocument();
   });
 

@@ -1,6 +1,6 @@
 import { render, screen, within } from "@testing-library/react";
 
-import { IconName } from "@/types";
+import { AddIcon } from "@/components/Icons";
 import { randomString } from "@/util/random";
 
 import { DummyIcon, makeChild } from "#/testing-utils";
@@ -36,7 +36,7 @@ describe("Toast", () => {
   });
 
   it("should render a string icon if provided", () => {
-    render(<Toast {...defaultProps} icon={IconName.Add} />);
+    render(<Toast {...defaultProps} icon={AddIcon} />);
 
     const toast = screen.getByTestId(testId);
     expect(toast.innerHTML).toContain("<svg");

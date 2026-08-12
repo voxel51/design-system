@@ -1,6 +1,6 @@
 import type { FC } from "react";
 
-import { Icon } from "@/components/Icons";
+import { type IconInput, resolveIconInput } from "@/components/Icons";
 import { Stack, StackProps } from "@/components/Stack";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
@@ -9,7 +9,6 @@ import {
   bgColorClass,
   Align,
   BrandColor,
-  IconName,
   Orientation,
   Radius,
   Size,
@@ -19,7 +18,7 @@ import {
 import { cn } from "@/util/classes";
 
 export interface EmptyStateProps extends StackProps {
-  icon: IconName;
+  icon?: IconInput;
   title: string;
   description?: string;
 }
@@ -41,6 +40,8 @@ export const EmptyState: FC<EmptyStateProps> = ({
   className,
   ...props
 }) => {
+  const IconContent = resolveIconInput(icon);
+
   return (
     <Stack
       orientation={Orientation.Column}
@@ -53,7 +54,7 @@ export const EmptyState: FC<EmptyStateProps> = ({
       )}
       {...props}
     >
-      {icon && (
+      {IconContent && (
         <span
           className={cn(
             "p-3",
@@ -61,7 +62,7 @@ export const EmptyState: FC<EmptyStateProps> = ({
             bgColorClass(BackgroundColor.CardElevated)
           )}
         >
-          <Icon name={icon} size={Size.Lg} color={BrandColor.Accent} />
+          <IconContent size={Size.Lg} color={BrandColor.Accent} />
         </span>
       )}
       <Text variant={TextVariant.Xl}>{title}</Text>

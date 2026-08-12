@@ -2,15 +2,16 @@ import clsx from "clsx";
 import type { FC, HTMLAttributes, ReactNode } from "react";
 
 import { Clickable } from "@/components/Clickable";
-import { IconWrapper } from "@/components/Icons";
+import { type IconInput, IconWrapper } from "@/components/Icons";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
 import {
   BorderColor,
   borderColorClass,
+  BrandColor,
   ElementState,
+  getColorCssVar,
   IconColor,
-  IconName,
   Radius,
   TextColor,
   textColorClass,
@@ -20,7 +21,7 @@ import { cn } from "@/util/classes";
 export interface RichButtonProps extends HTMLAttributes<HTMLDivElement> {
   active?: boolean;
   description?: ReactNode;
-  icon?: FC | IconName;
+  icon?: IconInput;
   label?: ReactNode;
   onClick?: () => void;
 }
@@ -49,7 +50,7 @@ export interface RichButtonProps extends HTMLAttributes<HTMLDivElement> {
  *
  * @param active If `true`, renders the component in its active state.
  * @param description Content to display as the description of the component. This is the component's secondary content.
- * @param icon Icon reference ({@link FC}) or an {@link IconName} to display in the component. See {@link Icon}.
+ * @param icon Icon component to display in the component.
  * @param label Content to display as the label of the component. This is the component's primary content.
  * @param onClick Callback triggered when the component is clicked.
  * @param className `class` overrides to apply to the component.
@@ -62,6 +63,7 @@ export const RichButton: FC<RichButtonProps> = ({
   label,
   onClick,
   className,
+  style,
   ...props
 }) => (
   <Clickable>
@@ -76,6 +78,12 @@ export const RichButton: FC<RichButtonProps> = ({
         radiusStyles(Radius.Md),
         className
       )}
+      style={{
+        ...(active && {
+          backgroundColor: `color-mix(in srgb, var(${getColorCssVar(BrandColor.Primary)}) 10%, transparent)`,
+        }),
+        ...style,
+      }}
       onClick={onClick}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {

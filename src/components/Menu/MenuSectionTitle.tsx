@@ -20,7 +20,7 @@ export interface MenuSectionTitleProps extends HTMLAttributes<HTMLDivElement> {
  * ```tsx
  * <Dropdown trigger={<DropdownTrigger>Open</DropdownTrigger>}>
  *   <MenuSectionTitle>Actions</MenuSectionTitle>
- *   <MenuIconTextItem icon={IconName.Edit} text="Edit" />
+ *   <MenuIconTextItem icon={<EditIcon />} text="Edit" />
  * </Dropdown>
  * ```
  *

@@ -1,9 +1,8 @@
 import { Button } from "@headlessui/react";
 import { type FC } from "react";
 
-import { Icon } from "@/components/Icons";
+import { type IconInput, resolveIconInput } from "@/components/Icons";
 import { IconColor, Size, textColorClass } from "@/types";
-import { IconName } from "@/types/icons";
 import { cn } from "@/util/classes";
 
 import { iconPaddingStyles, iconSizeStyles } from "../Input/styles";
@@ -19,7 +18,7 @@ export interface DatepickerIconButtonProps {
   hasValue?: boolean;
   size?: Size;
   ariaLabel?: string;
-  iconName: IconName;
+  icon: IconInput;
   position?: IconPosition;
 }
 
@@ -30,7 +29,7 @@ export interface DatepickerIconButtonProps {
  * @param disabled If `true`, disables interaction with the icon.
  * @param size Size of the icon. See {@link Size}.
  * @param ariaLabel Optional aria label for the icon; only used for accessibility.
- * @param iconName Name of the icon. See {@link IconName}.
+ * @param icon The icon component to render.
  * @param position The position of the icon. See {@link IconPosition}.
  *
  * @internal For use by {@link DatepickerInput}.
@@ -40,9 +39,12 @@ export const DatepickerIconButton: FC<DatepickerIconButtonProps> = ({
   disabled,
   size = Size.Md,
   ariaLabel = "Open date picker",
-  iconName,
+  icon,
   position = IconPosition.Leading,
 }) => {
+  const IconContent = resolveIconInput(icon);
+  if (!IconContent) return null;
+
   const positionClasses =
     position === IconPosition.Leading
       ? "absolute left-0"
@@ -62,8 +64,7 @@ export const DatepickerIconButton: FC<DatepickerIconButtonProps> = ({
       )}
       aria-label={ariaLabel}
     >
-      <Icon
-        name={iconName}
+      <IconContent
         className={cn(iconSizeStyles[size], textColorClass(IconColor.Disabled))}
       />
     </Button>

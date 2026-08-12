@@ -1,7 +1,8 @@
 import type { FC } from "react";
 
 import { Button, type ButtonProps } from "@/components/Button";
-import { IconName, Size, Variant } from "@/types";
+import { CaretDownIcon } from "@/components/Icons";
+import { Size, Variant } from "@/types";
 
 /**
  * Props for {@link DropdownTrigger}. Accepts {@link ButtonProps} except
@@ -37,7 +38,7 @@ export const DropdownTrigger: FC<DropdownTriggerProps> = ({
   <Button
     variant={Variant.Secondary}
     size={size}
-    trailingIcon={IconName.CaretDown}
+    trailingIcon={CaretDownIcon}
     {...props}
   >
     {children}

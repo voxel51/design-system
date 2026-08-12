@@ -1,13 +1,17 @@
 import clsx from "clsx";
 import type { FC, HTMLAttributes } from "react";
 
-import { Icon } from "@/components/Icons";
+import {
+  CircleIcon,
+  CloseIcon,
+  type IconInput,
+  resolveIconInput,
+} from "@/components/Icons";
 import { Stack } from "@/components/Stack";
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
 import {
   BackgroundColor,
-  IconName,
   Radius,
   SemanticColor,
   Shadow,
@@ -29,7 +33,7 @@ export interface PillProps extends HTMLAttributes<HTMLSpanElement> {
   color?: TextColor;
   isStatus?: boolean;
   backgroundColor?: PillColor;
-  icon?: IconName;
+  icon?: IconInput;
   onRemove?: () => void;
 }
 
@@ -72,6 +76,8 @@ export const Pill: FC<PillProps> = ({
   children,
   ...props
 }) => {
+  const IconContent = resolveIconInput(icon);
+
   return (
     <Stack
       spacing={Spacing.Xs}
@@ -89,17 +95,12 @@ export const Pill: FC<PillProps> = ({
     >
       {isStatus && (
         <div>
-          <Icon
-            size={Size.Xs}
-            name={IconName.Circle}
-            color={color}
-            style={{ minWidth: 10 }}
-          />
+          <CircleIcon size={Size.Xs} color={color} style={{ minWidth: 10 }} />
         </div>
       )}
-      {icon && (
+      {IconContent && (
         <div>
-          <Icon size={size} name={icon} color={color} />
+          <IconContent size={size} color={color} />
         </div>
       )}
       <div>{children}</div>
@@ -113,9 +114,8 @@ export const Pill: FC<PillProps> = ({
           }}
           className="shrink-0 cursor-pointer group"
         >
-          <Icon
+          <CloseIcon
             size={Size.Xs}
-            name={IconName.Close}
             color={color}
             className={cn(
               "min-w-[10px]",

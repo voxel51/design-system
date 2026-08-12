@@ -1,8 +1,8 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { AddIcon } from "@/components/Icons";
 import { RichButton } from "@/components/RichButton/RichButton.tsx";
-import { IconName } from "@/types";
 import { randomString } from "@/util/random";
 
 const DummyIcon = () => {
@@ -46,7 +46,7 @@ describe("RichButton", () => {
   });
 
   it("should render a provided string icon", () => {
-    render(<RichButton {...defaultProps} icon={IconName.Add} />);
+    render(<RichButton {...defaultProps} icon={AddIcon} />);
 
     expect(screen.getByTestId(testId).innerHTML).toContain("<svg");
   });
@@ -78,5 +78,27 @@ describe("RichButton", () => {
     await user.click(screen.getByTestId(testId));
 
     expect(callback).toHaveBeenCalledTimes(1);
+  });
+
+  it("should apply a background color when active", () => {
+    render(<RichButton {...defaultProps} active />);
+
+    expect(screen.getByTestId(testId).style.backgroundColor).toContain(
+      "color-mix"
+    );
+  });
+
+  it("should not apply a background color when inactive", () => {
+    render(<RichButton {...defaultProps} />);
+
+    expect(screen.getByTestId(testId).style.backgroundColor).toBe("");
+  });
+
+  it("should merge a caller-provided style with the active background", () => {
+    render(<RichButton {...defaultProps} active style={{ margin: "4px" }} />);
+
+    const el = screen.getByTestId(testId);
+    expect(el.style.backgroundColor).toContain("color-mix");
+    expect(el.style.margin).toBe("4px");
   });
 });
