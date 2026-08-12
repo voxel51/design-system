@@ -58,7 +58,7 @@ const meta: Meta<typeof Pill> = {
       description: "Pill text content",
     },
     onRemove: {
-      action: "removed",
+      control: false,
       description:
         "Callback fired when the close button is clicked. When provided, a close button is rendered.",
     },

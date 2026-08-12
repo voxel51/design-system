@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import type { FC, HTMLAttributes } from "react";
 
+import { Button } from "@/components/Button";
 import {
   CircleIcon,
   CloseIcon,
@@ -19,9 +20,9 @@ import {
   Spacing,
   StatusColor,
   TextColor,
+  Variant,
 } from "@/types";
 import { bgColorClass, textColorClass } from "@/types/color";
-import { cn } from "@/util/classes";
 
 export type PillSize = Exclude<Size, Size.Lg | Size.Xl>;
 export type PillColor = BackgroundColor | SemanticColor | StatusColor;
@@ -59,6 +60,9 @@ const sizeStyles: Record<PillSize, string> = {
  * @param color Text color of the pill. See {@link TextColor}.
  * @param backgroundColor Background color of the pill. See {@link BackgroundColor}.
  * @param isStatus If `true`, prefixes the content with a bullet-like icon.
+ * @param onRemove Callback triggered when the remove control is clicked. Providing this makes the pill
+ *  removable: a trailing icon {@link Button} is rendered which calls `onRemove` when clicked. Omit it
+ *  for a non-removable pill.
  * @param className `class` overrides to apply to the component.
  * @param children Content of the pill.
  * @param props Additional HTML properties to apply to the component.
@@ -105,25 +109,18 @@ export const Pill: FC<PillProps> = ({
       )}
       <div>{children}</div>
       {onRemove && (
-        <button
-          type="button"
+        <Button
+          variant={Variant.Icon}
+          size={Size.Xs}
           aria-label="Remove"
+          leadingIcon={CloseIcon}
           onClick={(e) => {
             e.stopPropagation();
             onRemove();
           }}
-          className="shrink-0 cursor-pointer group"
-        >
-          <CloseIcon
-            size={Size.Xs}
-            color={color}
-            className={cn(
-              "min-w-[10px]",
-              "group-hover:text-content-text-primary",
-              "transition-colors duration-150"
-            )}
-          />
-        </button>
+          // Round corners so the hover affordance is a small circle, matching the pill shape.
+          className="shrink-0 rounded-full"
+        />
       )}
     </Stack>
   );

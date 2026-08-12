@@ -55,7 +55,7 @@ const variantStyles: Record<Variant, string> = {
     bgColorClass(ActionColor.DangerFocus, ElementState.Active)
   ),
   [Variant.Icon]: clsx(
-    "px-2.5 py-2.5",
+    "aspect-square min-w-0 shrink-0", // square icon button, not a rectangle
     "bg-transparent",
     bgColorClass(BackgroundColor.CardElevated, ElementState.Hover)
   ),
@@ -85,8 +85,17 @@ const sizeStyles: Record<ButtonSize, string> = {
   [Size.Md]: clsx("px-4 py-2", "text-md/5"),
 };
 
+// Symmetric padding for icon-only (square) buttons. The rectangular `sizeStyles`
+// padding is asymmetric (tuned for text + horizontal breathing room), which combined
+// with `aspect-square` inflates the button to its wider dimension.
+const iconOnlySizeStyles: Record<ButtonSize, string> = {
+  [Size.Xs]: "p-1",
+  [Size.Sm]: "p-1.5",
+  [Size.Md]: "p-2",
+};
+
 const iconStyles: Record<ButtonSize, string> = {
-  [Size.Xs]: clsx("w-4 h-4", "leading-none"),
+  [Size.Xs]: clsx("w-3 h-3", "leading-none"),
   [Size.Sm]: clsx("w-4 h-4", "leading-none"),
   [Size.Md]: clsx("w-5 h-5", "leading-none"),
 };
@@ -121,6 +130,8 @@ export const Button: FC<ButtonProps> = ({
   children,
   ...props
 }) => {
+  const isIconOnly = variant === Variant.Icon || borderless;
+
   return (
     <HeadlessButton
       className={cn(
@@ -131,7 +142,7 @@ export const Button: FC<ButtonProps> = ({
         "transition-colors",
         "hover:cursor-pointer",
         "disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none",
-        sizeStyles[size],
+        isIconOnly ? iconOnlySizeStyles[size] : sizeStyles[size],
         variantStyles[variant],
         borderless && "border-0",
         className
