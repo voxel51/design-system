@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { Button, Icon, IconName, Size, Variant } from "@voxel51/voodo";
+import { Button, IconName, Size, Variant } from "@voxel51/voodo";
 
 const meta: Meta<typeof Button> = {
   title: "Components/Button",
@@ -144,8 +144,8 @@ export const Borderless: Story = {
 
 export const IconOnly: Story = {
   args: {
-    children: <Icon name={IconName.Delete} className="size-5" />,
-    variant: Variant.Primary,
+    leadingIcon: IconName.Delete,
+    variant: Variant.Icon,
   },
 };
 
