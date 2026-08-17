@@ -89,14 +89,44 @@ General rules of thumb:
 ## Publishing
 
 Pushing a `v*` tag publishes to NPM via the `release` workflow.
+The tag must match `package.json` or the workflow fails.
 
-Stable release, on `main`:
+`main` always holds the next unreleased version. When releasing without a
+release branch, a stable release is a tag on the current `main` head:
 
 ```shell
-npm version minor && git push --follow-tags
+git tag v0.3.0 && git push origin v0.3.0
 ```
 
-The tag must match `package.json` or the workflow fails.
+If work must keep landing on `main` that should not ship in the release,
+cut a release branch from `main` instead and tag its head once ready:
+
+```shell
+git checkout -b release/v0.3.0 main
+# land fixes, then:
+git tag v0.3.0 && git push origin v0.3.0
+```
+
+Either way, the moment `main`'s version is claimed — by the tag or by the
+release branch cut — open a PR bumping `main` to the next version:
+
+```shell
+npm version minor --no-git-tag-version
+```
+
+Patch releases use a release branch created from the relevant tag, never
+`main`. Bump `package.json` to the patch version on the branch, land the
+fixes there, and tag the branch head:
+
+```shell
+git checkout -b release/v0.3.1 v0.3.0
+npm version patch --no-git-tag-version
+# commit the bump and the fixes, then:
+git tag v0.3.1 && git push origin v0.3.1
+```
+
+Delete release branches once the release is tagged — the tag is the durable
+pointer, and patch releases recreate a branch from it as above.
 
 Prerelease, on any branch:
 
