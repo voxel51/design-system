@@ -41,14 +41,13 @@ const preview: Preview = {
       },
     },
     options: {
-      // Patterns lead: they are the layer the apps lack, and the reason the
-      // atoms below them exist. Atoms are reference material, so they sort
-      // after.
+      // Whole pages first — they are what the argument is about. Then the
+      // patterns they compose, then chrome, then atoms as reference.
       storySort: {
         order: [
           "Comparison",
           "v2",
-          ["Patterns", "Chrome", "Components", "Tokens"],
+          ["Pages", "Patterns", "Chrome", "Components", "Tokens"],
           "*",
         ],
       },

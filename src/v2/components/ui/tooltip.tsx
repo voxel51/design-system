@@ -5,7 +5,29 @@ import { cn } from "../../lib/utils";
 
 const TooltipProvider = TooltipPrimitive.Provider;
 
-const Tooltip = TooltipPrimitive.Root;
+/**
+ * Tooltip root. Provides its own `TooltipPrimitive.Provider`, so a tooltip
+ * works anywhere without the application mounting one first.
+ *
+ * The Lovable master relies on a single `TooltipProvider` at the app root.
+ * That is a fine app decision and a bad library one: any pattern containing a
+ * tooltip — `ServicesView`, `IconAction`, `PanelHeader` — would throw
+ * "`Tooltip` must be used within `TooltipProvider`" when rendered on a page
+ * that forgot it, which is a runtime crash the type system cannot catch.
+ * Current shadcn does the same thing.
+ *
+ * Nesting providers is safe; the innermost wins. Mount `TooltipProvider`
+ * yourself only to set a shared `delayDuration` across many tooltips.
+ */
+const Tooltip = ({
+  children,
+  ...props
+}: React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Root>) => (
+  <TooltipPrimitive.Provider delayDuration={200}>
+    <TooltipPrimitive.Root {...props}>{children}</TooltipPrimitive.Root>
+  </TooltipPrimitive.Provider>
+);
+Tooltip.displayName = "Tooltip";
 
 const TooltipTrigger = TooltipPrimitive.Trigger;
 

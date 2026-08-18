@@ -9,4 +9,6 @@ export * from "./DropdownPanel";
 export * from "./IconTooltip";
 export * from "./PanelEmptyState";
 export * from "./PanelHeader";
+export * from "./SettingsShell";
+export * from "./WorkspaceHeader";
 export * from "./VoxelIcon";
