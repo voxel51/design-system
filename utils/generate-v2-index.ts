@@ -11,6 +11,7 @@ import { resolve } from "path";
 
 const UI_DIR = resolve("src/v2/components/ui");
 const HOOKS_DIR = resolve("src/v2/hooks");
+const PATTERNS_DIR = resolve("src/v2/components/patterns");
 
 const modules = (dir: string) =>
   readdirSync(dir)
@@ -56,6 +57,14 @@ const namedExports = (dir: string, mod: string): string[] => {
 const ui = modules(UI_DIR);
 const hooks = modules(HOOKS_DIR).filter((m) => !BARREL_SKIP.has(m));
 
+/** Pattern groups — one directory per group, each with its own barrel. */
+const patterns = existsSync(PATTERNS_DIR)
+  ? readdirSync(PATTERNS_DIR, { withFileTypes: true })
+      .filter((e) => e.isDirectory())
+      .map((e) => e.name)
+      .sort()
+  : [];
+
 /** Emit `export *`, or an explicit list when the module has aliased names. */
 const exportLine = (dir: string, path: string, mod: string): string => {
   const alias = ALIASES[mod];
@@ -75,12 +84,14 @@ const header = `/**
  *
  *     import { Button } from "@voxel51/voodo/v2/button";
  *
- * ${ui.length} components, ${hooks.length} hooks.
+ * ${ui.length} components, ${patterns.length} pattern group(s), ${hooks.length} hook(s).
  */
 `;
 
 const body = [
   ...ui.map((m) => exportLine(UI_DIR, `./components/ui/${m}`, m)),
+  "",
+  ...patterns.map((p) => `export * from "./components/patterns/${p}";`),
   "",
   ...hooks.map((m) => exportLine(HOOKS_DIR, `./hooks/${m}`, m)),
   "",
