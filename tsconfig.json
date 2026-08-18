@@ -28,6 +28,8 @@
             "@/*": ["src/*"],
             "#/*": ["utils/*"],
             "@voxel51/voodo": ["src/index.ts"],
+            "@voxel51/voodo/v2": ["src/v2/index.ts"],
+            "@voxel51/voodo/v2/*": ["src/v2/components/ui/*"],
         }
     },
     "include": ["src"],

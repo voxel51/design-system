@@ -13,7 +13,11 @@
  * silently do nothing.
  */
 
-@import "tailwindcss";
+/* `source(none)` disables Tailwind's automatic source detection; the sources
+   to scan are declared explicitly below. Scoping matters here because
+   Tailwind's extractor also reads comments: a class-shaped string in prose
+   becomes a real utility, and an invalid one fails the CSS minifier. */
+@import "tailwindcss" source(none);
 @import "tw-animate-css";
 @import "./tokens.css";
 

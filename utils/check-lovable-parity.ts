@@ -82,7 +82,20 @@ for (const mod of source) {
   }
 }
 
-// 3. Pattern directories. Reported as warnings, not failures: patterns land
+// 3. Every component has a story. Undocumented components get rebuilt by the
+//    next person who cannot find them, which is how a design system grows a
+//    second Button.
+const withoutStories = [...ported].filter(
+  (m) => !existsSync(join(UI_OUT, `${m}.stories.tsx`)),
+);
+if (withoutStories.length) {
+  failures.push(
+    `${withoutStories.length} component(s) have no story:\n` +
+      withoutStories.map((m) => `    ${m}`).join("\n"),
+  );
+}
+
+// 4. Pattern directories. Reported as warnings, not failures: patterns land
 //    incrementally, and the list is the backlog rather than a broken build.
 const patternDirs = readdirSync(join(SOURCE, "src/components"))
   .filter((d) => d !== "ui" && statSync(join(SOURCE, "src/components", d)).isDirectory())
@@ -108,6 +121,9 @@ if (missingPatterns.length) {
 
 console.log(
   `Atomic parity: ${source.length - missingModules.length}/${source.length} modules present.`,
+);
+console.log(
+  `Story coverage: ${ported.size - withoutStories.length}/${ported.size} components documented.`,
 );
 
 for (const w of warnings) console.log(`\nwarning: ${w}`);
