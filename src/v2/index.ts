@@ -99,3 +99,7 @@ export * from "./hooks/use-mobile";
 export { cn } from "./lib/utils";
 export * from "./lib/vizPalette";
 export * from "./lib/saveStatusStore";
+export * from "./lib/selectionStore";
+export * from "./lib/currentUser";
+export * from "./lib/directory";
+export * from "./lib/createAdapterContext";

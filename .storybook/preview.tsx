@@ -41,9 +41,16 @@ const preview: Preview = {
       },
     },
     options: {
-      // v1 first, then v2, then the side-by-side comparisons.
+      // Patterns lead: they are the layer the apps lack, and the reason the
+      // atoms below them exist. Atoms are reference material, so they sort
+      // after.
       storySort: {
-        order: ["Comparison", "v2", ["Tokens", "Components", "Patterns"], "*"],
+        order: [
+          "Comparison",
+          "v2",
+          ["Patterns", "Chrome", "Components", "Tokens"],
+          "*",
+        ],
       },
     },
   },
