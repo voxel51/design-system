@@ -15,6 +15,7 @@ const version = process.env.VOODO_VERSION ?? "all";
 
 const V1_STORIES = [
   "../src/components/**/*.stories.@(js|jsx|ts|tsx)",
+  "../src/v1-pages/**/*.stories.@(js|jsx|ts|tsx)",
   "../stories/**/*.stories.@(js|jsx|ts|tsx)",
 ];
 const V2_STORIES = ["../src/v2/**/*.stories.@(js|jsx|ts|tsx)"];
