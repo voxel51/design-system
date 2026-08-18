@@ -1,1 +1,13 @@
-<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<!--
+  The design system's typography tokens name Palanquin and Roboto Mono; the
+  fonts have to actually load for Storybook to show what a consumer sees.
+  Without this the browser falls back to a system sans and the result looks
+  almost right — and looks correct on any machine with Palanquin installed
+  locally, which is the worst version of the bug.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Palanquin:wght@100;200;300;400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap"
+  rel="stylesheet"
+/>

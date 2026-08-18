@@ -187,11 +187,14 @@
   --color-sidebar-border: hsl(var(--sidebar-border));
   --color-sidebar-ring: hsl(var(--sidebar-ring));
 
-  /* radius — shadcn's three-step scale derived from a single --radius. */
-  --radius-sm: calc(var(--radius) - 2px);
-  --radius-md: var(--radius);
-  --radius-lg: calc(var(--radius) + 2px);
-  --radius-xl: calc(var(--radius) + 6px);
+  /* radius — shadcn's scale, anchored so `rounded-lg` IS `--radius`.
+     Getting this wrong shifts every surface one step rounder, which reads as
+     "close but not right" across a whole page rather than as one broken
+     component. `xl` and above keep Tailwind's defaults, which the Lovable
+     master does not override. */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
 
   /* typography — one systematic scale, line-height baked in. Never use an
      arbitrary text-[Npx]; if a size is missing, add it here. */

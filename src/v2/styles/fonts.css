@@ -1,0 +1,21 @@
+/**
+ * VOODO 2.0 — webfonts.
+ *
+ * Optional, and separate from `theme.css` on purpose: the theme sets
+ * `--font-sans: Palanquin` but must not force a third-party network request
+ * on every consumer. An application that self-hosts its fonts, or serves
+ * them from its own CDN, points those `@font-face` rules at Palanquin and
+ * Roboto Mono itself and never imports this file.
+ *
+ * For everyone else:
+ *
+ *     import "@voxel51/voodo/v2/fonts.css";
+ *
+ * Skipping both is the trap. Nothing errors — the browser silently falls
+ * back to a system sans, and the result looks *almost* right, which is
+ * harder to spot than a crash. It renders correctly on any machine that
+ * happens to have Palanquin installed locally and wrongly everywhere else,
+ * including CI and visual-regression runs.
+ */
+
+@import url("https://fonts.googleapis.com/css2?family=Palanquin:wght@100;200;300;400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap");

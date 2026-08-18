@@ -29,6 +29,7 @@
       "require": "./dist/v2/index.cjs"
     },
     "./v2/theme.css": "./dist/voodo-v2.css",
+    "./v2/fonts.css": "./dist/voodo-v2-fonts.css",
     "./v2/compat.css": "./dist/voodo-v2-compat.css",
     "./v2/*": {
       "types": "./dist/v2/components/ui/*.d.ts",

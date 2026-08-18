@@ -35,6 +35,7 @@ export default defineConfig({
       input: {
         "voodo-v2": resolve(__dirname, "src/v2/styles/theme.css"),
         "voodo-v2-compat": resolve(__dirname, "src/v2/styles/compat.css"),
+        "voodo-v2-fonts": resolve(__dirname, "src/v2/styles/fonts.css"),
       },
       output: { assetFileNames: "[name][extname]" },
     },
