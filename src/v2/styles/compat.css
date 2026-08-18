@@ -1,0 +1,168 @@
+/**
+ * VOODO 1.0 → 2.0 compatibility layer.
+ *
+ * Import AFTER both themes to run an existing app on v2 tokens without
+ * touching a single v1 component:
+ *
+ *     import "@voxel51/voodo/theme.css";      // v1
+ *     import "@voxel51/voodo/v2/theme.css";   // v2
+ *     import "@voxel51/voodo/v2/compat.css";  // this file
+ *
+ * How it works: v1's generator emits its palette into `@theme static`, so
+ * every v1 utility resolves through `var(--color-content-*)` /
+ * `var(--color-action-*)` at use time. Redefining those same variables later
+ * in the cascade re-points every v1 utility at a v2 token — no rebuild, no
+ * component edits, and `.dark` keeps working because the v2 tokens it reads
+ * are themselves theme-aware.
+ *
+ * Consequence worth stating plainly: v1 surfaces adopt v2 values. The visible
+ * change is brand orange (v1 #FF6D04 → v2 #FA5300) and slightly cooler
+ * neutrals. That convergence is the point — one set of values, two component
+ * APIs, during migration only.
+ */
+
+:root,
+.dark {
+  /* content/bg — v1 `card-1` is the low-elevation surface, `card-2` the
+     default card. Same semantics in v2, same order. */
+  --color-content-bg-background: hsl(var(--background));
+  --color-content-bg-card-1: hsl(var(--card));
+  --color-content-bg-card-2: hsl(var(--card-2));
+  --color-content-bg-card-elevated: hsl(var(--card-elevated));
+  --color-content-bg-muted: hsl(var(--muted));
+  --color-content-bg-popover: hsl(var(--popover));
+  --color-content-bg-secondary: hsl(var(--secondary));
+  --color-content-bg-raised: hsl(var(--card-elevated));
+  --color-content-bg-selected: hsl(var(--primary) / 0.12);
+
+  /* content/text — v1 splits `fg` (max contrast) from `primary`; v2 has one
+     `--foreground`, so both map to it. */
+  --color-content-text-fg: hsl(var(--foreground));
+  --color-content-text-primary: hsl(var(--foreground));
+  --color-content-text-secondary: hsl(var(--secondary-foreground));
+  --color-content-text-tertiary: hsl(var(--tertiary-foreground));
+  --color-content-text-muted: hsl(var(--muted-foreground));
+  --color-content-text-placeholder: hsl(var(--placeholder-foreground));
+  --color-content-text-success: hsl(var(--status-success));
+  --color-content-text-destructive: hsl(var(--status-failure));
+  --color-content-text-info: hsl(var(--status-info));
+  --color-content-text-warning: hsl(var(--status-warning));
+  --color-content-text-accent: hsl(var(--accent));
+  --color-content-text-decorative: hsl(var(--icon-decorative));
+
+  /* content/border */
+  --color-content-border-default: hsl(var(--border));
+  --color-content-border-strong: hsl(var(--border-strong));
+  --color-content-border-hover: hsl(var(--border-hover));
+  --color-content-border-focus: hsl(var(--border-focus));
+  --color-content-border-subtle: hsl(var(--border-subtle));
+  --color-content-border-active: hsl(var(--border-active));
+  --color-content-border-error: hsl(var(--status-failure));
+  --color-content-border-success: hsl(var(--status-success));
+  --color-content-border-warning: hsl(var(--status-warning));
+  --color-content-border-disabled: hsl(var(--border-disabled));
+  --color-content-border-input: hsl(var(--input));
+  --color-content-border-input-hover: hsl(var(--input-hover));
+  --color-content-border-input-focus: hsl(var(--input-focus));
+
+  /* content/status */
+  --color-content-status-approved: hsl(var(--status-approved-text));
+  --color-content-status-review: hsl(var(--status-review-text));
+  --color-content-status-progress: hsl(var(--status-progress-text));
+  --color-content-status-default: hsl(var(--status-default));
+  --color-content-status-failed: hsl(var(--status-failed-text));
+
+  /* content/icon */
+  --color-content-icon-default: hsl(var(--icon-default));
+  --color-content-icon-subtle: hsl(var(--icon-subtle));
+  --color-content-icon-emphasis: hsl(var(--icon-emphasis));
+  --color-content-icon-muted: hsl(var(--icon-muted));
+  --color-content-icon-disabled: hsl(var(--icon-disabled));
+  --color-content-icon-decorative: hsl(var(--icon-decorative));
+  --color-content-icon-brand: hsl(var(--icon-brand));
+  --color-content-icon-brand-accent: hsl(var(--accent));
+  --color-content-icon-dark: hsl(var(--icon-dark));
+  --color-content-icon-success: hsl(var(--icon-success));
+  --color-content-icon-destructive: hsl(var(--status-failure));
+  --color-content-icon-warning: hsl(var(--status-warning));
+  --color-content-icon-info: hsl(var(--status-info));
+
+  /* content/overlay — v2 expresses scrims as one token plus an alpha. */
+  --color-content-overlay-default: hsl(var(--scrim) / 0.6);
+  --color-content-overlay-light: hsl(var(--scrim) / 0.4);
+  --color-content-overlay-heavy: hsl(var(--scrim) / 0.8);
+
+  --color-content-focus-ring: hsl(var(--ring) / 0.5);
+
+  /* content/link */
+  --color-content-link-default: hsl(var(--link));
+  --color-content-link-hover: hsl(var(--link-hover));
+  --color-content-link-visited: hsl(var(--link-visited));
+
+  /* content/palette — v1 stops at 12 slots, v2 extends to 18. The first 12
+     line up one-for-one; 13–18 exist only in v2. */
+  --color-content-palette-1: hsl(var(--palette-1));
+  --color-content-palette-2: hsl(var(--palette-2));
+  --color-content-palette-3: hsl(var(--palette-3));
+  --color-content-palette-4: hsl(var(--palette-4));
+  --color-content-palette-5: hsl(var(--palette-5));
+  --color-content-palette-6: hsl(var(--palette-6));
+  --color-content-palette-7: hsl(var(--palette-7));
+  --color-content-palette-8: hsl(var(--palette-8));
+  --color-content-palette-9: hsl(var(--palette-9));
+  --color-content-palette-10: hsl(var(--palette-10));
+  --color-content-palette-11: hsl(var(--palette-11));
+  --color-content-palette-12: hsl(var(--palette-12));
+  --color-content-palette-orange: hsl(var(--palette-1));
+  --color-content-palette-blue: hsl(var(--palette-2));
+  --color-content-palette-green: hsl(var(--palette-3));
+  --color-content-palette-purple: hsl(var(--palette-4));
+  --color-content-palette-pink: hsl(var(--palette-5));
+  --color-content-palette-yellow: hsl(var(--palette-6));
+  --color-content-palette-teal: hsl(var(--palette-7));
+  --color-content-palette-red: hsl(var(--palette-10));
+
+  /* content/skeleton, tooltip, code, scrollbar, selection */
+  --color-content-skeleton-base: hsl(var(--skeleton-base));
+  --color-content-skeleton-shimmer: hsl(var(--skeleton-shimmer));
+  --color-content-tooltip-bg: hsl(var(--tooltip-bg));
+  --color-content-tooltip-text: hsl(var(--tooltip-text));
+  --color-content-code-bg: hsl(var(--code-bg));
+  --color-content-code-text: hsl(var(--code-text));
+  --color-content-code-border: hsl(var(--code-border));
+  --color-content-scrollbar-track: hsl(var(--scrollbar-track));
+  --color-content-scrollbar-thumb: hsl(var(--scrollbar-thumb));
+  --color-content-scrollbar-thumb-hover: hsl(var(--scrollbar-thumb-hover));
+  --color-content-selection-bg: hsl(var(--selection-bg) / 0.3);
+  --color-content-selection-text: hsl(var(--selection-text));
+
+  /* action/* — v1 names the interaction tiers primary/secondary/tertiary;
+     v2 names them default/hover/pressed. Same three states, same order. */
+  --color-action-primary-primary: hsl(var(--primary));
+  --color-action-primary-secondary: hsl(var(--primary-hover));
+  --color-action-primary-tertiary: hsl(var(--primary-pressed));
+  --color-action-primary-text: hsl(var(--primary-foreground));
+
+  --color-action-secondary-primary: hsl(var(--interactive-secondary));
+  --color-action-secondary-secondary: hsl(var(--interactive-secondary-hover));
+  --color-action-secondary-tertiary: hsl(var(--interactive-secondary-pressed));
+  --color-action-secondary-text: hsl(var(--foreground));
+
+  --color-action-success-primary: hsl(var(--positive));
+  --color-action-success-secondary: hsl(var(--positive-hover));
+  --color-action-success-tertiary: hsl(var(--positive-pressed));
+  --color-action-success-text: hsl(var(--positive-foreground));
+
+  --color-action-danger-primary: hsl(var(--negative));
+  --color-action-danger-secondary: hsl(var(--negative-hover));
+  --color-action-danger-tertiary: hsl(var(--negative-pressed));
+  --color-action-danger-text: hsl(var(--negative-foreground));
+
+  /* common/* */
+  --color-brand-primary: hsl(var(--primary));
+  --color-brand-accent: hsl(var(--accent));
+  --color-semantic-success: hsl(var(--positive));
+  --color-semantic-destructive: hsl(var(--negative));
+  --color-semantic-info: hsl(var(--status-info));
+  --color-semantic-warning: hsl(var(--status-warning));
+}

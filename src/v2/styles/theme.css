@@ -1,0 +1,357 @@
+/**
+ * VOODO 2.0 — Tailwind 4 theme.
+ *
+ * Import this once in an application:
+ *
+ *     import "@voxel51/voodo/v2/theme.css";
+ *
+ * `@theme inline` maps each Tailwind color name onto `hsl(var(--token))`
+ * rather than a literal. Inline is required here: it makes the emitted
+ * utility reference the variable at use time, so `.dark` overriding the
+ * variable re-themes every utility without regenerating CSS. A non-inline
+ * `@theme` would bake the light value into the utility and dark mode would
+ * silently do nothing.
+ */
+
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "./tokens.css";
+
+/* Dark mode is class-driven, matching voodo 1.0 (`.dark` on <html>) so a
+   single toggle drives both versions during migration. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Scan v2 sources for utility classes. */
+@source "../**/*.{ts,tsx}";
+
+@theme inline {
+  /* bg/ */
+  --color-background: hsl(var(--background));
+  --color-card: hsl(var(--card));
+  --color-card-2: hsl(var(--card-2));
+  --color-card-elevated: hsl(var(--card-elevated));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-secondary: hsl(var(--secondary));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-hover-subtle: hsl(var(--hover-subtle));
+
+  /* text/ */
+  --color-foreground: hsl(var(--foreground));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-tertiary-foreground: hsl(var(--tertiary-foreground));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-placeholder-foreground: hsl(var(--placeholder-foreground));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  /* icon/ — `text-icon` is the default action icon color. */
+  --color-icon: hsl(var(--icon-default));
+  --color-icon-subtle: hsl(var(--icon-subtle));
+  --color-icon-muted: hsl(var(--icon-muted));
+  --color-icon-disabled: hsl(var(--icon-disabled));
+  --color-icon-emphasis: hsl(var(--icon-emphasis));
+  --color-icon-brand: hsl(var(--icon-brand));
+  --color-icon-decorative: hsl(var(--icon-decorative));
+  --color-icon-dark: hsl(var(--icon-dark));
+  --color-icon-success: hsl(var(--icon-success));
+
+  /* interactive/ */
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-primary-hover: hsl(var(--primary-hover));
+  --color-primary-pressed: hsl(var(--primary-pressed));
+  --color-accent: hsl(var(--accent));
+  --color-interactive-secondary: hsl(var(--interactive-secondary));
+  --color-interactive-secondary-hover: hsl(var(--interactive-secondary-hover));
+  --color-interactive-secondary-pressed: hsl(
+    var(--interactive-secondary-pressed)
+  );
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-destructive-hover: hsl(var(--destructive-hover));
+  --color-destructive-pressed: hsl(var(--destructive-pressed));
+  --color-positive: hsl(var(--positive));
+  --color-positive-foreground: hsl(var(--positive-foreground));
+  --color-positive-hover: hsl(var(--positive-hover));
+  --color-positive-pressed: hsl(var(--positive-pressed));
+  --color-negative: hsl(var(--negative));
+  --color-negative-foreground: hsl(var(--negative-foreground));
+  --color-negative-hover: hsl(var(--negative-hover));
+  --color-negative-pressed: hsl(var(--negative-pressed));
+
+  /* border/ — `border-border` is the default; `border-subtle` is a hairline. */
+  --color-border: hsl(var(--border));
+  --color-subtle: hsl(var(--border-subtle));
+  --color-strong: hsl(var(--border-strong));
+  --color-hover: hsl(var(--border-hover));
+  --color-focus: hsl(var(--border-focus));
+  --color-active: hsl(var(--border-active));
+  --color-disabled: hsl(var(--border-disabled));
+
+  /* input */
+  --color-input: hsl(var(--input));
+  --color-input-hover: hsl(var(--input-hover));
+  --color-input-focus: hsl(var(--input-focus));
+  --color-ring: hsl(var(--ring));
+
+  /* status/ — chips and pills only, never CTA fills. */
+  --color-status-success: hsl(var(--status-success));
+  --color-status-failure: hsl(var(--status-failure));
+  --color-status-warning: hsl(var(--status-warning));
+  --color-status-info: hsl(var(--status-info));
+  --color-status-default: hsl(var(--status-default));
+  --color-status-approved: hsl(var(--status-approved-text));
+  --color-status-approved-text: hsl(var(--status-approved-text));
+  --color-status-approved-bg: hsl(var(--status-approved-bg));
+  --color-status-review: hsl(var(--status-review-text));
+  --color-status-review-text: hsl(var(--status-review-text));
+  --color-status-review-bg: hsl(var(--status-review-bg));
+  --color-status-progress: hsl(var(--status-progress-text));
+  --color-status-progress-text: hsl(var(--status-progress-text));
+  --color-status-progress-bg: hsl(var(--status-progress-bg));
+  --color-status-draft-text: hsl(var(--status-draft-text));
+  --color-status-draft-bg: hsl(var(--status-draft-bg));
+  --color-status-failed: hsl(var(--status-failed-text));
+  --color-status-failed-text: hsl(var(--status-failed-text));
+  --color-status-failed-bg: hsl(var(--status-failed-bg));
+  --color-status-success-surface: hsl(var(--status-success-surface));
+  --color-status-failed-surface: hsl(var(--status-failed-surface));
+
+  /* palette/ — categorical data-visualization slots. */
+  --color-palette-1: hsl(var(--palette-1));
+  --color-palette-2: hsl(var(--palette-2));
+  --color-palette-3: hsl(var(--palette-3));
+  --color-palette-4: hsl(var(--palette-4));
+  --color-palette-5: hsl(var(--palette-5));
+  --color-palette-6: hsl(var(--palette-6));
+  --color-palette-7: hsl(var(--palette-7));
+  --color-palette-8: hsl(var(--palette-8));
+  --color-palette-9: hsl(var(--palette-9));
+  --color-palette-10: hsl(var(--palette-10));
+  --color-palette-11: hsl(var(--palette-11));
+  --color-palette-12: hsl(var(--palette-12));
+  --color-palette-13: hsl(var(--palette-13));
+  --color-palette-14: hsl(var(--palette-14));
+  --color-palette-15: hsl(var(--palette-15));
+  --color-palette-16: hsl(var(--palette-16));
+  --color-palette-17: hsl(var(--palette-17));
+  --color-palette-18: hsl(var(--palette-18));
+
+  /* chart */
+  --color-chart-model-a: hsl(var(--chart-model-a));
+  --color-chart-model-a-soft: hsl(var(--chart-model-a-soft));
+  --color-chart-model-b: hsl(var(--chart-model-b));
+  --color-chart-model-b-soft: hsl(var(--chart-model-b-soft));
+
+  /* toast */
+  --color-toast-success: hsl(var(--toast-success));
+  --color-toast-failure: hsl(var(--toast-failure));
+  --color-toast-warning: hsl(var(--toast-warning));
+  --color-toast-info: hsl(var(--toast-info));
+
+  /* link */
+  --color-link: hsl(var(--link));
+  --color-link-hover: hsl(var(--link-hover));
+  --color-link-visited: hsl(var(--link-visited));
+
+  /* skeleton / tooltip / code / media */
+  --color-skeleton: hsl(var(--skeleton-base));
+  --color-skeleton-shimmer: hsl(var(--skeleton-shimmer));
+  --color-tooltip: hsl(var(--tooltip-bg));
+  --color-tooltip-foreground: hsl(var(--tooltip-text));
+  --color-code: hsl(var(--code-bg));
+  --color-code-foreground: hsl(var(--code-text));
+  --color-code-border: hsl(var(--code-border));
+  --color-scrim: hsl(var(--scrim));
+  --color-on-media: hsl(var(--on-media));
+  --color-detection: hsl(var(--detection));
+  --color-detection-foreground: hsl(var(--detection-foreground));
+
+  /* surfaces */
+  --color-surface-glass: hsl(var(--surface-glass));
+  --color-surface-glass-border: hsl(var(--surface-glass-border));
+  --color-surface-elevated: hsl(var(--surface-elevated));
+
+  /* sidebar */
+  --color-sidebar: hsl(var(--sidebar-background));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  /* radius — shadcn's three-step scale derived from a single --radius. */
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 6px);
+
+  /* typography — one systematic scale, line-height baked in. Never use an
+     arbitrary text-[Npx]; if a size is missing, add it here. */
+  --font-sans: Palanquin, ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --text-display: 1.4375rem; /* 23px — display title */
+  --text-display--line-height: 1.3;
+  --text-title: 1.125rem; /* 18px — page title */
+  --text-title--line-height: 1.4;
+  --text-heading: 1rem; /* 16px — section header */
+  --text-heading--line-height: 1.4;
+  --text-subheading: 0.875rem; /* 14px — small header */
+  --text-subheading--line-height: 1.45;
+  --text-heading-small: 0.875rem; /* 14px — alias of subheading */
+  --text-heading-small--line-height: 1.45;
+  --text-body: 0.9375rem; /* 15px — body primary, the base size */
+  --text-body--line-height: 1.5;
+  --text-body-sm: 0.875rem; /* 14px — body secondary */
+  --text-body-sm--line-height: 1.5;
+  --text-meta: 0.75rem; /* 12px — body tertiary */
+  --text-meta--line-height: 1.4;
+  --text-caption: 0.6875rem; /* 11px — caption / primary label */
+  --text-caption--line-height: 1.35;
+
+  /* animation */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  code,
+  pre,
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+
+  ::selection {
+    background-color: hsl(var(--selection-bg) / 0.3);
+    color: hsl(var(--selection-text));
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--scrollbar-track));
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--scrollbar-thumb));
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--scrollbar-thumb-hover));
+  }
+}
+
+/**
+ * Semantic type classes — size + weight + color in one shot. Prefer these
+ * over composing `text-body font-normal text-foreground` by hand; the
+ * size-only tokens above remain available for fine control.
+ */
+@layer components {
+  .type-display {
+    font-size: var(--text-display);
+    line-height: var(--text-display--line-height);
+    font-weight: 400;
+    color: hsl(var(--foreground));
+  }
+  .type-title {
+    font-size: var(--text-title);
+    line-height: var(--text-title--line-height);
+    font-weight: 500;
+    color: hsl(var(--foreground));
+  }
+  .type-heading {
+    font-size: var(--text-heading);
+    line-height: var(--text-heading--line-height);
+    font-weight: 500;
+    color: hsl(var(--foreground));
+  }
+  .type-subheading,
+  .type-heading-small {
+    font-size: var(--text-subheading);
+    line-height: var(--text-subheading--line-height);
+    font-weight: 500;
+    color: hsl(var(--foreground));
+  }
+  .type-body {
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    font-weight: 400;
+    color: hsl(var(--foreground));
+  }
+  .type-body-secondary {
+    font-size: var(--text-body-sm);
+    line-height: var(--text-body-sm--line-height);
+    font-weight: 400;
+    color: hsl(var(--secondary-foreground));
+  }
+  .type-body-tertiary {
+    font-size: var(--text-meta);
+    line-height: var(--text-meta--line-height);
+    font-weight: 400;
+    color: hsl(var(--secondary-foreground));
+  }
+  .type-label {
+    font-size: var(--text-meta);
+    line-height: var(--text-meta--line-height);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    color: hsl(var(--secondary-foreground));
+  }
+  .type-caption {
+    font-size: var(--text-caption);
+    line-height: var(--text-caption--line-height);
+    font-weight: 400;
+    color: hsl(var(--tertiary-foreground));
+  }
+}
+
+@utility glass-surface {
+  background: hsl(var(--surface-glass) / 0.6);
+  border: 1px solid hsl(var(--surface-glass-border) / 0.4);
+  backdrop-filter: blur(16px);
+}
+
+@utility glow-accent {
+  box-shadow: 0 0 24px -8px hsl(var(--glow-primary) / 0.25);
+}
+
+@utility bg-gradient-expressive {
+  background-image: var(--gradient-expressive);
+}

@@ -1,0 +1,403 @@
+/**
+ * VOODO 2.0 — token definitions.
+ *
+ * Values are HSL triplets (`H S% L%`), not colors. They are consumed as
+ * `hsl(var(--token))`. This is the shadcn convention and it is what makes a
+ * single token resolve differently per theme: `:root` holds light, `.dark`
+ * holds dark, and every utility reads through the variable.
+ *
+ * Variable names are identical to the Lovable master project
+ * (voxel51/fiftyone-copilot-internal, `src/index.css`) so component source
+ * ports across without a rename pass.
+ *
+ * Adding a token means editing three places in the same change: this file,
+ * `theme.css` (to expose a Tailwind utility), and the token reference doc.
+ */
+
+:root {
+  /* bg/ */
+  --background: 0 0% 98%;
+  --card: 0 0% 100%;
+  --card-2: 0 0% 96%;
+  --card-elevated: 0 0% 92%;
+  --card-foreground: 210 4% 10%;
+  --muted: 0 0% 95%;
+  --secondary: 0 0% 96%;
+  --popover: 0 0% 100%;
+
+  /* text/ */
+  --foreground: 210 4% 10%;
+  --secondary-foreground: 30 3% 35%;
+  --tertiary-foreground: 20 3% 50%;
+  --muted-foreground: 20 3% 42%;
+  --placeholder-foreground: 20 3% 55%;
+  --accent-foreground: 210 4% 10%;
+  --popover-foreground: 210 4% 10%;
+
+  /* icon/ */
+  --icon-default: 20 3% 40%;
+  --icon-subtle: 20 3% 55%;
+  --icon-muted: 20 3% 60%;
+  --icon-disabled: 20 3% 70%;
+  --icon-emphasis: 210 4% 10%;
+  --icon-brand: 20 100% 49%;
+  --icon-decorative: 20 100% 49%;
+  --icon-dark: 210 4% 10%;
+  --icon-success: 145 55% 42%;
+
+  /* interactive surfaces */
+  --hover-subtle: 0 0% 94%;
+
+  /* primary / accent */
+  --primary: 20 100% 49%;
+  --primary-foreground: 0 0% 100%;
+  --primary-hover: 20 100% 39%;
+  --primary-pressed: 20 100% 29%;
+  --accent: 20 100% 66%;
+
+  /* interactive secondary */
+  --interactive-secondary: 0 0% 95%;
+  --interactive-secondary-hover: 0 0% 92%;
+  --interactive-secondary-pressed: 0 0% 88%;
+
+  /* destructive */
+  --destructive: 0 65% 45%;
+  --destructive-foreground: 0 0% 100%;
+  --destructive-hover: 0 65% 38%;
+  --destructive-pressed: 0 65% 30%;
+
+  /* action: positive (approve) */
+  --positive: 145 61% 30%;
+  --positive-hover: 145 65% 24%;
+  --positive-pressed: 147 70% 18%;
+  --positive-foreground: 0 0% 100%;
+
+  /* action: negative (reject) */
+  --negative: 0 65% 45%;
+  --negative-hover: 0 65% 38%;
+  --negative-pressed: 0 65% 30%;
+  --negative-foreground: 0 0% 100%;
+
+  /* border/ */
+  --border: 0 0% 88%;
+  --border-subtle: 0 0% 92%;
+  --border-strong: 0 0% 80%;
+  --border-hover: 0 0% 70%;
+  --border-focus: 20 3% 42%;
+  --border-disabled: 0 0% 92%;
+  --border-active: 20 100% 49%;
+
+  /* input */
+  --input: 0 0% 88%;
+  --input-hover: 0 0% 70%;
+  --input-focus: 20 3% 42%;
+  --ring: 20 100% 49%;
+  --radius: 0.375rem;
+
+  /* surfaces */
+  --surface-glass: 0 0% 100%;
+  --surface-glass-border: 0 0% 88%;
+  --surface-elevated: 0 0% 92%;
+  --glow-primary: 20 100% 49%;
+
+  /* expressive CTA — warm-to-magenta gradient, for emphasizing new features */
+  --gradient-expressive: linear-gradient(
+    105deg,
+    hsl(20 100% 49%),
+    hsl(340 75% 55%) 55%,
+    hsl(280 65% 55%)
+  );
+  --gradient-expressive-glow: 340 75% 55%;
+
+  /* status — chips and pills only, never CTA fills.
+     -text is the label color, -bg is the solid emphasis fill. */
+  --status-success: 145 55% 32%;
+  --status-failure: 0 57% 49%;
+  --status-warning: 35 90% 40%;
+  --status-info: 216 75% 45%;
+  --status-default: 30 2% 40%;
+
+  --status-approved-text: 140 65% 24%;
+  --status-approved-bg: 144 61% 30%;
+  --status-review-text: 20 100% 39%;
+  --status-review-bg: 20 100% 49%;
+  --status-progress-text: 262 50% 51%;
+  --status-progress-bg: 258 90% 66%;
+  --status-draft-text: 210 4% 30%;
+  --status-draft-bg: 30 2% 41%;
+  --status-failed-text: 0 60% 38%;
+  --status-failed-bg: 0 57% 49%;
+
+  --status-approved: var(--status-approved-text);
+  --status-review: var(--status-review-text);
+  --status-progress: var(--status-progress-text);
+  --status-failed: var(--status-failed-text);
+  --status-success-surface: 145 30% 90%;
+  --status-failed-surface: 0 50% 92%;
+
+  /* palette/ — categorical data-visualization slots for fields, classes and
+     series. Tuned for >=3:1 against the light canvas (#FAFAFA); `.dark`
+     overrides every slot with a twin tuned for #18191A. Slot 1 is brand
+     orange — reserve it for the primary/selected series. Slot 16 is the
+     neutral "other"/unlabeled bucket, never a real class. */
+  --palette-1: 20 100% 49%;
+  --palette-2: 221 83% 53%;
+  --palette-3: 145 61% 30%;
+  --palette-4: 262 83% 58%;
+  --palette-5: 333 71% 51%;
+  --palette-6: 26 90% 37%;
+  --palette-7: 175 77% 26%;
+  --palette-8: 261 51% 51%;
+  --palette-9: 243 75% 59%;
+  --palette-10: 0 57% 49%;
+  --palette-11: 32 97% 35%;
+  --palette-12: 145 65% 24%;
+  --palette-13: 200 98% 39%;
+  --palette-14: 86 78% 27%;
+  --palette-15: 295 72% 40%;
+  --palette-16: 215 19% 35%;
+  --palette-17: 347 77% 50%;
+  --palette-18: 161 94% 30%;
+
+  /* chart — two-model comparison pair */
+  --chart-model-a: 21 100% 62%;
+  --chart-model-a-soft: 21 100% 75%;
+  --chart-model-b: 265 100% 82%;
+  --chart-model-b-soft: 265 100% 88%;
+
+  /* toast — bold notification fills, white-on-color in both themes */
+  --toast-success: 144 61% 30%;
+  --toast-failure: 0 57% 49%;
+  --toast-warning: 32 95% 44%;
+  --toast-info: 221 83% 53%;
+
+  /* link */
+  --link: 216 88% 45%;
+  --link-hover: 217 81% 38%;
+  --link-visited: 270 60% 50%;
+
+  /* skeleton */
+  --skeleton-base: 0 0% 92%;
+  --skeleton-shimmer: 0 0% 96%;
+
+  /* tooltip */
+  --tooltip-bg: 210 4% 15%;
+  --tooltip-text: 0 0% 98%;
+
+  /* media overlays — scrims over image/video/canvas, and text on media */
+  --scrim: 0 0% 0%;
+  --on-media: 0 0% 100%;
+  --detection: 265 85% 60%;
+  --detection-foreground: 0 0% 100%;
+
+  /* code */
+  --code-bg: 0 0% 96%;
+  --code-text: 20 100% 41%;
+  --code-border: 0 0% 88%;
+
+  /* scrollbar */
+  --scrollbar-track: 0 0% 96%;
+  --scrollbar-thumb: 0 0% 80%;
+  --scrollbar-thumb-hover: 0 0% 70%;
+
+  /* selection */
+  --selection-bg: 20 100% 49%;
+  --selection-text: 0 0% 100%;
+
+  /* sidebar */
+  --sidebar-background: 0 0% 100%;
+  --sidebar-foreground: 20 3% 40%;
+  --sidebar-primary: 20 100% 49%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 0 0% 95%;
+  --sidebar-accent-foreground: 210 4% 10%;
+  --sidebar-border: 0 0% 88%;
+  --sidebar-ring: 20 100% 49%;
+}
+
+.dark {
+  /* bg/ */
+  --background: 210 4% 10%;
+  --card: 210 3% 12%;
+  --card-2: 200 4% 14%;
+  --card-elevated: 195 5% 19%;
+  --card-foreground: 24 100% 98%;
+  --muted: 180 3% 13%;
+  --secondary: 210 4% 11%;
+  --popover: 210 8% 8%;
+
+  /* text/ */
+  --foreground: 24 100% 98%;
+  --secondary-foreground: 30 2% 55%;
+  --tertiary-foreground: 20 3% 42%;
+  --muted-foreground: 20 3% 60%;
+  --placeholder-foreground: 20 3% 42%;
+  --accent-foreground: 24 100% 98%;
+  --popover-foreground: 24 100% 98%;
+
+  /* icon/ */
+  --icon-default: 30 2% 55%;
+  --icon-subtle: 20 3% 42%;
+  --icon-muted: 20 3% 42%;
+  --icon-disabled: 20 3% 42%;
+  --icon-emphasis: 0 0% 100%;
+  --icon-brand: 20 100% 49%;
+  --icon-decorative: 20 100% 66%;
+  --icon-dark: 210 4% 10%;
+  --icon-success: 130 40% 62%;
+
+  /* interactive surfaces */
+  --hover-subtle: 200 4% 16%;
+
+  /* primary / accent */
+  --primary: 20 100% 49%;
+  --primary-foreground: 0 0% 100%;
+  --primary-hover: 20 100% 39%;
+  --primary-pressed: 20 100% 29%;
+  --accent: 20 100% 66%;
+
+  /* interactive secondary */
+  --interactive-secondary: 200 4% 14%;
+  --interactive-secondary-hover: 200 4% 17%;
+  --interactive-secondary-pressed: 210 3% 12%;
+
+  /* destructive */
+  --destructive: 0 56% 49%;
+  --destructive-foreground: 0 0% 100%;
+  --destructive-hover: 0 60% 38%;
+  --destructive-pressed: 0 60% 29%;
+
+  /* action: positive (approve) */
+  --positive: 145 61% 30%;
+  --positive-hover: 145 65% 24%;
+  --positive-pressed: 147 70% 18%;
+  --positive-foreground: 0 0% 100%;
+
+  /* action: negative (reject) */
+  --negative: 0 57% 49%;
+  --negative-hover: 0 60% 38%;
+  --negative-pressed: 0 60% 29%;
+  --negative-foreground: 0 0% 100%;
+
+  /* border/ */
+  --border: 195 5% 19%;
+  --border-subtle: 210 3% 12%;
+  --border-strong: 195 4% 25%;
+  --border-hover: 195 3% 30%;
+  --border-focus: 20 3% 42%;
+  --border-disabled: 210 3% 12%;
+  --border-active: 20 100% 49%;
+
+  /* input */
+  --input: 195 5% 19%;
+  --input-hover: 195 3% 30%;
+  --input-focus: 20 3% 42%;
+  --ring: 20 100% 49%;
+
+  /* surfaces */
+  --surface-glass: 200 4% 14%;
+  --surface-glass-border: 195 5% 19%;
+  --surface-elevated: 195 5% 19%;
+  --glow-primary: 20 100% 49%;
+
+  --gradient-expressive: linear-gradient(
+    105deg,
+    hsl(20 100% 49%),
+    hsl(340 75% 55%) 55%,
+    hsl(280 65% 58%)
+  );
+  --gradient-expressive-glow: 340 75% 55%;
+
+  /* status */
+  --status-success: 130 25% 60%;
+  --status-failure: 0 100% 70%;
+  --status-warning: 42 97% 67%;
+  --status-info: 216 88% 74%;
+  --status-default: 30 2% 55%;
+
+  --status-approved-text: 124 30% 60%;
+  --status-approved-bg: 144 61% 30%;
+  --status-review-text: 20 100% 62%;
+  --status-review-bg: 20 100% 49%;
+  --status-progress-text: 268 100% 83%;
+  --status-progress-bg: 258 90% 66%;
+  --status-draft-text: 30 2% 55%;
+  --status-draft-bg: 30 2% 41%;
+  --status-failed-text: 0 100% 70%;
+  --status-failed-bg: 0 57% 49%;
+
+  --status-success-surface: 146 24% 13%;
+  --status-failed-surface: 0 22% 15%;
+
+  /* palette/ — dark-canvas twins. Slots 1/2/3/5/8/10 are identical in both
+     themes (already legible on either canvas); the rest lighten here. Slots
+     9, 11 and 12 were re-tuned for dark because the light values fell below
+     3:1 against #18191A. */
+  --palette-1: 20 100% 49%;
+  --palette-2: 221 83% 53%;
+  --palette-3: 145 61% 30%;
+  --palette-4: 258 90% 66%;
+  --palette-5: 333 71% 51%;
+  --palette-6: 32 95% 44%;
+  --palette-7: 175 84% 32%;
+  --palette-8: 261 51% 51%;
+  --palette-9: 234 89% 74%;
+  --palette-10: 0 57% 49%;
+  --palette-11: 36 79% 57%;
+  --palette-12: 148 30% 52%;
+  --palette-13: 198 93% 60%;
+  --palette-14: 85 85% 35%;
+  --palette-15: 293 69% 49%;
+  --palette-16: 215 16% 47%;
+  --palette-17: 350 89% 60%;
+  --palette-18: 158 64% 52%;
+
+  /* chart */
+  --chart-model-a: 21 100% 62%;
+  --chart-model-a-soft: 21 100% 75%;
+  --chart-model-b: 265 100% 82%;
+  --chart-model-b-soft: 265 100% 88%;
+
+  /* link */
+  --link: 216 88% 74%;
+  --link-hover: 217 81% 63%;
+  --link-visited: 270 92% 74%;
+
+  /* skeleton */
+  --skeleton-base: 200 4% 14%;
+  --skeleton-shimmer: 195 5% 19%;
+
+  /* tooltip */
+  --tooltip-bg: 200 4% 17%;
+  --tooltip-text: 24 100% 98%;
+
+  /* media overlays */
+  --scrim: 0 0% 0%;
+  --on-media: 0 0% 100%;
+  --detection: 265 85% 70%;
+  --detection-foreground: 0 0% 100%;
+
+  /* code */
+  --code-bg: 210 8% 8%;
+  --code-text: 20 100% 66%;
+  --code-border: 195 5% 19%;
+
+  /* scrollbar */
+  --scrollbar-track: 210 4% 10%;
+  --scrollbar-thumb: 195 4% 25%;
+  --scrollbar-thumb-hover: 195 3% 30%;
+
+  /* selection */
+  --selection-bg: 20 100% 49%;
+  --selection-text: 0 0% 100%;
+
+  /* sidebar */
+  --sidebar-background: 210 8% 8%;
+  --sidebar-foreground: 20 2% 55%;
+  --sidebar-primary: 20 100% 49%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 200 4% 14%;
+  --sidebar-accent-foreground: 24 100% 98%;
+  --sidebar-border: 195 5% 19%;
+  --sidebar-ring: 20 100% 49%;
+}
