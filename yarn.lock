@@ -5413,6 +5413,7 @@ __metadata:
     "@typescript-eslint/parser": "npm:^8.52.0"
     "@vitejs/plugin-react": "npm:^5.1.1"
     autoprefixer: "npm:^10.4.22"
+    chromatic: "npm:^18.2.0"
     class-variance-authority: "npm:^0.7.1"
     clsx: "npm:^2.1.1"
     cmdk: "npm:^1.1.1"
@@ -6213,6 +6214,35 @@ __metadata:
   version: 3.0.0
   resolution: "chownr@npm:3.0.0"
   checksum: 10c0/43925b87700f7e3893296c8e9c56cc58f926411cce3a6e5898136daaf08f08b9a8eb76d37d3267e707d0dcc17aed2e2ebdf5848c0c3ce95cf910a919935c1b10
+  languageName: node
+  linkType: hard
+
+"chromatic@npm:^18.2.0":
+  version: 18.2.0
+  resolution: "chromatic@npm:18.2.0"
+  dependencies:
+    semver: "npm:^7.3.5"
+  peerDependencies:
+    "@chromatic-com/cypress": ^0.*.* || ^1.0.0
+    "@chromatic-com/playwright": ^0.*.* || ^1.0.0
+    "@chromatic-com/vitest": ^0.*.* || ^1.0.0
+  dependenciesMeta:
+    "@sentry/cli":
+      built: true
+    esbuild:
+      built: true
+  peerDependenciesMeta:
+    "@chromatic-com/cypress":
+      optional: true
+    "@chromatic-com/playwright":
+      optional: true
+    "@chromatic-com/vitest":
+      optional: true
+  bin:
+    chroma: dist/bin.cjs
+    chromatic: dist/bin.cjs
+    chromatic-cli: dist/bin.cjs
+  checksum: 10c0/c530eb88761af134b8c15fae397729395db94c0e2c913267f0dbdb8553619cfbb38a12157bbd06386bfa6924deb64c074ad8979194e4e9d908ef47ae9dff93a7
   languageName: node
   linkType: hard
 

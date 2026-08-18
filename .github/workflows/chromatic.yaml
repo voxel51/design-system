@@ -1,0 +1,59 @@
+name: Publish Storybook to Chromatic
+
+# Publishes three Storybook builds per push:
+#   - combined (v1 + v2 + comparisons) — the link to share for review
+#   - v1 only, v2 only — so each version has a stable URL to diff against
+#
+# Chromatic's visual regression compares a build against the previous build of
+# the *same* project, so the per-version projects are what make "did v2 change"
+# answerable. The combined build is for humans browsing both at once.
+#
+# Requires three repository secrets, one project token each:
+#   CHROMATIC_TOKEN_COMBINED, CHROMATIC_TOKEN_V1, CHROMATIC_TOKEN_V2
+
+on:
+  push:
+    branches: [shadcn-poc]
+  workflow_dispatch:
+
+jobs:
+  chromatic:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: combined
+            version: all
+            secret: CHROMATIC_TOKEN_COMBINED
+          - name: v1
+            version: "1"
+            secret: CHROMATIC_TOKEN_V1
+          - name: v2
+            version: "2"
+            secret: CHROMATIC_TOKEN_V2
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Chromatic uses git history to find the previous build to compare
+          # against; a shallow clone makes every build look like the first one.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: yarn
+
+      - run: yarn install --immutable
+
+      # v1's theme is generated from the token source, and yarn 4 does not run
+      # `pre*` script hooks, so this cannot be left to `prestorybook`.
+      - run: yarn generate-tailwind-theme
+
+      - run: yarn build-storybook -o storybook-static/${{ matrix.name }}
+        env:
+          VOODO_VERSION: ${{ matrix.version }}
+
+      - run: yarn chromatic --storybook-build-dir storybook-static/${{ matrix.name }} --exit-zero-on-changes
+        env:
+          CHROMATIC_PROJECT_TOKEN: ${{ secrets[matrix.secret] }}

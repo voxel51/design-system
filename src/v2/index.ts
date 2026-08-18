@@ -8,7 +8,7 @@
  *
  *     import { Button } from "@voxel51/voodo/v2/button";
  *
- * 73 components, 1 pattern group(s), 1 hook(s).
+ * 73 components, 4 pattern group(s), 1 hook(s).
  */
 
 export * from "./components/ui/accordion";
@@ -85,6 +85,9 @@ export * from "./components/ui/use-toast";
 export * from "./components/ui/user-badge";
 export * from "./components/ui/view-picker";
 
+export * from "./components/patterns/activity";
+export * from "./components/patterns/agent";
+export * from "./components/patterns/search";
 export * from "./components/patterns/services";
 
 export * from "./hooks/use-mobile";
