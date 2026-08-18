@@ -12,6 +12,7 @@ import { resolve } from "path";
 const UI_DIR = resolve("src/v2/components/ui");
 const HOOKS_DIR = resolve("src/v2/hooks");
 const PATTERNS_DIR = resolve("src/v2/components/patterns");
+const CHROME_DIR = resolve("src/v2/components/chrome");
 
 const modules = (dir: string) =>
   readdirSync(dir)
@@ -90,6 +91,8 @@ const header = `/**
 
 const body = [
   ...ui.map((m) => exportLine(UI_DIR, `./components/ui/${m}`, m)),
+  "",
+  ...(existsSync(CHROME_DIR) ? ['export * from "./components/chrome";'] : []),
   "",
   ...patterns.map((p) => `export * from "./components/patterns/${p}";`),
   "",

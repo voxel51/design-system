@@ -44,8 +44,20 @@ const REWRITES: [RegExp, string][] = [
   [/from "@\/lib\/saveStatusStore"/g, 'from "../../../lib/saveStatusStore"'],
 ];
 
-/** Imports the design system cannot own — reported, never rewritten. */
-const APP_IMPORT = /from "(@\/(?:mocks|hooks|services|assets|lib)\/[^"]+)"/g;
+/**
+ * Imports the design system cannot resolve — reported, never rewritten.
+ *
+ * Covers three kinds, and missing any of them under-reports the work:
+ *   - application state: mocks, hooks, services, assets, lib
+ *   - top-level components that live outside any group
+ *   - components in a *different* pattern group, which is a port-order
+ *     dependency rather than a prop seam
+ */
+const APP_IMPORT = new RegExp(
+  String.raw`from "(@/(?:mocks|hooks|services|assets|lib)/[^"]+` +
+    String.raw`|@/components/(?!ui/|${group}/)[^"]+)"`,
+  "g",
+);
 
 const coupling = new Map<string, Set<string>>();
 let count = 0;
