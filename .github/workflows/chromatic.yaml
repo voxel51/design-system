@@ -8,8 +8,29 @@ name: Publish Storybook to Chromatic
 # the *same* project, so the per-version projects are what make "did v2 change"
 # answerable. The combined build is for humans browsing both at once.
 #
-# Requires three repository secrets, one project token each:
-#   CHROMATIC_TOKEN_COMBINED, CHROMATIC_TOKEN_V1, CHROMATIC_TOKEN_V2
+# Setup — one Chromatic project per build, one repository secret each:
+#
+#   1. At chromatic.com, sign in with GitHub and add the `voxel51/design-system`
+#      repository three times, as three projects: `design-system` (combined),
+#      `design-system-v1`, `design-system-v2`. Each gets its own project token.
+#   2. Store each token as a repository secret, so the value never lands in a
+#      shell history or a file:
+#
+#        gh secret set CHROMATIC_TOKEN_COMBINED --repo voxel51/design-system
+#        gh secret set CHROMATIC_TOKEN_V1       --repo voxel51/design-system
+#        gh secret set CHROMATIC_TOKEN_V2       --repo voxel51/design-system
+#
+#      Each prompts for the value on stdin.
+#
+# A leg whose secret is missing is skipped rather than failed, so one token is
+# enough to get a hosted link — add the other two when per-version diffing
+# starts to matter.
+#
+# To publish by hand instead, without touching CI:
+#
+#   yarn generate-tailwind-theme
+#   VOODO_VERSION=all yarn build-storybook -o storybook-static/combined
+#   CHROMATIC_PROJECT_TOKEN=… yarn chromatic:combined
 
 on:
   push:
@@ -54,6 +75,17 @@ jobs:
         env:
           VOODO_VERSION: ${{ matrix.version }}
 
-      - run: yarn chromatic --storybook-build-dir storybook-static/${{ matrix.name }} --exit-zero-on-changes
+      # The `chromatic` script is a bare passthrough on purpose. It used to
+      # carry these same flags, and passing them here too failed every run with
+      # "The flag --exitZeroOnChanges can only be set once."
+      - name: Publish to Chromatic
+        if: ${{ secrets[matrix.secret] != '' }}
+        run: yarn chromatic --storybook-build-dir storybook-static/${{ matrix.name }} --exit-zero-on-changes
         env:
           CHROMATIC_PROJECT_TOKEN: ${{ secrets[matrix.secret] }}
+
+      - name: No token for this build
+        if: ${{ secrets[matrix.secret] == '' }}
+        run: |
+          echo "::notice::${{ matrix.secret }} is not set — built ${{ matrix.name }} but did not publish it."
+          echo "Add the secret to publish this build. See the header of this workflow."
