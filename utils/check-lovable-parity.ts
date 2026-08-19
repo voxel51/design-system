@@ -95,7 +95,41 @@ if (withoutStories.length) {
   );
 }
 
-// 4. Pattern directories. Reported as warnings, not failures: patterns land
+// 4. The font-size scale is registered with tailwind-merge.
+//
+//    `cn` resolves conflicts by parsing class names, and `text-*` is the
+//    prefix for both font size and text colour. Any size token missing from
+//    the merge config is read as a colour, so `cn("text-body-sm", "text-fg")`
+//    silently drops the size and the element renders at whatever it inherits.
+//
+//    This is checked rather than assumed because the failure leaves no trace:
+//    no error, no warning, just slightly wrong type everywhere. It was ported
+//    out of the master by accident and cost a header comparison to find.
+const themeCss = resolve("src/v2/styles/theme.css");
+const utilsTs = resolve("src/v2/lib/utils.ts");
+if (existsSync(themeCss) && existsSync(utilsTs)) {
+  const scale = [
+    ...readFileSync(themeCss, "utf8").matchAll(
+      /^\s*--text-([a-z0-9-]+):\s*[\d.]/gm,
+    ),
+  ]
+    .map((m) => m[1])
+    // Tailwind 4 pairs each size with `--text-<name>--line-height`. That is
+    // part of the same token, not a separate utility.
+    .filter((name) => !name.endsWith("--line-height"));
+  const registered = readFileSync(utilsTs, "utf8");
+  const unregistered = scale.filter(
+    (name) => !new RegExp(`["']${name}["']`).test(registered),
+  );
+  if (unregistered.length) {
+    failures.push(
+      `${unregistered.length} font-size token(s) not registered with tailwind-merge in src/v2/lib/utils.ts:\n` +
+        unregistered.map((n) => `    text-${n}`).join("\n"),
+    );
+  }
+}
+
+// 5. Pattern directories. Reported as warnings, not failures: patterns land
 //    incrementally, and the list is the backlog rather than a broken build.
 const patternDirs = readdirSync(join(SOURCE, "src/components"))
   .filter((d) => d !== "ui" && statSync(join(SOURCE, "src/components", d)).isDirectory())
