@@ -35,6 +35,7 @@ const only = process.argv.includes("--only")
  */
 const PAGES = [
   { name: "datasets", teams: "/datasets", lovable: "/" },
+  { name: "dataset-samples", teams: "/datasets/quickstart/samples", lovable: "/dataset/pest-detection-1k" },
   { name: "settings-account", teams: "/settings/account", lovable: "/settings/account" },
   { name: "settings-api-keys", teams: "/settings/api_keys", lovable: "/settings/api-keys" },
   { name: "settings-services", teams: "/settings/services", lovable: "/settings/services" },

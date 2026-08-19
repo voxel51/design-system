@@ -5,6 +5,7 @@
  *
  * All ported with zero application coupling.
  */
+export * from "./DatasetHeader";
 export * from "./DropdownPanel";
 export * from "./IconTooltip";
 export * from "./PanelEmptyState";
