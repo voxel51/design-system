@@ -15,8 +15,7 @@
 This library acts as both a design system and a component library for Voxel51's
 front-end applications.
 
-Note: this library is currently in a pre-release state and may have frequent breaking changes.
-This library will adhere to semantic versioning best-practices starting with version 1.0.0.
+This library adheres to [semantic versioning](https://semver.org/) best-practices.
 
 ## Installation
 
