@@ -215,7 +215,13 @@
   --sidebar-ring: 20 100% 49%;
 }
 
-.dark {
+/* `.dark` is the design system's own switch. The attribute selector is for
+   hosts that already signal dark mode another way — fiftyone-teams sets
+   `data-mui-color-scheme` on <html> — so v2 follows the app's existing theme
+   without the app having to add a second marker, and without duplicating the
+   dark values in a compatibility file. */
+.dark,
+[data-mui-color-scheme="dark"] {
   /* bg/ */
   --background: 210 4% 10%;
   --card: 210 3% 12%;

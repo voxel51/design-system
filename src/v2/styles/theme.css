@@ -23,7 +23,7 @@
 
 /* Dark mode is class-driven, matching voodo 1.0 (`.dark` on <html>) so a
    single toggle drives both versions during migration. */
-@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant dark (&:where(.dark, .dark *, [data-mui-color-scheme="dark"], [data-mui-color-scheme="dark"] *));
 
 /* Scan v2 sources for utility classes. */
 @source "../**/*.{ts,tsx}";

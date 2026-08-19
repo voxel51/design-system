@@ -134,6 +134,7 @@
   },
   "devDependencies": {
     "@heroicons/react": "^2.2.0",
+    "@playwright/test": "^1.62.1",
     "@storybook/addon-a11y": "^10.2.15",
     "@storybook/addon-docs": "^10.2.15",
     "@storybook/addon-mcp": "^0.2.0",
@@ -193,6 +194,16 @@
   "peerDependenciesMeta": {
     "recharts": {
       "optional": true
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "v2": [
+        "./dist/v2/index.d.ts"
+      ],
+      "v2/*": [
+        "./dist/v2/components/ui/*.d.ts"
+      ]
     }
   }
 }
