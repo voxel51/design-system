@@ -66,6 +66,12 @@ jobs:
           # against; a shallow clone makes every build look like the first one.
           fetch-depth: 0
 
+      # Before setup-node, not after. Its `cache: yarn` shells out to
+      # `yarn cache dir`, and the runner's global yarn is 1.22, which refuses
+      # any repo pinned via `packageManager` — "the current global version of
+      # Yarn is 1.22.22" — so the step fails before installing anything.
+      - run: corepack enable
+
       - uses: actions/setup-node@v4
         with:
           node-version: 24
