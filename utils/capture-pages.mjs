@@ -34,14 +34,26 @@ const only = process.argv.includes("--only")
  * project, or null where the surface only exists in one of the two.
  */
 const PAGES = [
+  // Derived from the master's route table, not hand-picked. See
+  // `utils/route-coverage.ts`: curating this list by hand is what let the
+  // dataset header go uncompared for a whole session.
   { name: "datasets", teams: "/datasets", lovable: "/" },
   { name: "dataset-samples", teams: "/datasets/quickstart/samples", lovable: "/dataset/pest-detection-1k" },
+  { name: "dataset-annotate", teams: "/datasets/quickstart/annotate", lovable: "/annotation" },
   { name: "settings-account", teams: "/settings/account", lovable: "/settings/account" },
   { name: "settings-api-keys", teams: "/settings/api_keys", lovable: "/settings/api-keys" },
+  { name: "settings-cloud-credentials", teams: "/settings/cloud_storage_credentials", lovable: "/settings/cloud-credentials" },
+  { name: "settings-orchestrators", teams: "/settings/orchestrators", lovable: "/settings/orchestrators" },
   { name: "settings-services", teams: "/settings/services", lovable: "/settings/services" },
+  { name: "settings-activity", teams: "/settings/activity", lovable: "/settings/activity" },
   { name: "settings-plugins", teams: "/settings/plugins", lovable: "/settings/plugins" },
   { name: "settings-secrets", teams: "/settings/secrets", lovable: "/settings/secrets" },
-  { name: "settings-team-users", teams: "/settings/team/users", lovable: "/settings/users" },
+  { name: "settings-users", teams: "/settings/team/users", lovable: "/settings/users" },
+  { name: "settings-service-accounts", teams: "/settings/team/service_accounts", lovable: "/settings/service-accounts" },
+  { name: "settings-groups", teams: "/settings/team/groups", lovable: "/settings/groups" },
+  { name: "settings-config", teams: "/settings/security/config", lovable: "/settings/config" },
+  { name: "settings-roles", teams: "/settings/security/roles", lovable: "/settings/roles" },
+  { name: "settings-metrics", teams: "/settings/observability/metrics", lovable: "/settings/metrics" },
 ];
 
 /** Sign in through the lde dev-cas picker, which has no password. */
@@ -70,8 +82,17 @@ async function shoot(page, url, file, label) {
   }
   // Let fonts and any entrance animation settle before shooting.
   await page.waitForTimeout(1200);
-  await page.screenshot({ path: file, fullPage: true });
-  console.log(`  ${label.padEnd(22)} ${url}`);
+  try {
+    // `fullPage` re-lays-out the document and hangs on pages that virtualize
+    // or grow while measuring — the samples grid does both. A viewport shot
+    // still captures the chrome, which is what these comparisons are for.
+    await page.screenshot({ path: file, fullPage: true, timeout: 15_000 });
+  } catch {
+    await page.screenshot({ path: file, timeout: 15_000 }).catch(() => {});
+    console.log(`  ${label.padEnd(24)} ${url}  (viewport only)`);
+    return;
+  }
+  console.log(`  ${label.padEnd(24)} ${url}`);
 }
 
 async function captureTeams() {
