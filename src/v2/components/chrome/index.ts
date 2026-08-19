@@ -11,5 +11,6 @@ export * from "./IconTooltip";
 export * from "./PanelEmptyState";
 export * from "./PanelHeader";
 export * from "./SettingsShell";
+export * from "./UserMenu";
 export * from "./WorkspaceHeader";
 export * from "./VoxelIcon";

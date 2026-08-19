@@ -7,6 +7,16 @@ const Popover = PopoverPrimitive.Root;
 
 const PopoverTrigger = PopoverPrimitive.Trigger;
 
+/**
+ * Positions the popover against an element that does not open it.
+ *
+ * Additive to the Lovable master, which exports only Root/Trigger/Content.
+ * Needed for the combobox shape — a text input the popover hangs off while the
+ * input keeps focus and typing, not clicking, controls open state. `Trigger`
+ * cannot do that: it toggles on click and owns focus.
+ */
+const PopoverAnchor = PopoverPrimitive.Anchor;
+
 const PopoverContent = React.forwardRef<
   React.ElementRef<typeof PopoverPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>
@@ -26,4 +36,4 @@ const PopoverContent = React.forwardRef<
 ));
 PopoverContent.displayName = PopoverPrimitive.Content.displayName;
 
-export { Popover, PopoverTrigger, PopoverContent };
+export { Popover, PopoverTrigger, PopoverAnchor, PopoverContent };
