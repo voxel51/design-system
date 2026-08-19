@@ -4590,6 +4590,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ts-morph/common@npm:~0.25.0":
+  version: 0.25.0
+  resolution: "@ts-morph/common@npm:0.25.0"
+  dependencies:
+    minimatch: "npm:^9.0.4"
+    path-browserify: "npm:^1.0.1"
+    tinyglobby: "npm:^0.2.9"
+  checksum: 10c0/c67e66db678e44886e9823e6482834acebfae0ea52ccbfa2af1ca9abfe5a9774dad6e852c8f480909bc196175f17e15454af71d7a41a1c137db09e74f046a830
+  languageName: node
+  linkType: hard
+
 "@tsconfig/node10@npm:^1.0.7":
   version: 1.0.12
   resolution: "@tsconfig/node10@npm:1.0.12"
@@ -5462,6 +5473,7 @@ __metadata:
     tailwind-merge: "npm:^3.4.0"
     tailwindcss: "npm:^4.1.17"
     ts-jest: "npm:^29.2.5"
+    ts-morph: "npm:^24.0.0"
     ts-node: "npm:^10.9.2"
     tsx: "npm:^4.20.6"
     tw-animate-css: "npm:^1.4.0"
@@ -6329,6 +6341,13 @@ __metadata:
   version: 4.6.0
   resolution: "co@npm:4.6.0"
   checksum: 10c0/c0e85ea0ca8bf0a50cbdca82efc5af0301240ca88ebe3644a6ffb8ffe911f34d40f8fbcf8f1d52c5ddd66706abd4d3bfcd64259f1e8e2371d4f47573b0dc8c28
+  languageName: node
+  linkType: hard
+
+"code-block-writer@npm:^13.0.3":
+  version: 13.0.3
+  resolution: "code-block-writer@npm:13.0.3"
+  checksum: 10c0/87db97b37583f71cfd7eced8bf3f0a0a0ca53af912751a734372b36c08cd27f3e8a4878ec05591c0cd9ae11bea8add1423e132d660edd86aab952656dd41fd66
   languageName: node
   linkType: hard
 
@@ -9863,7 +9882,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^9.0.3":
+"minimatch@npm:^9.0.3, minimatch@npm:^9.0.4":
   version: 9.0.9
   resolution: "minimatch@npm:9.0.9"
   dependencies:
@@ -11995,7 +12014,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tinyglobby@npm:^0.2.12, tinyglobby@npm:^0.2.14, tinyglobby@npm:^0.2.15":
+"tinyglobby@npm:^0.2.12, tinyglobby@npm:^0.2.14, tinyglobby@npm:^0.2.15, tinyglobby@npm:^0.2.9":
   version: 0.2.17
   resolution: "tinyglobby@npm:0.2.17"
   dependencies:
@@ -12137,6 +12156,16 @@ __metadata:
   bin:
     ts-jest: cli.js
   checksum: 10c0/cf08cf4b417085578db038b525c8b22cf6af689601eab697fe84a46fa07bddcd506bd961c607c8f25c705e90ea8ac8ecf258fc200161f4e0882d0d7db4db9ec9
+  languageName: node
+  linkType: hard
+
+"ts-morph@npm:^24.0.0":
+  version: 24.0.0
+  resolution: "ts-morph@npm:24.0.0"
+  dependencies:
+    "@ts-morph/common": "npm:~0.25.0"
+    code-block-writer: "npm:^13.0.3"
+  checksum: 10c0/2a0813ba428a154966d4038901f6c32457a60870936b23778f2629433257f87d1881fc4ecae7b791a223a88c2edf96aaac9fb0f88bf34d3c652af8c09c4f43bc
   languageName: node
   linkType: hard
 
