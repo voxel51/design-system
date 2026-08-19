@@ -56,12 +56,26 @@ export default defineConfig({
     },
     rollupOptions: {
       external: isExternal,
-      output: {
-        preserveModules: true,
-        preserveModulesRoot: "src/v2",
-        entryFileNames: ({ name }) => `${name}.js`,
-        exports: "named",
-      },
+      // Two explicit outputs rather than one shared `entryFileNames`. A single
+      // `${name}.js` pattern applies to both formats, so the CJS pass silently
+      // overwrites the ESM pass and every file on disk ends up CommonJS —
+      // which still resolves for `require` and breaks `import`.
+      output: [
+        {
+          format: "es",
+          preserveModules: true,
+          preserveModulesRoot: "src/v2",
+          entryFileNames: "[name].js",
+          exports: "named",
+        },
+        {
+          format: "cjs",
+          preserveModules: true,
+          preserveModulesRoot: "src/v2",
+          entryFileNames: "[name].cjs",
+          exports: "named",
+        },
+      ],
     },
     sourcemap: true,
   },
