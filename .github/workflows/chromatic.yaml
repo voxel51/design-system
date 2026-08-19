@@ -40,6 +40,12 @@ on:
 jobs:
   chromatic:
     runs-on: ubuntu-latest
+    # The token is resolved once, here, because `secrets` is not an available
+    # context in a step-level `if` — referencing it there is a workflow file
+    # error and the run dies in 0s before any step executes. `env` *is*
+    # available, so the skip condition tests this instead.
+    env:
+      CHROMATIC_PROJECT_TOKEN: ${{ secrets[matrix.secret] }}
     strategy:
       fail-fast: false
       matrix:
@@ -79,13 +85,11 @@ jobs:
       # carry these same flags, and passing them here too failed every run with
       # "The flag --exitZeroOnChanges can only be set once."
       - name: Publish to Chromatic
-        if: ${{ secrets[matrix.secret] != '' }}
+        if: env.CHROMATIC_PROJECT_TOKEN != ''
         run: yarn chromatic --storybook-build-dir storybook-static/${{ matrix.name }} --exit-zero-on-changes
-        env:
-          CHROMATIC_PROJECT_TOKEN: ${{ secrets[matrix.secret] }}
 
       - name: No token for this build
-        if: ${{ secrets[matrix.secret] == '' }}
+        if: env.CHROMATIC_PROJECT_TOKEN == ''
         run: |
           echo "::notice::${{ matrix.secret }} is not set — built ${{ matrix.name }} but did not publish it."
           echo "Add the secret to publish this build. See the header of this workflow."
