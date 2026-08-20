@@ -209,6 +209,77 @@ describe("Slider", () => {
         );
       });
     });
+
+    describe("keyboard interaction", () => {
+      let onChange: jest.Mock;
+      let onChangeCommitted: jest.Mock;
+      let knob: HTMLElement;
+
+      beforeEach(() => {
+        onChange = jest.fn();
+        onChangeCommitted = jest.fn();
+        render(
+          <SingleValueSlider
+            {...defaultProps}
+            step={0.1}
+            onChange={onChange}
+            onChangeCommitted={onChangeCommitted}
+          />
+        );
+
+        knob = within(screen.getByTestId(testId)).getByRole("slider");
+      });
+
+      it("should expose the full ARIA slider contract on the knob", () => {
+        expect(knob).toHaveAttribute("aria-valuenow", "0.5");
+        expect(knob).toHaveAttribute("aria-valuemin", "0");
+        expect(knob).toHaveAttribute("aria-valuemax", "1");
+        expect(knob).toHaveAttribute("aria-orientation", "horizontal");
+      });
+
+      it("should not mark the track as presentational", () => {
+        // the track handles clicks; role="presentation" would hide that
+        expect(knob.parentElement).not.toHaveAttribute("role");
+      });
+
+      it("should step the value with arrow keys and commit each step", async () => {
+        fireEvent.keyDown(knob, { key: "ArrowRight" });
+
+        expect(onChangeCommitted).toHaveBeenCalledWith(expect.closeTo(0.6, 5));
+        await waitFor(() =>
+          expect(onChange).toHaveBeenLastCalledWith(expect.closeTo(0.6, 5))
+        );
+
+        fireEvent.keyDown(knob, { key: "ArrowDown" });
+
+        expect(onChangeCommitted).toHaveBeenLastCalledWith(
+          expect.closeTo(0.5, 5)
+        );
+      });
+
+      it("should jump to the range edges with Home and End", () => {
+        fireEvent.keyDown(knob, { key: "End" });
+        expect(onChangeCommitted).toHaveBeenLastCalledWith(1);
+
+        fireEvent.keyDown(knob, { key: "Home" });
+        expect(onChangeCommitted).toHaveBeenLastCalledWith(0);
+      });
+
+      it("should clamp arrow-key steps at the range edges", () => {
+        fireEvent.keyDown(knob, { key: "End" });
+        fireEvent.keyDown(knob, { key: "ArrowRight" });
+
+        expect(onChangeCommitted).toHaveBeenLastCalledWith(1);
+      });
+
+      it("should ignore unrelated keys", () => {
+        fireEvent.keyDown(knob, { key: "Enter" });
+        fireEvent.keyDown(knob, { key: "a" });
+
+        expect(onChange).not.toHaveBeenCalled();
+        expect(onChangeCommitted).not.toHaveBeenCalled();
+      });
+    });
   });
 
   describe("with multiple values", () => {
@@ -234,6 +305,26 @@ describe("Slider", () => {
       render(<MultiValueSlider {...defaultProps} />);
 
       expect(screen.getByTestId(testId)).toBeInTheDocument();
+    });
+
+    it("should let arrow keys move knobs to meet but never cross", () => {
+      const onChangeCommitted = jest.fn();
+      render(
+        <MultiValueSlider
+          {...defaultProps}
+          value={[0.7, 0.75]}
+          step={0.1}
+          onChangeCommitted={onChangeCommitted}
+        />
+      );
+
+      // knobs render min first
+      const minKnob = within(screen.getByTestId(testId)).getAllByRole(
+        "slider"
+      )[0];
+      fireEvent.keyDown(minKnob, { key: "ArrowRight" });
+
+      expect(onChangeCommitted).toHaveBeenLastCalledWith([0.75, 0.75]);
     });
 
     it("should render input fields with the provided values", () => {

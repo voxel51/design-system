@@ -1,5 +1,12 @@
 import clsx from "clsx";
-import { FC, HTMLAttributes, MouseEvent, useCallback, useRef } from "react";
+import {
+  FC,
+  HTMLAttributes,
+  KeyboardEvent,
+  MouseEvent,
+  useCallback,
+  useRef,
+} from "react";
 
 import { SliderKnob } from "@/components/Slider/SliderKnob";
 import radiusStyles from "@/styles/radius";
@@ -156,6 +163,60 @@ export const SliderBar: FC<SliderBarProps> = ({
   );
 
   /**
+   * Keyboard handler for a focused knob: arrows step the value, Home/End jump
+   * to the range edges. Each keystroke is a complete interaction, so it emits
+   * both `onChange` and `onChangeCommitted`.
+   */
+  const handleKnobKeyDown = useCallback(
+    (e: KeyboardEvent, knob: "min" | "max") => {
+      const current = knob === "min" ? minValue : maxValue;
+
+      let target: number;
+      switch (e.key) {
+        case "ArrowRight":
+        case "ArrowUp":
+          target = current + step;
+          break;
+        case "ArrowLeft":
+        case "ArrowDown":
+          target = current - step;
+          break;
+        case "Home":
+          target = min;
+          break;
+        case "End":
+          target = max;
+          break;
+        default:
+          return;
+      }
+      // handled keys stay inside the slider — prevents ancestors that
+      // implement their own arrow-key shortcuts from double-stepping
+      e.preventDefault();
+      e.stopPropagation();
+
+      const clamped = cleanFloat(Math.min(Math.max(target, min), max));
+
+      let next: number | number[];
+      if (multi) {
+        // knobs may meet but never cross
+        if (knob === "min") {
+          next = [Math.min(clamped, maxValue), maxValue];
+        } else {
+          next = [minValue, Math.max(clamped, minValue)];
+        }
+      } else {
+        next = clamped;
+      }
+
+      lastValueRef.current = next;
+      onChange?.(next);
+      onChangeCommitted?.(next);
+    },
+    [max, maxValue, min, minValue, multi, onChange, onChangeCommitted, step]
+  );
+
+  /**
    * Click handler which updates knob position to the position clicked on the track.
    *
    * In the case of multiple knobs, the knob closest to the click is chosen for update.
@@ -204,6 +265,12 @@ export const SliderBar: FC<SliderBarProps> = ({
   );
 
   return (
+    // The track deliberately has no role: the knobs are the accessible slider
+    // surface (full ARIA contract + keyboard), and the track click is a
+    // pointer-only shortcut to the same action. role="presentation" would be
+    // wrong — it hides real interaction from assistive tech and from DOM
+    // heuristics deciding whether a click hit a control.
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
       ref={sliderTrackRef}
       className={clsx(
@@ -216,7 +283,6 @@ export const SliderBar: FC<SliderBarProps> = ({
       )}
       onClick={handleTrackClick}
       onKeyDown={(e) => e.stopPropagation()}
-      role="presentation"
       {...props}
     >
       {!isUnset && (
@@ -238,13 +304,19 @@ export const SliderBar: FC<SliderBarProps> = ({
             <SliderKnob
               position={getKnobPosition(minValue)}
               onDragStart={(e) => registerKnobDragHandlers(e, "min")}
+              onKeyDown={(e) => handleKnobKeyDown(e, "min")}
               value={minValue}
+              min={min}
+              max={max}
             />
           )}
           <SliderKnob
             position={getKnobPosition(maxValue)}
             onDragStart={(e) => registerKnobDragHandlers(e, "max")}
+            onKeyDown={(e) => handleKnobKeyDown(e, "max")}
             value={maxValue}
+            min={min}
+            max={max}
           />
         </>
       )}
