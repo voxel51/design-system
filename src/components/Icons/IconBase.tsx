@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import type { CSSProperties, FC, SVGProps } from "react";
 
-import { BrandColor, IconColor, TextColor, textColorClass } from "@/types";
+import { type ForegroundColorToken, isColorToken, textColorClass } from "@/types";
 import { Size } from "@/types/size";
 
 type SvgComponent = FC<SVGProps<SVGSVGElement>>;
@@ -16,9 +16,16 @@ const sizeMap: Partial<Record<IconSize, number>> = {
 };
 
 export interface IconProps {
-  size?: Size;
+  size?: Size | number;
+  /**
+   * Foreground color token for anything the design system controls, or a
+   * raw CSS color for anything the app controls (user-defined palettes,
+   * data-driven colors) — a token can't exist for a color chosen at runtime
+   * by app data, so this isn't a fallback, it's the correct tool for that
+   * case.
+   */
+  color?: ForegroundColorToken | string;
   className?: string;
-  color?: TextColor | IconColor | BrandColor;
   style?: CSSProperties;
 }
 
@@ -35,9 +42,12 @@ interface IconBaseProps extends IconProps {
  * as expected.
  *
  * @param svg The SVG component to render.
- * @param size The size of the icon. If unspecified, fills the parent container. See {@link Size}.
+ * @param size The size of the icon. Accepts a {@link Size} token, or a raw
+ * pixel number for cases the token scale doesn't cover. If unspecified,
+ * fills the parent container.
  * @param className `class` overrides to apply to the component.
- * @param color Color of the icon. By default, the icon inherits the text color of its container.
+ * @param color Color of the icon. See {@link IconProps.color}. By default,
+ * the icon inherits the text color of its container.
  * @param style `style` overrides to apply to the icon.
  */
 export const IconBase: FC<IconBaseProps> = ({
@@ -45,15 +55,18 @@ export const IconBase: FC<IconBaseProps> = ({
   size = undefined, // if no size specified, fill the parent container
   className,
   color,
+  style,
   ...props
 }) => {
-  const iconSize = size ? sizeMap[size] : undefined;
+  const iconSize = typeof size === "number" ? size : size ? sizeMap[size] : undefined;
+  const isToken = color !== undefined && isColorToken(color);
 
   return (
     <Svg
       width={iconSize}
       height={iconSize}
-      className={clsx(color && textColorClass(color), className)}
+      className={clsx(isToken && textColorClass(color), className)}
+      style={color && !isToken ? { color, ...style } : style}
       {...props}
     />
   );

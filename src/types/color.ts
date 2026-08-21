@@ -187,6 +187,34 @@ export type Color =
   | ScrollbarColor
   | SelectionColor;
 
+/**
+ * Tokens valid for foreground/glyph color — text and icon fills. Deliberately
+ * a subset of {@link Color}: most other tokens (`BackgroundColor`,
+ * `BorderColor`, `ScrollbarColor`, `SkeletonColor`, `OverlayColor`,
+ * `FocusColor`, ...) describe surfaces, borders, or component-specific
+ * chrome, not foreground color — accepting them here would be a category
+ * error, not added flexibility. Being theme-swappable isn't sufficient
+ * reason to include a token; it also has to mean the right thing.
+ */
+export type ForegroundColorToken = TextColor | IconColor | BrandColor;
+
+const foregroundTokenColors = new Set<string>([
+  ...Object.values(TextColor),
+  ...Object.values(IconColor),
+  ...Object.values(BrandColor),
+]);
+
+/**
+ * Whether a value is one of the {@link ForegroundColorToken}s, as opposed to
+ * a raw CSS color. Components that accept `color?: ForegroundColorToken |
+ * string` (a token for anything the design system controls, or a raw value
+ * for anything the app controls — e.g. user-defined palettes) use this to
+ * tell the two apart at render time.
+ */
+export function isColorToken(color: string): color is ForegroundColorToken {
+  return foregroundTokenColors.has(color);
+}
+
 const textColorMap: Record<Color, string> = {
   [ActionColor.IconDefault]: "text-content-text-secondary",
   [ActionColor.PrimaryDefault]: "text-action-primary-primary",
