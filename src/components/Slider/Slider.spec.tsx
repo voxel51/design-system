@@ -196,16 +196,53 @@ describe("Slider", () => {
         );
       });
 
-      it("should emit onChange when clicking the slider track", async () => {
+      it("should emit onChange when pressing the slider track", async () => {
         const relativeTarget = 0.75;
-        fireEvent.click(track!, {
+        fireEvent.mouseDown(track!, {
           clientX: Math.round(mockTrackWidth * relativeTarget),
         });
+        fireEvent.mouseUp(document);
 
         await waitFor(() =>
           expect(onChange).toHaveBeenLastCalledWith(
             expect.closeTo(defaultProps.max * relativeTarget, 5)
           )
+        );
+      });
+
+      it("should move the knob on press, before the mouse is released", () => {
+        const relativeTarget = 0.25;
+        fireEvent.mouseDown(track!, {
+          clientX: Math.round(mockTrackWidth * relativeTarget),
+        });
+
+        // no mouseup yet — the knob has already moved
+        expect(knob).toHaveAttribute(
+          "aria-valuenow",
+          (defaultProps.max * relativeTarget).toString()
+        );
+      });
+
+      it("should keep dragging after a track press until the mouse is released", async () => {
+        fireEvent.mouseDown(track!, {
+          clientX: Math.round(mockTrackWidth * 0.25),
+        });
+        fireEvent.mouseMove(document, {
+          clientX: Math.round(mockTrackWidth * 0.6),
+        });
+        fireEvent.mouseUp(document);
+
+        await waitFor(() =>
+          expect(onChange).toHaveBeenLastCalledWith(expect.closeTo(0.6, 5))
+        );
+
+        // the drag has ended; further movement is ignored
+        fireEvent.mouseMove(document, {
+          clientX: Math.round(mockTrackWidth * 0.9),
+        });
+
+        await waitFor(() =>
+          expect(onChange).toHaveBeenLastCalledWith(expect.closeTo(0.6, 5))
         );
       });
     });
@@ -238,7 +275,7 @@ describe("Slider", () => {
       });
 
       it("should not mark the track as presentational", () => {
-        // the track handles clicks; role="presentation" would hide that
+        // the track handles presses; role="presentation" would hide that
         expect(knob.parentElement).not.toHaveAttribute("role");
       });
 
@@ -609,12 +646,13 @@ describe("Slider", () => {
         ]);
       });
 
-      describe("when clicking the slider track", () => {
-        it("should emit onChange when clicking near the min knob", async () => {
+      describe("when pressing the slider track", () => {
+        it("should emit onChange when pressing near the min knob", async () => {
           const minRelativeTarget = 0.1;
-          fireEvent.click(track!, {
+          fireEvent.mouseDown(track!, {
             clientX: Math.round(mockTrackWidth * minRelativeTarget),
           });
+          fireEvent.mouseUp(document);
 
           await waitFor(() =>
             expect(onChange).toHaveBeenLastCalledWith([
@@ -624,17 +662,21 @@ describe("Slider", () => {
           );
         });
 
-        it("should debounce onChange when clicking near the min knob", () => {
+        it("should debounce onChange when dragging from a press near the min knob", () => {
           jest.useFakeTimers();
 
           const minRelativeTarget = 0.1;
           const steps = [0, minRelativeTarget / 2, minRelativeTarget];
 
-          steps.forEach((step) =>
-            fireEvent.click(track!, {
+          fireEvent.mouseDown(track!, {
+            clientX: Math.round(mockTrackWidth * steps[0]),
+          });
+          steps.slice(1).forEach((step) =>
+            fireEvent.mouseMove(document, {
               clientX: Math.round(mockTrackWidth * step),
             })
           );
+          fireEvent.mouseUp(document);
 
           expect(onChange).not.toHaveBeenCalled();
 
@@ -647,11 +689,12 @@ describe("Slider", () => {
           ]);
         });
 
-        it("should emit onChange when clicking near the max knob", async () => {
+        it("should emit onChange when pressing near the max knob", async () => {
           const maxRelativeTarget = 0.9;
-          fireEvent.click(track!, {
+          fireEvent.mouseDown(track!, {
             clientX: Math.round(mockTrackWidth * maxRelativeTarget),
           });
+          fireEvent.mouseUp(document);
 
           await waitFor(() =>
             expect(onChange).toHaveBeenLastCalledWith([
@@ -661,17 +704,21 @@ describe("Slider", () => {
           );
         });
 
-        it("should debounce onChange when clicking near the max knob", () => {
+        it("should debounce onChange when dragging from a press near the max knob", () => {
           jest.useFakeTimers();
 
           const maxRelativeTarget = 0.9;
           const steps = [1, 1 - (1 - maxRelativeTarget) / 2, maxRelativeTarget];
 
-          steps.forEach((step) =>
-            fireEvent.click(track!, {
+          fireEvent.mouseDown(track!, {
+            clientX: Math.round(mockTrackWidth * steps[0]),
+          });
+          steps.slice(1).forEach((step) =>
+            fireEvent.mouseMove(document, {
               clientX: Math.round(mockTrackWidth * step),
             })
           );
+          fireEvent.mouseUp(document);
 
           expect(onChange).not.toHaveBeenCalled();
 
@@ -682,6 +729,19 @@ describe("Slider", () => {
             (defaultProps.value as number[])[0],
             defaultProps.max * maxRelativeTarget,
           ]);
+        });
+
+        it("should not jump the knob when the press lands on the knob itself", () => {
+          const [, maxKnob] = knobs;
+          fireEvent.mouseDown(maxKnob, {
+            clientX: Math.round(mockTrackWidth * 0.1),
+          });
+
+          // the press was a grab, not a track jump — nothing moves until the
+          // mouse does
+          expect(onChange).not.toHaveBeenCalled();
+
+          fireEvent.mouseUp(document);
         });
       });
     });
