@@ -4,6 +4,7 @@ export * from "./Card";
 export * from "./Checkbox";
 export * from "./Clickable";
 export * from "./Collapsible";
+export * from "./Combobox";
 export * from "./ContextMenu";
 export * from "./Datepicker";
 export * from "./Divider";
