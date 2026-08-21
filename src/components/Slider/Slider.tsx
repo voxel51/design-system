@@ -37,6 +37,7 @@ export interface SliderProps extends Omit<
   onChangeCommitted?: ChangeHandler;
   showUnsetHint?: boolean;
   step?: number;
+  keyboardStep?: number | false;
   value?: number | number[];
 }
 
@@ -111,6 +112,8 @@ const clamp = (value: number, min: number, max: number): number =>
  *  updates during a drag while committing only once on release. Emits the same
  *  value shape as `onChange`.
  * @param step Numeric step size for slider increments.
+ * @param keyboardStep Arrow-key step for a focused knob; defaults to `step`,
+ *  `false` disables key handling. Handled keys preventDefault and bubble.
  * @param value The controlled value of the slider.
  *  If `multi` is `true`, this must be of the form `[low, high]`;
  *  otherwise, this must be a single numeric value.
@@ -132,6 +135,7 @@ export const BaseSlider: FC<SliderProps> = ({
   onChange,
   onChangeCommitted,
   step = 0.001,
+  keyboardStep,
   value,
   showUnsetHint,
   ...props
@@ -257,6 +261,7 @@ export const BaseSlider: FC<SliderProps> = ({
         max={max}
         multi={multi}
         step={step}
+        keyboardStep={keyboardStep}
         value={transientValue}
         onChange={handleChange}
         onChangeCommitted={onChangeCommitted}
