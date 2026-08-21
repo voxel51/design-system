@@ -24,6 +24,7 @@ interface SliderBarProps extends Omit<
   onChange?: (value: number | number[]) => void;
   onChangeCommitted?: (value: number | number[]) => void;
   step: number;
+  keyboardStep?: number | false;
   value?: number | number[];
 }
 
@@ -52,6 +53,7 @@ export const SliderBar: FC<SliderBarProps> = ({
   onChange,
   onChangeCommitted,
   step,
+  keyboardStep,
   value,
   ...props
 }) => {
@@ -169,17 +171,21 @@ export const SliderBar: FC<SliderBarProps> = ({
    */
   const handleKnobKeyDown = useCallback(
     (e: KeyboardEvent, knob: "min" | "max") => {
+      if (keyboardStep === false) {
+        return;
+      }
+      const stepSize = keyboardStep ?? step;
       const current = knob === "min" ? minValue : maxValue;
 
       let target: number;
       switch (e.key) {
         case "ArrowRight":
         case "ArrowUp":
-          target = current + step;
+          target = current + stepSize;
           break;
         case "ArrowLeft":
         case "ArrowDown":
-          target = current - step;
+          target = current - stepSize;
           break;
         case "Home":
           target = min;
@@ -190,10 +196,8 @@ export const SliderBar: FC<SliderBarProps> = ({
         default:
           return;
       }
-      // handled keys stay inside the slider — prevents ancestors that
-      // implement their own arrow-key shortcuts from double-stepping
+      // preventDefault but bubble — ancestors arbitrate via e.defaultPrevented
       e.preventDefault();
-      e.stopPropagation();
 
       const clamped = cleanFloat(Math.min(Math.max(target, min), max));
 
@@ -213,7 +217,17 @@ export const SliderBar: FC<SliderBarProps> = ({
       onChange?.(next);
       onChangeCommitted?.(next);
     },
-    [max, maxValue, min, minValue, multi, onChange, onChangeCommitted, step]
+    [
+      keyboardStep,
+      max,
+      maxValue,
+      min,
+      minValue,
+      multi,
+      onChange,
+      onChangeCommitted,
+      step,
+    ]
   );
 
   /**
@@ -265,11 +279,8 @@ export const SliderBar: FC<SliderBarProps> = ({
   );
 
   return (
-    // The track deliberately has no role: the knobs are the accessible slider
-    // surface (full ARIA contract + keyboard), and the track click is a
-    // pointer-only shortcut to the same action. role="presentation" would be
-    // wrong — it hides real interaction from assistive tech and from DOM
-    // heuristics deciding whether a click hit a control.
+    // roleless on purpose: the knobs carry the ARIA slider contract; the
+    // track click is a pointer-only shortcut this rule can't model
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
       ref={sliderTrackRef}

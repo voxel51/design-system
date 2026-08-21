@@ -279,6 +279,51 @@ describe("Slider", () => {
         expect(onChange).not.toHaveBeenCalled();
         expect(onChangeCommitted).not.toHaveBeenCalled();
       });
+
+      it("should claim handled keys with preventDefault but let them bubble", () => {
+        // fireEvent returns false when preventDefault was called
+        expect(fireEvent.keyDown(knob, { key: "ArrowRight" })).toBe(false);
+        expect(fireEvent.keyDown(knob, { key: "a" })).toBe(true);
+      });
+    });
+
+    describe("keyboard ownership", () => {
+      it("should step by keyboardStep when it differs from step", () => {
+        const onChangeCommitted = jest.fn();
+        render(
+          <SingleValueSlider
+            {...defaultProps}
+            step={0.01}
+            keyboardStep={0.25}
+            onChangeCommitted={onChangeCommitted}
+          />
+        );
+
+        const knob = within(screen.getByTestId(testId)).getByRole("slider");
+        fireEvent.keyDown(knob, { key: "ArrowRight" });
+
+        expect(onChangeCommitted).toHaveBeenCalledWith(expect.closeTo(0.75, 5));
+      });
+
+      it("should do nothing when keyboardStep is false, leaving keys to ancestors", () => {
+        const onChange = jest.fn();
+        const onChangeCommitted = jest.fn();
+        render(
+          <SingleValueSlider
+            {...defaultProps}
+            keyboardStep={false}
+            onChange={onChange}
+            onChangeCommitted={onChangeCommitted}
+          />
+        );
+
+        const knob = within(screen.getByTestId(testId)).getByRole("slider");
+        // not prevented — an ancestor shortcut system may act on it
+        expect(fireEvent.keyDown(knob, { key: "ArrowRight" })).toBe(true);
+
+        expect(onChange).not.toHaveBeenCalled();
+        expect(onChangeCommitted).not.toHaveBeenCalled();
+      });
     });
   });
 
