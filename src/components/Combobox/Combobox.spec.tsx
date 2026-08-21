@@ -69,16 +69,18 @@ describe("Combobox", () => {
     const onPick = jest.fn();
     render(<Harness onPick={onPick} />);
     await userEvent.click(screen.getByRole("combobox"));
+    // Nothing is highlighted until the user arrows: the first ArrowDown lands
+    // on the first row, so two land on the second.
     await userEvent.keyboard("{ArrowDown}{ArrowDown}{Enter}");
 
-    expect(onPick).toHaveBeenCalledWith(OPTIONS[2]);
+    expect(onPick).toHaveBeenCalledWith(OPTIONS[1]);
   });
 
-  it("wraps the highlight past the ends", async () => {
+  it("arrows up from nothing onto the last row, and wraps", async () => {
     const onPick = jest.fn();
     render(<Harness onPick={onPick} />);
     await userEvent.click(screen.getByRole("combobox"));
-    await userEvent.keyboard("{ArrowUp}{Enter}");
+    await userEvent.keyboard("{ArrowUp}{ArrowUp}{ArrowDown}{Enter}");
 
     expect(onPick).toHaveBeenCalledWith(OPTIONS[2]);
   });
@@ -138,5 +140,35 @@ describe("Combobox", () => {
     await userEvent.click(screen.getByRole("combobox"));
 
     expect(screen.queryByText("Nothing here")).not.toBeInTheDocument();
+  });
+});
+
+describe("Combobox clearing", () => {
+  it("clears the selection when the emptied field is confirmed", async () => {
+    const onPick = jest.fn();
+    render(<Harness onPick={onPick} />);
+    await userEvent.click(screen.getByRole("combobox"));
+    await userEvent.click(screen.getByText("beta"));
+    onPick.mockClear();
+
+    await userEvent.clear(screen.getByRole("combobox"));
+    await userEvent.keyboard("{Enter}");
+
+    // Not the highlighted option — an empty field means no filter.
+    expect(onPick).toHaveBeenLastCalledWith(null);
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+  });
+
+  it("clears on blur too, with free text off", async () => {
+    const onPick = jest.fn();
+    render(<Harness onPick={onPick} />);
+    await userEvent.click(screen.getByRole("combobox"));
+    await userEvent.click(screen.getByText("alpha"));
+    onPick.mockClear();
+
+    await userEvent.clear(screen.getByRole("combobox"));
+    await userEvent.tab();
+
+    expect(onPick).toHaveBeenLastCalledWith(null);
   });
 });

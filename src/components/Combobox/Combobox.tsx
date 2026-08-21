@@ -151,41 +151,53 @@ export const Combobox: FC<ComboboxProps> = ({
   ...props
 }) => {
   const [open, setOpen] = useState(false);
-  const [active, setActive] = useState(0);
+  // `null` = nothing highlighted yet. The distinction matters for Enter: with
+  // an untouched empty field it means "no filter", but once the user has
+  // arrowed onto a row it means that row.
+  const [active, setActive] = useState<number | null>(null);
   const wrapper = useRef<HTMLDivElement | null>(null);
   const listId = useId();
 
   // A fresh list means the old highlight index points at a different row.
-  useEffect((): void => setActive(0), [options]);
+  useEffect((): void => setActive(null), [options]);
+
+  const close = useCallback((): void => {
+    setOpen(false);
+    // Hovering a row sets the highlight; if it survived the close, the next
+    // Enter would pick a row the user can no longer see.
+    setActive(null);
+  }, []);
 
   // Click outside closes without picking. Pointerdown rather than click so a
   // press that starts outside can't first blur-commit and then reopen.
   useEffect(() => {
     if (!open) return undefined;
     const onPointerDown = (e: PointerEvent): void => {
-      if (!wrapper.current?.contains(e.target as Node)) setOpen(false);
+      if (!wrapper.current?.contains(e.target as Node)) close();
     };
     document.addEventListener("pointerdown", onPointerDown);
     return (): void =>
       document.removeEventListener("pointerdown", onPointerDown);
-  }, [open]);
+  }, [close, open]);
 
   const pick = useCallback(
     (option: ComboboxOption): void => {
       onChange(option);
       onInputChange(option.label);
-      setOpen(false);
+      close();
     },
-    [onChange, onInputChange]
+    [close, onChange, onInputChange]
   );
 
   const commitText = useCallback((): void => {
     const text = inputValue.trim();
-    if (!allowFreeText) return;
+    // Emptying the field clears the selection whether or not free text is
+    // allowed: "" is a valid answer for every combobox — it means no filter.
     if (!text) {
       if (value) onChange(null);
       return;
     }
+    if (!allowFreeText) return;
     if (value?.label === text) return;
     onChange({ id: text, label: text });
   }, [allowFreeText, inputValue, onChange, value]);
@@ -199,22 +211,38 @@ export const Combobox: FC<ComboboxProps> = ({
       }
       if (!options.length) return;
       const delta = e.key === "ArrowDown" ? 1 : -1;
-      setActive((i) => (i + delta + options.length) % options.length);
+      setActive((i) =>
+        i === null
+          ? delta === 1
+            ? 0
+            : options.length - 1
+          : (i + delta + options.length) % options.length
+      );
       return;
     }
     if (e.key === "Enter") {
-      const option = open ? options[active] : undefined;
+      // An empty field means "no filter", so Enter must clear rather than
+      // take whatever the list happens to be highlighting. Without this,
+      // emptying the field and confirming re-applies the first suggestion —
+      // the field reads as cleared while the caller still filters by it.
+      if (!inputValue.trim() && active === null) {
+        e.preventDefault();
+        if (value) onChange(null);
+        close();
+        return;
+      }
+      const option = open && active !== null ? options[active] : undefined;
       if (option) {
         e.preventDefault();
         pick(option);
       } else {
         commitText();
-        setOpen(false);
+        close();
       }
       return;
     }
     if (e.key === "Escape") {
-      setOpen(false);
+      close();
     }
   };
 
@@ -236,6 +264,8 @@ export const Combobox: FC<ComboboxProps> = ({
         onChange={(e): void => {
           onInputChange(e.target.value);
           setOpen(true);
+          // Typing invalidates whatever was highlighted.
+          setActive(null);
           // Typing past a pick means the pick no longer describes the field.
           if (value && e.target.value !== value.label) onChange(null);
         }}
