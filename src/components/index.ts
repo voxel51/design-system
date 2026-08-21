@@ -26,6 +26,7 @@ export * from "./RichButton";
 export * from "./RichButtonGroup";
 export * from "./RichList";
 export * from "./Select";
+export * from "./Sheet";
 export * from "./Slider";
 export * from "./Spinner";
 export * from "./Stack";
