@@ -105,7 +105,7 @@ import WaypointsIcon from "@/img/Waypoints.svg?react";
 import WorkflowIcon from "@/img/Workflow.svg?react";
 import WorkspacesIcon from "@/img/Workspaces.svg?react";
 import ZapIcon from "@/img/Zap.svg?react";
-import { type ForegroundColorToken, isColorToken, textColorClass } from "@/types";
+import { type ThemeableColor, isColorToken, textColorClass } from "@/types";
 import { IconName } from "@/types/icons";
 import { Size } from "@/types/size";
 
@@ -246,13 +246,13 @@ export interface LegacyIconProps {
   size?: Size | number;
   className?: string;
   /**
-   * Foreground color token for anything the design system controls, or a
+   * A theme-aware color token for anything the design system controls, or a
    * raw CSS color for anything the app controls (user-defined palettes,
    * data-driven colors) — a token can't exist for a color chosen at runtime
    * by app data, so this isn't a fallback, it's the correct tool for that
    * case.
    */
-  color?: ForegroundColorToken | string;
+  color?: ThemeableColor | string;
   style?: React.CSSProperties;
 }
 

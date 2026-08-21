@@ -3,7 +3,7 @@ import type { FC, HTMLAttributes } from "react";
 
 import { textStyles } from "@/styles/text";
 import {
-  type ForegroundColorToken,
+  type ThemeableColor,
   isColorToken,
   TextColor,
   textColorClass,
@@ -13,13 +13,13 @@ import {
 export interface TextProps extends HTMLAttributes<HTMLSpanElement> {
   variant?: TextVariant;
   /**
-   * Foreground color token for anything the design system controls, or a
+   * A theme-aware color token for anything the design system controls, or a
    * raw CSS color for anything the app controls (user-defined palettes,
    * data-driven colors) — a token can't exist for a color chosen at runtime
    * by app data, so this isn't a fallback, it's the correct tool for that
    * case.
    */
-  color?: ForegroundColorToken | string;
+  color?: ThemeableColor | string;
 }
 
 /**

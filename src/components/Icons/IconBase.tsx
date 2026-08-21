@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import type { CSSProperties, FC, SVGProps } from "react";
 
-import { type ForegroundColorToken, isColorToken, textColorClass } from "@/types";
+import { type ThemeableColor, isColorToken, textColorClass } from "@/types";
 import { Size } from "@/types/size";
 
 type SvgComponent = FC<SVGProps<SVGSVGElement>>;
@@ -18,13 +18,13 @@ const sizeMap: Partial<Record<IconSize, number>> = {
 export interface IconProps {
   size?: Size | number;
   /**
-   * Foreground color token for anything the design system controls, or a
+   * A theme-aware color token for anything the design system controls, or a
    * raw CSS color for anything the app controls (user-defined palettes,
    * data-driven colors) — a token can't exist for a color chosen at runtime
    * by app data, so this isn't a fallback, it's the correct tool for that
    * case.
    */
-  color?: ForegroundColorToken | string;
+  color?: ThemeableColor | string;
   className?: string;
   style?: CSSProperties;
 }
