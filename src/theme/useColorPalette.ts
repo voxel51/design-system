@@ -7,11 +7,13 @@ import { palettePool } from "./tokens/palette";
 export type ColorMode = "dark" | "light";
 
 /**
- * The palette's own token shape — every numbered slot and named alias the
- * tokens define. Derived rather than enumerated, so a palette of N colors
- * types correctly without touching this file.
+ * The palette's own token shape — every slot the tokens define, keyed as Figma
+ * names them (`1-brand`, `7-teal`, …). Keys are derived rather than enumerated,
+ * so a palette of N colors types correctly without touching this file; values
+ * widen to `string` because the two modes resolve the same slot to different
+ * literals.
  */
-type PaletteColors = typeof colors.dark.content.palette;
+type PaletteColors = Record<keyof typeof colors.dark.content.palette, string>;
 
 export interface ColorPalette extends PaletteColors {
   /**
@@ -74,7 +76,7 @@ export const useColorMode = (): ColorMode =>
  * ```tsx
  * const palette = useColorPalette();
  * ctx.strokeStyle = palette.pool[index % palette.pool.length];
- * ctx.fillStyle = palette.teal;
+ * ctx.fillStyle = palette["7-teal"];
  * ```
  */
 export const useColorPalette = (): ColorPalette => {

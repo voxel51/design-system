@@ -1,47 +1,14 @@
 import * as fs from "fs";
 import {
-  ActionColor,
-  CodeColor,
-  FocusColor,
-  LinkColor,
-  OverlayColor,
-  PaletteColor,
-  ScrollbarColor,
-  SelectionColor,
-  SkeletonColor,
-  TooltipColor,
-  BackgroundColor,
-  bgColorClass,
+  ALL_COLORS,
   BorderColor,
+  bgColorClass,
   borderColorClass,
-  BrandColor,
-  IconColor,
-  SemanticColor,
-  StatusColor,
-  TextColor,
   textColorClass,
 } from "../src/types/color";
 import { ElementState } from "../src/types/element";
 
-// TODO - can we make this more robust/dynamic? What happens if we add new color types?
-const allColors = [
-  ...Object.values(ActionColor),
-  ...Object.values(BackgroundColor),
-  ...Object.values(BrandColor),
-  ...Object.values(IconColor),
-  ...Object.values(SemanticColor),
-  ...Object.values(StatusColor),
-  ...Object.values(TextColor),
-  ...Object.values(OverlayColor),
-  ...Object.values(FocusColor),
-  ...Object.values(LinkColor),
-  ...Object.values(PaletteColor),
-  ...Object.values(SkeletonColor),
-  ...Object.values(TooltipColor),
-  ...Object.values(CodeColor),
-  ...Object.values(ScrollbarColor),
-  ...Object.values(SelectionColor),
-];
+const allColors = [...ALL_COLORS];
 
 const allBorderColors = Object.values(BorderColor);
 

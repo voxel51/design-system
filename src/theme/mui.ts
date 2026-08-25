@@ -59,46 +59,50 @@ import { cssVar } from "./cssVar";
  */
 const c = cssVar.color;
 
+// Contrast text for filled variants. Figma has no contrast-text token, and a
+// mode-reactive one would go near-black on an orange button in light mode.
+const FILLED_TEXT = "#FFFFFF";
+
 export const voodoMuiThemeOptions = {
   palette: {
     primary: {
       main: c.brand.primary,
       light: c.brand.accent,
-      dark: c.action.primary.tertiary,
-      contrastText: c.action.primary.text,
+      dark: c.interactive["primary-pressed"],
+      contrastText: FILLED_TEXT,
     },
     // NOTE: every palette color provides main+light+dark+contrastText.
     // MUI computes missing shades via lighten()/darken(), which parse the
     // color — and they CANNOT parse a `var(--…)` value (it throws). Supplying
     // all four means MUI never tries to compute, so var-based colors work.
     error: {
-      main: c.action.danger.primary,
-      light: c.action.danger.secondary,
-      dark: c.action.danger.tertiary,
-      contrastText: c.action.danger.text,
+      main: c.interactive["danger-default"],
+      light: c.interactive["danger-hover"],
+      dark: c.interactive["danger-pressed"],
+      contrastText: FILLED_TEXT,
     },
     // warning/info have no hover/pressed ramp in Voodo yet, so shades are flat.
     warning: {
       main: c.semantic.warning,
       light: c.semantic.warning,
       dark: c.semantic.warning,
-      contrastText: c.action.primary.text,
+      contrastText: FILLED_TEXT,
     },
     info: {
       main: c.semantic.info,
       light: c.semantic.info,
       dark: c.semantic.info,
-      contrastText: c.action.primary.text,
+      contrastText: FILLED_TEXT,
     },
     success: {
-      main: c.action.success.primary,
-      light: c.action.success.secondary,
-      dark: c.action.success.tertiary,
-      contrastText: c.action.success.text,
+      main: c.interactive["success-default"],
+      light: c.interactive["success-hover"],
+      dark: c.interactive["success-pressed"],
+      contrastText: FILLED_TEXT,
     },
     background: {
       default: c.bg.background,
-      paper: c.bg.card[1],
+      paper: c.bg["card-1"],
     },
     text: {
       primary: c.text.primary,
@@ -108,8 +112,8 @@ export const voodoMuiThemeOptions = {
     divider: c.border.default,
     action: {
       active: c.icon.default,
-      hover: c.action.secondary.secondary,
-      selected: c.action.secondary.primary,
+      hover: c.interactive["secondary-hover"],
+      selected: c.interactive["secondary-default"],
       disabled: c.text.placeholder,
       disabledBackground: c.bg.muted,
       focus: c.focus.ring,

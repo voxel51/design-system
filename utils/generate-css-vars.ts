@@ -36,10 +36,10 @@ const flat = (obj: Record<string, unknown>, prefix: string): Nested => {
 const color = {
   brand: walk(tokens.colors.common.brand, "--color-brand"),
   semantic: walk(tokens.colors.common.semantic, "--color-semantic"),
-  // bg / text / border / status / icon / overlay / link / palette / skeleton /
-  // tooltip / code / scrollbar / selection (mode-reactive at runtime)
+  // every semantic group Figma defines — bg / text / border / status / icon /
+  // interactive / overlay / link / palette / skeleton / tooltip / code /
+  // scrollbar / selection (mode-reactive at runtime)
   ...walk(tokens.colors.dark.content, "--color-content"),
-  action: walk(tokens.colors.dark.action, "--color-action"),
 };
 
 const cssVar = {

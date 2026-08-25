@@ -46,7 +46,7 @@ const variantStyles: Record<ToastVariant, string> = {
   [Variant.Primary]: textColorClass(TextColor.Primary),
   [Variant.Secondary]: textColorClass(TextColor.Secondary),
   [Variant.Success]: textColorClass(IconColor.Success),
-  [Variant.Danger]: textColorClass(IconColor.Destructive),
+  [Variant.Danger]: textColorClass(IconColor.Failure),
   [Variant.Icon]: textColorClass(TextColor.Primary),
 };
 

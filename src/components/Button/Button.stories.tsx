@@ -142,6 +142,15 @@ export const Borderless: Story = {
   },
 };
 
+// `borderless` only goes circular when there is no label — with one it stays a
+// normal-width button that has simply dropped its chrome.
+export const BorderlessIconOnly: Story = {
+  args: {
+    leadingIcon: IconName.Delete,
+    borderless: true,
+  },
+};
+
 export const IconOnly: Story = {
   args: {
     leadingIcon: IconName.Delete,

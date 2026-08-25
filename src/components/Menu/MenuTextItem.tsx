@@ -68,7 +68,7 @@ export const MenuTextItem: FC<MenuTextItemProps> = ({
         >
           <Text
             variant={TextVariant.Sm}
-            color={destructive ? TextColor.Destructive : TextColor.Primary}
+            color={destructive ? TextColor.Failure : TextColor.Primary}
             className="block min-w-0 truncate"
           >
             {children}

@@ -5,7 +5,7 @@ import { ButtonHTMLAttributes, FC } from "react";
 import { type IconInput, IconWrapper } from "@/components/Icons";
 import radiusStyles from "@/styles/radius";
 import {
-  ActionColor,
+  InteractiveColor,
   BackgroundColor,
   bgColorClass,
   BorderColor,
@@ -31,9 +31,9 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles: Record<Variant, string> = {
   [Variant.Primary]: clsx(
-    bgColorClass(ActionColor.PrimaryDefault),
-    bgColorClass(ActionColor.PrimaryHover, ElementState.Hover),
-    bgColorClass(ActionColor.PrimaryFocus, ElementState.Active)
+    bgColorClass(InteractiveColor.PrimaryDefault),
+    bgColorClass(InteractiveColor.PrimaryHover, ElementState.Hover),
+    bgColorClass(InteractiveColor.PrimaryPressed, ElementState.Active)
   ),
   [Variant.Secondary]: clsx(
     "border-1",
@@ -42,17 +42,17 @@ const variantStyles: Record<Variant, string> = {
     borderColorClass(BorderColor.Focus, ElementState.Hover), // design calls for focus color on hover
     borderColorClass(BorderColor.Focus, ElementState.Active),
     borderColorClass(BorderColor.Disabled, ElementState.Disabled),
-    bgColorClass(ActionColor.SecondaryFocus, ElementState.Active)
+    bgColorClass(InteractiveColor.SecondaryPressed, ElementState.Active)
   ),
   [Variant.Success]: clsx(
-    bgColorClass(ActionColor.SuccessDefault),
-    bgColorClass(ActionColor.SuccessHover, ElementState.Hover),
-    bgColorClass(ActionColor.SuccessFocus, ElementState.Active)
+    bgColorClass(InteractiveColor.SuccessDefault),
+    bgColorClass(InteractiveColor.SuccessHover, ElementState.Hover),
+    bgColorClass(InteractiveColor.SuccessPressed, ElementState.Active)
   ),
   [Variant.Danger]: clsx(
-    bgColorClass(ActionColor.DangerDefault),
-    bgColorClass(ActionColor.DangerHover, ElementState.Hover),
-    bgColorClass(ActionColor.DangerFocus, ElementState.Active)
+    bgColorClass(InteractiveColor.DangerDefault),
+    bgColorClass(InteractiveColor.DangerHover, ElementState.Hover),
+    bgColorClass(InteractiveColor.DangerPressed, ElementState.Active)
   ),
   [Variant.Icon]: clsx(
     "aspect-square min-w-0 shrink-0", // square icon button, not a rectangle
@@ -68,14 +68,14 @@ const variantStyles: Record<Variant, string> = {
 };
 
 const variantTextStyles: Record<Variant, string> = {
-  [Variant.Primary]: textColorClass(ActionColor.PrimaryText),
-  [Variant.Secondary]: textColorClass(ActionColor.SecondaryText),
-  [Variant.Success]: textColorClass(ActionColor.SuccessText),
-  [Variant.Danger]: textColorClass(ActionColor.DangerText),
-  [Variant.Icon]: textColorClass(ActionColor.IconDefault),
+  [Variant.Primary]: "text-white",
+  [Variant.Secondary]: textColorClass(TextColor.Primary),
+  [Variant.Success]: "text-white",
+  [Variant.Danger]: "text-white",
+  [Variant.Icon]: textColorClass(TextColor.Secondary),
   [Variant.Borderless]: clsx(
     textColorClass(TextColor.Secondary),
-    textColorClass(ActionColor.PrimaryText, ElementState.Hover)
+    textColorClass(TextColor.Primary, ElementState.Hover)
   ),
 };
 
@@ -130,13 +130,16 @@ export const Button: FC<ButtonProps> = ({
   children,
   ...props
 }) => {
-  const isIconOnly = variant === Variant.Icon || borderless;
+  // `borderless` drops the chrome; it does not by itself mean icon-only. A
+  // borderless button with a label is still a normal-width button — forcing
+  // aspect-square on one squashes the label into a circle.
+  const isIconOnly = variant === Variant.Icon || (borderless && !children);
 
   return (
     <HeadlessButton
       className={cn(
         "inline-flex items-center justify-center",
-        borderless && "aspect-square min-w-0 shrink-0", // circular
+        isIconOnly && borderless && "aspect-square min-w-0 shrink-0", // circular
         borderless ? radiusStyles(Radius.Full) : radiusStyles(Radius.Sm),
         "font-medium",
         "transition-colors",

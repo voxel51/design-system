@@ -15,7 +15,7 @@ import {
 
 import radiusStyles from "@/styles/radius";
 import {
-  ActionColor,
+  InteractiveColor,
   bgColorClass,
   BorderColor,
   ElementState,
@@ -44,7 +44,7 @@ const toolbarActionClass = (
     "size-10 flex items-center justify-center transition-all",
     radiusStyles(Radius.Md),
     isInteractive &&
-      bgColorClass(ActionColor.SecondaryHover, ElementState.Hover),
+      bgColorClass(InteractiveColor.SecondaryHover, ElementState.Hover),
     "data-[disabled]:opacity-50",
     "data-[disabled]:cursor-not-allowed",
     "outline-none",
@@ -58,7 +58,7 @@ const iconClass = (active: boolean, isInteractive: boolean): string =>
   cn(
     "size-full flex items-center justify-center",
     active
-      ? textColorClass(IconColor.BrandAccent)
+      ? textColorClass(IconColor.Brand)
       : textColorClass(IconColor.Default),
     isInteractive && textColorClass(IconColor.Emphasis, ElementState.Hover)
   );
@@ -98,7 +98,7 @@ export const ToolbarAction = forwardRef<HTMLButtonElement, ToolbarActionProps>(
 
     const activeStyle: CSSProperties | undefined = active
       ? {
-          backgroundColor: `color-mix(in srgb, var(${getColorCssVar(IconColor.BrandAccent)}) 20%, transparent)`,
+          backgroundColor: `color-mix(in srgb, var(${getColorCssVar(IconColor.Brand)}) 20%, transparent)`,
         }
       : undefined;
 

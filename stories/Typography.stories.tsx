@@ -53,6 +53,6 @@ const meta: Meta = {
 
 type Story = StoryObj<typeof Typography>;
 
-export const Empty: Story = {};
+export const Overview: Story = {};
 
 export default meta;

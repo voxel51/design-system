@@ -33,7 +33,7 @@ describe("textColor", () => {
   });
 
   it("returns Destructive for Variant.Danger", () => {
-    expect(textColor(Variant.Danger)).toBe(TextColor.Destructive);
+    expect(textColor(Variant.Danger)).toBe(TextColor.Failure);
   });
 
   it("returns Primary for Variant.Icon", () => {
