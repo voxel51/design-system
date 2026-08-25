@@ -1,16 +1,11 @@
 import { ColorItem, ColorPalette } from "@storybook/addon-docs/blocks";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
-  InteractiveColor,
-  BackgroundColor,
-  BorderColor,
   BrandColor,
+  colors,
   Heading,
   HeadingLevel,
-  IconColor,
   SemanticColor,
-  StatusColor,
-  TextColor,
 } from "@voxel51/voodo";
 import React from "react";
 import { capitalize } from "../utils/text";
@@ -60,16 +55,22 @@ const buildColorPalette = (
   return result;
 };
 
-const filterEnum = (
-  enumObj: Record<string, string>,
-  filter: (value: string) => boolean
-): Record<string, string> => {
+/**
+ * Every semantic group Figma defines, read off the tokens rather than a
+ * hand-written list of enums — a new group in Figma shows up here on the next
+ * generator run instead of being silently absent. `content` is the code-side
+ * namespace the semantic groups nest under.
+ */
+const semanticGroups = Object.keys(colors.dark.content).sort();
+
+const groupSwatches = (group: string, themeMode: string) => {
+  const keys = Object.keys(
+    colors.dark.content[group as keyof typeof colors.dark.content]
+  );
   const result: Record<string, string> = {};
 
-  Object.entries(enumObj).forEach(([key, value]) => {
-    if (filter(value)) {
-      result[key] = value;
-    }
+  keys.forEach((key) => {
+    result[key] = getCSSValue(`--color-content-${group}-${key}`, themeMode);
   });
 
   return result;
@@ -78,71 +79,35 @@ const filterEnum = (
 const Colors = () => (
   <>
     {["light", "dark"].map((themeMode) => (
-      <>
+      <React.Fragment key={themeMode}>
         <Heading>{capitalize(themeMode)} Theme</Heading>
 
-        <Heading level={HeadingLevel.H2}>Content</Heading>
+        <Heading level={HeadingLevel.H2}>Mode-independent</Heading>
         <ColorPalette>
           <ColorItem
             title="Brand"
-            subtitle=""
+            subtitle="Not Figma tokens — Figma's Theme collection is per-mode and cannot express a mode-independent constant, so these are derived from the primitives."
             colors={buildColorPalette(BrandColor, "", themeMode)}
           />
-
           <ColorItem
             title="Semantic"
             subtitle=""
             colors={buildColorPalette(SemanticColor, "", themeMode)}
           />
-
-          <ColorItem
-            title="Background"
-            subtitle=""
-            colors={buildColorPalette(BackgroundColor, "content-", themeMode)}
-          />
-
-          <ColorItem
-            title="Text"
-            subtitle=""
-            colors={buildColorPalette(TextColor, "content-", themeMode)}
-          />
-
-          <ColorItem
-            title="Border"
-            subtitle=""
-            colors={buildColorPalette(BorderColor, "content-", themeMode)}
-          />
-
-          <ColorItem
-            title="Icon"
-            subtitle=""
-            colors={buildColorPalette(IconColor, "content-", themeMode)}
-          />
-
-          <ColorItem
-            title="Status"
-            subtitle=""
-            colors={buildColorPalette(StatusColor, "content-", themeMode)}
-          />
         </ColorPalette>
 
-        <Heading level={HeadingLevel.H2}>Interactive</Heading>
+        <Heading level={HeadingLevel.H2}>Semantic groups</Heading>
         <ColorPalette>
-          {["primary", "secondary", "success", "danger"].map((colorVariant) => (
+          {semanticGroups.map((group) => (
             <ColorItem
-              title={`${capitalize(colorVariant)} interactive`}
-              subtitle=""
-              colors={buildColorPalette(
-                filterEnum(InteractiveColor, (color) =>
-                  color.startsWith(`interactive-${colorVariant}`)
-                ),
-                "content-",
-                themeMode
-              )}
+              key={group}
+              title={capitalize(group)}
+              subtitle={`--color-content-${group}-*`}
+              colors={groupSwatches(group, themeMode)}
             />
           ))}
         </ColorPalette>
-      </>
+      </React.Fragment>
     ))}
   </>
 );
