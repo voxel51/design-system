@@ -159,7 +159,7 @@ const meta: Meta = {
 
 type Story = StoryObj<typeof Colors>;
 
-export const Empty: Story = {
+export const Overview: Story = {
   // we must render *something* as a Story so that the Docs page shows up
   // but rendering <Colors /> here will cause a cryptic error about missing
   // fonts. Instead we just render a dummy div.

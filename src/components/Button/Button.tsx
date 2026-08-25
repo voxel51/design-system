@@ -130,13 +130,16 @@ export const Button: FC<ButtonProps> = ({
   children,
   ...props
 }) => {
-  const isIconOnly = variant === Variant.Icon || borderless;
+  // `borderless` drops the chrome; it does not by itself mean icon-only. A
+  // borderless button with a label is still a normal-width button — forcing
+  // aspect-square on one squashes the label into a circle.
+  const isIconOnly = variant === Variant.Icon || (borderless && !children);
 
   return (
     <HeadlessButton
       className={cn(
         "inline-flex items-center justify-center",
-        borderless && "aspect-square min-w-0 shrink-0", // circular
+        isIconOnly && borderless && "aspect-square min-w-0 shrink-0", // circular
         borderless ? radiusStyles(Radius.Full) : radiusStyles(Radius.Sm),
         "font-medium",
         "transition-colors",

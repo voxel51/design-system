@@ -46,6 +46,6 @@ const meta: Meta = {
 
 type Story = StoryObj<typeof SpacingDocs>;
 
-export const Empty: Story = {};
+export const Overview: Story = {};
 
 export default meta;
