@@ -1,7 +1,7 @@
 import { ColorItem, ColorPalette } from "@storybook/addon-docs/blocks";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
-  ActionColor,
+  InteractiveColor,
   BackgroundColor,
   BorderColor,
   BrandColor,
@@ -126,17 +126,17 @@ const Colors = () => (
           />
         </ColorPalette>
 
-        <Heading level={HeadingLevel.H2}>Actions</Heading>
+        <Heading level={HeadingLevel.H2}>Interactive</Heading>
         <ColorPalette>
           {["primary", "secondary", "success", "danger"].map((colorVariant) => (
             <ColorItem
-              title={`${capitalize(colorVariant)} actions`}
+              title={`${capitalize(colorVariant)} interactive`}
               subtitle=""
               colors={buildColorPalette(
-                filterEnum(ActionColor, (color) =>
-                  color.startsWith(`action-${colorVariant}`)
+                filterEnum(InteractiveColor, (color) =>
+                  color.startsWith(`interactive-${colorVariant}`)
                 ),
-                "",
+                "content-",
                 themeMode
               )}
             />
