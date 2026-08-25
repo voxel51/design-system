@@ -41,7 +41,7 @@ export namespace ToggleSwitchVariant {
   export type Borderless = typeof ToggleSwitchVariant.Borderless;
 }
 
-export type ToggleSwitchSize = Exclude<Size, Size.Lg | Size.Xl>;
+export type ToggleSwitchSize = `${Exclude<Size, Size.Lg | Size.Xl>}`;
 
 export interface ToggleSwitchProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
