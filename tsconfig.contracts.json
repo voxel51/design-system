@@ -1,0 +1,14 @@
+{
+    // Type-contract check against the BUILT package: re-compiles
+    // src/__contracts__ with @voxel51/voodo resolved to dist/index.d.ts
+    // (what consumers actually install) instead of src/index.ts. Run via
+    // `npm run check:contracts` — requires `npm run build` first. The same
+    // files also compile against src/ as part of `npm run type-check`.
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "paths": {
+            "@voxel51/voodo": ["dist/index.d.ts"]
+        }
+    },
+    "include": ["src/__contracts__"]
+}

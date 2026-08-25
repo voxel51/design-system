@@ -63,6 +63,8 @@ export default defineConfig({
         "**/*.test.ts",
         "**/*.stories.tsx",
         "src/setupTests.ts",
+        // Type-contract tests: type-checked, never shipped
+        "src/__contracts__/**",
       ],
     }),
   ],
