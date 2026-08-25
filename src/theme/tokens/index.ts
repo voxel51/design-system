@@ -4,9 +4,8 @@ import { transitions } from "./transitions";
 import { typography } from "./typography";
 
 export { transitions };
-// `colors` was previously reachable only through the default export, which
-// `export *` does not forward — so consumers of the package root could not
-// import it at all. Named here alongside the other token families.
+// Named explicitly: `export *` does not forward the default export, so without
+// this line `colors` and `primitives` are unreachable from the package root.
 export { colors, primitives } from "./colors";
 export { palettePool, paletteSlots } from "./palette";
 

@@ -1,8 +1,8 @@
 export * from "./tokens";
-// Re-exported by name rather than relying on the `export *` above: since
-// `tokens/index.ts` is itself a build entry (for the `./tokens` subpath),
-// rollup does not forward its star exports into the root chunk, which silently
-// dropped these two from the package root. Guarded by utils/verify-exports.mjs.
+// Not redundant with the `export *` above: `tokens/index.ts` is its own build
+// entry (the `./tokens` subpath), and rollup does not forward a build entry's
+// star exports into the root chunk. Removing this line drops both from the
+// package root — silently, which is why utils/verify-exports.mjs checks it.
 export { palettePool, paletteSlots } from "./tokens/palette";
 export { cssVar } from "./cssVar";
 export { voodoMuiThemeOptions } from "./mui";
