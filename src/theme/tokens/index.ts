@@ -4,7 +4,10 @@ import { transitions } from "./transitions";
 import { typography } from "./typography";
 
 export { transitions };
-export { primitives } from "./colors";
+// Named explicitly: `export *` does not forward the default export, so without
+// this line `colors` and `primitives` are unreachable from the package root.
+export { colors, primitives } from "./colors";
+export { palettePool, paletteSlots } from "./palette";
 
 export default {
   colors,
