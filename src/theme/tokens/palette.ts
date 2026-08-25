@@ -15,10 +15,12 @@ import { colors } from "./colors";
  */
 
 /** Numbered slot keys for a palette, in ascending numeric order. */
+const SLOT = /^(\d+)(?:-|$)/;
+
 const slotKeys = (palette: Record<string, string>): string[] =>
   Object.keys(palette)
-    .filter((key) => /^\d+$/.test(key))
-    .sort((a, b) => Number(a) - Number(b));
+    .filter((key) => SLOT.test(key))
+    .sort((a, b) => Number(SLOT.exec(a)![1]) - Number(SLOT.exec(b)![1]));
 
 const pool = (palette: Record<string, string>): string[] =>
   slotKeys(palette).map((key) => palette[key]);

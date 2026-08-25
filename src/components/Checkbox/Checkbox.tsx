@@ -7,7 +7,7 @@ import { UnsetHint } from "@/components/UnsetHint";
 import radiusStyles from "@/styles/radius";
 import { TEXT_STYLES } from "@/styles/text";
 import {
-  ActionColor,
+  InteractiveColor,
   bgColorClass,
   BorderColor,
   borderColorClass,
@@ -119,7 +119,7 @@ export const Checkbox: FC<CheckboxProps> = ({
           checkmarkSizeStyles[size],
           "disabled:opacity-50",
           "disabled:cursor-not-allowed",
-          bgColorClass(ActionColor.PrimaryDefault, ElementState.Checked),
+          bgColorClass(InteractiveColor.PrimaryDefault, ElementState.Checked),
           borderColorClass(BorderColor.Active, ElementState.Checked),
           showIndeterminate &&
             "bg-[var(--color-brand-primary)]/25 border-[var(--color-brand-primary)] ",

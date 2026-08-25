@@ -5,7 +5,7 @@ import type { FC, HTMLAttributes, ReactNode } from "react";
 import { Tooltip } from "@/components/Tooltip";
 import { textStyles } from "@/styles/text";
 import {
-  ActionColor,
+  InteractiveColor,
   bgColorClass,
   BorderColor,
   borderColorClass,
@@ -234,7 +234,10 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
               "outline-none",
               "transition-colors",
               "bg-transparent",
-              bgColorClass(ActionColor.SecondaryDefault, ElementState.Selected),
+              bgColorClass(
+                InteractiveColor.SecondaryDefault,
+                ElementState.Selected
+              ),
               getTabTextColorClass(selected),
               data.disabled && "hover:!text-content-text-secondary",
               "data-[focus]:outline-none",

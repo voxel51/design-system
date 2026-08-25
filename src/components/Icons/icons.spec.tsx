@@ -39,7 +39,7 @@ describe("generated icons", () => {
 
   describe("color prop", () => {
     it("should apply the color class to the svg element", () => {
-      const { container } = render(<CheckIcon color={IconColor.Destructive} />);
+      const { container } = render(<CheckIcon color={IconColor.Failure} />);
       const svg = container.querySelector("svg");
       expect(svg).toHaveClass("text-content-icon-destructive");
     });
