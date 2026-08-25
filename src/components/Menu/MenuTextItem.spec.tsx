@@ -68,7 +68,7 @@ describe("MenuTextItem", () => {
     );
     await user.click(screen.getByText("Open menu"));
     const label = screen.getByText("Delete");
-    expect(label.className).toMatch(/destructive/i);
+    expect(label.className).toMatch(/failure/i);
   });
 
   it("should pass className through to the button", async () => {
