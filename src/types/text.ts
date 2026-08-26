@@ -4,6 +4,7 @@ export const TextVariant = {
   Sm: "sm",
   Md: "md",
   Lg: "lg",
+  Title: "title",
   Xl: "xl",
   Xxl: "xxl",
   Label: "label",
@@ -17,6 +18,7 @@ export namespace TextVariant {
   export type Sm = typeof TextVariant.Sm;
   export type Md = typeof TextVariant.Md;
   export type Lg = typeof TextVariant.Lg;
+  export type Title = typeof TextVariant.Title;
   export type Xl = typeof TextVariant.Xl;
   export type Xxl = typeof TextVariant.Xxl;
   export type Label = typeof TextVariant.Label;
