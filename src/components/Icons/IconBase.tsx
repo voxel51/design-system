@@ -58,7 +58,8 @@ export const IconBase: FC<IconBaseProps> = ({
   style,
   ...props
 }) => {
-  const iconSize = typeof size === "number" ? size : size ? sizeMap[size] : undefined;
+  const iconSize =
+    typeof size === "number" ? size : size ? sizeMap[size] : undefined;
   const isToken = color !== undefined && isColorToken(color);
 
   return (

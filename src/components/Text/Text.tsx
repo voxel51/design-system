@@ -52,7 +52,11 @@ export const Text: FC<TextProps> = ({
 
   return (
     <span
-      className={clsx(isToken && textColorClass(color), textStyles(variant), className)}
+      className={clsx(
+        isToken && textColorClass(color),
+        textStyles(variant),
+        className
+      )}
       style={!isToken ? { color, ...style } : style}
       {...props}
     >

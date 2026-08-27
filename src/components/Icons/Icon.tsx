@@ -290,7 +290,8 @@ export const Icon: FC<LegacyIconProps> = ({
   // as a square - the viewbox on the SVG will still handle the aspect
   // ratio but it's possible that VERY rectangular SVGs will not behave
   // as expected.
-  const iconSize = typeof size === "number" ? size : size ? sizeMap[size] : undefined;
+  const iconSize =
+    typeof size === "number" ? size : size ? sizeMap[size] : undefined;
   const IconComponent = name === IconName.Spinner ? Spinner : iconMap[name];
   const isToken = color !== undefined && isColorToken(color);
 
