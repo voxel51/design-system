@@ -4,6 +4,7 @@ export enum TextVariant {
   Sm = "sm",
   Md = "md",
   Lg = "lg",
+  Title = "title",
   Xl = "xl",
   Xxl = "xxl",
   Label = "label",

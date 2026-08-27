@@ -29,7 +29,7 @@ export interface TextProps extends HTMLAttributes<HTMLSpanElement> {
  * @param props Additional HTML properties to apply to the component.
  */
 export const Text: FC<TextProps> = ({
-  variant = TextVariant.Md,
+  variant = TextVariant.Lg,
   color = TextColor.Primary,
   children,
   className,
