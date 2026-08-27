@@ -6,7 +6,7 @@ import { useResizableDrawer } from "@/util/useResizableDrawer";
 
 import styles from "./Drawer.module.css";
 
-export type DrawerSide = "left" | "right" | "top" | "bottom";
+export type DrawerSide = `${"left" | "right" | "top" | "bottom"}`;
 
 export interface DrawerHeaderState {
   open: boolean;

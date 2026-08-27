@@ -34,14 +34,25 @@ type ModifiedInputProps = Omit<
   "size" | "className"
 >;
 
-export enum InputType {
-  Text = "text",
-  Email = "email",
-  Password = "password",
-  Number = "number",
-  Tel = "tel",
-  Url = "url",
-  Search = "search",
+export const InputType = {
+  Text: "text",
+  Email: "email",
+  Password: "password",
+  Number: "number",
+  Tel: "tel",
+  Url: "url",
+  Search: "search",
+} as const;
+export type InputType = `${(typeof InputType)[keyof typeof InputType]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace InputType {
+  export type Text = typeof InputType.Text;
+  export type Email = typeof InputType.Email;
+  export type Password = typeof InputType.Password;
+  export type Number = typeof InputType.Number;
+  export type Tel = typeof InputType.Tel;
+  export type Url = typeof InputType.Url;
+  export type Search = typeof InputType.Search;
 }
 
 /**

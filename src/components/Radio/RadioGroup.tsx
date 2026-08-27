@@ -12,7 +12,7 @@ export interface RadioOption {
   disabled?: boolean;
 }
 
-export type RadioGroupSize = Exclude<Size, Size.Xs>;
+export type RadioGroupSize = `${Exclude<Size, Size.Xs>}`;
 
 export interface RadioGroupProps extends Omit<
   HTMLAttributes<HTMLDivElement>,

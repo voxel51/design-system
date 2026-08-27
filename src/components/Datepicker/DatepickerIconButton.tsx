@@ -7,9 +7,16 @@ import { cn } from "@/util/classes";
 
 import { iconPaddingStyles, iconSizeStyles } from "../Input/styles";
 
-export enum IconPosition {
-  Leading = "leading",
-  Trailing = "trailing",
+export const IconPosition = {
+  Leading: "leading",
+  Trailing: "trailing",
+} as const;
+export type IconPosition =
+  `${(typeof IconPosition)[keyof typeof IconPosition]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace IconPosition {
+  export type Leading = typeof IconPosition.Leading;
+  export type Trailing = typeof IconPosition.Trailing;
 }
 
 export interface DatepickerIconButtonProps {

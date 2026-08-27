@@ -22,9 +22,16 @@ import { cn } from "@/util/classes";
  * Defined locally to the Divider component so it does not pollute the shared
  * `@/types` enums.
  */
-export enum DividerStyle {
-  Line = "line",
-  Dot = "dot",
+export const DividerStyle = {
+  Line: "line",
+  Dot: "dot",
+} as const;
+export type DividerStyle =
+  `${(typeof DividerStyle)[keyof typeof DividerStyle]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace DividerStyle {
+  export type Line = typeof DividerStyle.Line;
+  export type Dot = typeof DividerStyle.Dot;
 }
 
 export interface DividerProps extends HTMLAttributes<HTMLDivElement> {

@@ -16,11 +16,20 @@ import {
 } from "@/types";
 import { cn } from "@/util/classes";
 
-export enum ResizeBehavior {
-  None = "None",
-  Vertical = "Vertical",
-  Horizontal = "Horizontal",
-  BiDirectional = "BiDirectional",
+export const ResizeBehavior = {
+  None: "None",
+  Vertical: "Vertical",
+  Horizontal: "Horizontal",
+  BiDirectional: "BiDirectional",
+} as const;
+export type ResizeBehavior =
+  `${(typeof ResizeBehavior)[keyof typeof ResizeBehavior]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace ResizeBehavior {
+  export type None = typeof ResizeBehavior.None;
+  export type Vertical = typeof ResizeBehavior.Vertical;
+  export type Horizontal = typeof ResizeBehavior.Horizontal;
+  export type BiDirectional = typeof ResizeBehavior.BiDirectional;
 }
 
 export interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
