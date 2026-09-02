@@ -14,6 +14,7 @@ import {
   useRef,
   useState,
   type FC,
+  type HTMLAttributes,
   type KeyboardEvent,
   type ReactNode,
 } from "react";
@@ -44,9 +45,14 @@ export interface ComboboxOption {
   label: string;
   /** Optional second line — a definition, a slug, an owner. */
   description?: ReactNode;
+  /** Data attributes for the row — a test id, a tracking hook. */
+  [dataAttribute: `data-${string}`]: string | undefined;
 }
 
-export interface ComboboxProps {
+export interface ComboboxProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "onChange" | "children"
+> {
   /**
    * Rows to offer. Filtering is the CALLER's job: a combobox over a remote
    * collection filters on the server, and one over a local list filters in
@@ -84,6 +90,12 @@ export interface ComboboxProps {
   className?: string;
   /** Accessible name for the field. */
   "aria-label"?: string;
+  /** Data attributes for the field itself — a test id. */
+  inputAttributes?: Record<`data-${string}`, string>;
+  /** Data attributes for the list — a test id. */
+  listAttributes?: Record<`data-${string}`, string>;
+  /** Fires when the list opens or closes. */
+  onOpenChange?: (open: boolean) => void;
   /**
    * Render the list in a portal, anchored to the field with floating UI, so
    * it escapes overflow-hidden ancestors — the treatment `Select` and
@@ -101,6 +113,18 @@ export interface ComboboxProps {
    * @default true
    */
   commitOnBlur?: boolean;
+  /** No frame on the field: for a combobox that sits flush in a bar. */
+  borderless?: boolean;
+  /** Focus the field on mount — for a combobox that opens on demand. */
+  autoFocus?: boolean;
+  /**
+   * Highlight the first row whenever there is text, so Enter takes the top
+   * match without an arrow key first. Off by default: with it off, Enter on
+   * unmatched text commits free text (or nothing), never a row the user
+   * has not pointed at.
+   * @default false
+   */
+  autoHighlight?: boolean;
 }
 
 const optionStyles = (active: boolean): string =>
@@ -163,6 +187,13 @@ const optionStyles = (active: boolean): string =>
  * @param portal Render the list in a portal, anchored to the field.
  * @param zIndex Explicit z-index for the list.
  * @param commitOnBlur Commit free text on blur (default `true`).
+ * @param borderless No frame on the field.
+ * @param autoFocus Focus the field on mount.
+ * @param autoHighlight Highlight the first row whenever there is text.
+ * @param inputAttributes Data attributes for the field.
+ * @param listAttributes Data attributes for the list.
+ * @param onOpenChange Fires when the list opens or closes.
+ * @param props Additional HTML properties for the wrapper.
  */
 export const Combobox: FC<ComboboxProps> = ({
   options,
@@ -180,9 +211,25 @@ export const Combobox: FC<ComboboxProps> = ({
   portal = false,
   zIndex,
   commitOnBlur = true,
+  borderless = false,
+  autoFocus = false,
+  autoHighlight = false,
+  inputAttributes,
+  listAttributes,
+  onOpenChange,
+  "aria-label": ariaLabel,
   ...props
 }) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpenState] = useState(false);
+  const setOpen = useCallback(
+    (next: boolean): void => {
+      setOpenState((current) => {
+        if (current !== next) onOpenChange?.(next);
+        return next;
+      });
+    },
+    [onOpenChange]
+  );
   // `null` = nothing highlighted yet. The distinction matters for Enter: with
   // an untouched empty field it means "no filter", but once the user has
   // arrowed onto a row it means that row.
@@ -199,10 +246,11 @@ export const Combobox: FC<ComboboxProps> = ({
       offset(4),
       flip(),
       shift({ padding: 8 }),
+      // At least as wide as the field; content (a description) may widen it
       floatingSize({
         apply({ rects, elements }) {
           Object.assign(elements.floating.style, {
-            width: `${rects.reference.width}px`,
+            minWidth: `${rects.reference.width}px`,
           });
         },
       }),
@@ -217,15 +265,24 @@ export const Combobox: FC<ComboboxProps> = ({
     [refs]
   );
 
+  // The highlight a fresh list or fresh text starts from: the top row when
+  // auto-highlighting text, otherwise nothing.
+  const initialActive = useCallback(
+    (text: string): number | null =>
+      autoHighlight && text.trim() && options.length ? 0 : null,
+    [autoHighlight, options.length]
+  );
+
   // A fresh list means the old highlight index points at a different row.
-  useEffect((): void => setActive(null), [options]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect((): void => setActive(initialActive(inputValue)), [options]);
 
   const close = useCallback((): void => {
     setOpen(false);
     // Hovering a row sets the highlight; if it survived the close, the next
     // Enter would pick a row the user can no longer see.
     setActive(null);
-  }, []);
+  }, [setOpen]);
 
   // Click outside closes without picking. Pointerdown rather than click so a
   // press that starts outside can't first blur-commit and then reopen.
@@ -310,25 +367,30 @@ export const Combobox: FC<ComboboxProps> = ({
   };
 
   return (
-    <div ref={setWrapper} className={cn("relative", className)}>
+    <div ref={setWrapper} className={cn("relative", className)} {...props}>
       <Input
         onKeyDown={onKeyDown}
         size={size}
         disabled={disabled}
+        borderless={borderless}
+        // eslint-disable-next-line jsx-a11y/no-autofocus -- opt-in, for a combobox that opens on demand
+        autoFocus={autoFocus}
+        autoComplete="off"
         value={inputValue}
         placeholder={placeholder}
         role="combobox"
         aria-expanded={open}
         aria-controls={listId}
         aria-autocomplete="list"
-        aria-label={props["aria-label"]}
+        aria-label={ariaLabel}
+        {...inputAttributes}
         onFocus={(): void => setOpen(true)}
         onBlur={commitOnBlur ? commitText : undefined}
         onChange={(e): void => {
           onInputChange(e.target.value);
           setOpen(true);
-          // Typing invalidates whatever was highlighted.
-          setActive(null);
+          // Typing invalidates whatever was highlighted
+          setActive(initialActive(e.target.value));
           // Typing past a pick means the pick no longer describes the field.
           if (value && e.target.value !== value.label) onChange(null);
         }}
@@ -338,13 +400,14 @@ export const Combobox: FC<ComboboxProps> = ({
           <div
             id={listId}
             role="listbox"
+            {...listAttributes}
             ref={portal ? refs.setFloating : undefined}
             style={portal ? floatingStyles : undefined}
             className={cn(
-              portal ? undefined : "absolute top-full left-0 mt-1 w-full",
+              portal ? "max-w-[20rem]" : "absolute top-full left-0 mt-1 w-full",
               "max-h-64 overflow-y-auto",
               menuPanelStyles(),
-              "max-w-none",
+              portal ? undefined : "max-w-none",
               zIndexStyles(
                 zIndex ?? (portal ? ZIndex.AboveModal : ZIndex.Medium)
               )
@@ -368,6 +431,9 @@ export const Combobox: FC<ComboboxProps> = ({
                   key={option.id}
                   type="button"
                   role="option"
+                  // The visible row is label + description; the name is the label
+                  aria-label={option.label}
+                  {...dataAttributes(option)}
                   aria-selected={i === active}
                   className={optionStyles(i === active)}
                   // The field owns focus; hovering only moves the highlight so
@@ -406,6 +472,14 @@ export const Combobox: FC<ComboboxProps> = ({
     </div>
   );
 };
+
+/** The data-* attributes an option carries, for the row that renders it. */
+const dataAttributes = (
+  option: ComboboxOption
+): Record<string, string | undefined> =>
+  Object.fromEntries(
+    Object.entries(option).filter(([key]) => key.startsWith("data-"))
+  );
 
 /** The list in the flow, or in a floating UI portal. */
 const ListPortal: FC<{ portal: boolean; children: ReactNode }> = ({
