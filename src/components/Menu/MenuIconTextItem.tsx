@@ -17,9 +17,8 @@ import {
 } from "@/types";
 import { cn } from "@/util/classes";
 
-const isIconInput = (
-  icon: MenuIconTextItemProps["icon"]
-): icon is IconInput => typeof icon === "string" || typeof icon === "function";
+const isIconInput = (icon: MenuIconTextItemProps["icon"]): icon is IconInput =>
+  typeof icon === "string" || typeof icon === "function";
 
 /**
  * Props for {@link MenuIconTextItem}.
