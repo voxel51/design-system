@@ -265,17 +265,15 @@ export const Combobox: FC<ComboboxProps> = ({
     [refs]
   );
 
-  // The highlight a fresh list or fresh text starts from: the top row when
-  // auto-highlighting text, otherwise nothing.
-  const initialActive = useCallback(
-    (text: string): number | null =>
-      autoHighlight && text.trim() && options.length ? 0 : null,
-    [autoHighlight, options.length]
-  );
-
   // A fresh list means the old highlight index points at a different row.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect((): void => setActive(initialActive(inputValue)), [options]);
+  useEffect((): void => setActive(null), [options]);
+
+  // `active` is what the user pointed at. With nothing pointed at, an
+  // auto-highlighting combobox stands on the top row whenever there is text,
+  // so Enter takes the top match — derived, not stored, so a fresh list or
+  // fresh text never has to reset it.
+  const highlighted =
+    active ?? (autoHighlight && inputValue.trim() && options.length ? 0 : null);
 
   const close = useCallback((): void => {
     setOpen(false);
@@ -331,12 +329,12 @@ export const Combobox: FC<ComboboxProps> = ({
       }
       if (!options.length) return;
       const delta = e.key === "ArrowDown" ? 1 : -1;
-      setActive((i) =>
-        i === null
+      setActive(
+        highlighted === null
           ? delta === 1
             ? 0
             : options.length - 1
-          : (i + delta + options.length) % options.length
+          : (highlighted + delta + options.length) % options.length
       );
       return;
     }
@@ -345,13 +343,14 @@ export const Combobox: FC<ComboboxProps> = ({
       // take whatever the list happens to be highlighting. Without this,
       // emptying the field and confirming re-applies the first suggestion —
       // the field reads as cleared while the caller still filters by it.
-      if (!inputValue.trim() && active === null) {
+      if (!inputValue.trim() && highlighted === null) {
         e.preventDefault();
         if (value) onChange(null);
         close();
         return;
       }
-      const option = open && active !== null ? options[active] : undefined;
+      const option =
+        open && highlighted !== null ? options[highlighted] : undefined;
       if (option) {
         e.preventDefault();
         pick(option);
@@ -390,7 +389,7 @@ export const Combobox: FC<ComboboxProps> = ({
           onInputChange(e.target.value);
           setOpen(true);
           // Typing invalidates whatever was highlighted
-          setActive(initialActive(e.target.value));
+          setActive(null);
           // Typing past a pick means the pick no longer describes the field.
           if (value && e.target.value !== value.label) onChange(null);
         }}
@@ -434,8 +433,8 @@ export const Combobox: FC<ComboboxProps> = ({
                   // The visible row is label + description; the name is the label
                   aria-label={option.label}
                   {...dataAttributes(option)}
-                  aria-selected={i === active}
-                  className={optionStyles(i === active)}
+                  aria-selected={i === highlighted}
+                  className={optionStyles(i === highlighted)}
                   // The field owns focus; hovering only moves the highlight so
                   // pointer and keyboard agree on what Enter would pick.
                   onMouseEnter={(): void => setActive(i)}
