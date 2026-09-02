@@ -268,6 +268,15 @@ export const Combobox: FC<ComboboxProps> = ({
   // A fresh list means the old highlight index points at a different row.
   useEffect((): void => setActive(null), [options]);
 
+  // Opt-in focus on mount, for a combobox that appears because the user asked
+  // for it. Read once: a later flip of the prop is not a second request.
+  const focusOnMount = useRef(autoFocus);
+  useEffect((): void => {
+    if (focusOnMount.current) {
+      wrapper.current?.querySelector("input")?.focus();
+    }
+  }, []);
+
   // `active` is what the user pointed at. With nothing pointed at, an
   // auto-highlighting combobox stands on the top row whenever there is text,
   // so Enter takes the top match — derived, not stored, so a fresh list or
@@ -372,8 +381,6 @@ export const Combobox: FC<ComboboxProps> = ({
         size={size}
         disabled={disabled}
         borderless={borderless}
-        // eslint-disable-next-line jsx-a11y/no-autofocus -- opt-in, for a combobox that opens on demand
-        autoFocus={autoFocus}
         autoComplete="off"
         value={inputValue}
         placeholder={placeholder}
