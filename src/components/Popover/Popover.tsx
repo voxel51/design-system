@@ -116,6 +116,12 @@ export interface PopoverProps extends Omit<
    */
   matchTriggerWidth?: boolean;
   /**
+   * Close on Escape. Defaults to `true`; turn it off when the content owns
+   * Escape — an editor where Escape discards a draft rather than leaving.
+   * @default true
+   */
+  closeOnEscape?: boolean;
+  /**
    * If `true`, the trigger cannot open the panel. Also inferred automatically
    * when the `trigger` element has `disabled` set on its props.
    */
@@ -168,6 +174,7 @@ export interface PopoverProps extends Omit<
  * @param portal If `true`, renders the panel in a portal with a high z-index.
  * @param zIndex Stacking tier for the panel.
  * @param matchTriggerWidth Size the panel to the trigger's width.
+ * @param closeOnEscape Close on Escape (default `true`).
  * @param disabled If `true`, the panel cannot be opened from the trigger.
  * @param panelClassName `class` overrides for the panel.
  * @param focusOnOpen Move focus into the panel on open.
@@ -183,6 +190,7 @@ export const Popover: FC<PopoverProps> = ({
   portal = true,
   zIndex,
   matchTriggerWidth = false,
+  closeOnEscape = true,
   disabled,
   panelClassName,
   focusOnOpen = true,
@@ -226,6 +234,7 @@ export const Popover: FC<PopoverProps> = ({
   // A press inside another overlay layer — a Select menu or a nested popover
   // that portals out of this panel — is not a press outside it
   const dismiss = useDismiss(context, {
+    escapeKey: closeOnEscape,
     outsidePress: (event) => {
       const target = event.target as Element | null;
       return !target?.closest?.(
@@ -268,11 +277,18 @@ export const Popover: FC<PopoverProps> = ({
   ) : null;
 
   return (
-    <div className={cn("relative inline-block", className)} {...props}>
+    <div
+      className={cn(
+        // A width-matched panel hangs from a trigger that spans its container
+        matchTriggerWidth ? "relative block w-full" : "relative inline-block",
+        className
+      )}
+      {...props}
+    >
       <div
         ref={refs.setReference}
         className={cn(
-          "inline-block",
+          matchTriggerWidth ? "block w-full" : "inline-block",
           !controlled && (isDisabled ? "cursor-not-allowed" : "cursor-pointer")
         )}
         {...getReferenceProps()}

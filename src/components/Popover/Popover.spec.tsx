@@ -162,6 +162,19 @@ describe("Popover", () => {
     );
   });
 
+  it("should stay open on Escape when closeOnEscape is off", async () => {
+    const user = userEvent.setup();
+    render(
+      <Popover trigger={trigger} closeOnEscape={false}>
+        <input aria-label="Draft" />
+      </Popover>
+    );
+    await user.click(screen.getByText("Open settings"));
+    await user.click(screen.getByLabelText("Draft"));
+    await user.keyboard("{Escape}");
+    expect(screen.getByLabelText("Draft")).toBeInTheDocument();
+  });
+
   it("should accept matchTriggerWidth", async () => {
     const user = userEvent.setup();
     render(

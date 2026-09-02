@@ -51,6 +51,10 @@ const meta: Meta<typeof Popover> = {
       control: "boolean",
       description: "Size the panel to the trigger's width",
     },
+    closeOnEscape: {
+      control: "boolean",
+      description: "Close on Escape",
+    },
   },
 };
 
