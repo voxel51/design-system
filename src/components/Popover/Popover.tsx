@@ -219,7 +219,16 @@ export const Popover: FC<PopoverProps> = ({
   });
 
   const click = useClick(context, { enabled: !controlled && !isDisabled });
-  const dismiss = useDismiss(context);
+  // A press inside another overlay layer — a Select menu or a nested popover
+  // that portals out of this panel — is not a press outside it
+  const dismiss = useDismiss(context, {
+    outsidePress: (event) => {
+      const target = event.target as Element | null;
+      return !target?.closest?.(
+        "[data-headlessui-portal], [data-floating-ui-portal]"
+      );
+    },
+  });
   const role = useRole(context, { role: "dialog" });
   const { getReferenceProps, getFloatingProps } = useInteractions([
     click,

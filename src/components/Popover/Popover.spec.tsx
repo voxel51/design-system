@@ -94,6 +94,47 @@ describe("Popover", () => {
     expect(screen.queryByText("Locked content")).not.toBeInTheDocument();
   });
 
+  it("should stay open on a press inside another overlay layer", async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <Popover trigger={trigger}>Layered content</Popover>
+        <div data-headlessui-portal="">
+          <button>Menu option</button>
+        </div>
+      </>
+    );
+
+    await user.click(screen.getByText("Open settings"));
+    await user.click(screen.getByText("Menu option"));
+    expect(screen.getByText("Layered content")).toBeInTheDocument();
+  });
+
+  it("should be controllable from outside", async () => {
+    const user = userEvent.setup();
+    const onOpenChange = jest.fn();
+    const { rerender } = render(
+      <Popover trigger={trigger} open={false} onOpenChange={onOpenChange}>
+        Controlled content
+      </Popover>
+    );
+    expect(screen.queryByText("Controlled content")).not.toBeInTheDocument();
+
+    // Controlled: the trigger is only the anchor
+    await user.click(screen.getByText("Open settings"));
+    expect(screen.queryByText("Controlled content")).not.toBeInTheDocument();
+
+    rerender(
+      <Popover trigger={trigger} open onOpenChange={onOpenChange}>
+        Controlled content
+      </Popover>
+    );
+    expect(screen.getByText("Controlled content")).toBeInTheDocument();
+
+    await user.keyboard("{Escape}");
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
+  });
+
   it("should apply panelClassName to the panel", async () => {
     const user = userEvent.setup();
     render(
