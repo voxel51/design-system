@@ -1,6 +1,6 @@
 import { Button as HeadlessButton } from "@headlessui/react";
 import clsx from "clsx";
-import { ButtonHTMLAttributes, FC } from "react";
+import { AnchorHTMLAttributes, ButtonHTMLAttributes, FC } from "react";
 
 import { type IconInput, IconWrapper } from "@/components/Icons";
 import radiusStyles from "@/styles/radius";
@@ -23,7 +23,16 @@ import { cn } from "@/util/classes";
 // errors list the accepted strings instead of the alias name.
 type ButtonSize = `${Exclude<Size, Size.Lg | Size.Xl>}`;
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps
+  extends
+    ButtonHTMLAttributes<HTMLButtonElement>,
+    Pick<AnchorHTMLAttributes<HTMLAnchorElement>, "href" | "target" | "rel"> {
+  /**
+   * Renders an anchor with the button's look. For a navigation action — a
+   * docs link in a toolbar — so the element is a real link (middle-click,
+   * copy address) without nesting a button inside one.
+   */
+  href?: string;
   variant?: Variant;
   size?: ButtonSize;
   leadingIcon?: IconInput;
@@ -130,47 +139,67 @@ export const Button: FC<ButtonProps> = ({
   trailingIcon,
   className,
   children,
+  href,
+  target,
+  rel,
   ...props
 }) => {
   const isIconOnly = variant === Variant.Icon || borderless;
 
-  return (
-    <HeadlessButton
-      className={cn(
-        "inline-flex items-center justify-center",
-        borderless && "aspect-square min-w-0 shrink-0", // circular
-        borderless ? radiusStyles(Radius.Full) : radiusStyles(Radius.Sm),
-        "font-medium",
-        "transition-colors",
-        "hover:cursor-pointer",
-        "disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none",
-        isIconOnly ? iconOnlySizeStyles[size] : sizeStyles[size],
-        variantStyles[variant],
-        borderless && "border-0",
-        className
+  const classes = cn(
+    "inline-flex items-center justify-center",
+    borderless && "aspect-square min-w-0 shrink-0", // circular
+    borderless ? radiusStyles(Radius.Full) : radiusStyles(Radius.Sm),
+    "font-medium",
+    "transition-colors",
+    "hover:cursor-pointer",
+    "disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none",
+    isIconOnly ? iconOnlySizeStyles[size] : sizeStyles[size],
+    variantStyles[variant],
+    borderless && "border-0",
+    className
+  );
+
+  const content = (
+    <div
+      className={clsx(
+        "flex flex-nowrap items-center justify-center gap-x-sm",
+        variantTextStyles[variant]
       )}
-      {...props}
     >
-      <div
-        className={clsx(
-          "flex flex-nowrap items-center justify-center gap-x-sm",
-          variantTextStyles[variant]
-        )}
+      <IconWrapper
+        content={leadingIcon}
+        size={size}
+        className={clsx(iconStyles[size], "flex justify-center items-center")}
+      />
+
+      {children}
+
+      <IconWrapper
+        content={trailingIcon}
+        size={size}
+        className={clsx(iconStyles[size], "flex justify-center items-center")}
+      />
+    </div>
+  );
+
+  if (href) {
+    return (
+      <a
+        className={classes}
+        href={href}
+        target={target}
+        rel={rel ?? (target === "_blank" ? "noreferrer" : undefined)}
+        {...(props as unknown as AnchorHTMLAttributes<HTMLAnchorElement>)}
       >
-        <IconWrapper
-          content={leadingIcon}
-          size={size}
-          className={clsx(iconStyles[size], "flex justify-center items-center")}
-        />
+        {content}
+      </a>
+    );
+  }
 
-        {children}
-
-        <IconWrapper
-          content={trailingIcon}
-          size={size}
-          className={clsx(iconStyles[size], "flex justify-center items-center")}
-        />
-      </div>
+  return (
+    <HeadlessButton className={classes} {...props}>
+      {content}
     </HeadlessButton>
   );
 };

@@ -149,4 +149,13 @@ export const IconOnly: Story = {
   },
 };
 
+export const AsLink: Story = {
+  args: {
+    children: "Documentation",
+    variant: Variant.Secondary,
+    href: "https://docs.voxel51.com",
+    target: "_blank",
+  },
+};
+
 export default meta;
