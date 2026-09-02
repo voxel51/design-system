@@ -19,7 +19,9 @@ import {
 } from "@/types";
 import { cn } from "@/util/classes";
 
-type ButtonSize = Exclude<Size, Size.Lg | Size.Xl>;
+// Template-literal wrap defeats TS alias preservation so hovers and type
+// errors list the accepted strings instead of the alias name.
+type ButtonSize = `${Exclude<Size, Size.Lg | Size.Xl>}`;
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;

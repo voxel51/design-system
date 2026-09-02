@@ -86,6 +86,14 @@ export default [
       // Import plugin rules
       ...importPlugin.configs.recommended.rules,
       ...importPlugin.configs.typescript.rules,
+      // False-positives on TS declaration merging: our design-token exports
+      // merge const + type + namespace under one name, which import/export
+      // and both no-redeclare variants flag as duplicates (the TS-aware
+      // rule's ignoreDeclarationMerge doesn't cover variable+namespace).
+      // tsc itself errors on genuine redeclarations, so nothing is lost.
+      "import/export": "off",
+      "no-redeclare": "off",
+      "@typescript-eslint/no-redeclare": "off",
 
       // JSX A11y recommended rules
       ...jsxA11y.configs.recommended.rules,

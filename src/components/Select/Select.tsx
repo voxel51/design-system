@@ -34,13 +34,24 @@ import { useElementSize } from "@/util/useElementSize";
 
 import { Option } from "./Option";
 
-export enum SelectAnchor {
-  Bottom = "bottom",
-  BottomStart = "bottom start",
-  BottomEnd = "bottom end",
-  Top = "top",
-  TopStart = "top start",
-  TopEnd = "top end",
+export const SelectAnchor = {
+  Bottom: "bottom",
+  BottomStart: "bottom start",
+  BottomEnd: "bottom end",
+  Top: "top",
+  TopStart: "top start",
+  TopEnd: "top end",
+} as const;
+export type SelectAnchor =
+  `${(typeof SelectAnchor)[keyof typeof SelectAnchor]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace SelectAnchor {
+  export type Bottom = typeof SelectAnchor.Bottom;
+  export type BottomStart = typeof SelectAnchor.BottomStart;
+  export type BottomEnd = typeof SelectAnchor.BottomEnd;
+  export type Top = typeof SelectAnchor.Top;
+  export type TopStart = typeof SelectAnchor.TopStart;
+  export type TopEnd = typeof SelectAnchor.TopEnd;
 }
 
 export interface SelectProps extends Omit<

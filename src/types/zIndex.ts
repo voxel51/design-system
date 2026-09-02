@@ -2,17 +2,26 @@
  * Named z-index values for stacking context.
  * Use when a component needs to control its layering relative to modals, dropdowns, etc.
  */
-export enum ZIndex {
+export const ZIndex = {
   /** No explicit stacking; uses document flow (z-index: auto). */
-  Default = "default",
+  Default: "default",
   /** Low stacking (e.g. dropdowns in page context). */
-  Low = "low",
+  Low: "low",
   /** Medium stacking (e.g. popovers, tooltips). */
-  Medium = "medium",
+  Medium: "medium",
   /** High stacking (e.g. dropdowns above other overlays). */
-  High = "high",
+  High: "high",
   /** Above modal; for portaled content that must appear over modals. */
-  AboveModal = "above-modal",
+  AboveModal: "above-modal",
+} as const;
+export type ZIndex = `${(typeof ZIndex)[keyof typeof ZIndex]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace ZIndex {
+  export type Default = typeof ZIndex.Default;
+  export type Low = typeof ZIndex.Low;
+  export type Medium = typeof ZIndex.Medium;
+  export type High = typeof ZIndex.High;
+  export type AboveModal = typeof ZIndex.AboveModal;
 }
 
 /**

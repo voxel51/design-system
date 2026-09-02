@@ -1,172 +1,364 @@
 import { ElementState, withElementState } from "@/types/element";
 
-export enum ActionColor {
-  PrimaryDefault = "action-primary-primary",
-  PrimaryHover = "action-primary-secondary",
-  PrimaryFocus = "action-primary-tertiary",
-  PrimaryText = "action-primary-text",
-  SecondaryDefault = "action-secondary-primary",
-  SecondaryHover = "action-secondary-secondary",
-  SecondaryFocus = "action-secondary-tertiary",
-  SecondaryText = "action-secondary-text",
-  SuccessDefault = "action-success-primary",
-  SuccessHover = "action-success-secondary",
-  SuccessFocus = "action-success-tertiary",
-  SuccessText = "action-success-text",
-  DangerDefault = "action-danger-primary",
-  DangerHover = "action-danger-secondary",
-  DangerFocus = "action-danger-tertiary",
-  DangerText = "action-danger-text",
-  IconDefault = "action-icon-default",
+export const ActionColor = {
+  PrimaryDefault: "action-primary-primary",
+  PrimaryHover: "action-primary-secondary",
+  PrimaryFocus: "action-primary-tertiary",
+  PrimaryText: "action-primary-text",
+  SecondaryDefault: "action-secondary-primary",
+  SecondaryHover: "action-secondary-secondary",
+  SecondaryFocus: "action-secondary-tertiary",
+  SecondaryText: "action-secondary-text",
+  SuccessDefault: "action-success-primary",
+  SuccessHover: "action-success-secondary",
+  SuccessFocus: "action-success-tertiary",
+  SuccessText: "action-success-text",
+  DangerDefault: "action-danger-primary",
+  DangerHover: "action-danger-secondary",
+  DangerFocus: "action-danger-tertiary",
+  DangerText: "action-danger-text",
+  IconDefault: "action-icon-default",
+} as const;
+export type ActionColor = `${(typeof ActionColor)[keyof typeof ActionColor]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace ActionColor {
+  export type PrimaryDefault = typeof ActionColor.PrimaryDefault;
+  export type PrimaryHover = typeof ActionColor.PrimaryHover;
+  export type PrimaryFocus = typeof ActionColor.PrimaryFocus;
+  export type PrimaryText = typeof ActionColor.PrimaryText;
+  export type SecondaryDefault = typeof ActionColor.SecondaryDefault;
+  export type SecondaryHover = typeof ActionColor.SecondaryHover;
+  export type SecondaryFocus = typeof ActionColor.SecondaryFocus;
+  export type SecondaryText = typeof ActionColor.SecondaryText;
+  export type SuccessDefault = typeof ActionColor.SuccessDefault;
+  export type SuccessHover = typeof ActionColor.SuccessHover;
+  export type SuccessFocus = typeof ActionColor.SuccessFocus;
+  export type SuccessText = typeof ActionColor.SuccessText;
+  export type DangerDefault = typeof ActionColor.DangerDefault;
+  export type DangerHover = typeof ActionColor.DangerHover;
+  export type DangerFocus = typeof ActionColor.DangerFocus;
+  export type DangerText = typeof ActionColor.DangerText;
+  export type IconDefault = typeof ActionColor.IconDefault;
 }
 
-export enum BackgroundColor {
-  Transparent = "bg-transparent",
-  Background = "bg-background",
-  Card1 = "bg-card-1",
-  Card2 = "bg-card-2",
-  CardElevated = "bg-card-elevated",
-  Muted = "bg-muted",
-  Popover = "bg-popover",
-  Selected = "bg-selected",
-  Secondary = "bg-secondary",
-  Raised = "bg-raised",
+export const BackgroundColor = {
+  Transparent: "bg-transparent",
+  Background: "bg-background",
+  Card1: "bg-card-1",
+  Card2: "bg-card-2",
+  CardElevated: "bg-card-elevated",
+  Muted: "bg-muted",
+  Popover: "bg-popover",
+  Selected: "bg-selected",
+  Secondary: "bg-secondary",
+  Raised: "bg-raised",
+} as const;
+export type BackgroundColor =
+  `${(typeof BackgroundColor)[keyof typeof BackgroundColor]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace BackgroundColor {
+  export type Transparent = typeof BackgroundColor.Transparent;
+  export type Background = typeof BackgroundColor.Background;
+  export type Card1 = typeof BackgroundColor.Card1;
+  export type Card2 = typeof BackgroundColor.Card2;
+  export type CardElevated = typeof BackgroundColor.CardElevated;
+  export type Muted = typeof BackgroundColor.Muted;
+  export type Popover = typeof BackgroundColor.Popover;
+  export type Selected = typeof BackgroundColor.Selected;
+  export type Secondary = typeof BackgroundColor.Secondary;
+  export type Raised = typeof BackgroundColor.Raised;
 }
 
-export enum BorderColor {
-  Default = "border-default",
-  Strong = "border-strong",
-  Hover = "border-hover",
-  Focus = "border-focus",
-  Subtle = "border-subtle",
-  Active = "border-active",
-  Error = "border-error",
-  Success = "border-success",
-  Warning = "border-warning",
-  Disabled = "border-disabled",
-  CardElevated = "bg-card-elevated",
-  Input = "border-input",
-  InputHover = "border-input-hover",
-  InputFocus = "border-input-focus",
+export const BorderColor = {
+  Default: "border-default",
+  Strong: "border-strong",
+  Hover: "border-hover",
+  Focus: "border-focus",
+  Subtle: "border-subtle",
+  Active: "border-active",
+  Error: "border-error",
+  Success: "border-success",
+  Warning: "border-warning",
+  Disabled: "border-disabled",
+  CardElevated: "bg-card-elevated",
+  Input: "border-input",
+  InputHover: "border-input-hover",
+  InputFocus: "border-input-focus",
+} as const;
+export type BorderColor = `${(typeof BorderColor)[keyof typeof BorderColor]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace BorderColor {
+  export type Default = typeof BorderColor.Default;
+  export type Strong = typeof BorderColor.Strong;
+  export type Hover = typeof BorderColor.Hover;
+  export type Focus = typeof BorderColor.Focus;
+  export type Subtle = typeof BorderColor.Subtle;
+  export type Active = typeof BorderColor.Active;
+  export type Error = typeof BorderColor.Error;
+  export type Success = typeof BorderColor.Success;
+  export type Warning = typeof BorderColor.Warning;
+  export type Disabled = typeof BorderColor.Disabled;
+  export type CardElevated = typeof BorderColor.CardElevated;
+  export type Input = typeof BorderColor.Input;
+  export type InputHover = typeof BorderColor.InputHover;
+  export type InputFocus = typeof BorderColor.InputFocus;
 }
 
-export enum BrandColor {
-  Primary = "brand-primary",
-  Accent = "brand-accent",
+export const BrandColor = {
+  Primary: "brand-primary",
+  Accent: "brand-accent",
+} as const;
+export type BrandColor = `${(typeof BrandColor)[keyof typeof BrandColor]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace BrandColor {
+  export type Primary = typeof BrandColor.Primary;
+  export type Accent = typeof BrandColor.Accent;
 }
 
-export enum IconColor {
-  Default = "icon-default",
-  Subtle = "icon-subtle",
-  Emphasis = "icon-emphasis",
-  Muted = "icon-muted",
-  Disabled = "icon-disabled",
-  Decorative = "icon-decorative",
-  Brand = "icon-brand",
-  BrandAccent = "icon-brand-accent",
-  Success = "icon-success",
-  Destructive = "icon-destructive",
-  Warning = "icon-warning",
-  Info = "icon-info",
-  Dark = "icon-dark",
+export const IconColor = {
+  Default: "icon-default",
+  Subtle: "icon-subtle",
+  Emphasis: "icon-emphasis",
+  Muted: "icon-muted",
+  Disabled: "icon-disabled",
+  Decorative: "icon-decorative",
+  Brand: "icon-brand",
+  BrandAccent: "icon-brand-accent",
+  Success: "icon-success",
+  Destructive: "icon-destructive",
+  Warning: "icon-warning",
+  Info: "icon-info",
+  Dark: "icon-dark",
+} as const;
+export type IconColor = `${(typeof IconColor)[keyof typeof IconColor]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace IconColor {
+  export type Default = typeof IconColor.Default;
+  export type Subtle = typeof IconColor.Subtle;
+  export type Emphasis = typeof IconColor.Emphasis;
+  export type Muted = typeof IconColor.Muted;
+  export type Disabled = typeof IconColor.Disabled;
+  export type Decorative = typeof IconColor.Decorative;
+  export type Brand = typeof IconColor.Brand;
+  export type BrandAccent = typeof IconColor.BrandAccent;
+  export type Success = typeof IconColor.Success;
+  export type Destructive = typeof IconColor.Destructive;
+  export type Warning = typeof IconColor.Warning;
+  export type Info = typeof IconColor.Info;
+  export type Dark = typeof IconColor.Dark;
 }
 
-export enum SemanticColor {
-  Success = "semantic-success",
-  Destructive = "semantic-destructive",
-  Info = "semantic-info",
-  Warning = "semantic-warning",
+export const SemanticColor = {
+  Success: "semantic-success",
+  Destructive: "semantic-destructive",
+  Info: "semantic-info",
+  Warning: "semantic-warning",
+} as const;
+export type SemanticColor =
+  `${(typeof SemanticColor)[keyof typeof SemanticColor]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace SemanticColor {
+  export type Success = typeof SemanticColor.Success;
+  export type Destructive = typeof SemanticColor.Destructive;
+  export type Info = typeof SemanticColor.Info;
+  export type Warning = typeof SemanticColor.Warning;
 }
 
-export enum StatusColor {
-  Approved = "status-approved",
-  Review = "status-review",
-  Progress = "status-progress",
-  Default = "status-default",
-  Failed = "status-failed",
+export const StatusColor = {
+  Approved: "status-approved",
+  Review: "status-review",
+  Progress: "status-progress",
+  Default: "status-default",
+  Failed: "status-failed",
+} as const;
+export type StatusColor = `${(typeof StatusColor)[keyof typeof StatusColor]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace StatusColor {
+  export type Approved = typeof StatusColor.Approved;
+  export type Review = typeof StatusColor.Review;
+  export type Progress = typeof StatusColor.Progress;
+  export type Default = typeof StatusColor.Default;
+  export type Failed = typeof StatusColor.Failed;
 }
 
-export enum TextColor {
-  Fg = "text-fg",
-  Primary = "text-primary",
-  Secondary = "text-secondary",
-  Tertiary = "text-tertiary",
-  Muted = "text-muted",
-  Placeholder = "text-placeholder",
-  Success = "text-success",
-  Destructive = "text-destructive",
-  Warning = "text-warning",
-  Info = "text-info",
-  Accent = "text-accent",
-  Decorative = "text-decorative",
+export const TextColor = {
+  Fg: "text-fg",
+  Primary: "text-primary",
+  Secondary: "text-secondary",
+  Tertiary: "text-tertiary",
+  Muted: "text-muted",
+  Placeholder: "text-placeholder",
+  Success: "text-success",
+  Destructive: "text-destructive",
+  Warning: "text-warning",
+  Info: "text-info",
+  Accent: "text-accent",
+  Decorative: "text-decorative",
+} as const;
+export type TextColor = `${(typeof TextColor)[keyof typeof TextColor]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace TextColor {
+  export type Fg = typeof TextColor.Fg;
+  export type Primary = typeof TextColor.Primary;
+  export type Secondary = typeof TextColor.Secondary;
+  export type Tertiary = typeof TextColor.Tertiary;
+  export type Muted = typeof TextColor.Muted;
+  export type Placeholder = typeof TextColor.Placeholder;
+  export type Success = typeof TextColor.Success;
+  export type Destructive = typeof TextColor.Destructive;
+  export type Warning = typeof TextColor.Warning;
+  export type Info = typeof TextColor.Info;
+  export type Accent = typeof TextColor.Accent;
+  export type Decorative = typeof TextColor.Decorative;
 }
 
-export enum OverlayColor {
-  Default = "overlay-default",
-  Light = "overlay-light",
-  Heavy = "overlay-heavy",
+export const OverlayColor = {
+  Default: "overlay-default",
+  Light: "overlay-light",
+  Heavy: "overlay-heavy",
+} as const;
+export type OverlayColor =
+  `${(typeof OverlayColor)[keyof typeof OverlayColor]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace OverlayColor {
+  export type Default = typeof OverlayColor.Default;
+  export type Light = typeof OverlayColor.Light;
+  export type Heavy = typeof OverlayColor.Heavy;
 }
 
-export enum FocusColor {
-  Ring = "focus-ring",
+export const FocusColor = {
+  Ring: "focus-ring",
+} as const;
+export type FocusColor = `${(typeof FocusColor)[keyof typeof FocusColor]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace FocusColor {
+  export type Ring = typeof FocusColor.Ring;
 }
 
-export enum LinkColor {
-  Default = "link-default",
-  Hover = "link-hover",
-  Visited = "link-visited",
+export const LinkColor = {
+  Default: "link-default",
+  Hover: "link-hover",
+  Visited: "link-visited",
+} as const;
+export type LinkColor = `${(typeof LinkColor)[keyof typeof LinkColor]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace LinkColor {
+  export type Default = typeof LinkColor.Default;
+  export type Hover = typeof LinkColor.Hover;
+  export type Visited = typeof LinkColor.Visited;
 }
 
-export enum PaletteColor {
-  P1 = "palette-1",
-  P2 = "palette-2",
-  P3 = "palette-3",
-  P4 = "palette-4",
-  P5 = "palette-5",
-  P6 = "palette-6",
-  P7 = "palette-7",
-  P8 = "palette-8",
-  P9 = "palette-9",
-  P10 = "palette-10",
-  P11 = "palette-11",
-  P12 = "palette-12",
+export const PaletteColor = {
+  P1: "palette-1",
+  P2: "palette-2",
+  P3: "palette-3",
+  P4: "palette-4",
+  P5: "palette-5",
+  P6: "palette-6",
+  P7: "palette-7",
+  P8: "palette-8",
+  P9: "palette-9",
+  P10: "palette-10",
+  P11: "palette-11",
+  P12: "palette-12",
   // hue-named aliases for the primary (500-shade) entries — same value as the
   // numeric slot; use numbers to iterate categories, names for a specific hue
-  Orange = "palette-orange",
-  Blue = "palette-blue",
-  Green = "palette-green",
-  Purple = "palette-purple",
-  Pink = "palette-pink",
-  Yellow = "palette-yellow",
-  Teal = "palette-teal",
-  Red = "palette-red",
+  Orange: "palette-orange",
+  Blue: "palette-blue",
+  Green: "palette-green",
+  Purple: "palette-purple",
+  Pink: "palette-pink",
+  Yellow: "palette-yellow",
+  Teal: "palette-teal",
+  Red: "palette-red",
+} as const;
+export type PaletteColor =
+  `${(typeof PaletteColor)[keyof typeof PaletteColor]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace PaletteColor {
+  export type P1 = typeof PaletteColor.P1;
+  export type P2 = typeof PaletteColor.P2;
+  export type P3 = typeof PaletteColor.P3;
+  export type P4 = typeof PaletteColor.P4;
+  export type P5 = typeof PaletteColor.P5;
+  export type P6 = typeof PaletteColor.P6;
+  export type P7 = typeof PaletteColor.P7;
+  export type P8 = typeof PaletteColor.P8;
+  export type P9 = typeof PaletteColor.P9;
+  export type P10 = typeof PaletteColor.P10;
+  export type P11 = typeof PaletteColor.P11;
+  export type P12 = typeof PaletteColor.P12;
+  export type Orange = typeof PaletteColor.Orange;
+  export type Blue = typeof PaletteColor.Blue;
+  export type Green = typeof PaletteColor.Green;
+  export type Purple = typeof PaletteColor.Purple;
+  export type Pink = typeof PaletteColor.Pink;
+  export type Yellow = typeof PaletteColor.Yellow;
+  export type Teal = typeof PaletteColor.Teal;
+  export type Red = typeof PaletteColor.Red;
 }
 
-export enum SkeletonColor {
-  Base = "skeleton-base",
-  Shimmer = "skeleton-shimmer",
+export const SkeletonColor = {
+  Base: "skeleton-base",
+  Shimmer: "skeleton-shimmer",
+} as const;
+export type SkeletonColor =
+  `${(typeof SkeletonColor)[keyof typeof SkeletonColor]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace SkeletonColor {
+  export type Base = typeof SkeletonColor.Base;
+  export type Shimmer = typeof SkeletonColor.Shimmer;
 }
 
-export enum TooltipColor {
-  Bg = "tooltip-bg",
-  Text = "tooltip-text",
+export const TooltipColor = {
+  Bg: "tooltip-bg",
+  Text: "tooltip-text",
+} as const;
+export type TooltipColor =
+  `${(typeof TooltipColor)[keyof typeof TooltipColor]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace TooltipColor {
+  export type Bg = typeof TooltipColor.Bg;
+  export type Text = typeof TooltipColor.Text;
 }
 
-export enum CodeColor {
-  Bg = "code-bg",
-  Text = "code-text",
-  Border = "code-border",
+export const CodeColor = {
+  Bg: "code-bg",
+  Text: "code-text",
+  Border: "code-border",
+} as const;
+export type CodeColor = `${(typeof CodeColor)[keyof typeof CodeColor]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace CodeColor {
+  export type Bg = typeof CodeColor.Bg;
+  export type Text = typeof CodeColor.Text;
+  export type Border = typeof CodeColor.Border;
 }
 
-export enum ScrollbarColor {
-  Track = "scrollbar-track",
-  Thumb = "scrollbar-thumb",
-  ThumbHover = "scrollbar-thumb-hover",
+export const ScrollbarColor = {
+  Track: "scrollbar-track",
+  Thumb: "scrollbar-thumb",
+  ThumbHover: "scrollbar-thumb-hover",
+} as const;
+export type ScrollbarColor =
+  `${(typeof ScrollbarColor)[keyof typeof ScrollbarColor]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace ScrollbarColor {
+  export type Track = typeof ScrollbarColor.Track;
+  export type Thumb = typeof ScrollbarColor.Thumb;
+  export type ThumbHover = typeof ScrollbarColor.ThumbHover;
 }
 
-export enum SelectionColor {
-  Bg = "selection-bg",
-  Text = "selection-text",
+export const SelectionColor = {
+  Bg: "selection-bg",
+  Text: "selection-text",
+} as const;
+export type SelectionColor =
+  `${(typeof SelectionColor)[keyof typeof SelectionColor]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace SelectionColor {
+  export type Bg = typeof SelectionColor.Bg;
+  export type Text = typeof SelectionColor.Text;
 }
 
 export type Color =
