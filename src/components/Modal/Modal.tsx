@@ -6,6 +6,7 @@ import {
 } from "@headlessui/react";
 import type { FC, ReactNode } from "react";
 
+import { Button } from "@/components/Button";
 import { CloseIcon } from "@/components/Icons";
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
@@ -15,7 +16,6 @@ import {
   bgColorClass,
   BorderColor,
   borderColorClass,
-  IconColor,
   Radius,
   Shadow,
   Size,
@@ -24,6 +24,7 @@ import {
   TextVariant,
   TransitionDuration,
   transitionDuration,
+  Variant,
   ZIndex,
   zIndexStyles,
 } from "@/types";
@@ -191,20 +192,14 @@ export const Modal: FC<ModalProps> = ({
                 <span />
               )}
               {withCloseButton && (
-                <button
-                  type="button"
+                <Button
+                  variant={Variant.Icon}
+                  size={Size.Sm}
                   aria-label="Close"
+                  leadingIcon={CloseIcon}
                   onClick={onClose}
-                  className={cn(
-                    "flex flex-none cursor-pointer items-center justify-center",
-                    "size-6",
-                    radiusStyles(Radius.Sm),
-                    textColorClass(IconColor.Subtle),
-                    "hover:text-fg"
-                  )}
-                >
-                  <CloseIcon size={Size.Xl} />
-                </button>
+                  className="shrink-0"
+                />
               )}
             </div>
           )}
