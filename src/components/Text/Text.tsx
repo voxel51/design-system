@@ -19,7 +19,7 @@ export interface TextProps extends HTMLAttributes<HTMLSpanElement> {
    * by app data, so this isn't a fallback, it's the correct tool for that
    * case.
    */
-  color?: ThemeableColor | string;
+  color?: ThemeableColor | (string & {});
 }
 
 /**

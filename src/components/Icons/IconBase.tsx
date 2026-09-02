@@ -24,7 +24,7 @@ export interface IconProps {
    * by app data, so this isn't a fallback, it's the correct tool for that
    * case.
    */
-  color?: ThemeableColor | string;
+  color?: ThemeableColor | (string & {});
   className?: string;
   style?: CSSProperties;
 }

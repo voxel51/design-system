@@ -252,7 +252,7 @@ export interface LegacyIconProps {
    * by app data, so this isn't a fallback, it's the correct tool for that
    * case.
    */
-  color?: ThemeableColor | string;
+  color?: ThemeableColor | (string & {});
   style?: React.CSSProperties;
 }
 
