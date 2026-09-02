@@ -250,6 +250,9 @@ export const Popover: FC<PopoverProps> = ({
       modal={false}
       disabled={!focusOnOpen}
       returnFocus={focusOnOpen}
+      // Focus moving into a Select menu that portals out of the panel is not
+      // the user leaving; dismissal is useDismiss's job
+      closeOnFocusOut={false}
     >
       <div
         ref={refs.setFloating}
