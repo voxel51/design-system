@@ -19,6 +19,7 @@ import {
   type ReactNode,
 } from "react";
 
+import type { IconInput } from "@/components/Icons";
 import { Input } from "@/components/Input";
 import { menuPanelStyles } from "@/components/Menu";
 import { Spinner } from "@/components/Spinner";
@@ -116,6 +117,8 @@ export interface ComboboxProps extends Omit<
   commitOnBlur?: boolean;
   /** No frame on the field: for a combobox that sits flush in a bar. */
   borderless?: boolean;
+  /** A leading icon in the field, saying what the field is for. */
+  icon?: IconInput;
   /** Focus the field on mount — for a combobox that opens on demand. */
   focusOnMount?: boolean;
   /**
@@ -205,6 +208,7 @@ ListPortal.displayName = "ListPortal";
  * @param zIndex Explicit z-index for the list.
  * @param commitOnBlur Commit free text on blur (default `true`).
  * @param borderless No frame on the field.
+ * @param icon A leading icon in the field.
  * @param focusOnMount Focus the field on mount.
  * @param autoHighlight Highlight the first row whenever there is text.
  * @param inputProps Attributes for the field itself.
@@ -229,6 +233,7 @@ export const Combobox: FC<ComboboxProps> = ({
   zIndex,
   commitOnBlur = true,
   borderless = false,
+  icon,
   focusOnMount = false,
   autoHighlight = false,
   inputProps,
@@ -398,6 +403,7 @@ export const Combobox: FC<ComboboxProps> = ({
         size={size}
         disabled={disabled}
         borderless={borderless}
+        icon={icon}
         autoComplete="off"
         value={inputValue}
         placeholder={placeholder}

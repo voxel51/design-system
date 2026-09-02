@@ -3,6 +3,8 @@ import userEvent from "@testing-library/user-event";
 import type { ComponentProps } from "react";
 import { useState } from "react";
 
+import { IconName } from "@/types";
+
 import { Combobox, type ComboboxOption } from "./Combobox";
 
 const OPTIONS: ComboboxOption[] = [
@@ -211,6 +213,11 @@ describe("Combobox", () => {
   it("focuses the field on mount when focusOnMount is set", () => {
     render(<Harness focusOnMount />);
     expect(screen.getByRole("combobox")).toHaveFocus();
+  });
+
+  it("renders a leading icon in the field", () => {
+    render(<Harness icon={IconName.Search} data-testid="root" />);
+    expect(screen.getByTestId("root").querySelector("svg")).not.toBeNull();
   });
 
   it("renders the field without a frame when borderless", () => {
