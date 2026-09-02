@@ -144,3 +144,33 @@ describe("Table", () => {
     expect(screen.getByRole("row")).not.toHaveClass("hover:cursor-pointer");
   });
 });
+
+describe("Table cell attributes", () => {
+  it("passes colSpan through to the cell", () => {
+    render(
+      <table>
+        <tbody>
+          <tr>
+            <TableCell colSpan={6}>spanning</TableCell>
+          </tr>
+        </tbody>
+      </table>
+    );
+
+    expect(screen.getByText("spanning")).toHaveAttribute("colspan", "6");
+  });
+
+  it("passes scope through to the header cell", () => {
+    render(
+      <table>
+        <thead>
+          <tr>
+            <TableHead scope="col">Queue</TableHead>
+          </tr>
+        </thead>
+      </table>
+    );
+
+    expect(screen.getByText("Queue")).toHaveAttribute("scope", "col");
+  });
+});
