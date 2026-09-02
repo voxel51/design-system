@@ -13,10 +13,18 @@ import {
 } from "@/types";
 import { cn } from "@/util/classes";
 
-export enum CardBackground {
-  Primary = "primary",
-  Secondary = "secondary",
-  Elevated = "elevated",
+export const CardBackground = {
+  Primary: "primary",
+  Secondary: "secondary",
+  Elevated: "elevated",
+} as const;
+export type CardBackground =
+  `${(typeof CardBackground)[keyof typeof CardBackground]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace CardBackground {
+  export type Primary = typeof CardBackground.Primary;
+  export type Secondary = typeof CardBackground.Secondary;
+  export type Elevated = typeof CardBackground.Elevated;
 }
 
 export interface CardProps extends HTMLAttributes<HTMLDivElement> {

@@ -63,6 +63,8 @@ export default defineConfig({
         "**/*.test.ts",
         "**/*.stories.tsx",
         "src/setupTests.ts",
+        // Type-contract tests: type-checked, never shipped
+        "src/__contracts__/**",
       ],
     }),
   ],
@@ -73,9 +75,16 @@ export default defineConfig({
   },
   build: {
     lib: {
-      entry: resolve(__dirname, "src/index.ts"),
+      // Two entries: the package root, and a tokens-only entry. The tokens
+      // entry exists so non-UI consumers (looker's workers, Node tooling) can
+      // read token values without pulling in React or globals.css — importing
+      // the root would drag both in, which a worker bundle cannot afford.
+      entry: {
+        index: resolve(__dirname, "src/index.ts"),
+        tokens: resolve(__dirname, "src/theme/tokens/index.ts"),
+      },
       formats: ["es", "cjs"],
-      fileName: (format) => `index.${format === "es" ? "js" : "cjs"}`,
+      fileName: (format, name) => `${name}.${format === "es" ? "js" : "cjs"}`,
     },
     rollupOptions: {
       external: isExternal,

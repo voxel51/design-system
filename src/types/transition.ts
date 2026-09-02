@@ -29,38 +29,60 @@
  * Semantic names for how long a transition takes.
  * Maps to `--transition-duration-{name}` CSS variables.
  */
-export enum TransitionDuration {
+export const TransitionDuration = {
   /** 0ms — truly immediate, no perceivable animation. */
-  Instant = "instant",
+  Instant: "instant",
   /** 100ms — micro-interactions: hover highlights, icon swaps. */
-  Fast = "fast",
+  Fast: "fast",
   /** 200ms — default for color, border, and opacity changes. */
-  Normal = "normal",
+  Normal: "normal",
   /** 300ms — panel reveals, tooltips, slightly heavier state changes. */
-  Moderate = "moderate",
+  Moderate: "moderate",
   /** 500ms — drawers, slide-in sheets. */
-  Slow = "slow",
+  Slow: "slow",
   /** 700ms — page-level or dramatic reveal transitions. */
-  Deliberate = "deliberate",
+  Deliberate: "deliberate",
+} as const;
+export type TransitionDuration =
+  `${(typeof TransitionDuration)[keyof typeof TransitionDuration]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace TransitionDuration {
+  export type Instant = typeof TransitionDuration.Instant;
+  export type Fast = typeof TransitionDuration.Fast;
+  export type Normal = typeof TransitionDuration.Normal;
+  export type Moderate = typeof TransitionDuration.Moderate;
+  export type Slow = typeof TransitionDuration.Slow;
+  export type Deliberate = typeof TransitionDuration.Deliberate;
 }
 
 /**
  * Timing-curve tokens that control how a transition accelerates.
  * Maps to `--transition-easing-{name}` CSS variables.
  */
-export enum TransitionEasing {
+export const TransitionEasing = {
   /** Constant speed. Suits progress bars and loaders. */
-  Linear = "linear",
+  Linear: "linear",
   /** Starts slow, accelerates. Best for elements *leaving* the screen. */
-  In = "in",
+  In: "in",
   /** Starts fast, decelerates. Best for elements *arriving* on screen. */
-  Out = "out",
+  Out: "out",
   /** Slow start and end. Best for general UI state changes. */
-  InOut = "in-out",
+  InOut: "in-out",
   /** Slight overshoot then settles. Adds energy to interactive elements. */
-  Spring = "spring",
+  Spring: "spring",
   /** Quick in, gradual out. Crisp, snappy feel for menus and overlays. */
-  Sharp = "sharp",
+  Sharp: "sharp",
+} as const;
+export type TransitionEasing =
+  `${(typeof TransitionEasing)[keyof typeof TransitionEasing]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace TransitionEasing {
+  export type Linear = typeof TransitionEasing.Linear;
+  export type In = typeof TransitionEasing.In;
+  export type Out = typeof TransitionEasing.Out;
+  export type InOut = typeof TransitionEasing.InOut;
+  export type Spring = typeof TransitionEasing.Spring;
+  export type Sharp = typeof TransitionEasing.Sharp;
 }
 
 /**
@@ -68,23 +90,36 @@ export enum TransitionEasing {
  * Bakes in the right duration + easing so component authors pick semantics,
  * not numbers. Maps to `--transition-preset-{name}` CSS variables.
  */
-export enum TransitionPreset {
+export const TransitionPreset = {
   /** Background, text, border, fill, and stroke color changes. */
-  Colors = "colors",
+  Colors: "colors",
   /** Fade in / fade out. */
-  Opacity = "opacity",
+  Opacity: "opacity",
   /** Scale, translate, and rotate. */
-  Transform = "transform",
+  Transform: "transform",
   /** Box-shadow elevation changes. */
-  Shadow = "shadow",
+  Shadow: "shadow",
   /** Dropdown / context menu appear and disappear. */
-  Menu = "menu",
+  Menu: "menu",
   /** Drawers and slide-in sheets. */
-  Panel = "panel",
+  Panel: "panel",
   /** Modal backdrop fade. */
-  Overlay = "overlay",
+  Overlay: "overlay",
   /** General-purpose catch-all. */
-  All = "all",
+  All: "all",
+} as const;
+export type TransitionPreset =
+  `${(typeof TransitionPreset)[keyof typeof TransitionPreset]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace TransitionPreset {
+  export type Colors = typeof TransitionPreset.Colors;
+  export type Opacity = typeof TransitionPreset.Opacity;
+  export type Transform = typeof TransitionPreset.Transform;
+  export type Shadow = typeof TransitionPreset.Shadow;
+  export type Menu = typeof TransitionPreset.Menu;
+  export type Panel = typeof TransitionPreset.Panel;
+  export type Overlay = typeof TransitionPreset.Overlay;
+  export type All = typeof TransitionPreset.All;
 }
 
 /**

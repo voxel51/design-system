@@ -22,6 +22,11 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
+    "./tokens": {
+      "types": "./dist/tokens.d.ts",
+      "import": "./dist/tokens.js",
+      "require": "./dist/tokens.cjs"
+    },
     "./theme.css": "./dist/voodo.css"
   },
   "files": [
@@ -40,13 +45,15 @@
     "lint:fix": "eslint src --fix",
     "prebuild": "npm run generate-tailwind-theme",
     "prebuild-storybook": "npm run generate-tailwind-theme",
+    "postbuild": "node utils/verify-exports.mjs",
     "prepublishOnly": "npm run build",
     "prestorybook": "npm run generate-tailwind-theme",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "test": "jest",
     "type-check": "tsc --noEmit",
-    "validate:all": "npm run lint && npm run format:check && npm run type-check && npm run build && npm run test"
+    "check:contracts": "tsc --noEmit -p tsconfig.contracts.json",
+    "validate:all": "npm run lint && npm run format:check && npm run type-check && npm run build && npm run check:contracts && npm run test"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

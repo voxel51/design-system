@@ -26,6 +26,13 @@ describe("generated icons", () => {
       expect(svg).not.toHaveAttribute("width");
       expect(svg).not.toHaveAttribute("height");
     });
+
+    it("should accept a raw pixel number for sizes the token scale doesn't cover", () => {
+      const { container } = render(<CheckIcon size={24} />);
+      const svg = container.querySelector("svg");
+      expect(svg).toHaveAttribute("width", "24");
+      expect(svg).toHaveAttribute("height", "24");
+    });
   });
 
   describe("className prop", () => {
@@ -42,6 +49,13 @@ describe("generated icons", () => {
       const { container } = render(<CheckIcon color={IconColor.Destructive} />);
       const svg = container.querySelector("svg");
       expect(svg).toHaveClass("text-content-icon-destructive");
+    });
+
+    it("should apply a raw CSS color as an inline style for colors the token palette doesn't cover", () => {
+      const { container } = render(<CheckIcon color="#ff0000" />);
+      const svg = container.querySelector("svg");
+      expect(svg).toHaveStyle({ color: "#ff0000" });
+      expect(svg).not.toHaveClass("text-content-icon-destructive");
     });
   });
 

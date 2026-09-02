@@ -1,5 +1,12 @@
 import clsx from "clsx";
-import { FC, HTMLAttributes, MouseEvent, useCallback, useRef } from "react";
+import {
+  FC,
+  HTMLAttributes,
+  KeyboardEvent,
+  MouseEvent,
+  useCallback,
+  useRef,
+} from "react";
 
 import { SliderKnob } from "@/components/Slider/SliderKnob";
 import radiusStyles from "@/styles/radius";
@@ -17,6 +24,7 @@ interface SliderBarProps extends Omit<
   onChange?: (value: number | number[]) => void;
   onChangeCommitted?: (value: number | number[]) => void;
   step: number;
+  keyboardStep?: number | false;
   value?: number | number[];
 }
 
@@ -45,6 +53,7 @@ export const SliderBar: FC<SliderBarProps> = ({
   onChange,
   onChangeCommitted,
   step,
+  keyboardStep,
   value,
   ...props
 }) => {
@@ -136,6 +145,9 @@ export const SliderBar: FC<SliderBarProps> = ({
   const registerKnobDragHandlers = useCallback(
     (e: MouseEvent, knob: "min" | "max") => {
       e.preventDefault();
+      // a press on a knob is a grab, not a track jump — don't let the track
+      // handler also snap the knob to the cursor
+      e.stopPropagation();
 
       const handleMouseMove = (e: globalThis.MouseEvent): void =>
         handleDrag(e.clientX, knob);
@@ -156,54 +168,120 @@ export const SliderBar: FC<SliderBarProps> = ({
   );
 
   /**
-   * Click handler which updates knob position to the position clicked on the track.
-   *
-   * In the case of multiple knobs, the knob closest to the click is chosen for update.
+   * Keyboard handler for a focused knob: arrows step the value, Home/End jump
+   * to the range edges. Each keystroke is a complete interaction, so it emits
+   * both `onChange` and `onChangeCommitted`.
    */
-  const handleTrackClick = useCallback(
+  const handleKnobKeyDown = useCallback(
+    (e: KeyboardEvent, knob: "min" | "max") => {
+      if (keyboardStep === false) {
+        return;
+      }
+      const stepSize = keyboardStep ?? step;
+      const current = knob === "min" ? minValue : maxValue;
+
+      let target: number;
+      switch (e.key) {
+        case "ArrowRight":
+        case "ArrowUp":
+          target = current + stepSize;
+          break;
+        case "ArrowLeft":
+        case "ArrowDown":
+          target = current - stepSize;
+          break;
+        case "Home":
+          target = min;
+          break;
+        case "End":
+          target = max;
+          break;
+        default:
+          return;
+      }
+      // preventDefault but bubble — ancestors arbitrate via e.defaultPrevented
+      e.preventDefault();
+
+      const clamped = cleanFloat(Math.min(Math.max(target, min), max));
+
+      let next: number | number[];
+      if (multi) {
+        // knobs may meet but never cross
+        if (knob === "min") {
+          next = [Math.min(clamped, maxValue), maxValue];
+        } else {
+          next = [minValue, Math.max(clamped, minValue)];
+        }
+      } else {
+        next = clamped;
+      }
+
+      lastValueRef.current = next;
+      onChange?.(next);
+      onChangeCommitted?.(next);
+    },
+    [
+      keyboardStep,
+      max,
+      maxValue,
+      min,
+      minValue,
+      multi,
+      onChange,
+      onChangeCommitted,
+      step,
+    ]
+  );
+
+  /**
+   * Press handler for the track: the nearest knob jumps to the press position
+   * immediately, then follows the cursor as if it had been grabbed, until the
+   * mouse is released. Releasing outside the track still ends the drag, and the
+   * value stays where the cursor last put it (clamped to the track bounds).
+   *
+   * In the case of multiple knobs, the knob closest to the press is chosen.
+   */
+  const handleTrackMouseDown = useCallback(
     (e: MouseEvent) => {
       if (!sliderTrackRef.current) {
         return;
       }
 
-      const clickPos = getRelativeX(e.clientX);
-      const clickValue = getKnobValue(clickPos);
+      const pressPos = getRelativeX(e.clientX);
 
-      let next: number | number[];
+      let knob: "min" | "max" = "max";
       if (multi) {
         const minKnobPos = getKnobPosition(minValue);
         const maxKnobPos = getKnobPosition(maxValue);
 
-        const minKnobDist = Math.abs(clickPos - minKnobPos);
-        const maxKnobDist = Math.abs(clickPos - maxKnobPos);
+        const minKnobDist = Math.abs(pressPos - minKnobPos);
+        const maxKnobDist = Math.abs(pressPos - maxKnobPos);
 
-        if (clickPos < minKnobPos || minKnobDist < maxKnobDist) {
-          next = [clickValue, maxValue];
-        } else {
-          next = [minValue, clickValue];
+        if (pressPos < minKnobPos || minKnobDist < maxKnobDist) {
+          knob = "min";
         }
-      } else {
-        next = clickValue;
       }
 
-      lastValueRef.current = next;
-      onChange?.(next);
-      // a track click is a complete interaction — commit immediately
-      onChangeCommitted?.(next);
+      // jump first, then hand off to the drag handlers; the drag's `mouseup`
+      // commits the final value, so a press with no movement still commits once
+      handleDrag(e.clientX, knob);
+      registerKnobDragHandlers(e, knob);
     },
     [
       getRelativeX,
-      getKnobValue,
-      multi,
       getKnobPosition,
-      minValue,
+      handleDrag,
       maxValue,
-      onChange,
-      onChangeCommitted,
+      minValue,
+      multi,
+      registerKnobDragHandlers,
     ]
   );
 
   return (
+    // roleless on purpose: the knobs carry the ARIA slider contract; the
+    // track press is a pointer-only shortcut this rule can't model
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
       ref={sliderTrackRef}
       className={clsx(
@@ -214,9 +292,8 @@ export const SliderBar: FC<SliderBarProps> = ({
         bgColorClass(BackgroundColor.CardElevated),
         radiusStyles(Radius.Full)
       )}
-      onClick={handleTrackClick}
+      onMouseDown={handleTrackMouseDown}
       onKeyDown={(e) => e.stopPropagation()}
-      role="presentation"
       {...props}
     >
       {!isUnset && (
@@ -238,13 +315,19 @@ export const SliderBar: FC<SliderBarProps> = ({
             <SliderKnob
               position={getKnobPosition(minValue)}
               onDragStart={(e) => registerKnobDragHandlers(e, "min")}
+              onKeyDown={(e) => handleKnobKeyDown(e, "min")}
               value={minValue}
+              min={min}
+              max={max}
             />
           )}
           <SliderKnob
             position={getKnobPosition(maxValue)}
             onDragStart={(e) => registerKnobDragHandlers(e, "max")}
+            onKeyDown={(e) => handleKnobKeyDown(e, "max")}
             value={maxValue}
+            min={min}
+            max={max}
           />
         </>
       )}

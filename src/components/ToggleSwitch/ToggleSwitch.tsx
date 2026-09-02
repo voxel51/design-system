@@ -25,14 +25,23 @@ export interface ToggleSwitchTab {
   tooltip?: ReactNode;
 }
 
-export enum ToggleSwitchVariant {
-  Default = "default",
-  Soft = "soft",
-  Full = "full",
-  Borderless = "borderless",
+export const ToggleSwitchVariant = {
+  Default: "default",
+  Soft: "soft",
+  Full: "full",
+  Borderless: "borderless",
+} as const;
+export type ToggleSwitchVariant =
+  `${(typeof ToggleSwitchVariant)[keyof typeof ToggleSwitchVariant]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace ToggleSwitchVariant {
+  export type Default = typeof ToggleSwitchVariant.Default;
+  export type Soft = typeof ToggleSwitchVariant.Soft;
+  export type Full = typeof ToggleSwitchVariant.Full;
+  export type Borderless = typeof ToggleSwitchVariant.Borderless;
 }
 
-export type ToggleSwitchSize = Exclude<Size, Size.Lg | Size.Xl>;
+export type ToggleSwitchSize = `${Exclude<Size, Size.Lg | Size.Xl>}`;
 
 export interface ToggleSwitchProps extends Omit<
   HTMLAttributes<HTMLDivElement>,

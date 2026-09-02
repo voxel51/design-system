@@ -28,10 +28,10 @@ import {
 } from "@/types";
 import { cn } from "@/util/classes";
 
-export type TooltipAnchor = Extract<
+export type TooltipAnchor = `${Extract<
   Anchor,
   Anchor.Top | Anchor.Right | Anchor.Bottom | Anchor.Left
->;
+>}`;
 
 export interface TooltipProps extends Omit<
   HTMLAttributes<HTMLDivElement>,

@@ -22,7 +22,7 @@ type ModifiedToggleProps = Omit<
   "size" | "onChange" | "checked" | "disabled" | "className" | "value"
 >;
 
-type ToggleSize = Extract<Size, Size.Sm | Size.Md>;
+type ToggleSize = `${Extract<Size, Size.Sm | Size.Md>}`;
 
 export interface ToggleProps extends ModifiedToggleProps {
   checked?: boolean;

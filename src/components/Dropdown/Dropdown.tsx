@@ -16,19 +16,30 @@ import { cn } from "@/util/classes";
  * floating UI — e.g. `BottomStart` opens the menu below the trigger,
  * left-aligned with it.
  */
-export enum DropdownAnchor {
+export const DropdownAnchor = {
   /** Below the trigger, horizontally centered. */
-  Bottom = "bottom",
+  Bottom: "bottom",
   /** Below the trigger, aligned with its leading (start) edge. */
-  BottomStart = "bottom start",
+  BottomStart: "bottom start",
   /** Below the trigger, aligned with its trailing (end) edge. */
-  BottomEnd = "bottom end",
+  BottomEnd: "bottom end",
   /** Above the trigger, horizontally centered. */
-  Top = "top",
+  Top: "top",
   /** Above the trigger, aligned with its leading (start) edge. */
-  TopStart = "top start",
+  TopStart: "top start",
   /** Above the trigger, aligned with its trailing (end) edge. */
-  TopEnd = "top end",
+  TopEnd: "top end",
+} as const;
+export type DropdownAnchor =
+  `${(typeof DropdownAnchor)[keyof typeof DropdownAnchor]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace DropdownAnchor {
+  export type Bottom = typeof DropdownAnchor.Bottom;
+  export type BottomStart = typeof DropdownAnchor.BottomStart;
+  export type BottomEnd = typeof DropdownAnchor.BottomEnd;
+  export type Top = typeof DropdownAnchor.Top;
+  export type TopStart = typeof DropdownAnchor.TopStart;
+  export type TopEnd = typeof DropdownAnchor.TopEnd;
 }
 
 /**

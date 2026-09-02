@@ -41,7 +41,7 @@ export const Default: Story = {
 
 export const AllIcons: Story = {
   render: () => {
-    const iconNames = Object.values(IconName) as IconName[];
+    const iconNames = Object.values(IconName);
     const sizes: Size[] = [Size.Sm, Size.Md, Size.Lg];
 
     return (
