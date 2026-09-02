@@ -1,0 +1,28 @@
+/*
+ * An inline "…" that cycles through zero to three dots. The dots are a
+ * four-line block of text clipped to one line and scrolled a line at a
+ * time, so they sit on the text baseline at whatever size the surrounding
+ * text has, and inherit its color.
+ */
+.dots {
+  display: inline-block;
+  height: 1.2em;
+  line-height: 1.2em;
+  overflow: hidden;
+  vertical-align: bottom;
+  margin-left: 0.1em;
+}
+
+.dots::after {
+  display: inline-table;
+  white-space: pre;
+  content: "\A.\A..\A...";
+  letter-spacing: 0.1em;
+  animation: dots 1s steps(4) infinite;
+}
+
+@keyframes dots {
+  to {
+    transform: translateY(-4.8em);
+  }
+}
