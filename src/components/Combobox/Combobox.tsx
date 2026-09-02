@@ -89,9 +89,10 @@ export interface ComboboxProps extends Omit<
   /**
    * Shown when there are no options and nothing is loading. Pass `null` to
    * show no list at all in that case — for a field whose suggestions are a
-   * convenience, not the point.
+   * convenience, not the point. A function receives `close`, so an action
+   * offered in the empty state ("Create one…") can dismiss the list.
    */
-  emptyMessage?: ReactNode;
+  emptyMessage?: ReactNode | ((props: { close: () => void }) => ReactNode);
   /** Attributes for the field itself — a test id, a name. */
   inputProps?: HTMLAttributes<HTMLInputElement> & DataAttributes;
   /** Attributes for the list — a test id. */
@@ -202,7 +203,7 @@ ListPortal.displayName = "ListPortal";
  * @param size Field size. See {@link Size}.
  * @param disabled If `true`, the field cannot be interacted with.
  * @param loading Show a spinner in place of the list.
- * @param emptyMessage Shown when there are no options.
+ * @param emptyMessage Shown when there are no options; a function receives `close`.
  * @param className `class` overrides for the wrapper.
  * @param portal Render the list in a portal, anchored to the field.
  * @param zIndex Explicit z-index for the list.
@@ -450,7 +451,9 @@ export const Combobox: FC<ComboboxProps> = ({
             {!loading && !options.length && (
               <div className="px-2 py-1.5">
                 <Text variant={TextVariant.Sm} color={TextColor.Tertiary}>
-                  {emptyMessage}
+                  {typeof emptyMessage === "function"
+                    ? emptyMessage({ close })
+                    : emptyMessage}
                 </Text>
               </div>
             )}

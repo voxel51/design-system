@@ -257,6 +257,22 @@ describe("Combobox", () => {
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
   });
 
+  it("lets an empty-state action close the list", async () => {
+    render(
+      <Harness
+        options={[]}
+        emptyMessage={({ close }) => (
+          <button type="button" onClick={close}>
+            Create one
+          </button>
+        )}
+      />
+    );
+    await userEvent.click(screen.getByRole("combobox"));
+    await userEvent.click(screen.getByText("Create one"));
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+  });
+
   it("shows a spinner instead of the list while loading", async () => {
     render(<Harness options={[]} loading emptyMessage="Nothing here" />);
     await userEvent.click(screen.getByRole("combobox"));
