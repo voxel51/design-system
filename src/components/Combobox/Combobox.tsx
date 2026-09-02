@@ -35,6 +35,9 @@ import {
 } from "@/types";
 import { cn } from "@/util/classes";
 
+/** `data-*` attributes a host attaches to a part — a test id, a tracking hook. */
+export type DataAttributes = Record<`data-${string}`, string | undefined>;
+
 /** One row in a {@link Combobox}'s list. */
 export interface ComboboxOption {
   /** Stable identity. Returned to `onChange`; not shown. */
@@ -43,7 +46,7 @@ export interface ComboboxOption {
   label: string;
   /** Optional second line — a definition, a slug, an owner. */
   description?: ReactNode;
-  /** Data attributes for the row — a test id, a tracking hook. */
+  /** `data-*` attributes for the row — a test id, a tracking hook. */
   [dataAttribute: `data-${string}`]: string | undefined;
 }
 
@@ -85,9 +88,9 @@ export interface ComboboxProps extends Omit<
   /** Shown when there are no options and nothing is loading. */
   emptyMessage?: ReactNode;
   /** Attributes for the field itself — a test id, a name. */
-  inputProps?: HTMLAttributes<HTMLInputElement>;
+  inputProps?: HTMLAttributes<HTMLInputElement> & DataAttributes;
   /** Attributes for the list — a test id. */
-  listProps?: HTMLAttributes<HTMLDivElement>;
+  listProps?: HTMLAttributes<HTMLDivElement> & DataAttributes;
   /** Fires when the list opens or closes. */
   onOpenChange?: (open: boolean) => void;
   /**

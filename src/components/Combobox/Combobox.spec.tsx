@@ -173,8 +173,8 @@ describe("Combobox", () => {
   it("forwards inputProps to the field and listProps to the list", async () => {
     render(
       <Harness
-        inputProps={{ "data-testid": "field" } as never}
-        listProps={{ "data-testid": "list" } as never}
+        inputProps={{ "data-testid": "field" }}
+        listProps={{ "data-testid": "list" }}
       />
     );
     await userEvent.click(screen.getByTestId("field"));
