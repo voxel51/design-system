@@ -2,7 +2,8 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { Dropdown, DropdownTrigger } from "@/components/Dropdown";
-import { EditIcon, DeleteIcon } from "@/components/Icons";
+import { DeleteIcon, EditIcon } from "@/components/Icons";
+import { IconName } from "@/types";
 
 import { MenuIconTextItem } from "./MenuIconTextItem";
 
@@ -34,6 +35,31 @@ describe("MenuIconTextItem", () => {
     );
     await user.click(screen.getByText("Open menu"));
     expect(screen.getByText("Edit item")).toBeInTheDocument();
+  });
+
+  it("should render an icon component", async () => {
+    const user = userEvent.setup();
+    render(
+      <Dropdown trigger={trigger}>
+        <MenuIconTextItem icon={EditIcon} text="Edit item" />
+      </Dropdown>
+    );
+    await user.click(screen.getByText("Open menu"));
+    const item = screen.getByText("Edit item").closest("button")!;
+    expect(item.querySelector("svg")).toBeInTheDocument();
+  });
+
+  it("should resolve a legacy icon name instead of printing it", async () => {
+    const user = userEvent.setup();
+    render(
+      <Dropdown trigger={trigger}>
+        <MenuIconTextItem icon={IconName.Edit} text="Edit item" />
+      </Dropdown>
+    );
+    await user.click(screen.getByText("Open menu"));
+    const item = screen.getByText("Edit item").closest("button")!;
+    expect(item.querySelector("svg")).toBeInTheDocument();
+    expect(item).not.toHaveTextContent(IconName.Edit + "Edit item");
   });
 
   it("should render a custom icon node", async () => {

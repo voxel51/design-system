@@ -1,6 +1,7 @@
 import { MenuItem } from "@headlessui/react";
 import type { FC, HTMLAttributes, ReactNode } from "react";
 
+import { type IconInput, IconWrapper } from "@/components/Icons";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
 import {
@@ -9,18 +10,27 @@ import {
   ElementState,
   IconColor,
   Radius,
+  Size,
   TextColor,
   textColorClass,
   TextVariant,
 } from "@/types";
 import { cn } from "@/util/classes";
 
+const isIconInput = (
+  icon: MenuIconTextItemProps["icon"]
+): icon is IconInput => typeof icon === "string" || typeof icon === "function";
+
 /**
  * Props for {@link MenuIconTextItem}.
  */
 export interface MenuIconTextItemProps extends HTMLAttributes<HTMLButtonElement> {
-  /** Icon to display to the left of the text content. */
-  icon: ReactNode;
+  /**
+   * Icon to display to the left of the text content: an icon component or
+   * legacy {@link IconName}, resolved like every other icon prop, or a
+   * custom node.
+   */
+  icon: IconInput | Exclude<ReactNode, string>;
   /** Primary label text. */
   text: string;
   /** Optional secondary description shown below the primary text. */
@@ -94,7 +104,11 @@ export const MenuIconTextItem: FC<MenuIconTextItemProps> = ({
               textColorClass(iconColor)
             )}
           >
-            {icon}
+            {isIconInput(icon) ? (
+              <IconWrapper content={icon} size={Size.Lg} />
+            ) : (
+              icon
+            )}
           </span>
 
           <span className="flex flex-col gap-0.5 min-w-0">
