@@ -127,6 +127,49 @@ describe("Combobox", () => {
     });
   });
 
+  it("leaves unmatched text uncommitted on blur when commitOnBlur is off", async () => {
+    const onPick = jest.fn();
+    render(<Harness allowFreeText commitOnBlur={false} onPick={onPick} />);
+    await userEvent.type(screen.getByRole("combobox"), "op.custom");
+    await userEvent.tab();
+
+    expect(onPick).not.toHaveBeenCalled();
+  });
+
+  it("still commits unmatched text on Enter when commitOnBlur is off", async () => {
+    const onPick = jest.fn();
+    render(<Harness allowFreeText commitOnBlur={false} onPick={onPick} />);
+    await userEvent.type(screen.getByRole("combobox"), "op.custom{Enter}");
+
+    expect(onPick).toHaveBeenCalledWith({
+      id: "op.custom",
+      label: "op.custom",
+    });
+  });
+
+  it("renders the list outside the field's subtree when portal is set", async () => {
+    render(<Harness portal />);
+    const field = screen.getByRole("combobox");
+    await userEvent.click(field);
+
+    const list = screen.getByRole("listbox");
+    expect(field.parentElement?.contains(list)).toBe(false);
+    expect(screen.getAllByRole("option")).toHaveLength(OPTIONS.length);
+  });
+
+  it("closes a portaled list on an outside click but not on a list click", async () => {
+    render(<Harness portal />);
+    await userEvent.click(screen.getByRole("combobox"));
+    await userEvent.pointer({
+      keys: "[MouseLeft]",
+      target: screen.getByRole("listbox"),
+    });
+    expect(screen.getByRole("listbox")).toBeInTheDocument();
+
+    await userEvent.pointer({ keys: "[MouseLeft]", target: document.body });
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+  });
+
   it("shows the empty message when there are no options", async () => {
     render(<Harness options={[]} emptyMessage="Nothing here" />);
     await userEvent.click(screen.getByRole("combobox"));

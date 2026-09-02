@@ -1,4 +1,13 @@
 import {
+  autoUpdate,
+  flip,
+  FloatingPortal,
+  offset,
+  shift,
+  size as floatingSize,
+  useFloating,
+} from "@floating-ui/react";
+import {
   useCallback,
   useEffect,
   useId,
@@ -75,6 +84,23 @@ export interface ComboboxProps {
   className?: string;
   /** Accessible name for the field. */
   "aria-label"?: string;
+  /**
+   * Render the list in a portal, anchored to the field with floating UI, so
+   * it escapes overflow-hidden ancestors — the treatment `Select` and
+   * `Dropdown` give their panels. Defaults to `false`: in a plain form the
+   * list can live in the flow.
+   * @default false
+   */
+  portal?: boolean;
+  /** Explicit z-index for the list. A portaled list defaults to above-modal. */
+  zIndex?: ZIndex;
+  /**
+   * Commit free text when the field loses focus. Defaults to `true`. Turn it
+   * off where committing is an action — a search box runs its query on
+   * Enter, not because the user clicked elsewhere.
+   * @default true
+   */
+  commitOnBlur?: boolean;
 }
 
 const optionStyles = (active: boolean): string =>
@@ -134,6 +160,9 @@ const optionStyles = (active: boolean): string =>
  * @param loading Show a spinner in place of the list.
  * @param emptyMessage Shown when there are no options.
  * @param className `class` overrides for the wrapper.
+ * @param portal Render the list in a portal, anchored to the field.
+ * @param zIndex Explicit z-index for the list.
+ * @param commitOnBlur Commit free text on blur (default `true`).
  */
 export const Combobox: FC<ComboboxProps> = ({
   options,
@@ -148,6 +177,9 @@ export const Combobox: FC<ComboboxProps> = ({
   loading = false,
   emptyMessage = "No matches",
   className,
+  portal = false,
+  zIndex,
+  commitOnBlur = true,
   ...props
 }) => {
   const [open, setOpen] = useState(false);
@@ -157,6 +189,33 @@ export const Combobox: FC<ComboboxProps> = ({
   const [active, setActive] = useState<number | null>(null);
   const wrapper = useRef<HTMLDivElement | null>(null);
   const listId = useId();
+
+  // Only a portaled list is positioned by floating UI; in the flow the list
+  // sits under the field as a plain absolute child.
+  const { refs, floatingStyles } = useFloating({
+    placement: "bottom-start",
+    open: open && portal,
+    middleware: [
+      offset(4),
+      flip(),
+      shift({ padding: 8 }),
+      floatingSize({
+        apply({ rects, elements }) {
+          Object.assign(elements.floating.style, {
+            width: `${rects.reference.width}px`,
+          });
+        },
+      }),
+    ],
+    whileElementsMounted: autoUpdate,
+  });
+  const setWrapper = useCallback(
+    (node: HTMLDivElement | null): void => {
+      wrapper.current = node;
+      refs.setReference(node);
+    },
+    [refs]
+  );
 
   // A fresh list means the old highlight index points at a different row.
   useEffect((): void => setActive(null), [options]);
@@ -173,12 +232,16 @@ export const Combobox: FC<ComboboxProps> = ({
   useEffect(() => {
     if (!open) return undefined;
     const onPointerDown = (e: PointerEvent): void => {
-      if (!wrapper.current?.contains(e.target as Node)) close();
+      const target = e.target as Node;
+      if (wrapper.current?.contains(target)) return;
+      // A portaled list is not a DOM child of the wrapper
+      if (refs.floating.current?.contains(target)) return;
+      close();
     };
     document.addEventListener("pointerdown", onPointerDown);
     return (): void =>
       document.removeEventListener("pointerdown", onPointerDown);
-  }, [close, open]);
+  }, [close, open, refs.floating]);
 
   const pick = useCallback(
     (option: ComboboxOption): void => {
@@ -247,7 +310,7 @@ export const Combobox: FC<ComboboxProps> = ({
   };
 
   return (
-    <div ref={wrapper} className={cn("relative", className)}>
+    <div ref={setWrapper} className={cn("relative", className)}>
       <Input
         onKeyDown={onKeyDown}
         size={size}
@@ -260,7 +323,7 @@ export const Combobox: FC<ComboboxProps> = ({
         aria-autocomplete="list"
         aria-label={props["aria-label"]}
         onFocus={(): void => setOpen(true)}
-        onBlur={commitText}
+        onBlur={commitOnBlur ? commitText : undefined}
         onChange={(e): void => {
           onInputChange(e.target.value);
           setOpen(true);
@@ -271,71 +334,83 @@ export const Combobox: FC<ComboboxProps> = ({
         }}
       />
       {open && (
-        <div
-          id={listId}
-          role="listbox"
-          className={cn(
-            "absolute top-full left-0 mt-1 w-full",
-            "max-h-64 overflow-y-auto",
-            menuPanelStyles(),
-            "max-w-none",
-            zIndexStyles(ZIndex.Medium)
-          )}
-        >
-          {loading && (
-            <div className="flex justify-center py-2">
-              <Spinner size={Size.Md} />
-            </div>
-          )}
-          {!loading && !options.length && (
-            <div className="px-2 py-1.5">
-              <Text variant={TextVariant.Sm} color={TextColor.Tertiary}>
-                {emptyMessage}
-              </Text>
-            </div>
-          )}
-          {!loading &&
-            options.map((option, i) => (
-              <button
-                key={option.id}
-                type="button"
-                role="option"
-                aria-selected={i === active}
-                className={optionStyles(i === active)}
-                // The field owns focus; hovering only moves the highlight so
-                // pointer and keyboard agree on what Enter would pick.
-                onMouseEnter={(): void => setActive(i)}
-                // Mousedown, not click: click lands after blur, and blur has
-                // already committed or closed by then.
-                onMouseDown={(e): void => {
-                  e.preventDefault();
-                  pick(option);
-                }}
-              >
-                <span
-                  className={cn(
-                    textStyles(TextVariant.Sm),
-                    textColorClass(TextColor.Primary)
-                  )}
+        <ListPortal portal={portal}>
+          <div
+            id={listId}
+            role="listbox"
+            ref={portal ? refs.setFloating : undefined}
+            style={portal ? floatingStyles : undefined}
+            className={cn(
+              portal ? undefined : "absolute top-full left-0 mt-1 w-full",
+              "max-h-64 overflow-y-auto",
+              menuPanelStyles(),
+              "max-w-none",
+              zIndexStyles(
+                zIndex ?? (portal ? ZIndex.AboveModal : ZIndex.Medium)
+              )
+            )}
+          >
+            {loading && (
+              <div className="flex justify-center py-2">
+                <Spinner size={Size.Md} />
+              </div>
+            )}
+            {!loading && !options.length && (
+              <div className="px-2 py-1.5">
+                <Text variant={TextVariant.Sm} color={TextColor.Tertiary}>
+                  {emptyMessage}
+                </Text>
+              </div>
+            )}
+            {!loading &&
+              options.map((option, i) => (
+                <button
+                  key={option.id}
+                  type="button"
+                  role="option"
+                  aria-selected={i === active}
+                  className={optionStyles(i === active)}
+                  // The field owns focus; hovering only moves the highlight so
+                  // pointer and keyboard agree on what Enter would pick.
+                  onMouseEnter={(): void => setActive(i)}
+                  // Mousedown, not click: click lands after blur, and blur has
+                  // already committed or closed by then.
+                  onMouseDown={(e): void => {
+                    e.preventDefault();
+                    pick(option);
+                  }}
                 >
-                  {option.label}
-                </span>
-                {option.description && (
                   <span
                     className={cn(
-                      textStyles(TextVariant.Xs),
-                      textColorClass(TextColor.Tertiary)
+                      textStyles(TextVariant.Sm),
+                      textColorClass(TextColor.Primary)
                     )}
                   >
-                    {option.description}
+                    {option.label}
                   </span>
-                )}
-              </button>
-            ))}
-        </div>
+                  {option.description && (
+                    <span
+                      className={cn(
+                        textStyles(TextVariant.Xs),
+                        textColorClass(TextColor.Tertiary)
+                      )}
+                    >
+                      {option.description}
+                    </span>
+                  )}
+                </button>
+              ))}
+          </div>
+        </ListPortal>
       )}
     </div>
   );
 };
+
+/** The list in the flow, or in a floating UI portal. */
+const ListPortal: FC<{ portal: boolean; children: ReactNode }> = ({
+  portal,
+  children,
+}) => (portal ? <FloatingPortal>{children}</FloatingPortal> : <>{children}</>);
 
 Combobox.displayName = "Combobox";
