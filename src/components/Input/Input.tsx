@@ -150,8 +150,10 @@ export const inputStyle = ({
       borderColorClass(BorderColor.Disabled, ElementState.Disabled),
     radiusStyles(radius),
     sizeStyles[size],
-    icon ? paddingLeftStyles[size] : "pl-3",
-    trailingControl ? "pr-10" : "pr-3"
+    // A borderless field has no frame to inset from; its container sets the
+    // rhythm, so the text sits close to whatever precedes it
+    icon ? paddingLeftStyles[size] : borderless ? "pl-1.5" : "pl-3",
+    trailingControl ? "pr-10" : borderless ? "pr-1.5" : "pr-3"
   );
 
 /**
