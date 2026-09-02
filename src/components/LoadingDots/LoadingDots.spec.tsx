@@ -1,5 +1,7 @@
 import { render, screen } from "@testing-library/react";
 
+import { TextColor, TextVariant } from "@/types";
+
 import { LoadingDots } from "./LoadingDots";
 
 describe("LoadingDots", () => {
@@ -17,6 +19,20 @@ describe("LoadingDots", () => {
     render(<LoadingDots text="Loading" />);
     const dots = screen.getByRole("status").querySelector("[aria-hidden]");
     expect(dots).not.toBeNull();
+  });
+
+  it("should size and color itself like a Text", () => {
+    render(
+      <LoadingDots
+        text="Loading"
+        variant={TextVariant.Sm}
+        color={TextColor.Tertiary}
+        data-testid="dots"
+      />
+    );
+    expect(screen.getByTestId("dots")).toHaveClass(
+      "text-content-text-tertiary"
+    );
   });
 
   it("should apply className and pass through HTML props", () => {

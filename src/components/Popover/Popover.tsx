@@ -15,45 +15,47 @@ import {
 import {
   isValidElement,
   useCallback,
-  useState,
   type FC,
   type HTMLAttributes,
   type ReactElement,
   type ReactNode,
 } from "react";
 
-import radiusStyles from "@/styles/radius";
-import shadowStyles from "@/styles/shadow";
-import {
-  BackgroundColor,
-  bgColorClass,
-  BorderColor,
-  borderColorClass,
-  Radius,
-  Shadow,
-  ZIndex,
-  zIndexStyles,
-} from "@/types";
+import { ZIndex, zIndexStyles } from "@/types";
 import { cn } from "@/util/classes";
+import { useDisclosure } from "@/util/useDisclosure";
+
+import { popoverPanelStyles } from "./styles";
 
 /**
  * Position of the popover panel relative to its trigger.
  * Values follow the `<edge>-<alignment>` convention used by floating UI —
  * e.g. `BottomStart` opens the panel below the trigger, left-aligned with it.
  */
-export enum PopoverAnchor {
+export const PopoverAnchor = {
   /** Below the trigger, horizontally centered. */
-  Bottom = "bottom",
+  Bottom: "bottom",
   /** Below the trigger, aligned with its leading (start) edge. */
-  BottomStart = "bottom-start",
+  BottomStart: "bottom-start",
   /** Below the trigger, aligned with its trailing (end) edge. */
-  BottomEnd = "bottom-end",
+  BottomEnd: "bottom-end",
   /** Above the trigger, horizontally centered. */
-  Top = "top",
+  Top: "top",
   /** Above the trigger, aligned with its leading (start) edge. */
-  TopStart = "top-start",
+  TopStart: "top-start",
   /** Above the trigger, aligned with its trailing (end) edge. */
-  TopEnd = "top-end",
+  TopEnd: "top-end",
+} as const;
+export type PopoverAnchor =
+  `${(typeof PopoverAnchor)[keyof typeof PopoverAnchor]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace PopoverAnchor {
+  export type Bottom = typeof PopoverAnchor.Bottom;
+  export type BottomStart = typeof PopoverAnchor.BottomStart;
+  export type BottomEnd = typeof PopoverAnchor.BottomEnd;
+  export type Top = typeof PopoverAnchor.Top;
+  export type TopStart = typeof PopoverAnchor.TopStart;
+  export type TopEnd = typeof PopoverAnchor.TopEnd;
 }
 
 /** What the panel's render function receives. */
@@ -61,25 +63,6 @@ export interface PopoverRenderProps {
   /** Closes the panel — for a "Done" button or a committed edit. */
   close: () => void;
 }
-
-/**
- * Shared visual styles for the popover panel: the card surface with its
- * border, the large radius and shadow, and a compact content padding — the
- * same surface an outlined {@link Card} has, so a popover reads as a card
- * that floats. There is no width cap: the content decides, or
- * `panelClassName` does.
- */
-export const popoverPanelStyles = (): string =>
-  cn(
-    "min-w-[120px]",
-    "p-2.5",
-    "border-1",
-    borderColorClass(BorderColor.Default),
-    bgColorClass(BackgroundColor.Card1),
-    radiusStyles(Radius.Lg),
-    shadowStyles(Shadow.Lg),
-    "focus:outline-none"
-  );
 
 /**
  * Props for {@link Popover}.
@@ -194,16 +177,11 @@ export const Popover: FC<PopoverProps> = ({
   ...props
 }) => {
   const controlled = controlledOpen !== undefined;
-  const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
-  const open = controlled ? controlledOpen : uncontrolledOpen;
-
-  const setOpen = useCallback(
-    (next: boolean): void => {
-      if (!controlled) setUncontrolledOpen(next);
-      onOpenChange?.(next);
-    },
-    [controlled, onOpenChange]
-  );
+  const { open, setOpen } = useDisclosure({
+    defaultOpen: false,
+    open: controlledOpen,
+    onOpenChange,
+  });
 
   const triggerDisabled = isValidElement<{ disabled?: boolean }>(trigger)
     ? !!trigger.props.disabled

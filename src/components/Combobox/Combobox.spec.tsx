@@ -170,6 +170,72 @@ describe("Combobox", () => {
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
   });
 
+  it("forwards inputProps to the field and listProps to the list", async () => {
+    render(
+      <Harness
+        inputProps={{ "data-testid": "field" } as never}
+        listProps={{ "data-testid": "list" } as never}
+      />
+    );
+    await userEvent.click(screen.getByTestId("field"));
+    expect(screen.getByTestId("list")).toHaveAttribute("role", "listbox");
+  });
+
+  it("forwards an option's data attributes to its row", async () => {
+    render(
+      <Harness
+        options={[{ id: "a", label: "alpha", "data-testid": "row-a" }]}
+      />
+    );
+    await userEvent.click(screen.getByRole("combobox"));
+    expect(screen.getByTestId("row-a")).toHaveAttribute("role", "option");
+  });
+
+  it("names a row by its label, not its description", async () => {
+    render(<Harness />);
+    await userEvent.click(screen.getByRole("combobox"));
+    expect(screen.getByRole("option", { name: "alpha" })).toHaveTextContent(
+      "the first one"
+    );
+  });
+
+  it("reports the list opening and closing", async () => {
+    const onOpenChange = jest.fn();
+    render(<Harness onOpenChange={onOpenChange} />);
+    await userEvent.click(screen.getByRole("combobox"));
+    expect(onOpenChange).toHaveBeenLastCalledWith(true);
+    await userEvent.keyboard("{Escape}");
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
+  });
+
+  it("focuses the field on mount when focusOnMount is set", () => {
+    render(<Harness focusOnMount />);
+    expect(screen.getByRole("combobox")).toHaveFocus();
+  });
+
+  it("renders the field without a frame when borderless", () => {
+    render(<Harness borderless />);
+    expect(screen.getByRole("combobox")).not.toHaveClass("border");
+  });
+
+  it("stands on the top match while typing when autoHighlight is set", async () => {
+    const onPick = jest.fn();
+    render(<Harness autoHighlight onPick={onPick} />);
+    await userEvent.type(screen.getByRole("combobox"), "al");
+    expect(screen.getByRole("option", { name: "alpha" })).toHaveAttribute(
+      "aria-selected",
+      "true"
+    );
+    await userEvent.keyboard("{Enter}");
+    expect(onPick).toHaveBeenCalledWith(OPTIONS[0]);
+  });
+
+  it("highlights nothing for an empty field even with autoHighlight", async () => {
+    render(<Harness autoHighlight />);
+    await userEvent.click(screen.getByRole("combobox"));
+    expect(screen.queryByRole("option", { selected: true })).toBeNull();
+  });
+
   it("shows the empty message when there are no options", async () => {
     render(<Harness options={[]} emptyMessage="Nothing here" />);
     await userEvent.click(screen.getByRole("combobox"));

@@ -23,14 +23,12 @@ import { Input } from "@/components/Input";
 import { menuPanelStyles } from "@/components/Menu";
 import { Spinner } from "@/components/Spinner";
 import { Text } from "@/components/Text";
-import { textStyles } from "@/styles/text";
 import {
   BackgroundColor,
   bgColorClass,
   ElementState,
   Size,
   TextColor,
-  textColorClass,
   TextVariant,
   ZIndex,
   zIndexStyles,
@@ -86,14 +84,10 @@ export interface ComboboxProps extends Omit<
   loading?: boolean;
   /** Shown when there are no options and nothing is loading. */
   emptyMessage?: ReactNode;
-  /** `class` overrides for the wrapper. */
-  className?: string;
-  /** Accessible name for the field. */
-  "aria-label"?: string;
-  /** Data attributes for the field itself — a test id. */
-  inputAttributes?: Record<`data-${string}`, string>;
-  /** Data attributes for the list — a test id. */
-  listAttributes?: Record<`data-${string}`, string>;
+  /** Attributes for the field itself — a test id, a name. */
+  inputProps?: HTMLAttributes<HTMLInputElement>;
+  /** Attributes for the list — a test id. */
+  listProps?: HTMLAttributes<HTMLDivElement>;
   /** Fires when the list opens or closes. */
   onOpenChange?: (open: boolean) => void;
   /**
@@ -116,7 +110,7 @@ export interface ComboboxProps extends Omit<
   /** No frame on the field: for a combobox that sits flush in a bar. */
   borderless?: boolean;
   /** Focus the field on mount — for a combobox that opens on demand. */
-  autoFocus?: boolean;
+  focusOnMount?: boolean;
   /**
    * Highlight the first row whenever there is text, so Enter takes the top
    * match without an arrow key first. Off by default: with it off, Enter on
@@ -134,6 +128,22 @@ const optionStyles = (active: boolean): string =>
     "rounded-md",
     active && bgColorClass(BackgroundColor.Selected, ElementState.None)
   );
+
+/** The data-* attributes an option carries, for the row that renders it. */
+const dataAttributes = (
+  option: ComboboxOption
+): Record<string, string | undefined> =>
+  Object.fromEntries(
+    Object.entries(option).filter(([key]) => key.startsWith("data-"))
+  );
+
+/** The list in the flow, or in a floating UI portal. */
+const ListPortal: FC<{ portal: boolean; children: ReactNode }> = ({
+  portal,
+  children,
+}) => (portal ? <FloatingPortal>{children}</FloatingPortal> : <>{children}</>);
+
+ListPortal.displayName = "ListPortal";
 
 /**
  * A text field that suggests rows as you type.
@@ -188,10 +198,10 @@ const optionStyles = (active: boolean): string =>
  * @param zIndex Explicit z-index for the list.
  * @param commitOnBlur Commit free text on blur (default `true`).
  * @param borderless No frame on the field.
- * @param autoFocus Focus the field on mount.
+ * @param focusOnMount Focus the field on mount.
  * @param autoHighlight Highlight the first row whenever there is text.
- * @param inputAttributes Data attributes for the field.
- * @param listAttributes Data attributes for the list.
+ * @param inputProps Attributes for the field itself.
+ * @param listProps Attributes for the list.
  * @param onOpenChange Fires when the list opens or closes.
  * @param props Additional HTML properties for the wrapper.
  */
@@ -212,10 +222,10 @@ export const Combobox: FC<ComboboxProps> = ({
   zIndex,
   commitOnBlur = true,
   borderless = false,
-  autoFocus = false,
+  focusOnMount = false,
   autoHighlight = false,
-  inputAttributes,
-  listAttributes,
+  inputProps,
+  listProps,
   onOpenChange,
   "aria-label": ariaLabel,
   ...props
@@ -270,9 +280,9 @@ export const Combobox: FC<ComboboxProps> = ({
 
   // Opt-in focus on mount, for a combobox that appears because the user asked
   // for it. Read once: a later flip of the prop is not a second request.
-  const focusOnMount = useRef(autoFocus);
+  const focusOnMountRef = useRef(focusOnMount);
   useEffect((): void => {
-    if (focusOnMount.current) {
+    if (focusOnMountRef.current) {
       wrapper.current?.querySelector("input")?.focus();
     }
   }, []);
@@ -389,7 +399,7 @@ export const Combobox: FC<ComboboxProps> = ({
         aria-controls={listId}
         aria-autocomplete="list"
         aria-label={ariaLabel}
-        {...inputAttributes}
+        {...inputProps}
         onFocus={(): void => setOpen(true)}
         onBlur={commitOnBlur ? commitText : undefined}
         onChange={(e): void => {
@@ -406,11 +416,11 @@ export const Combobox: FC<ComboboxProps> = ({
           <div
             id={listId}
             role="listbox"
-            {...listAttributes}
+            {...listProps}
             ref={portal ? refs.setFloating : undefined}
             style={portal ? floatingStyles : undefined}
             className={cn(
-              portal ? "max-w-[20rem]" : "absolute top-full left-0 mt-1 w-full",
+              portal ? undefined : "absolute top-full left-0 mt-1 w-full",
               "max-h-64 overflow-y-auto",
               menuPanelStyles(),
               portal ? undefined : "max-w-none",
@@ -452,23 +462,13 @@ export const Combobox: FC<ComboboxProps> = ({
                     pick(option);
                   }}
                 >
-                  <span
-                    className={cn(
-                      textStyles(TextVariant.Sm),
-                      textColorClass(TextColor.Primary)
-                    )}
-                  >
+                  <Text variant={TextVariant.Sm} color={TextColor.Primary}>
                     {option.label}
-                  </span>
+                  </Text>
                   {option.description && (
-                    <span
-                      className={cn(
-                        textStyles(TextVariant.Xs),
-                        textColorClass(TextColor.Tertiary)
-                      )}
-                    >
+                    <Text variant={TextVariant.Xs} color={TextColor.Tertiary}>
                       {option.description}
-                    </span>
+                    </Text>
                   )}
                 </button>
               ))}
@@ -478,19 +478,5 @@ export const Combobox: FC<ComboboxProps> = ({
     </div>
   );
 };
-
-/** The data-* attributes an option carries, for the row that renders it. */
-const dataAttributes = (
-  option: ComboboxOption
-): Record<string, string | undefined> =>
-  Object.fromEntries(
-    Object.entries(option).filter(([key]) => key.startsWith("data-"))
-  );
-
-/** The list in the flow, or in a floating UI portal. */
-const ListPortal: FC<{ portal: boolean; children: ReactNode }> = ({
-  portal,
-  children,
-}) => (portal ? <FloatingPortal>{children}</FloatingPortal> : <>{children}</>);
 
 Combobox.displayName = "Combobox";

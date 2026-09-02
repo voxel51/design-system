@@ -2,8 +2,9 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { DropdownTrigger } from "@/components/Dropdown";
+import { ZIndex, zIndexStyles } from "@/types";
 
-import { Popover } from "./Popover";
+import { Popover, PopoverAnchor } from "./Popover";
 
 const trigger = <DropdownTrigger>Open settings</DropdownTrigger>;
 
@@ -133,6 +134,64 @@ describe("Popover", () => {
 
     await user.keyboard("{Escape}");
     expect(onOpenChange).toHaveBeenLastCalledWith(false);
+  });
+
+  it("should render the panel in the flow when portal is off", async () => {
+    const user = userEvent.setup();
+    render(
+      <Popover trigger={trigger} portal={false} data-testid="root">
+        In-flow content
+      </Popover>
+    );
+    await user.click(screen.getByText("Open settings"));
+    expect(screen.getByTestId("root")).toContainElement(
+      screen.getByText("In-flow content")
+    );
+  });
+
+  it("should apply an explicit zIndex to an in-flow panel", async () => {
+    const user = userEvent.setup();
+    render(
+      <Popover trigger={trigger} portal={false} zIndex={ZIndex.Low}>
+        Low content
+      </Popover>
+    );
+    await user.click(screen.getByText("Open settings"));
+    expect(screen.getByText("Low content")).toHaveClass(
+      zIndexStyles(ZIndex.Low)
+    );
+  });
+
+  it("should leave focus alone when focusOnOpen is off", async () => {
+    const user = userEvent.setup();
+    render(
+      <Popover trigger={trigger} focusOnOpen={false}>
+        <input aria-label="Quiet" />
+      </Popover>
+    );
+    await user.click(screen.getByText("Open settings"));
+    expect(screen.getByLabelText("Quiet")).not.toHaveFocus();
+  });
+
+  it("should accept every anchor", () => {
+    for (const anchor of Object.values(PopoverAnchor)) {
+      const { unmount } = render(
+        <Popover trigger={trigger} anchor={anchor}>
+          Anchored
+        </Popover>
+      );
+      expect(screen.getByText("Open settings")).toBeInTheDocument();
+      unmount();
+    }
+  });
+
+  it("should pass className and HTML props to the root", () => {
+    render(
+      <Popover trigger={trigger} className="custom" data-testid="root">
+        {null}
+      </Popover>
+    );
+    expect(screen.getByTestId("root")).toHaveClass("custom");
   });
 
   it("should apply panelClassName to the panel", async () => {

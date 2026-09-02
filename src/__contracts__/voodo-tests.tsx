@@ -51,11 +51,14 @@ import {
   Justify,
   LinkColor,
   ListItem,
+  LoadingDots,
   MenuSeparator,
   Orientation,
   OverlayColor,
   PaletteColor,
   Pill,
+  Popover,
+  PopoverAnchor,
   PillColor,
   PillSize,
   Radio,
@@ -315,6 +318,16 @@ export const exhaustive = {
     "top end": true,
   } satisfies Record<DropdownAnchor, true>,
 
+  // popover anchors are floating UI placements: kebab-case
+  popoverAnchor: {
+    bottom: true,
+    "bottom-start": true,
+    "bottom-end": true,
+    top: true,
+    "top-start": true,
+    "top-end": true,
+  } satisfies Record<PopoverAnchor, true>,
+
   selectAnchor: {
     bottom: true,
     "bottom start": true,
@@ -398,6 +411,7 @@ const md2: Size.Md = "md";
 const spring: TransitionEasing.Spring = TransitionEasing.Spring;
 const aboveModal: ZIndex.AboveModal = "above-modal";
 const dropStart: DropdownAnchor.BottomStart = "bottom start";
+const popStart: PopoverAnchor.BottomStart = "bottom-start";
 
 // namespace types compose with utility types
 type SmallSizes = Extract<Size, Size.Xs | Size.Sm>;
@@ -432,6 +446,8 @@ const badColor: TextColor = "icon-default";
 const badSubset: Exclude<Size, Size.Xs> = "xs";
 // @ts-expect-error - dropdown anchors are space-separated, not kebab-case
 const badDropdownAnchor: DropdownAnchor = "bottom-start";
+// @ts-expect-error - popover anchors are kebab-case, not space-separated
+const badPopoverAnchor: PopoverAnchor = "bottom start";
 // @ts-expect-error - anchor midpoints don't exist
 const badAnchor: Anchor = "middle";
 
@@ -448,6 +464,7 @@ const SHADOWS = Object.values(Shadow);
 const ANCHORS = Object.values(Anchor);
 const HEADING_LEVELS = ["h1", "h2", "h3", "h4"] as const;
 const MENU_ANCHORS = Object.values(DropdownAnchor);
+const POPOVER_ANCHORS = Object.values(PopoverAnchor);
 const RESIZES = ["None", "Vertical", "Horizontal", "BiDirectional"] as const;
 const DRAWER_SIDES = ["left", "right", "top", "bottom"] as const;
 const TOGGLE_SWITCH_VARIANTS = [
@@ -619,6 +636,21 @@ export const Everything = (
         <MenuSeparator />
       </Dropdown>
     ))}
+    {POPOVER_ANCHORS.map((a) => (
+      <Popover
+        key={a}
+        anchor={a}
+        zIndex="medium"
+        portal={false}
+        trigger={<Button variant="icon">open</Button>}
+      >
+        {({ close }) => <Button onClick={close}>done</Button>}
+      </Popover>
+    ))}
+    <Popover trigger={<Button>anchor</Button>} open onOpenChange={() => {}}>
+      controlled
+    </Popover>
+    <LoadingDots text="Searching" variant="sm" color="text-tertiary" />
     {MENU_ANCHORS.map((a) => (
       <Select
         key={a}
@@ -688,5 +720,7 @@ export const tokenChecks = {
   badColor,
   badSubset,
   badDropdownAnchor,
+  badPopoverAnchor,
   badAnchor,
+  popStart,
 };
