@@ -19,6 +19,7 @@ export const IconName = {
   CalendarClock: "CalendarClock",
   CaretDown: "CaretDown",
   Check: "Check",
+  Checkmark: "Checkmark",
   Checkbox: "Checkbox",
   Checklist: "Checklist",
   ChevronBottom: "ChevronBottom",
@@ -34,6 +35,7 @@ export const IconName = {
   Cog: "Cog",
   Contact: "Contact",
   ContentCopy: "ContentCopy",
+  CreditCard: "CreditCard",
   Database: "Database",
   DateRange: "DateRange",
   Draw: "Draw",
@@ -51,6 +53,7 @@ export const IconName = {
   FineTune: "FineTune",
   Fingerprint: "Fingerprint",
   Fullscreen: "Fullscreen",
+  Gauge: "Gauge",
   GridView: "GridView",
   History: "History",
   IdCard: "IdCard",
@@ -90,6 +93,7 @@ export const IconName = {
   Slider: "Slider",
   Sliders: "Sliders",
   Spinner: "Spinner",
+  Sparkles: "Sparkles",
   Tag: "Tag",
   Text: "Text",
   Toggle: "Toggle",
@@ -127,6 +131,7 @@ export namespace IconName {
   export type CalendarClock = typeof IconName.CalendarClock;
   export type CaretDown = typeof IconName.CaretDown;
   export type Check = typeof IconName.Check;
+  export type Checkmark = typeof IconName.Checkmark;
   export type Checkbox = typeof IconName.Checkbox;
   export type Checklist = typeof IconName.Checklist;
   export type ChevronBottom = typeof IconName.ChevronBottom;
@@ -142,6 +147,7 @@ export namespace IconName {
   export type Cog = typeof IconName.Cog;
   export type Contact = typeof IconName.Contact;
   export type ContentCopy = typeof IconName.ContentCopy;
+  export type CreditCard = typeof IconName.CreditCard;
   export type Database = typeof IconName.Database;
   export type DateRange = typeof IconName.DateRange;
   export type Draw = typeof IconName.Draw;
@@ -159,6 +165,7 @@ export namespace IconName {
   export type FineTune = typeof IconName.FineTune;
   export type Fingerprint = typeof IconName.Fingerprint;
   export type Fullscreen = typeof IconName.Fullscreen;
+  export type Gauge = typeof IconName.Gauge;
   export type GridView = typeof IconName.GridView;
   export type History = typeof IconName.History;
   export type IdCard = typeof IconName.IdCard;
@@ -198,6 +205,7 @@ export namespace IconName {
   export type Slider = typeof IconName.Slider;
   export type Sliders = typeof IconName.Sliders;
   export type Spinner = typeof IconName.Spinner;
+  export type Sparkles = typeof IconName.Sparkles;
   export type Tag = typeof IconName.Tag;
   export type Text = typeof IconName.Text;
   export type Toggle = typeof IconName.Toggle;

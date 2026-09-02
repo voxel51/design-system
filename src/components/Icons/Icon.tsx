@@ -18,6 +18,7 @@ import CaretDownIcon from "@/img/CaretDown.svg?react";
 import CheckIcon from "@/img/Check.svg?react";
 import CheckboxIcon from "@/img/Checkbox.svg?react";
 import ChecklistIcon from "@/img/Checklist.svg?react";
+import CheckmarkIcon from "@/img/Checkmark.svg?react";
 import ChevronBottomIcon from "@/img/ChevronBottom.svg?react";
 import ChevronLeftIcon from "@/img/ChevronLeft.svg?react";
 import ChevronRightIcon from "@/img/ChevronRight.svg?react";
@@ -31,6 +32,7 @@ import CodeIcon from "@/img/Code.svg?react";
 import CogIcon from "@/img/Cog.svg?react";
 import ContactIcon from "@/img/Contact.svg?react";
 import ContentCopyIcon from "@/img/ContentCopy.svg?react";
+import CreditCardIcon from "@/img/CreditCard.svg?react";
 import DatabaseIcon from "@/img/Database.svg?react";
 import DateRangeIcon from "@/img/DateRange.svg?react";
 import DeleteIcon from "@/img/Delete.svg?react";
@@ -48,6 +50,7 @@ import FileClockIcon from "@/img/FileClock.svg?react";
 import FineTuneIcon from "@/img/FineTune.svg?react";
 import FingerprintIcon from "@/img/Fingerprint.svg?react";
 import FullscreenIcon from "@/img/Fullscreen.svg?react";
+import GaugeIcon from "@/img/Gauge.svg?react";
 import GridViewIcon from "@/img/GridView.svg?react";
 import HistoryIcon from "@/img/History.svg?react";
 import IdCardIcon from "@/img/IdCard.svg?react";
@@ -86,6 +89,7 @@ import SettingsIcon from "@/img/Settings.svg?react";
 import ShieldCheckIcon from "@/img/ShieldCheck.svg?react";
 import SliderIcon from "@/img/Slider.svg?react";
 import SlidersIcon from "@/img/Sliders.svg?react";
+import SparklesIcon from "@/img/Sparkles.svg?react";
 import TagIcon from "@/img/Tag.svg?react";
 import TextIcon from "@/img/Text.svg?react";
 import ToggleIcon from "@/img/Toggle.svg?react";
@@ -136,6 +140,7 @@ export const iconMap: Record<
   [IconName.CalendarClock]: CalendarClockIcon,
   [IconName.CaretDown]: CaretDownIcon,
   [IconName.Check]: CheckIcon,
+  [IconName.Checkmark]: CheckmarkIcon,
   [IconName.Checkbox]: CheckboxIcon,
   [IconName.Checklist]: ChecklistIcon,
   [IconName.ChevronBottom]: ChevronBottomIcon,
@@ -152,6 +157,7 @@ export const iconMap: Record<
   [IconName.Contact]: ContactIcon,
   [IconName.ContentCopy]: ContentCopyIcon,
   [IconName.Database]: DatabaseIcon,
+  [IconName.CreditCard]: CreditCardIcon,
   [IconName.DateRange]: DateRangeIcon,
   [IconName.Delete]: DeleteIcon,
   [IconName.Detection]: DetectionIcon,
@@ -168,6 +174,7 @@ export const iconMap: Record<
   [IconName.FineTune]: FineTuneIcon,
   [IconName.Fingerprint]: FingerprintIcon,
   [IconName.Fullscreen]: FullscreenIcon,
+  [IconName.Gauge]: GaugeIcon,
   [IconName.GridView]: GridViewIcon,
   [IconName.History]: HistoryIcon,
   [IconName.IdCard]: IdCardIcon,
@@ -206,6 +213,7 @@ export const iconMap: Record<
   [IconName.ShieldCheck]: ShieldCheckIcon,
   [IconName.Slider]: SliderIcon,
   [IconName.Sliders]: SlidersIcon,
+  [IconName.Sparkles]: SparklesIcon,
   [IconName.Tag]: TagIcon,
   [IconName.Text]: TextIcon,
   [IconName.Toggle]: ToggleIcon,
