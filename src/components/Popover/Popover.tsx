@@ -130,7 +130,7 @@ export interface PopoverProps extends Omit<
  * Built on floating UI: the panel is anchored to the trigger, flips and
  * shifts to stay on screen, and follows it on scroll and resize. Focus is
  * managed while open and ARIA `dialog` semantics are applied. The panel
- * wears the outlined card surface, so it reads as a card that floats.
+ * wears the same floating surface as the menu panels.
  *
  * Controlled with `open` + `onOpenChange` for panels something else opens —
  * an editor that appears for a just-created item — or uncontrolled for the
