@@ -149,6 +149,30 @@ describe("Popover", () => {
     );
   });
 
+  it("should apply an explicit zIndex to a portaled panel too", async () => {
+    const user = userEvent.setup();
+    render(
+      <Popover trigger={trigger} zIndex={ZIndex.High}>
+        Lower content
+      </Popover>
+    );
+    await user.click(screen.getByText("Open settings"));
+    expect(screen.getByText("Lower content")).toHaveClass(
+      zIndexStyles(ZIndex.High)
+    );
+  });
+
+  it("should accept matchTriggerWidth", async () => {
+    const user = userEvent.setup();
+    render(
+      <Popover trigger={trigger} matchTriggerWidth>
+        Wide content
+      </Popover>
+    );
+    await user.click(screen.getByText("Open settings"));
+    expect(screen.getByText("Wide content")).toBeInTheDocument();
+  });
+
   it("should apply an explicit zIndex to an in-flow panel", async () => {
     const user = userEvent.setup();
     render(

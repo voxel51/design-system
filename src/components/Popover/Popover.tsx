@@ -5,6 +5,7 @@ import {
   FloatingPortal,
   offset,
   shift,
+  size,
   useClick,
   useDismiss,
   useFloating,
@@ -102,8 +103,18 @@ export interface PopoverProps extends Omit<
    * @default true
    */
   portal?: boolean;
-  /** Explicit z-index override for the panel. */
+  /**
+   * Stacking tier for the panel. A portaled panel defaults to above-modal;
+   * set a lower tier for a panel that other overlays — tooltips, editors —
+   * must stack over.
+   */
   zIndex?: ZIndex;
+  /**
+   * Size the panel to the trigger's width — for a panel that reads as a
+   * second row of the control it hangs from, rather than a card beside it.
+   * @default false
+   */
+  matchTriggerWidth?: boolean;
   /**
    * If `true`, the trigger cannot open the panel. Also inferred automatically
    * when the `trigger` element has `disabled` set on its props.
@@ -155,7 +166,8 @@ export interface PopoverProps extends Omit<
  * @param onOpenChange Fires when the panel wants to open or close.
  * @param anchor Position of the panel relative to the trigger. See {@link PopoverAnchor}.
  * @param portal If `true`, renders the panel in a portal with a high z-index.
- * @param zIndex Explicit z-index for the panel.
+ * @param zIndex Stacking tier for the panel.
+ * @param matchTriggerWidth Size the panel to the trigger's width.
  * @param disabled If `true`, the panel cannot be opened from the trigger.
  * @param panelClassName `class` overrides for the panel.
  * @param focusOnOpen Move focus into the panel on open.
@@ -170,6 +182,7 @@ export const Popover: FC<PopoverProps> = ({
   anchor = PopoverAnchor.BottomStart,
   portal = true,
   zIndex,
+  matchTriggerWidth = false,
   disabled,
   panelClassName,
   focusOnOpen = true,
@@ -192,7 +205,20 @@ export const Popover: FC<PopoverProps> = ({
     placement: anchor as Placement,
     open,
     onOpenChange: setOpen,
-    middleware: [offset(4), flip(), shift({ padding: 8 })],
+    middleware: [
+      offset(4),
+      flip(),
+      shift({ padding: 8 }),
+      size({
+        apply({ rects, elements }) {
+          if (matchTriggerWidth) {
+            Object.assign(elements.floating.style, {
+              width: `${rects.reference.width}px`,
+            });
+          }
+        },
+      }),
+    ],
     whileElementsMounted: autoUpdate,
   });
 
@@ -214,11 +240,9 @@ export const Popover: FC<PopoverProps> = ({
     role,
   ]);
 
-  const panelZIndex = portal
-    ? zIndexStyles(ZIndex.AboveModal)
-    : zIndex
-      ? zIndexStyles(zIndex)
-      : zIndexStyles(ZIndex.High);
+  const panelZIndex = zIndexStyles(
+    zIndex ?? (portal ? ZIndex.AboveModal : ZIndex.High)
+  );
 
   const close = useCallback((): void => setOpen(false), [setOpen]);
 

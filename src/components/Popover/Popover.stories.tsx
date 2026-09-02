@@ -47,6 +47,10 @@ const meta: Meta<typeof Popover> = {
       control: "boolean",
       description: "Move focus into the panel when it opens",
     },
+    matchTriggerWidth: {
+      control: "boolean",
+      description: "Size the panel to the trigger's width",
+    },
   },
 };
 
