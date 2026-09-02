@@ -59,12 +59,16 @@ const variantStyles: Record<Variant, string> = {
   [Variant.Icon]: clsx(
     "aspect-square min-w-0 shrink-0", // square icon button, not a rectangle
     "bg-transparent",
-    bgColorClass(BackgroundColor.CardElevated, ElementState.Hover)
+    // `card-2`, not `card-elevated`: in the light theme `card-elevated` and
+    // `card-1` are both `neutral[0]`, so an elevated hover fill is invisible
+    // on a card and near-invisible on the page. `card-2` differs from every
+    // surface a transparent button sits on, in both themes.
+    bgColorClass(BackgroundColor.Card2, ElementState.Hover)
   ),
   [Variant.Borderless]: clsx(
     "bg-transparent",
     "border-0",
-    bgColorClass(BackgroundColor.CardElevated, ElementState.Hover),
+    bgColorClass(BackgroundColor.Card2, ElementState.Hover),
     radiusStyles(Radius.Full)
   ),
 };
@@ -77,7 +81,11 @@ const variantTextStyles: Record<Variant, string> = {
   [Variant.Icon]: textColorClass(ActionColor.IconDefault),
   [Variant.Borderless]: clsx(
     textColorClass(TextColor.Secondary),
-    textColorClass(ActionColor.PrimaryText, ElementState.Hover)
+    // `text-primary`, not `action-primary-text`. The latter is the colour for
+    // text sitting ON a filled primary button -- `neutral[0]`, white, in both
+    // themes -- and this variant has no fill to sit on. In light it turned the
+    // label white on a white surface and the button disappeared on hover.
+    textColorClass(TextColor.Primary, ElementState.Hover)
   ),
 };
 
