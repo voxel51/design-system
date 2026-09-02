@@ -85,7 +85,11 @@ export interface ComboboxProps extends Omit<
   disabled?: boolean;
   /** Spinner in place of the list while the caller's query is in flight. */
   loading?: boolean;
-  /** Shown when there are no options and nothing is loading. */
+  /**
+   * Shown when there are no options and nothing is loading. Pass `null` to
+   * show no list at all in that case — for a field whose suggestions are a
+   * convenience, not the point.
+   */
   emptyMessage?: ReactNode;
   /** Attributes for the field itself — a test id, a name. */
   inputProps?: HTMLAttributes<HTMLInputElement> & DataAttributes;
@@ -414,7 +418,7 @@ export const Combobox: FC<ComboboxProps> = ({
           if (value && e.target.value !== value.label) onChange(null);
         }}
       />
-      {open && (
+      {open && (loading || options.length > 0 || emptyMessage !== null) && (
         <ListPortal portal={portal}>
           <div
             id={listId}

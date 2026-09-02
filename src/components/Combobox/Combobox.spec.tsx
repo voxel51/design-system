@@ -244,6 +244,12 @@ describe("Combobox", () => {
     expect(screen.queryAllByRole("option")).toHaveLength(0);
   });
 
+  it("renders no list when there are no options and the empty message is null", async () => {
+    render(<Harness options={[]} emptyMessage={null} />);
+    await userEvent.click(screen.getByRole("combobox"));
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+  });
+
   it("shows a spinner instead of the list while loading", async () => {
     render(<Harness options={[]} loading emptyMessage="Nothing here" />);
     await userEvent.click(screen.getByRole("combobox"));

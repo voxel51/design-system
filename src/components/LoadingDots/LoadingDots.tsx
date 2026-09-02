@@ -11,8 +11,8 @@ export interface LoadingDotsProps extends TextProps {
 }
 
 /**
- * An inline loading indicator: an optional label followed by an animated
- * ellipsis. Where {@link Spinner} marks a region as busy, this marks a piece
+ * An inline loading indicator: an optional label followed by three dots that
+ * pulse in turn. Where {@link Spinner} marks a region as busy, this marks a piece
  * of text as still resolving — "Searching cats…". It is a {@link Text}, so
  * `variant` and `color` size and color the label and the dots together.
  *
@@ -38,7 +38,11 @@ export const LoadingDots: FC<LoadingDotsProps> = ({
     {...props}
   >
     {text}
-    <span aria-hidden="true" className={styles.dots} />
+    <span aria-hidden="true" className={styles.dots}>
+      <span className={styles.dot}>.</span>
+      <span className={styles.dot}>.</span>
+      <span className={styles.dot}>.</span>
+    </span>
   </Text>
 );
 
