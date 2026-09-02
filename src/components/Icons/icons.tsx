@@ -105,6 +105,7 @@ import DeleteOutlineOutlinedSvg from "@/img/DeleteOutlineOutlined.svg?react";
 import DeleteOutlinedSvg from "@/img/DeleteOutlined.svg?react";
 import DesktopWindowsOutlinedSvg from "@/img/DesktopWindowsOutlined.svg?react";
 import DetectionSvg from "@/img/Detection.svg?react";
+import DiscordSvg from "@/img/Discord.svg?react";
 import DisplaySettingsSvg from "@/img/DisplaySettings.svg?react";
 import DoneSvg from "@/img/Done.svg?react";
 import DoneOutlinedSvg from "@/img/DoneOutlined.svg?react";
@@ -149,6 +150,7 @@ import FolderOffSvg from "@/img/FolderOff.svg?react";
 import FolderOpenSvg from "@/img/FolderOpen.svg?react";
 import FullscreenSvg from "@/img/Fullscreen.svg?react";
 import FullscreenExitSvg from "@/img/FullscreenExit.svg?react";
+import GitHubSvg from "@/img/GitHub.svg?react";
 import GridOnSvg from "@/img/GridOn.svg?react";
 import GridViewSvg from "@/img/GridView.svg?react";
 import GroupAddSvg from "@/img/GroupAdd.svg?react";
@@ -205,6 +207,7 @@ import LogsSvg from "@/img/Logs.svg?react";
 import MailOutlineSvg from "@/img/MailOutline.svg?react";
 import MapSvg from "@/img/Map.svg?react";
 import MenuSvg from "@/img/Menu.svg?react";
+import MenuBookSvg from "@/img/MenuBook.svg?react";
 import MoreHorizSvg from "@/img/MoreHoriz.svg?react";
 import MoreHorizontalSvg from "@/img/MoreHorizontal.svg?react";
 import MoreVertSvg from "@/img/MoreVert.svg?react";
@@ -721,6 +724,10 @@ export const DetectionIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={DetectionSvg} />
 );
 
+export const DiscordIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={DiscordSvg} />
+);
+
 export const DisplaySettingsIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={DisplaySettingsSvg} />
 );
@@ -895,6 +902,10 @@ export const FullscreenIcon: FC<IconProps> = (props) => (
 
 export const FullscreenExitIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={FullscreenExitSvg} />
+);
+
+export const GitHubIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={GitHubSvg} />
 );
 
 export const GridOnIcon: FC<IconProps> = (props) => (
@@ -1119,6 +1130,10 @@ export const MapIcon: FC<IconProps> = (props) => (
 
 export const MenuIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={MenuSvg} />
+);
+
+export const MenuBookIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={MenuBookSvg} />
 );
 
 export const MoreHorizIcon: FC<IconProps> = (props) => (
