@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent, { UserEvent } from "@testing-library/user-event";
 
 import { AddIcon } from "@/components/Icons";
+import { Variant } from "@/types";
 
 import { Button } from "./Button";
 
@@ -26,6 +27,35 @@ const DummyIcon = () => {
 
 describe("Button", () => {
   const buttonText = "click me";
+
+  // Regression: `Variant.Borderless` used `action-primary-text` for its hover
+  // text and `bg-card-elevated` for its hover fill. Both are white-on-white in
+  // the light theme -- `action.primary.text` is `neutral[0]` in both themes
+  // (it is the colour for text ON a filled primary button) and light's
+  // `card-elevated` is the same `neutral[0]` as `card-1` -- so the button
+  // vanished on hover. It looked correct in dark, so only a class assertion
+  // catches it.
+  describe("Variant.Borderless hover", () => {
+    const classesOf = () =>
+      `${screen.getByRole("button").className} ${
+        screen.getByRole("button").firstElementChild?.className ?? ""
+      }`;
+
+    it("should not use on-fill text colour for hover text", () => {
+      render(<Button variant={Variant.Borderless}>{buttonText}</Button>);
+      expect(classesOf()).not.toContain("action-primary-text");
+    });
+
+    it("should use primary text and a fill distinct from card-1 on hover", () => {
+      render(<Button variant={Variant.Borderless}>{buttonText}</Button>);
+      const classes = classesOf();
+      expect(classes).toContain(
+        "hover:text-[var(--color-content-text-primary)]"
+      );
+      expect(classes).toContain("hover:bg-[var(--color-content-bg-card-2)]");
+      expect(classes).not.toContain("bg-card-elevated");
+    });
+  });
 
   it("should render with text", () => {
     render(<Button>{buttonText}</Button>);
