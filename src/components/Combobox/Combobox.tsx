@@ -244,12 +244,15 @@ export const Combobox: FC<ComboboxProps> = ({
   ...props
 }) => {
   const [open, setOpenState] = useState(false);
+  // Mirrors `open` so a change can be detected outside the state updater:
+  // StrictMode runs updaters twice, and a callback inside one would fire twice
+  const openRef = useRef(false);
   const setOpen = useCallback(
     (next: boolean): void => {
-      setOpenState((current) => {
-        if (current !== next) onOpenChange?.(next);
-        return next;
-      });
+      if (openRef.current === next) return;
+      openRef.current = next;
+      setOpenState(next);
+      onOpenChange?.(next);
     },
     [onOpenChange]
   );

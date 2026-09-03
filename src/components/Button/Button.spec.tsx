@@ -113,4 +113,14 @@ describe("Button", () => {
     expect(link).toHaveAttribute("rel", "noreferrer");
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
   });
+
+  it("should render a disabled button, not a link, when href is set and disabled", () => {
+    render(
+      <Button href="https://docs.voxel51.com" disabled>
+        Docs
+      </Button>
+    );
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Docs" })).toBeDisabled();
+  });
 });

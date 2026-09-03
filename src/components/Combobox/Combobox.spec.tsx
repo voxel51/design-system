@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { ComponentProps } from "react";
-import { useState } from "react";
+import { StrictMode, useState } from "react";
 
 import { IconName } from "@/types";
 
@@ -201,12 +201,18 @@ describe("Combobox", () => {
     );
   });
 
-  it("reports the list opening and closing", async () => {
+  it("reports the list opening and closing once each, under StrictMode", async () => {
     const onOpenChange = jest.fn();
-    render(<Harness onOpenChange={onOpenChange} />);
+    render(
+      <StrictMode>
+        <Harness onOpenChange={onOpenChange} />
+      </StrictMode>
+    );
     await userEvent.click(screen.getByRole("combobox"));
+    expect(onOpenChange).toHaveBeenCalledTimes(1);
     expect(onOpenChange).toHaveBeenLastCalledWith(true);
     await userEvent.keyboard("{Escape}");
+    expect(onOpenChange).toHaveBeenCalledTimes(2);
     expect(onOpenChange).toHaveBeenLastCalledWith(false);
   });
 

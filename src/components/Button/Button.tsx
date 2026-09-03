@@ -183,14 +183,17 @@ export const Button: FC<ButtonProps> = ({
     </div>
   );
 
-  if (href) {
+  // A disabled link is a disabled button: an anchor has no `disabled` state,
+  // so it would still navigate and never wear the disabled styles
+  if (href && !props.disabled) {
+    const { type: _type, ...anchorProps } = props;
     return (
       <a
         className={classes}
         href={href}
         target={target}
         rel={rel ?? (target === "_blank" ? "noreferrer" : undefined)}
-        {...(props as unknown as AnchorHTMLAttributes<HTMLAnchorElement>)}
+        {...(anchorProps as unknown as AnchorHTMLAttributes<HTMLAnchorElement>)}
       >
         {content}
       </a>
