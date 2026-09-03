@@ -66,6 +66,7 @@ import CheckCircleOutlineSvg from "@/img/CheckCircleOutline.svg?react";
 import CheckOutlinedSvg from "@/img/CheckOutlined.svg?react";
 import CheckboxSvg from "@/img/Checkbox.svg?react";
 import ChecklistSvg from "@/img/Checklist.svg?react";
+import CheckmarkSvg from "@/img/Checkmark.svg?react";
 import ChevronBottomSvg from "@/img/ChevronBottom.svg?react";
 import ChevronLeftSvg from "@/img/ChevronLeft.svg?react";
 import ChevronRightSvg from "@/img/ChevronRight.svg?react";
@@ -93,6 +94,7 @@ import ContentCopySvg from "@/img/ContentCopy.svg?react";
 import ContentCopyOutlinedSvg from "@/img/ContentCopyOutlined.svg?react";
 import CopyAllOutlinedSvg from "@/img/CopyAllOutlined.svg?react";
 import CorporateFareSvg from "@/img/CorporateFare.svg?react";
+import CreditCardSvg from "@/img/CreditCard.svg?react";
 import CrisisAlertOutlinedSvg from "@/img/CrisisAlertOutlined.svg?react";
 import CropSquareSvg from "@/img/CropSquare.svg?react";
 import DarkModeSvg from "@/img/DarkMode.svg?react";
@@ -151,6 +153,7 @@ import FolderOpenSvg from "@/img/FolderOpen.svg?react";
 import FullscreenSvg from "@/img/Fullscreen.svg?react";
 import FullscreenExitSvg from "@/img/FullscreenExit.svg?react";
 import GitHubSvg from "@/img/GitHub.svg?react";
+import GaugeSvg from "@/img/Gauge.svg?react";
 import GridOnSvg from "@/img/GridOn.svg?react";
 import GridViewSvg from "@/img/GridView.svg?react";
 import GroupAddSvg from "@/img/GroupAdd.svg?react";
@@ -269,6 +272,7 @@ import SkipNextSvg from "@/img/SkipNext.svg?react";
 import SliderSvg from "@/img/Slider.svg?react";
 import SlidersSvg from "@/img/Sliders.svg?react";
 import SmartToySvg from "@/img/SmartToy.svg?react";
+import SparklesSvg from "@/img/Sparkles.svg?react";
 import SpeedSvg from "@/img/Speed.svg?react";
 import SplitscreenSvg from "@/img/Splitscreen.svg?react";
 import StopCircleOutlinedSvg from "@/img/StopCircleOutlined.svg?react";
@@ -568,6 +572,10 @@ export const ChecklistIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ChecklistSvg} />
 );
 
+export const CheckmarkIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={CheckmarkSvg} />
+);
+
 export const ChevronBottomIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ChevronBottomSvg} />
 );
@@ -674,6 +682,10 @@ export const CopyAllOutlinedIcon: FC<IconProps> = (props) => (
 
 export const CorporateFareIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={CorporateFareSvg} />
+);
+
+export const CreditCardIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={CreditCardSvg} />
 );
 
 export const CrisisAlertOutlinedIcon: FC<IconProps> = (props) => (
@@ -906,6 +918,10 @@ export const FullscreenExitIcon: FC<IconProps> = (props) => (
 
 export const GitHubIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={GitHubSvg} />
+);
+
+export const GaugeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={GaugeSvg} />
 );
 
 export const GridOnIcon: FC<IconProps> = (props) => (
@@ -1378,6 +1394,10 @@ export const SlidersIcon: FC<IconProps> = (props) => (
 
 export const SmartToyIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={SmartToySvg} />
+);
+
+export const SparklesIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={SparklesSvg} />
 );
 
 export const SpeedIcon: FC<IconProps> = (props) => (

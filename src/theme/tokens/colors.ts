@@ -245,7 +245,7 @@ export const colors = {
         primary: primitives.neutral[825],
         secondary: primitives.neutral[800],
         tertiary: primitives.neutral[875],
-        text: primitives.neutral[0],
+        text: primitives.neutral[450],
       },
       success: {
         primary: primitives.green[500],
@@ -398,7 +398,7 @@ export const colors = {
         primary: primitives.neutral[100],
         secondary: primitives.neutral[150],
         tertiary: primitives.neutral[200],
-        text: primitives.neutral[1000],
+        text: primitives.neutral[650],
       },
       success: {
         primary: primitives.green[500],
