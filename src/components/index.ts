@@ -23,6 +23,7 @@ export * from "./Menu";
 export * from "./Modal";
 export * from "./Pill";
 export * from "./Popover";
+export * from "./Progress";
 export * from "./Radio";
 export * from "./RichButton";
 export * from "./RichButtonGroup";
