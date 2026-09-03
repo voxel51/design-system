@@ -33,6 +33,23 @@ import { popoverPanelStyles } from "./styles";
  * Values follow the `<edge>-<alignment>` convention used by floating UI —
  * e.g. `BottomStart` opens the panel below the trigger, left-aligned with it.
  */
+/**
+ * Whether an overlay `layer` hangs off a control inside `panel`: the panel
+ * holds an element whose aria-controls names something in the layer, or the
+ * layer holds an element labelled by something in the panel.
+ */
+const isAnchoredIn = (layer: Element, panel: Element): boolean => {
+  for (const el of layer.querySelectorAll<HTMLElement>("[id]")) {
+    if (panel.querySelector(`[aria-controls~="${el.id}"]`)) return true;
+  }
+  for (const el of layer.querySelectorAll<HTMLElement>("[aria-labelledby]")) {
+    for (const id of (el.getAttribute("aria-labelledby") ?? "").split(/\s+/)) {
+      if (id && panel.querySelector(`#${CSS.escape(id)}`)) return true;
+    }
+  }
+  return false;
+};
+
 export const PopoverAnchor = {
   /** Below the trigger, horizontally centered. */
   Bottom: "bottom",
@@ -231,15 +248,22 @@ export const Popover: FC<PopoverProps> = ({
   });
 
   const click = useClick(context, { enabled: !controlled && !isDisabled });
-  // A press inside another overlay layer — a Select menu or a nested popover
-  // that portals out of this panel — is not a press outside it
+  // A press in another overlay layer counts as outside unless that layer was
+  // opened from inside this panel: a Select menu or nested popover anchored
+  // to one of the panel's controls links back to it through aria-controls or
+  // aria-labelledby. Any other layer — a sibling popout, a list left open
+  // elsewhere — is a press outside, and closes this panel.
   const dismiss = useDismiss(context, {
     escapeKey: closeOnEscape,
     outsidePress: (event) => {
       const target = event.target as Element | null;
-      return !target?.closest?.(
+      const layer = target?.closest?.(
         "[data-headlessui-portal], [data-floating-ui-portal]"
       );
+      if (!layer) return true;
+      const panel = refs.floating.current;
+      if (!panel) return true;
+      return !isAnchoredIn(layer, panel);
     },
   });
   const role = useRole(context, { role: "dialog" });
