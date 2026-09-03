@@ -75,10 +75,9 @@ describe("Tooltip", () => {
     expect(tooltipPanel).toHaveClass(aboveModalZIndexClass);
   });
 
-  it("should use fixed positioning with high z-index by default so overflow ancestors cannot clip it", () => {
+  it("should portal the panel to the body by default, so a transformed ancestor cannot offset it", () => {
     const content = randomString();
     const children = randomString();
-    const highZIndexClass = "z-[var(--z-high)]";
 
     render(
       <Tooltip {...defaultProps} content={content}>
@@ -92,7 +91,28 @@ describe("Tooltip", () => {
 
     const tooltipPanel = screen.getByText(content).parentElement;
     expect(tooltipPanel).toHaveClass("fixed");
-    expect(tooltipPanel).toHaveClass(highZIndexClass);
+    expect(tooltipPanel).toHaveClass("z-[var(--z-above-modal)]");
+    expect(screen.getByTestId(testId)).not.toContainElement(tooltipPanel);
+  });
+
+  it("should render the panel inline with high z-index when portal is false", () => {
+    const content = randomString();
+    const children = randomString();
+
+    render(
+      <Tooltip {...defaultProps} content={content} portal={false}>
+        {children}
+      </Tooltip>
+    );
+
+    fireEvent.mouseEnter(
+      within(screen.getByTestId(testId)).getByText(children)
+    );
+
+    const tooltipPanel = screen.getByText(content).parentElement;
+    expect(tooltipPanel).toHaveClass("fixed");
+    expect(tooltipPanel).toHaveClass("z-[var(--z-high)]");
     expect(tooltipPanel).not.toHaveClass("z-[var(--z-above-modal)]");
+    expect(screen.getByTestId(testId)).toContainElement(tooltipPanel);
   });
 });
