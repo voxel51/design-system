@@ -122,9 +122,11 @@ const RotatedSquare: FC<{ anchor: TooltipAnchor; borderClass: string }> = ({
  * @param content The content of the tooltip.
  * @param children The content which this component wraps; this acts as the element anchor and the hover trigger.
  * @param className `class` overrides to apply to the tooltip panel.
- * @param portal If `true`, renders the tooltip via a React portal into `document.body` with an
- * above-modal z-index, so it escapes ancestor stacking contexts (e.g. inside modals). The default
- * tooltip already uses fixed positioning, so it is never clipped by overflow-hidden/scroll ancestors.
+ * @param portal Renders the tooltip via a React portal into `document.body` with an above-modal
+ * z-index (default `true`). The panel is positioned in viewport coordinates, so it has to live
+ * outside any ancestor with a `transform` (floating-ui panels, animated containers): a fixed
+ * element inside a transformed ancestor is offset by that transform. Pass `false` to render the
+ * panel inline, in the wrapper's stacking context, when the trigger is not inside such an ancestor.
  * @param shadow The shadow to apply to the tooltip. See {@link Shadow}.
  * @param wrapperClassName Additional classes to apply to the outer wrapper element.
  * @param props Additional HTML properties to apply to the component.
@@ -134,7 +136,7 @@ export const Tooltip: FC<TooltipProps> = ({
   content,
   children,
   className,
-  portal = false,
+  portal = true,
   shadow = Shadow.Lg,
   wrapperClassName,
   ...props
