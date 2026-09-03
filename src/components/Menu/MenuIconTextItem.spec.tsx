@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 
 import { Dropdown, DropdownTrigger } from "@/components/Dropdown";
 import { EditIcon, DeleteIcon } from "@/components/Icons";
+import { IconName } from "@/types";
 
 import { MenuIconTextItem } from "./MenuIconTextItem";
 
@@ -34,6 +35,20 @@ describe("MenuIconTextItem", () => {
     );
     await user.click(screen.getByText("Open menu"));
     expect(screen.getByText("Edit item")).toBeInTheDocument();
+  });
+
+  it("should render a legacy IconName string as its glyph, not as text", async () => {
+    const user = userEvent.setup();
+    render(
+      <Dropdown trigger={trigger}>
+        <MenuIconTextItem icon={IconName.Fullscreen} text="Fullscreen" />
+      </Dropdown>
+    );
+    await user.click(screen.getByText("Open menu"));
+    // Exactly one "Fullscreen" — the label. The icon slot must hold an svg,
+    // not the raw enum string (the 0.x regression this guards against).
+    expect(screen.getByText("Fullscreen")).toBeInTheDocument();
+    expect(document.querySelector("svg")).toBeInTheDocument();
   });
 
   it("should render a custom icon node", async () => {
