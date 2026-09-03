@@ -101,4 +101,26 @@ describe("Button", () => {
       expect(onClick).not.toHaveBeenCalled();
     });
   });
+
+  it("should render an anchor with the button's look when href is set", () => {
+    render(
+      <Button href="https://docs.voxel51.com" target="_blank">
+        Docs
+      </Button>
+    );
+    const link = screen.getByRole("link", { name: "Docs" });
+    expect(link).toHaveAttribute("href", "https://docs.voxel51.com");
+    expect(link).toHaveAttribute("rel", "noreferrer");
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+  });
+
+  it("should render a disabled button, not a link, when href is set and disabled", () => {
+    render(
+      <Button href="https://docs.voxel51.com" disabled>
+        Docs
+      </Button>
+    );
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Docs" })).toBeDisabled();
+  });
 });

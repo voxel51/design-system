@@ -29,6 +29,11 @@ describe("Input", () => {
     expect(input).toBeInTheDocument();
   });
 
+  it("should render without a frame when borderless", () => {
+    render(<Input borderless />);
+    expect(screen.getByRole("textbox")).not.toHaveClass("border");
+  });
+
   it("should be disabled when disabled prop is true", () => {
     render(<Input disabled />);
     const input = screen.getByRole("textbox") as HTMLInputElement;
