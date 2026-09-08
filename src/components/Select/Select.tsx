@@ -1,9 +1,4 @@
-import {
-  Combobox,
-  ComboboxInput,
-  ComboboxOptions,
-  useClose,
-} from "@headlessui/react";
+import { Combobox, ComboboxInput, ComboboxOptions } from "@headlessui/react";
 import clsx from "clsx";
 import {
   FC,
@@ -12,7 +7,6 @@ import {
   useCallback,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
 
@@ -83,20 +77,6 @@ export interface SelectProps extends Omit<
  * @param zIndex Z-index level for the dropdown options list.
  * @param portal If `true`, forces z-index above modal layers for portal rendering.
  */
-/**
- * Closes the list once per pick. `immediate` reopens the list whenever the
- * input regains focus, which it does right after headlessui applies a
- * selection, so an exclusive pick left the list open. `useClose` is only
- * reachable from inside the Combobox.
- */
-const CloseOnPick: FC<{ token: number }> = ({ token }) => {
-  const close = useClose();
-  useEffect(() => {
-    if (token > 0) close();
-  }, [token, close]);
-  return null;
-};
-
 function getZIndexClass(zIndex?: ZIndex, portal?: boolean): string | undefined {
   if (portal) {
     return zIndexStyles(ZIndex.AboveModal);
@@ -193,9 +173,6 @@ export const Select: FC<SelectProps> = ({
 }) => {
   const [query, setQuery] = useState("");
   const [selectionState, setSelectionState] = useState<string[]>(() => []);
-  // bumped on each exclusive pick; CloseOnPick closes the list in response
-  const [pickToken, setPickToken] = useState(0);
-  const inputRef = useRef<HTMLInputElement>(null);
   const { ref: triggerRef, width: triggerWidth } = useElementSize();
 
   const filteredOptions = useMemo(
@@ -226,12 +203,8 @@ export const Select: FC<SelectProps> = ({
 
       setQuery("");
       onChange?.(value);
-
-      if (exclusive) {
-        setPickToken((token) => token + 1);
-      }
     },
-    [exclusive, onChange]
+    [onChange]
   );
 
   const getDisplayValue = useCallback(
@@ -257,10 +230,8 @@ export const Select: FC<SelectProps> = ({
         immediate
         onClose={() => setQuery("")}
       >
-        <CloseOnPick token={pickToken} />
         <div ref={triggerRef} className="relative flex items-center">
           <ComboboxInput
-            ref={inputRef}
             autoComplete="off" // interferes with dropdown menu
             displayValue={getDisplayValue}
             onChange={(e) => setQuery(e.target.value)}
