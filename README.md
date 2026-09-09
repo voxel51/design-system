@@ -133,20 +133,30 @@ General rules of thumb:
 Every component ships a Playwright page object next to it
 (`<Name>.pom.ts`), exported from `@voxel51/voodo/e2e`, so product e2e suites
 drive voodo components through a verified contract instead of their own
-selectors. Each page object is verified by `<Name>.pom.spec.ts`, which drives
-every story of the component through the page object alone, records an aria
-snapshot of each story at rest and open (`__aria__/`), and requires every
-page-object method to be exercised.
+selectors. Page objects follow the fiftyone `e2e-pw` conventions: parts are
+located by `data-cy` test ids through `getByTestId`, static locators are `get`
+accessors and dynamic ones are `get`-prefixed methods, actions are verbs, and
+assertions live only in a composed `<Name>PomAsserter` reached as
+`pom.assert`. Consumers need `testIdAttribute: "data-cy"` in their Playwright
+config, which both product suites already set.
+
+Each page object is verified by `<Name>.pom.spec.ts`, which drives every
+story of the component through the page object alone, calls every page-object
+and asserter member, and records an aria snapshot of each story at rest and
+open (`__aria__/`). Stories named `*Disabled*` must refuse the primary
+interaction; every other story must accept it.
 
 The `component alignment` PR check runs `npm run check:alignment` and
 `npm run test:pom`. The alignment script requires the story, page object, and
-spec to exist and agree: the page object must locate every role the component
-renders, expose a method for each state-bearing prop, and document every
-method; every own prop must appear in some story's `args` or be listed with a
-reason in `utils/component-props-ignore.json`. Components not yet aligned are
-listed in `utils/component-alignment-allowlist.json`, which only shrinks.
+spec to exist and agree: the `data-cy` values the component renders and the
+ones the page object looks up must match exactly, every state-bearing prop
+needs a corresponding member, every member needs a doc comment and a call
+from the spec, and every own prop must appear in some story's `args` or be
+listed with a reason in `utils/component-props-ignore.json`. Components not
+yet aligned are listed in `utils/component-alignment-allowlist.json`, which
+only shrinks.
 
-To run the specs locally:
+To run the specs locally against a static Storybook build:
 
 ```bash
 npx playwright install chromium

@@ -241,6 +241,7 @@ export const Select: FC<SelectProps> = ({
         <div ref={triggerRef} className="relative flex items-center">
           <ComboboxInput
             ref={inputRef}
+            data-cy="select-input"
             autoComplete="off" // interferes with dropdown menu
             displayValue={getDisplayValue}
             onChange={(e) => setQuery(e.target.value)}
@@ -269,6 +270,7 @@ export const Select: FC<SelectProps> = ({
         </div>
 
         <ComboboxOptions
+          data-cy="select-options"
           anchor={{ to: anchor, gap: 2 }}
           portal={portal}
           modal={false}
@@ -292,6 +294,7 @@ export const Select: FC<SelectProps> = ({
             return (
               <Option
                 key={opt.id}
+                data-cy="select-option"
                 value={opt.id}
                 selected={isSelected}
                 className={clsx("cursor-pointer")}

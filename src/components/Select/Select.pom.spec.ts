@@ -2,11 +2,9 @@ import { expect, test } from "@playwright/test";
 
 import {
   expectAriaSnapshot,
-  expectPomFullyExercised,
   expectStoryIndexToMatch,
   gotoStory,
   storiesOf,
-  tracked,
 } from "#/pom-testing";
 
 import { SelectPom } from "./Select.pom";
@@ -25,40 +23,45 @@ for (const story of stories) {
 
     test("SelectPom drives the story", async ({ page }) => {
       const root = page.locator("#storybook-root");
-      const select = tracked(new SelectPom(root, page));
-      await expect(select.input()).toBeVisible();
+      const select = new SelectPom(page, root);
+      await expect(select.input).toBeVisible();
       await expectAriaSnapshot(root, story, "rest");
 
       if (story.disabled) {
-        expect(await select.isDisabled()).toBe(true);
-        await select.input().click({ force: true });
-        expect(await select.isOpen()).toBe(false);
+        await select.assert.isDisabled();
+        await select.input.click({ force: true });
+        await select.assert.isClosed();
         return;
       }
 
-      expect(await select.isDisabled()).toBe(false);
+      await select.assert.isEnabled();
       await select.open();
-      expect(await select.isOpen()).toBe(true);
-      await expectAriaSnapshot(await select.listbox(), story, "open");
+      await select.assert.isOpen();
+      await expectAriaSnapshot(await select.getOptions(), story, "open");
 
-      const labels = await select.optionLabels();
+      const labels = await select.getOptionLabels();
       expect(labels.length).toBeGreaterThan(0);
-      expect(await (await select.options()).count()).toBe(labels.length);
+      await select.assert.hasOptions(labels);
 
-      const alreadySelected = await select.selectedLabels();
+      await select.filter(labels[0].split(" ")[0]);
+      const filtered = await select.getOptionLabels();
+      expect(filtered.every((label) => labels.includes(label))).toBe(true);
+      await select.filter("");
+      await select.assert.hasOptions(labels);
+
+      const alreadySelected = await select.getSelectedLabels();
       const target =
         labels.find((label) => !alreadySelected.includes(label)) ?? labels[0];
 
       await select.choose(target);
-      expect(await select.selectedLabels()).toContain(target);
-      expect((await select.value()).length).toBeGreaterThan(0);
+      await select.open();
+      await select.assert.hasSelected(target);
+      await expect(await select.getOption(target)).toBeVisible();
+      await select.assert.hasValue(await select.getValue());
+      expect((await select.getValue()).length).toBeGreaterThan(0);
 
       await select.close();
-      expect(await select.isOpen()).toBe(false);
+      await select.assert.isClosed();
     });
   });
 }
-
-test("SelectPom is fully exercised", () => {
-  expectPomFullyExercised(SelectPom);
-});

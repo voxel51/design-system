@@ -7,7 +7,10 @@ import ts from "typescript";
 /**
  * Checks that every component in src/components is fully described for
  * consumers: a story, a Playwright page object, and a page-object spec that
- * agree with each other and with the `@voxel51/voodo/e2e` entry. Together with
+ * agree with each other and with the `@voxel51/voodo/e2e` entry. Page objects
+ * follow the fiftyone e2e-pw conventions: `data-cy` test ids looked up with
+ * getByTestId, locators as `get` accessors or get-prefixed methods, actions as
+ * verbs, and assertions only in a composed `<Name>PomAsserter`. Together with
  * `npm run test:pom`, which drives every story through its page object, this
  * is the `component alignment` PR check.
  *
@@ -25,40 +28,16 @@ const ALLOWLIST = path.join(__dirname, "component-alignment-allowlist.json");
 const PROPS_IGNORE = path.join(__dirname, "component-props-ignore.json");
 
 /**
- * ARIA roles each Headless UI primitive renders. A component that uses one of
- * these must have a page object that locates that role, otherwise the page
- * object cannot reach part of the component.
- */
-const HEADLESS_ROLES: Record<string, string[]> = {
-  Checkbox: ["checkbox"],
-  ComboboxInput: ["combobox"],
-  ComboboxOption: ["option"],
-  ComboboxOptions: ["listbox"],
-  Dialog: ["dialog"],
-  ListboxButton: ["button"],
-  ListboxOption: ["option"],
-  ListboxOptions: ["listbox"],
-  MenuItem: ["menuitem"],
-  MenuItems: ["menu"],
-  Radio: ["radio"],
-  RadioGroup: ["radiogroup"],
-  Switch: ["switch"],
-  Tab: ["tab"],
-  TabList: ["tablist"],
-  TabPanel: ["tabpanel"],
-};
-
-/**
- * Props that imply a page-object method. A component exposing a matching prop
- * must have a page object with at least one of the listed methods, so the
- * state the prop controls can be read or driven by consumers.
+ * Props that imply a page-object member. A component exposing a matching prop
+ * must have a page object or asserter with at least one of the listed members,
+ * so the state the prop controls can be read, driven, or asserted.
  */
 const PROP_METHODS: [RegExp, string[]][] = [
   [/^disabled$/, ["isDisabled"]],
-  [/^onChange$/, ["value", "checked", "selectedLabels"]],
-  [/^value$/, ["value"]],
-  [/^checked$/, ["checked", "isChecked"]],
-  [/^(options|items)$/, ["optionLabels", "itemLabels"]],
+  [/^onChange$/, ["getValue", "getSelectedLabels", "hasValue", "hasSelected"]],
+  [/^value$/, ["getValue", "hasValue"]],
+  [/^checked$/, ["isChecked", "hasChecked"]],
+  [/^(options|items)$/, ["getOptionLabels", "getItemLabels"]],
   [/^onClick$/, ["click", "choose"]],
   [/^(open|onClose|onOpenChange)$/, ["isOpen"]],
 ];
@@ -67,7 +46,7 @@ const PROP_METHODS: [RegExp, string[]][] = [
 const FORBIDDEN_IN_POM: [RegExp, string][] = [
   [/locator\(\s*["'`]\s*\./, "class selector"],
   [/data-headlessui/, "Headless UI internal attribute"],
-  [/data-testid|getByTestId/, "test id (page objects locate by role and name)"],
+  [/data-testid/, "data-testid (the test id attribute is data-cy)"],
   [/waitForTimeout/, "fixed timeout"],
 ];
 
@@ -86,24 +65,23 @@ const allowlist = JSON.parse(fs.readFileSync(ALLOWLIST, "utf8")) as Record<
   string,
   string
 >;
+const propsIgnore = JSON.parse(fs.readFileSync(PROPS_IGNORE, "utf8")) as Record<
+  string,
+  Record<string, string>
+>;
 
 for (const name of Object.keys(allowlist)) {
   if (!components.includes(name)) {
     fail(name, "is on the allowlist but has no directory in src/components");
   }
 }
-
-const e2eEntry = fs.readFileSync(E2E_ENTRY, "utf8");
-const propsIgnore = JSON.parse(fs.readFileSync(PROPS_IGNORE, "utf8")) as Record<
-  string,
-  Record<string, string>
->;
-
 for (const name of Object.keys(propsIgnore)) {
   if (!components.includes(name)) {
     fail(name, "is in component-props-ignore.json but has no directory");
   }
 }
+
+const e2eEntry = fs.readFileSync(E2E_ENTRY, "utf8");
 
 const stripComments = (code: string): string =>
   code.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
@@ -115,6 +93,63 @@ const parse = (file: string): ts.SourceFile =>
     ts.ScriptTarget.Latest,
     true
   );
+
+interface Member {
+  className: string;
+  name: string;
+  isGetter: boolean;
+  /** The declared return type mentions `Locator`. */
+  returnsLocator: boolean;
+  documented: boolean;
+}
+
+/** Public members of every class in a page-object file. */
+const classMembers = (file: string): Member[] => {
+  const source = parse(file);
+  const members: Member[] = [];
+  const visit = (node: ts.Node): void => {
+    if (ts.isClassDeclaration(node) && node.name) {
+      for (const member of node.members) {
+        const isGetter = ts.isGetAccessor(member);
+        if (!ts.isMethodDeclaration(member) && !isGetter) continue;
+        const flags = ts.getCombinedModifierFlags(member);
+        if (flags & (ts.ModifierFlags.Private | ts.ModifierFlags.Protected)) {
+          continue;
+        }
+        members.push({
+          className: node.name.text,
+          name: member.name.getText(source),
+          isGetter,
+          returnsLocator: /\bLocator\b/.test(
+            member.type?.getText(source) ?? ""
+          ),
+          documented: ts.getJSDocCommentsAndTags(member).length > 0,
+        });
+      }
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(source);
+  return members;
+};
+
+/** Source text of every class in a file whose name does not end in Asserter. */
+const nonAsserterClassText = (file: string): string => {
+  const source = parse(file);
+  const chunks: string[] = [];
+  const visit = (node: ts.Node): void => {
+    if (
+      ts.isClassDeclaration(node) &&
+      node.name &&
+      !node.name.text.endsWith("Asserter")
+    ) {
+      chunks.push(node.getText(source));
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(source);
+  return chunks.join("\n");
+};
 
 /** Own members of `interface <Name>Props` in the component's main file. */
 const ownProps = (name: string, dir: string): string[] => {
@@ -189,9 +224,9 @@ const storyArgs = (storiesFile: string): Set<string> => {
   return names;
 };
 
-/** Roles the component renders: Headless UI primitives it uses plus explicit `role=` attributes. */
-const renderedRoles = (dir: string): Set<string> => {
-  const roles = new Set<string>();
+/** Every literal `data-cy` value the component's source renders. */
+const renderedTestIds = (dir: string): Set<string> => {
+  const ids = new Set<string>();
   const files = fs
     .readdirSync(dir)
     .filter(
@@ -202,54 +237,20 @@ const renderedRoles = (dir: string): Set<string> => {
     );
   for (const file of files) {
     const code = stripComments(fs.readFileSync(path.join(dir, file), "utf8"));
-    const headless = /import\s*{([^}]*)}\s*from\s*"@headlessui\/react"/.exec(
-      code
-    );
-    if (headless) {
-      for (const raw of headless[1].split(",")) {
-        const imported = raw.trim().split(/\s+as\s+/)[0];
-        for (const role of HEADLESS_ROLES[imported] ?? []) roles.add(role);
-      }
-    }
-    for (const match of code.matchAll(/\brole=["']([a-z]+)["']/g)) {
-      roles.add(match[1]);
+    for (const match of code.matchAll(/\bdata-cy=["']([^"']+)["']/g)) {
+      ids.add(match[1]);
     }
   }
-  return roles;
+  return ids;
 };
 
-const hasMethod = (pom: string, method: string): boolean =>
-  new RegExp(`^\\s+(?:async\\s+)?${method}\\(`, "m").test(pom);
-
-/** Public methods of every class in a page-object file that lack a doc comment. */
-const undocumentedMethods = (file: string): string[] => {
-  const source = ts.createSourceFile(
-    file,
-    fs.readFileSync(file, "utf8"),
-    ts.ScriptTarget.Latest,
-    true
+/** Every literal test id a page object looks up. */
+const pomTestIds = (code: string): Set<string> =>
+  new Set(
+    [...code.matchAll(/getByTestId\(\s*["']([^"']+)["']\s*\)/g)].map(
+      (match) => match[1]
+    )
   );
-  const missing: string[] = [];
-  const visit = (node: ts.Node): void => {
-    if (ts.isClassDeclaration(node) && node.name) {
-      for (const member of node.members) {
-        if (!ts.isMethodDeclaration(member) && !ts.isGetAccessor(member)) {
-          continue;
-        }
-        const flags = ts.getCombinedModifierFlags(member);
-        if (flags & (ts.ModifierFlags.Private | ts.ModifierFlags.Protected)) {
-          continue;
-        }
-        if (ts.getJSDocCommentsAndTags(member).length === 0) {
-          missing.push(`${node.name.text}.${member.name.getText(source)}`);
-        }
-      }
-    }
-    ts.forEachChild(node, visit);
-  };
-  visit(source);
-  return missing;
-};
 
 /** Every problem with one component, empty when it is aligned. */
 const problems = (name: string): string[] => {
@@ -258,6 +259,7 @@ const problems = (name: string): string[] => {
   const storiesFile = path.join(dir, `${name}.stories.tsx`);
   const pomFile = path.join(dir, `${name}.pom.ts`);
   const specFile = path.join(dir, `${name}.pom.spec.ts`);
+  const props = ownProps(name, dir);
 
   if (!fs.existsSync(storiesFile)) {
     out.push(`missing ${name}.stories.tsx`);
@@ -271,7 +273,7 @@ const problems = (name: string): string[] => {
     }
     const covered = storyArgs(storiesFile);
     const ignored = propsIgnore[name] ?? {};
-    for (const prop of ownProps(name, dir)) {
+    for (const prop of props) {
       if (!covered.has(prop) && !(prop in ignored)) {
         out.push(
           `prop \`${prop}\` appears in no story's args ` +
@@ -292,36 +294,76 @@ const problems = (name: string): string[] => {
     out.push(`missing ${name}.pom.ts`);
   } else {
     const pom = fs.readFileSync(pomFile, "utf8");
+    const code = stripComments(pom);
     if (!new RegExp(`export class ${name}Pom\\b`).test(pom)) {
       out.push(`${name}.pom.ts does not export \`class ${name}Pom\``);
     }
-    if (/^import (?!type\b)[^"']*["'](?!\.)/m.test(pom)) {
-      out.push(
-        `${name}.pom.ts imports a package at runtime; only type imports and ` +
-          "relative imports are allowed"
-      );
+    if (!new RegExp(`export class ${name}PomAsserter\\b`).test(pom)) {
+      out.push(`${name}.pom.ts does not export \`class ${name}PomAsserter\``);
     }
-    const code = stripComments(pom);
+    if (!/readonly assert:/.test(pom)) {
+      out.push(`${name}Pom does not expose \`readonly assert\``);
+    }
+    for (const match of pom.matchAll(
+      /^import (?!type\b)[^"']*["']([^"']+)["']/gm
+    )) {
+      if (!match[1].startsWith(".") && match[1] !== "@playwright/test") {
+        out.push(
+          `${name}.pom.ts imports ${match[1]} at runtime; only @playwright/test ` +
+            "and relative imports are allowed"
+        );
+      }
+    }
     for (const [pattern, label] of FORBIDDEN_IN_POM) {
       if (pattern.test(code)) {
         out.push(`${name}.pom.ts uses a ${label}`);
       }
     }
-    for (const method of undocumentedMethods(pomFile)) {
-      out.push(`${method} has no doc comment`);
+    if (/\bexpect\(/.test(stripComments(nonAsserterClassText(pomFile)))) {
+      out.push(
+        `${name}.pom.ts asserts outside its Asserter class; page objects act and read, asserters expect`
+      );
     }
-    for (const role of renderedRoles(dir)) {
-      if (!new RegExp(`["'\`]${role}["'\`]`).test(code)) {
+    const members = classMembers(pomFile);
+    for (const member of members) {
+      if (!member.documented) {
+        out.push(`${member.className}.${member.name} has no doc comment`);
+      }
+      if (
+        member.returnsLocator &&
+        !member.isGetter &&
+        !/^get[A-Z]/.test(member.name)
+      ) {
         out.push(
-          `${name}.pom.ts never locates role "${role}", which the component renders`
+          `${member.className}.${member.name} returns a Locator; make it a \`get\` accessor or prefix it with get`
         );
       }
     }
-    for (const prop of ownProps(name, dir)) {
-      for (const [pattern, methods] of PROP_METHODS) {
-        if (pattern.test(prop) && !methods.some((m) => hasMethod(code, m))) {
+    const rendered = renderedTestIds(dir);
+    const used = pomTestIds(code);
+    for (const id of rendered) {
+      if (!used.has(id)) {
+        out.push(
+          `${name}.pom.ts never uses data-cy "${id}", which the component renders`
+        );
+      }
+    }
+    for (const id of used) {
+      if (!rendered.has(id)) {
+        out.push(
+          `${name}.pom.ts looks up data-cy "${id}", which no file in the component renders`
+        );
+      }
+    }
+    const memberNames = new Set(members.map((member) => member.name));
+    for (const prop of props) {
+      for (const [pattern, candidates] of PROP_METHODS) {
+        if (
+          pattern.test(prop) &&
+          !candidates.some((candidate) => memberNames.has(candidate))
+        ) {
           out.push(
-            `${name}.pom.ts has none of ${methods.join("/")} for prop \`${prop}\``
+            `${name}.pom.ts has none of ${candidates.join("/")} for prop \`${prop}\``
           );
         }
       }
@@ -335,31 +377,33 @@ const problems = (name: string): string[] => {
   if (!fs.existsSync(specFile)) {
     out.push(`missing ${name}.pom.spec.ts`);
   } else {
-    const spec = fs.readFileSync(specFile, "utf8");
+    const spec = stripComments(fs.readFileSync(specFile, "utf8"));
     if (!spec.includes("storiesOf(import.meta.url)")) {
       out.push(`${name}.pom.spec.ts does not enumerate stories via storiesOf`);
     }
     if (!spec.includes("gotoStory(")) {
       out.push(`${name}.pom.spec.ts does not navigate via gotoStory`);
     }
-    if (!spec.includes("expectStoryIndexToMatch")) {
+    if (!spec.includes("expectStoryIndexToMatch(")) {
       out.push(`${name}.pom.spec.ts does not call expectStoryIndexToMatch`);
-    }
-    if (!spec.includes(`${name}Pom`)) {
-      out.push(`${name}.pom.spec.ts does not use ${name}Pom`);
-    }
-    if (!spec.includes("tracked(")) {
-      out.push(
-        `${name}.pom.spec.ts does not wrap the page object in tracked()`
-      );
-    }
-    if (!spec.includes(`expectPomFullyExercised(${name}Pom)`)) {
-      out.push(
-        `${name}.pom.spec.ts does not end with expectPomFullyExercised(${name}Pom)`
-      );
     }
     if (!spec.includes("expectAriaSnapshot(")) {
       out.push(`${name}.pom.spec.ts records no aria snapshot`);
+    }
+    if (!spec.includes(`new ${name}Pom(`)) {
+      out.push(`${name}.pom.spec.ts does not construct ${name}Pom`);
+    }
+    if (fs.existsSync(pomFile)) {
+      for (const member of classMembers(pomFile)) {
+        const used = member.isGetter
+          ? new RegExp(`\\.${member.name}\\b(?!\\()`).test(spec)
+          : spec.includes(`.${member.name}(`);
+        if (!used) {
+          out.push(
+            `${name}.pom.spec.ts never calls ${member.className}.${member.name}`
+          );
+        }
+      }
     }
   }
 

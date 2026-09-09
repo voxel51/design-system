@@ -74,10 +74,11 @@ for (const [subpath, target] of Object.entries(pkg.exports)) {
 // The tokens entry must stay free of React and CSS — it exists so workers and
 // other non-UI consumers can read token values. The e2e entry has the same
 // constraint: page objects run inside Playwright, which has neither React nor
-// a CSS pipeline, and must not import Playwright itself at runtime either.
+// a CSS pipeline. Its only runtime import is @playwright/test, the peer the
+// consuming suite already has.
 const NON_UI_ENTRIES = {
   "../dist/tokens.js": ["react", "jsx", ".css"],
-  "../dist/e2e.js": ["react", "jsx", ".css", "@playwright/test"],
+  "../dist/e2e.js": ["react", "jsx", ".css"],
 };
 for (const [entry, needles] of Object.entries(NON_UI_ENTRIES)) {
   const bundle = readFileSync(new URL(entry, import.meta.url), "utf8");

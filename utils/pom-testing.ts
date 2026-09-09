@@ -72,17 +72,15 @@ export const storiesOf = (specUrl: string): Story[] => {
 
 /**
  * Navigates to a story and waits until Storybook has either rendered it or
- * shown its error display. The first render in a `storybook dev` session
- * compiles the library on demand and can take well over Playwright's default
- * expect timeout, so waiting on Storybook's own body state is what makes the
- * specs deterministic. A story that fails to render fails here, with
- * Storybook's message, rather than as a missing element later.
+ * shown its error display, by watching Storybook's own body state. A story
+ * that fails to render fails here, with Storybook's message, rather than as a
+ * missing element later.
  */
 export const gotoStory = async (page: Page, story: Story): Promise<void> => {
   await page.goto(story.url);
   await page
     .locator("body.sb-show-main, body.sb-show-errordisplay")
-    .waitFor({ state: "attached", timeout: 120_000 });
+    .waitFor({ state: "attached" });
   const failed = await page.locator("body.sb-show-errordisplay").count();
   if (failed > 0) {
     const message = await page.locator("#error-message").innerText();
@@ -131,49 +129,4 @@ export const expectAriaSnapshot = async (
   await expect(locator).toMatchAriaSnapshot({
     name: `${story.id}.${state}.aria.yml`,
   });
-};
-
-const exercised = new Map<string, Set<string>>();
-
-/**
- * Wraps a page object so every method call is recorded, including calls a
- * method makes to its siblings. Pair with {@link expectPomFullyExercised} in
- * the spec's final test.
- */
-export const tracked = <T extends object>(pom: T): T => {
-  const proto = Object.getPrototypeOf(pom) as { constructor: { name: string } };
-  const seen = exercised.get(proto.constructor.name) ?? new Set<string>();
-  exercised.set(proto.constructor.name, seen);
-  return new Proxy(pom, {
-    get(target, prop, receiver) {
-      const value = Reflect.get(target, prop, receiver) as unknown;
-      if (typeof value === "function" && typeof prop === "string") {
-        seen.add(prop);
-        return (value as (...args: unknown[]) => unknown).bind(receiver);
-      }
-      return value;
-    },
-  });
-};
-
-/** Names of every method a page-object class exposes. */
-export const publicMethods = (ctor: { prototype: object }): string[] =>
-  Object.getOwnPropertyNames(ctor.prototype).filter(
-    (name) =>
-      name !== "constructor" &&
-      typeof (ctor.prototype as Record<string, unknown>)[name] === "function"
-  );
-
-/**
- * Asserts that every method of the page-object class was called at least once
- * by this spec file through {@link tracked} instances. A method nobody drives
- * is an unverified contract; either exercise it or remove it.
- */
-export const expectPomFullyExercised = (ctor: {
-  name: string;
-  prototype: object;
-}): void => {
-  const seen = exercised.get(ctor.name) ?? new Set<string>();
-  const missing = publicMethods(ctor).filter((name) => !seen.has(name));
-  expect(missing, `${ctor.name} methods this spec never called`).toEqual([]);
 };

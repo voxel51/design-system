@@ -2,11 +2,9 @@ import { expect, test } from "@playwright/test";
 
 import {
   expectAriaSnapshot,
-  expectPomFullyExercised,
   expectStoryIndexToMatch,
   gotoStory,
   storiesOf,
-  tracked,
 } from "#/pom-testing";
 
 import { ContextMenuPom } from "./ContextMenu.pom";
@@ -26,37 +24,34 @@ for (const story of stories) {
     test("ContextMenuPom drives the story", async ({ page }) => {
       const root = page.locator("#storybook-root");
       const area = root.locator("> *").first();
-      const menu = tracked(new ContextMenuPom(area, page));
+      const menu = new ContextMenuPom(page, area);
       await expect(area).toBeVisible();
-      await expect(menu.trigger()).toHaveCount(1);
+      await expect(menu.trigger).toHaveCount(1);
       await expectAriaSnapshot(root, story, "rest");
 
       if (story.disabled) {
-        expect(await menu.isDisabled()).toBe(true);
+        await menu.assert.isDisabled();
         await menu.rightClick();
-        expect(await menu.isOpen()).toBe(false);
+        await menu.assert.isClosed();
         return;
       }
 
-      expect(await menu.isDisabled()).toBe(false);
+      await menu.assert.isEnabled();
       await menu.open();
-      expect(await menu.isOpen()).toBe(true);
-      await expectAriaSnapshot(await menu.menu(), story, "open");
+      await menu.assert.isOpen();
+      await expectAriaSnapshot(await menu.getMenu(), story, "open");
 
-      const labels = await menu.itemLabels();
+      const labels = await menu.getItemLabels();
       expect(labels.length).toBeGreaterThan(0);
-      expect(await (await menu.items()).count()).toBe(labels.length);
+      await menu.assert.hasItems(labels);
+      await expect(await menu.getItem(labels[0])).toBeVisible();
 
       await menu.choose(labels[0]);
-      expect(await menu.isOpen()).toBe(false);
+      await menu.assert.isClosed();
 
       await menu.open();
       await menu.close();
-      expect(await menu.isOpen()).toBe(false);
+      await menu.assert.isClosed();
     });
   });
 }
-
-test("ContextMenuPom is fully exercised", () => {
-  expectPomFullyExercised(ContextMenuPom);
-});
