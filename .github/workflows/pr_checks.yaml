@@ -56,8 +56,11 @@ jobs:
       - name: Check component alignment
         run: npm run check:alignment
 
+      # ubuntu-latest ships Google Chrome, so Chromium's shared libraries are
+      # already present; `--with-deps` would only add an apt-get round trip
+      # against third-party mirrors that fails intermittently.
       - name: Install Playwright browser
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install chromium
 
       - name: Run page-object specs
         run: npm run test:pom
