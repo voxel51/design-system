@@ -42,6 +42,7 @@ for (const story of stories) {
       const labels = await select.getOptionLabels();
       expect(labels.length).toBeGreaterThan(0);
       await select.assert.hasOptions(labels);
+      await select.assert.hasOptionCount(labels.length);
 
       await select.filter(labels[0].split(" ")[0]);
       const filtered = await select.getOptionLabels();

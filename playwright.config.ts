@@ -18,7 +18,7 @@ export default defineConfig({
   reporter: process.env.CI ? [["github"], ["html", { open: "never" }]] : "list",
   // Aria trees are platform-independent, so baselines carry no browser or OS
   // suffix and live next to the component.
-  snapshotPathTemplate: "{testFileDir}/__aria__/{arg}{ext}",
+  snapshotPathTemplate: "{testDir}/{testFileDir}/__aria__/{arg}{ext}",
   use: {
     baseURL,
     // Matches the product e2e suites, so page objects work unchanged there.

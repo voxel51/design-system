@@ -77,6 +77,7 @@ export class SelectPom {
   async filter(query: string): Promise<void> {
     await this.open();
     await this.input.fill(query);
+    await this.open();
   }
 
   /**
@@ -158,10 +159,19 @@ export class SelectPomAsserter {
     );
   }
 
-  /** The open list shows exactly `labels`, in order. */
+  /** The list shows exactly `labels`, by accessible name, in order. */
   async hasOptions(labels: string[]): Promise<void> {
+    await expect
+      .poll(() => this.select.getOptionLabels(), {
+        message: "option labels",
+      })
+      .toEqual(labels);
+  }
+
+  /** The list holds exactly `count` options. */
+  async hasOptionCount(count: number): Promise<void> {
     await expect(
       (await this.select.getOptions()).getByTestId("select-option")
-    ).toHaveText(labels, { useInnerText: false });
+    ).toHaveCount(count);
   }
 }
