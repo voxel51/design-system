@@ -73,33 +73,30 @@ export class SelectPom {
   }
 
   /**
-   * Visible text of every listed option, whitespace collapsed, in display
-   * order. Matches the accessible name Playwright uses in
+   * Text of every listed option, whitespace collapsed, in display order. Read
+   * from `textContent` rather than `innerText` so CSS `text-transform` does
+   * not alter it; this matches the accessible name Playwright uses in
    * `getByRole("option", { name })`.
    */
   async optionLabels(): Promise<string[]> {
     await this.open();
     return (await this.options()).evaluateAll((elements) =>
-      elements.map((el) =>
-        (el as HTMLElement).innerText.replace(/\s+/g, " ").trim()
-      )
+      elements.map((el) => (el.textContent ?? "").replace(/\s+/g, " ").trim())
     );
   }
 
-  /** Visible text of every option marked selected, in display order. */
+  /** Text of every option marked selected, in display order. */
   async selectedLabels(): Promise<string[]> {
     await this.open();
     return (await this.listbox())
       .locator('[role="option"][aria-selected="true"]')
       .evaluateAll((elements) =>
-        elements.map((el) =>
-          (el as HTMLElement).innerText.replace(/\s+/g, " ").trim()
-        )
+        elements.map((el) => (el.textContent ?? "").replace(/\s+/g, " ").trim())
       );
   }
 
   /**
-   * Selects the option whose visible text is exactly `label`. In an exclusive
+   * Selects the option whose text is exactly `label`. In an exclusive
    * select the list closes afterwards; in a multi-select it stays open and a
    * second call with the same label deselects it.
    */

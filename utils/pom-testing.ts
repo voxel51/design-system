@@ -71,6 +71,27 @@ export const storiesOf = (specUrl: string): Story[] => {
 };
 
 /**
+ * Navigates to a story and waits until Storybook has either rendered it or
+ * shown its error display. The first render in a `storybook dev` session
+ * compiles the library on demand and can take well over Playwright's default
+ * expect timeout, so waiting on Storybook's own body state is what makes the
+ * specs deterministic. A story that fails to render fails here, with
+ * Storybook's message, rather than as a missing element later.
+ */
+export const gotoStory = async (page: Page, story: Story): Promise<void> => {
+  await page.goto(story.url);
+  await page
+    .locator("body.sb-show-main, body.sb-show-errordisplay")
+    .waitFor({ state: "attached", timeout: 120_000 });
+  const failed = await page.locator("body.sb-show-errordisplay").count();
+  if (failed > 0) {
+    const message = await page.locator("#error-message").innerText();
+    const stack = await page.locator("#error-stack").innerText();
+    throw new Error(`${story.id} failed to render:\n${message}\n${stack}`);
+  }
+};
+
+/**
  * Asserts that the stories enumerated at collection time are exactly the
  * stories Storybook serves for that title. A story the spec cannot see (a
  * custom `name`, a differently shaped export) fails here rather than going

@@ -139,6 +139,9 @@ const problems = (name: string): string[] => {
     if (!spec.includes("storiesOf(import.meta.url)")) {
       out.push(`${name}.pom.spec.ts does not enumerate stories via storiesOf`);
     }
+    if (!spec.includes("gotoStory(")) {
+      out.push(`${name}.pom.spec.ts does not navigate via gotoStory`);
+    }
     if (!spec.includes("expectStoryIndexToMatch")) {
       out.push(`${name}.pom.spec.ts does not call expectStoryIndexToMatch`);
     }

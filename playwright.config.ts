@@ -15,6 +15,9 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: 0,
+  // Ceiling, not a wait: the first story of a run includes vite compiling the
+  // library on demand (see gotoStory in utils/pom-testing.ts).
+  timeout: 150_000,
   reporter: process.env.CI ? [["github"], ["html", { open: "never" }]] : "list",
   use: {
     baseURL,

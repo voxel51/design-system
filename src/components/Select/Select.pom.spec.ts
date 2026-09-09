@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { expectStoryIndexToMatch, storiesOf } from "#/pom-testing";
+import { expectStoryIndexToMatch, gotoStory, storiesOf } from "#/pom-testing";
 
 import { SelectPom } from "./Select.pom";
 
@@ -13,7 +13,7 @@ test("every Select story is covered", async ({ page }) => {
 for (const story of stories) {
   test.describe(story.name, () => {
     test.beforeEach(async ({ page }) => {
-      await page.goto(story.url);
+      await gotoStory(page, story);
     });
 
     test("SelectPom drives the story", async ({ page }) => {

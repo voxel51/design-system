@@ -75,16 +75,15 @@ export class ContextMenuPom {
   }
 
   /**
-   * Visible text of every menu item, whitespace collapsed, in display order.
-   * Matches the accessible name Playwright uses in
+   * Text of every menu item, whitespace collapsed, in display order. Read from
+   * `textContent` rather than `innerText` so CSS `text-transform` does not
+   * alter it; this matches the accessible name Playwright uses in
    * `getByRole("menuitem", { name })`.
    */
   async itemLabels(): Promise<string[]> {
     await this.open();
     return (await this.items()).evaluateAll((elements) =>
-      elements.map((el) =>
-        (el as HTMLElement).innerText.replace(/\s+/g, " ").trim()
-      )
+      elements.map((el) => (el.textContent ?? "").replace(/\s+/g, " ").trim())
     );
   }
 
