@@ -1,0 +1,6 @@
+- menu:
+  - text: Track
+  - menuitem "Seek to start"
+  - menuitem "Split at playhead"
+  - separator
+  - menuitem "Delete track"

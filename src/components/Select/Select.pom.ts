@@ -54,11 +54,18 @@ export class SelectPom {
     });
   }
 
-  /** Opens the option list if it is closed. */
+  /**
+   * Opens the option list if it is closed. Opens by keyboard, which works
+   * whether or not the input already has focus, then waits for the expanded
+   * state before the list is looked up.
+   */
   async open(): Promise<void> {
     if ((await this.input.getAttribute("aria-expanded")) !== "true") {
-      await this.input.click();
+      await this.input.press("ArrowDown");
     }
+    await this.input
+      .and(this.page.locator('[aria-expanded="true"]'))
+      .waitFor({ state: "attached" });
     await (await this.getOptions()).waitFor({ state: "visible" });
   }
 

@@ -68,11 +68,17 @@ export class ContextMenuPom {
     await this.root.click({ button: "right", position });
   }
 
-  /** Right-clicks the area if the menu is closed and waits for the panel. */
+  /**
+   * Right-clicks the area if the menu is closed, waits for the expanded state,
+   * then waits for the panel to be visible.
+   */
   async open(position?: { x: number; y: number }): Promise<void> {
     if ((await this.trigger.getAttribute("aria-expanded")) !== "true") {
       await this.rightClick(position);
     }
+    await this.trigger
+      .and(this.page.locator('[aria-expanded="true"]'))
+      .waitFor({ state: "attached" });
     await (await this.getMenu()).waitFor({ state: "visible" });
   }
 
@@ -122,15 +128,12 @@ export class ContextMenuPomAsserter {
 
   /** Right-clicking is ignored. */
   async isDisabled(): Promise<void> {
-    await expect(this.menu.trigger).toHaveAttribute("aria-disabled", "true");
+    await expect(this.menu.trigger).toHaveAttribute("disabled");
   }
 
   /** Right-clicking opens the menu. */
   async isEnabled(): Promise<void> {
-    await expect(this.menu.trigger).not.toHaveAttribute(
-      "aria-disabled",
-      "true"
-    );
+    await expect(this.menu.trigger).not.toHaveAttribute("disabled");
   }
 
   /** The open menu lists exactly `labels`, in order. */
