@@ -1,5 +1,7 @@
 import type { Locator, Page } from "@playwright/test";
 
+import { ariaEntries } from "../../e2e/aria";
+
 /**
  * Drives a voodo {@link Select} in a Playwright test.
  *
@@ -73,30 +75,26 @@ export class SelectPom {
   }
 
   /**
-   * Text of every listed option, whitespace collapsed, in display order. Read
-   * from `textContent` rather than `innerText` so CSS `text-transform` does
-   * not alter it; this matches the accessible name Playwright uses in
-   * `getByRole("option", { name })`.
+   * Accessible name of every listed option, in display order. This is the
+   * string `choose` matches against.
    */
   async optionLabels(): Promise<string[]> {
     await this.open();
-    return (await this.options()).evaluateAll((elements) =>
-      elements.map((el) => (el.textContent ?? "").replace(/\s+/g, " ").trim())
-    );
+    const snapshot = await (await this.listbox()).ariaSnapshot();
+    return ariaEntries(snapshot, "option").map((entry) => entry.name);
   }
 
-  /** Text of every option marked selected, in display order. */
+  /** Accessible name of every option marked selected, in display order. */
   async selectedLabels(): Promise<string[]> {
     await this.open();
-    return (await this.listbox())
-      .locator('[role="option"][aria-selected="true"]')
-      .evaluateAll((elements) =>
-        elements.map((el) => (el.textContent ?? "").replace(/\s+/g, " ").trim())
-      );
+    const snapshot = await (await this.listbox()).ariaSnapshot();
+    return ariaEntries(snapshot, "option")
+      .filter((entry) => entry.selected)
+      .map((entry) => entry.name);
   }
 
   /**
-   * Selects the option whose text is exactly `label`. In an exclusive
+   * Selects the option whose accessible name is exactly `label`. In an exclusive
    * select the list closes afterwards; in a multi-select it stays open and a
    * second call with the same label deselects it.
    */

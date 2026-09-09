@@ -1,5 +1,7 @@
 import type { Locator, Page } from "@playwright/test";
 
+import { ariaEntries } from "../../e2e/aria";
+
 /**
  * Drives a voodo {@link ContextMenu} in a Playwright test.
  *
@@ -75,16 +77,13 @@ export class ContextMenuPom {
   }
 
   /**
-   * Text of every menu item, whitespace collapsed, in display order. Read from
-   * `textContent` rather than `innerText` so CSS `text-transform` does not
-   * alter it; this matches the accessible name Playwright uses in
-   * `getByRole("menuitem", { name })`.
+   * Accessible name of every menu item, in display order. This is the string
+   * `choose` matches against.
    */
   async itemLabels(): Promise<string[]> {
     await this.open();
-    return (await this.items()).evaluateAll((elements) =>
-      elements.map((el) => (el.textContent ?? "").replace(/\s+/g, " ").trim())
-    );
+    const snapshot = await (await this.menu()).ariaSnapshot();
+    return ariaEntries(snapshot, "menuitem").map((entry) => entry.name);
   }
 
   /**

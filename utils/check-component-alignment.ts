@@ -112,9 +112,10 @@ const problems = (name: string): string[] => {
     if (!new RegExp(`export class ${name}Pom\\b`).test(pom)) {
       out.push(`${name}.pom.ts does not export \`class ${name}Pom\``);
     }
-    if (/^import (?!type\b)/m.test(pom)) {
+    if (/^import (?!type\b)[^"']*["'](?!\.)/m.test(pom)) {
       out.push(
-        `${name}.pom.ts has runtime imports; page objects import types only`
+        `${name}.pom.ts imports a package at runtime; only type imports and ` +
+          "relative imports are allowed"
       );
     }
     const code = pom.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
