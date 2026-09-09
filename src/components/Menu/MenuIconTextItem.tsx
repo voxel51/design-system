@@ -64,11 +64,9 @@ export const MenuIconTextItem: FC<MenuIconTextItemProps> = ({
   className,
   ...props
 }) => {
-  const textColor = destructive ? TextColor.Destructive : TextColor.Primary;
-  const subtextColor = destructive
-    ? TextColor.Destructive
-    : TextColor.Secondary;
-  const iconColor = destructive ? IconColor.Destructive : IconColor.Default;
+  const textColor = destructive ? TextColor.Failure : TextColor.Primary;
+  const subtextColor = destructive ? TextColor.Failure : TextColor.Secondary;
+  const iconColor = destructive ? IconColor.Failure : IconColor.Default;
 
   return (
     <MenuItem disabled={disabled}>

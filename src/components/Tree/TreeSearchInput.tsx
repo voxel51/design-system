@@ -36,7 +36,7 @@ export const TreeSearchInput: FC<TreeSearchInputProps> = ({
   activeDescendantId,
 }) => {
   return (
-    <div className={cn("shrink-0 p-1.5", bgColorClass(BackgroundColor.Card1))}>
+    <div className={cn("shrink-0 p-1.5", bgColorClass(BackgroundColor.Card))}>
       <Stack align={Align.Center} className="relative">
         <span className="pointer-events-none absolute left-2.5 flex items-center">
           <SearchIcon
@@ -73,7 +73,7 @@ export const TreeSearchInput: FC<TreeSearchInputProps> = ({
               "cursor-pointer",
               "rounded-full",
               "transition-[background-color] duration-150",
-              bgColorClass(BackgroundColor.Card2, ElementState.Hover)
+              bgColorClass(BackgroundColor.CardNested, ElementState.Hover)
             )}
           >
             <CloseIcon

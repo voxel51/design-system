@@ -277,7 +277,7 @@ export const Select: FC<SelectProps> = ({
             "p-1",
             "border",
             borderColorClass(BorderColor.Default),
-            bgColorClass(BackgroundColor.Card1),
+            bgColorClass(BackgroundColor.Card),
             getZIndexClass(zIndex, portal),
             radiusStyles(Radius.Lg),
             shadowStyles(Shadow.Lg)

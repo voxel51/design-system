@@ -23,7 +23,7 @@ export const Table: FC<HTMLAttributes<HTMLTableElement>> = ({
     <table
       className={cn(
         "w-full border-collapse",
-        bgColorClass(BackgroundColor.Card1),
+        bgColorClass(BackgroundColor.Card),
         radiusStyles(Radius.Md),
         className
       )}

@@ -99,7 +99,7 @@ export const TreeItem: FC<TreeItemViewProps> = ({
     "py-1",
     radiusStyles(Radius.Sm),
     "cursor-pointer",
-    bgColorClass(BackgroundColor.Card1),
+    bgColorClass(BackgroundColor.Card),
     isSelected && bgColorClass(BackgroundColor.Selected),
     bgColorClass(BackgroundColor.CardElevated, ElementState.Hover),
     bgColorClass(BackgroundColor.CardElevated, ElementState.Active)

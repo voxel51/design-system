@@ -106,8 +106,8 @@ describe("MenuIconTextItem", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
-    expect(screen.getByText("Delete").className).toMatch(/destructive/i);
-    expect(screen.getByText("Permanent").className).toMatch(/destructive/i);
+    expect(screen.getByText("Delete").className).toMatch(/failure/i);
+    expect(screen.getByText("Permanent").className).toMatch(/failure/i);
   });
 
   it("should pass className through to the button", async () => {

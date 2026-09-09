@@ -46,7 +46,7 @@ const variantStyles: Record<ToastVariant, string> = {
   [Variant.Primary]: textColorClass(TextColor.Primary),
   [Variant.Secondary]: textColorClass(TextColor.Secondary),
   [Variant.Success]: textColorClass(IconColor.Success),
-  [Variant.Danger]: textColorClass(IconColor.Destructive),
+  [Variant.Danger]: textColorClass(IconColor.Failure),
   [Variant.Icon]: textColorClass(TextColor.Primary),
 };
 
@@ -114,7 +114,7 @@ export const Toast: FC<ToastProps> = ({
         // (1rem) and clamp the toast to a thin sliver. 28rem (~448px) is the intended cap.
         "w-[90vw] max-w-[28rem]",
         radiusStyles(Radius.Md),
-        bgColorClass(BackgroundColor.Card2),
+        bgColorClass(BackgroundColor.CardNested),
         shadowStyles(Shadow.Md),
         className
       )}

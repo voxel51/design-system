@@ -18,7 +18,7 @@
  * See voodo-enum-compat-tests.tsx for the deprecated enum-style contract.
  */
 import {
-  ActionColor,
+  InteractiveColor,
   ActivityToast,
   AddIcon,
   Align,
@@ -53,8 +53,9 @@ import {
   ListItem,
   MenuSeparator,
   Orientation,
-  OverlayColor,
-  PaletteColor,
+  ScrimColor,
+  VizChartColor,
+  VizOverlayColor,
   Pill,
   PillColor,
   PillSize,
@@ -235,14 +236,14 @@ export const exhaustive = {
   } satisfies Record<ElementState, true>,
 
   textColor: {
-    "text-fg": true,
+    "text-foreground": true,
     "text-primary": true,
     "text-secondary": true,
     "text-tertiary": true,
     "text-muted": true,
     "text-placeholder": true,
     "text-success": true,
-    "text-destructive": true,
+    "text-failure": true,
     "text-warning": true,
     "text-info": true,
     "text-accent": true,
@@ -257,9 +258,8 @@ export const exhaustive = {
     "icon-disabled": true,
     "icon-decorative": true,
     "icon-brand": true,
-    "icon-brand-accent": true,
     "icon-success": true,
-    "icon-destructive": true,
+    "icon-failure": true,
     "icon-warning": true,
     "icon-info": true,
     "icon-dark": true,
@@ -362,24 +362,29 @@ export const exhaustive = {
   } satisfies Record<DrawerSide, true>,
 
   // PillColor spans three color families; spot-check assignability from each
-  pillColor: ["bg-card-1", "bg-transparent"] satisfies readonly PillColor[],
+  pillColor: ["bg-card", "bg-transparent"] satisfies readonly PillColor[],
 };
 
 /* The remaining color families are large; prove object⇄type agreement
  * without enumerating: every value of the const object inhabits the
  * derived type, plus one literal spot-check each. */
 export const colorFamilies = {
-  action: Object.values(ActionColor) satisfies readonly ActionColor[],
+  interactive: Object.values(
+    InteractiveColor
+  ) satisfies readonly InteractiveColor[],
   background: Object.values(
     BackgroundColor
   ) satisfies readonly BackgroundColor[],
   border: Object.values(BorderColor) satisfies readonly BorderColor[],
   semantic: Object.values(SemanticColor) satisfies readonly SemanticColor[],
   status: Object.values(StatusColor) satisfies readonly StatusColor[],
-  overlay: Object.values(OverlayColor) satisfies readonly OverlayColor[],
+  scrim: Object.values(ScrimColor) satisfies readonly ScrimColor[],
   focus: Object.values(FocusColor) satisfies readonly FocusColor[],
   link: Object.values(LinkColor) satisfies readonly LinkColor[],
-  palette: Object.values(PaletteColor) satisfies readonly PaletteColor[],
+  vizChart: Object.values(VizChartColor) satisfies readonly VizChartColor[],
+  vizOverlay: Object.values(
+    VizOverlayColor
+  ) satisfies readonly VizOverlayColor[],
   skeleton: Object.values(SkeletonColor) satisfies readonly SkeletonColor[],
   tooltip: Object.values(TooltipColor) satisfies readonly TooltipColor[],
   code: Object.values(CodeColor) satisfies readonly CodeColor[],
