@@ -22,6 +22,46 @@ const ROOT = path.resolve(__dirname, "..");
 const COMPONENTS_DIR = path.join(ROOT, "src/components");
 const E2E_ENTRY = path.join(ROOT, "src/e2e/index.ts");
 const ALLOWLIST = path.join(__dirname, "component-alignment-allowlist.json");
+const PROPS_IGNORE = path.join(__dirname, "component-props-ignore.json");
+
+/**
+ * ARIA roles each Headless UI primitive renders. A component that uses one of
+ * these must have a page object that locates that role, otherwise the page
+ * object cannot reach part of the component.
+ */
+const HEADLESS_ROLES: Record<string, string[]> = {
+  Checkbox: ["checkbox"],
+  ComboboxInput: ["combobox"],
+  ComboboxOption: ["option"],
+  ComboboxOptions: ["listbox"],
+  Dialog: ["dialog"],
+  ListboxButton: ["button"],
+  ListboxOption: ["option"],
+  ListboxOptions: ["listbox"],
+  MenuItem: ["menuitem"],
+  MenuItems: ["menu"],
+  Radio: ["radio"],
+  RadioGroup: ["radiogroup"],
+  Switch: ["switch"],
+  Tab: ["tab"],
+  TabList: ["tablist"],
+  TabPanel: ["tabpanel"],
+};
+
+/**
+ * Props that imply a page-object method. A component exposing a matching prop
+ * must have a page object with at least one of the listed methods, so the
+ * state the prop controls can be read or driven by consumers.
+ */
+const PROP_METHODS: [RegExp, string[]][] = [
+  [/^disabled$/, ["isDisabled"]],
+  [/^onChange$/, ["value", "checked", "selectedLabels"]],
+  [/^value$/, ["value"]],
+  [/^checked$/, ["checked", "isChecked"]],
+  [/^(options|items)$/, ["optionLabels", "itemLabels"]],
+  [/^onClick$/, ["click", "choose"]],
+  [/^(open|onClose|onOpenChange)$/, ["isOpen"]],
+];
 
 /** Selectors a page object must never use: they leak markup, not behavior. */
 const FORBIDDEN_IN_POM: [RegExp, string][] = [
@@ -54,6 +94,132 @@ for (const name of Object.keys(allowlist)) {
 }
 
 const e2eEntry = fs.readFileSync(E2E_ENTRY, "utf8");
+const propsIgnore = JSON.parse(fs.readFileSync(PROPS_IGNORE, "utf8")) as Record<
+  string,
+  Record<string, string>
+>;
+
+for (const name of Object.keys(propsIgnore)) {
+  if (!components.includes(name)) {
+    fail(name, "is in component-props-ignore.json but has no directory");
+  }
+}
+
+const stripComments = (code: string): string =>
+  code.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+
+const parse = (file: string): ts.SourceFile =>
+  ts.createSourceFile(
+    file,
+    fs.readFileSync(file, "utf8"),
+    ts.ScriptTarget.Latest,
+    true
+  );
+
+/** Own members of `interface <Name>Props` in the component's main file. */
+const ownProps = (name: string, dir: string): string[] => {
+  const file = path.join(dir, `${name}.tsx`);
+  if (!fs.existsSync(file)) return [];
+  const source = parse(file);
+  const props: string[] = [];
+  const visit = (node: ts.Node): void => {
+    if (ts.isInterfaceDeclaration(node) && node.name.text === `${name}Props`) {
+      for (const member of node.members) {
+        if (ts.isPropertySignature(member) && ts.isIdentifier(member.name)) {
+          props.push(member.name.text);
+        }
+      }
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(source);
+  return props;
+};
+
+/**
+ * Every prop name that some story passes through `args`, following spreads of
+ * top-level object constants in the same file.
+ */
+const storyArgs = (storiesFile: string): Set<string> => {
+  const source = parse(storiesFile);
+  const constants = new Map<string, ts.ObjectLiteralExpression>();
+  for (const statement of source.statements) {
+    if (!ts.isVariableStatement(statement)) continue;
+    for (const declaration of statement.declarationList.declarations) {
+      if (
+        ts.isIdentifier(declaration.name) &&
+        declaration.initializer &&
+        ts.isObjectLiteralExpression(declaration.initializer)
+      ) {
+        constants.set(declaration.name.text, declaration.initializer);
+      }
+    }
+  }
+  const names = new Set<string>();
+  const collect = (
+    literal: ts.ObjectLiteralExpression,
+    seen: Set<ts.Node>
+  ): void => {
+    if (seen.has(literal)) return;
+    seen.add(literal);
+    for (const property of literal.properties) {
+      if (
+        ts.isSpreadAssignment(property) &&
+        ts.isIdentifier(property.expression)
+      ) {
+        const target = constants.get(property.expression.text);
+        if (target) collect(target, seen);
+      } else if (property.name && ts.isIdentifier(property.name)) {
+        names.add(property.name.text);
+      }
+    }
+  };
+  const visit = (node: ts.Node): void => {
+    if (
+      ts.isPropertyAssignment(node) &&
+      ts.isIdentifier(node.name) &&
+      node.name.text === "args" &&
+      ts.isObjectLiteralExpression(node.initializer)
+    ) {
+      collect(node.initializer, new Set());
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(source);
+  return names;
+};
+
+/** Roles the component renders: Headless UI primitives it uses plus explicit `role=` attributes. */
+const renderedRoles = (dir: string): Set<string> => {
+  const roles = new Set<string>();
+  const files = fs
+    .readdirSync(dir)
+    .filter(
+      (file) =>
+        file.endsWith(".tsx") &&
+        !file.endsWith(".stories.tsx") &&
+        !file.endsWith(".spec.tsx")
+    );
+  for (const file of files) {
+    const code = stripComments(fs.readFileSync(path.join(dir, file), "utf8"));
+    const headless = /import\s*{([^}]*)}\s*from\s*"@headlessui\/react"/.exec(
+      code
+    );
+    if (headless) {
+      for (const raw of headless[1].split(",")) {
+        const imported = raw.trim().split(/\s+as\s+/)[0];
+        for (const role of HEADLESS_ROLES[imported] ?? []) roles.add(role);
+      }
+    }
+    for (const match of code.matchAll(/\brole=["']([a-z]+)["']/g)) {
+      roles.add(match[1]);
+    }
+  }
+  return roles;
+};
+
+const hasMethod = (pom: string, method: string): boolean =>
+  new RegExp(`^\\s+(?:async\\s+)?${method}\\(`, "m").test(pom);
 
 /** Public methods of every class in a page-object file that lack a doc comment. */
 const undocumentedMethods = (file: string): string[] => {
@@ -103,6 +269,23 @@ const problems = (name: string): string[] => {
     if (!/title:\s*"[^"]+"/.test(stories)) {
       out.push(`${name}.stories.tsx has no string \`title\` in its meta`);
     }
+    const covered = storyArgs(storiesFile);
+    const ignored = propsIgnore[name] ?? {};
+    for (const prop of ownProps(name, dir)) {
+      if (!covered.has(prop) && !(prop in ignored)) {
+        out.push(
+          `prop \`${prop}\` appears in no story's args ` +
+            "(add a story or list it in utils/component-props-ignore.json)"
+        );
+      }
+    }
+    for (const prop of Object.keys(ignored)) {
+      if (covered.has(prop)) {
+        out.push(
+          `prop \`${prop}\` is covered by a story; remove it from utils/component-props-ignore.json`
+        );
+      }
+    }
   }
 
   if (!fs.existsSync(pomFile)) {
@@ -118,7 +301,7 @@ const problems = (name: string): string[] => {
           "relative imports are allowed"
       );
     }
-    const code = pom.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+    const code = stripComments(pom);
     for (const [pattern, label] of FORBIDDEN_IN_POM) {
       if (pattern.test(code)) {
         out.push(`${name}.pom.ts uses a ${label}`);
@@ -126,6 +309,22 @@ const problems = (name: string): string[] => {
     }
     for (const method of undocumentedMethods(pomFile)) {
       out.push(`${method} has no doc comment`);
+    }
+    for (const role of renderedRoles(dir)) {
+      if (!new RegExp(`["'\`]${role}["'\`]`).test(code)) {
+        out.push(
+          `${name}.pom.ts never locates role "${role}", which the component renders`
+        );
+      }
+    }
+    for (const prop of ownProps(name, dir)) {
+      for (const [pattern, methods] of PROP_METHODS) {
+        if (pattern.test(prop) && !methods.some((m) => hasMethod(code, m))) {
+          out.push(
+            `${name}.pom.ts has none of ${methods.join("/")} for prop \`${prop}\``
+          );
+        }
+      }
     }
     const exportLine = `export * from "../components/${name}/${name}.pom";`;
     if (!e2eEntry.includes(exportLine)) {
@@ -148,6 +347,19 @@ const problems = (name: string): string[] => {
     }
     if (!spec.includes(`${name}Pom`)) {
       out.push(`${name}.pom.spec.ts does not use ${name}Pom`);
+    }
+    if (!spec.includes("tracked(")) {
+      out.push(
+        `${name}.pom.spec.ts does not wrap the page object in tracked()`
+      );
+    }
+    if (!spec.includes(`expectPomFullyExercised(${name}Pom)`)) {
+      out.push(
+        `${name}.pom.spec.ts does not end with expectPomFullyExercised(${name}Pom)`
+      );
+    }
+    if (!spec.includes("expectAriaSnapshot(")) {
+      out.push(`${name}.pom.spec.ts records no aria snapshot`);
     }
   }
 

@@ -40,7 +40,12 @@ export class ContextMenuPom {
     if (!id) {
       throw new Error("ContextMenuPom: the menu is not mounted; open first");
     }
-    return this.page.locator(`[id="${id}"]`);
+    return this.page.getByRole("menu").and(this.page.locator(`[id="${id}"]`));
+  }
+
+  /** Whether right-clicking is ignored. */
+  async isDisabled(): Promise<boolean> {
+    return (await this.trigger().getAttribute("aria-disabled")) === "true";
   }
 
   /** Whether the menu panel is open. */

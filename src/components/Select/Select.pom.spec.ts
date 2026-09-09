@@ -1,6 +1,13 @@
 import { expect, test } from "@playwright/test";
 
-import { expectStoryIndexToMatch, gotoStory, storiesOf } from "#/pom-testing";
+import {
+  expectAriaSnapshot,
+  expectPomFullyExercised,
+  expectStoryIndexToMatch,
+  gotoStory,
+  storiesOf,
+  tracked,
+} from "#/pom-testing";
 
 import { SelectPom } from "./Select.pom";
 
@@ -17,8 +24,10 @@ for (const story of stories) {
     });
 
     test("SelectPom drives the story", async ({ page }) => {
-      const select = new SelectPom(page.locator("#storybook-root"), page);
+      const root = page.locator("#storybook-root");
+      const select = tracked(new SelectPom(root, page));
       await expect(select.input()).toBeVisible();
+      await expectAriaSnapshot(root, story, "rest");
 
       if (story.disabled) {
         expect(await select.isDisabled()).toBe(true);
@@ -30,9 +39,11 @@ for (const story of stories) {
       expect(await select.isDisabled()).toBe(false);
       await select.open();
       expect(await select.isOpen()).toBe(true);
+      await expectAriaSnapshot(await select.listbox(), story, "open");
 
       const labels = await select.optionLabels();
       expect(labels.length).toBeGreaterThan(0);
+      expect(await (await select.options()).count()).toBe(labels.length);
 
       const alreadySelected = await select.selectedLabels();
       const target =
@@ -47,3 +58,7 @@ for (const story of stories) {
     });
   });
 }
+
+test("SelectPom is fully exercised", () => {
+  expectPomFullyExercised(SelectPom);
+});

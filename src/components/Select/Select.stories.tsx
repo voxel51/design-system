@@ -5,6 +5,7 @@ import { useState } from "react";
 import {
   Orientation,
   Select,
+  SelectAnchor,
   SelectProps,
   Spacing,
   Stack,
@@ -33,8 +34,8 @@ const meta: Meta<typeof Select> = {
 
 type Story = StoryObj<typeof Select>;
 
-const defaultOptions = new Array(5).fill(0).map(() => ({
-  id: Math.random().toString(36).substring(2, 9),
+const defaultOptions = new Array(5).fill(0).map((_, i) => ({
+  id: `option-${i}`,
   data: { label: generateWords(3) },
 }));
 
@@ -79,8 +80,8 @@ export const UncontrolledMultiSelect: Story = {
 export const WithRichContent: Story = {
   args: {
     ...defaultArgs,
-    options: new Array(5).fill(0).map(() => ({
-      id: Math.random().toString(36).substring(2, 9),
+    options: new Array(5).fill(0).map((_, i) => ({
+      id: `rich-option-${i}`,
       data: {
         label: generateWords(3),
         content: (
@@ -111,6 +112,30 @@ export const Unset: Story = {
   args: {
     ...defaultArgs,
     exclusive: true,
+  },
+};
+
+export const Disabled: Story = {
+  args: {
+    ...defaultArgs,
+    exclusive: true,
+    disabled: true,
+  },
+};
+
+export const AnchoredTop: Story = {
+  args: {
+    ...defaultArgs,
+    exclusive: true,
+    anchor: SelectAnchor.TopStart,
+  },
+};
+
+export const Portal: Story = {
+  args: {
+    ...defaultArgs,
+    exclusive: true,
+    portal: true,
   },
 };
 

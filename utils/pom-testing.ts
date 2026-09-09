@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 
-import { expect, type Page } from "@playwright/test";
+import { expect, type Locator, type Page } from "@playwright/test";
 
 /** One story of a component, as the page-object specs see it. */
 export interface Story {
@@ -114,4 +114,66 @@ export const expectStoryIndexToMatch = async (
   expect(served, `stories served for ${title}`).toEqual(
     stories.map((story) => story.id).sort()
   );
+};
+
+/**
+ * Asserts the accessibility tree under `locator` against a committed baseline
+ * at `__aria__/<story id>.<state>.aria.yml` next to the spec. The tree is what
+ * page objects and product suites locate against, so a change to roles, names,
+ * or nesting shows up as a reviewable diff instead of a silent contract change.
+ * Update baselines with `npm run test:pom -- --update-snapshots`.
+ */
+export const expectAriaSnapshot = async (
+  locator: Locator,
+  story: Story,
+  state: string
+): Promise<void> => {
+  await expect(locator).toMatchAriaSnapshot({
+    name: `${story.id}.${state}.aria.yml`,
+  });
+};
+
+const exercised = new Map<string, Set<string>>();
+
+/**
+ * Wraps a page object so every method call is recorded, including calls a
+ * method makes to its siblings. Pair with {@link expectPomFullyExercised} in
+ * the spec's final test.
+ */
+export const tracked = <T extends object>(pom: T): T => {
+  const proto = Object.getPrototypeOf(pom) as { constructor: { name: string } };
+  const seen = exercised.get(proto.constructor.name) ?? new Set<string>();
+  exercised.set(proto.constructor.name, seen);
+  return new Proxy(pom, {
+    get(target, prop, receiver) {
+      const value = Reflect.get(target, prop, receiver) as unknown;
+      if (typeof value === "function" && typeof prop === "string") {
+        seen.add(prop);
+        return (value as (...args: unknown[]) => unknown).bind(receiver);
+      }
+      return value;
+    },
+  });
+};
+
+/** Names of every method a page-object class exposes. */
+export const publicMethods = (ctor: { prototype: object }): string[] =>
+  Object.getOwnPropertyNames(ctor.prototype).filter(
+    (name) =>
+      name !== "constructor" &&
+      typeof (ctor.prototype as Record<string, unknown>)[name] === "function"
+  );
+
+/**
+ * Asserts that every method of the page-object class was called at least once
+ * by this spec file through {@link tracked} instances. A method nobody drives
+ * is an unverified contract; either exercise it or remove it.
+ */
+export const expectPomFullyExercised = (ctor: {
+  name: string;
+  prototype: object;
+}): void => {
+  const seen = exercised.get(ctor.name) ?? new Set<string>();
+  const missing = publicMethods(ctor).filter((name) => !seen.has(name));
+  expect(missing, `${ctor.name} methods this spec never called`).toEqual([]);
 };

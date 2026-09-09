@@ -12,7 +12,12 @@ const baseURL = `http://127.0.0.1:${PORT}`;
 export default defineConfig({
   testDir: "src",
   testMatch: /.*\.pom\.spec\.ts$/,
-  fullyParallel: true,
+  // Files run in parallel; tests within a file run in order on one worker so
+  // a spec's final "fully exercised" test sees every earlier method call.
+  fullyParallel: false,
+  // Aria trees are platform-independent, so baselines carry no browser or OS
+  // suffix and live next to the component.
+  snapshotPathTemplate: "{testFileDir}/__aria__/{arg}{ext}",
   forbidOnly: !!process.env.CI,
   retries: 0,
   // Ceiling, not a wait: the first story of a run includes vite compiling the

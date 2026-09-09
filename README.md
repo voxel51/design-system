@@ -128,6 +128,35 @@ General rules of thumb:
    - Allow for property overrides
  - Prefer small, composable components
 
+### Page objects
+
+Every component ships a Playwright page object next to it
+(`<Name>.pom.ts`), exported from `@voxel51/voodo/e2e`, so product e2e suites
+drive voodo components through a verified contract instead of their own
+selectors. Each page object is verified by `<Name>.pom.spec.ts`, which drives
+every story of the component through the page object alone, records an aria
+snapshot of each story at rest and open (`__aria__/`), and requires every
+page-object method to be exercised.
+
+The `component alignment` PR check runs `npm run check:alignment` and
+`npm run test:pom`. The alignment script requires the story, page object, and
+spec to exist and agree: the page object must locate every role the component
+renders, expose a method for each state-bearing prop, and document every
+method; every own prop must appear in some story's `args` or be listed with a
+reason in `utils/component-props-ignore.json`. Components not yet aligned are
+listed in `utils/component-alignment-allowlist.json`, which only shrinks.
+
+To run the specs locally:
+
+```bash
+npx playwright install chromium
+npm run test:pom
+```
+
+When a component's accessibility tree changes on purpose, refresh its
+baselines with `npm run test:pom -- --update-snapshots` and commit the
+`__aria__` files with the change.
+
 ## Publishing
 
 Pushing a `v*` tag publishes to NPM via the `release` workflow.

@@ -131,6 +131,7 @@ export const ContextMenu: FC<ContextMenuProps> = ({
                 ref={buttonRef}
                 as="div"
                 aria-hidden
+                disabled={disabled}
                 tabIndex={-1}
                 style={{
                   position: "fixed",

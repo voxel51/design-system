@@ -1,0 +1,5 @@
+{
+    "Select": {
+        "zIndex": "layering only; has no observable effect in a single-component story"
+    }
+}

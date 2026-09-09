@@ -72,3 +72,13 @@ jobs:
           name: playwright-report
           path: playwright-report
           retention-days: 7
+
+      # Missing aria baselines are written by the run and fail it; this makes
+      # the written files retrievable so they can be committed.
+      - name: Upload aria snapshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aria-snapshots
+          path: src/**/__aria__/**
+          retention-days: 7

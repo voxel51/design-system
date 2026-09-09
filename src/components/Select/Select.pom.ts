@@ -40,7 +40,9 @@ export class SelectPom {
     if (!id) {
       throw new Error("SelectPom: the option list is not mounted; open first");
     }
-    return this.page.locator(`[id="${id}"]`);
+    return this.page
+      .getByRole("listbox")
+      .and(this.page.locator(`[id="${id}"]`));
   }
 
   /** Every option currently listed, in display order. */
