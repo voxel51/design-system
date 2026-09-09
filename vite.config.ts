@@ -62,6 +62,7 @@ export default defineConfig({
         "**/*.test.tsx",
         "**/*.test.ts",
         "**/*.stories.tsx",
+        "**/*.pom.spec.ts",
         "src/setupTests.ts",
         // Type-contract tests: type-checked, never shipped
         "src/__contracts__/**",
@@ -82,6 +83,10 @@ export default defineConfig({
       entry: {
         index: resolve(__dirname, "src/index.ts"),
         tokens: resolve(__dirname, "src/theme/tokens/index.ts"),
+        // Playwright page objects for consumers' e2e suites. Imports nothing
+        // at runtime (Playwright types only), so it stays free of React and
+        // CSS like the tokens entry.
+        e2e: resolve(__dirname, "src/e2e/index.ts"),
       },
       formats: ["es", "cjs"],
       fileName: (format, name) => `${name}.${format === "es" ? "js" : "cjs"}`,

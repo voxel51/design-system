@@ -1,5 +1,6 @@
 import { WrenchScrewdriverIcon } from "@heroicons/react/24/outline";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { useState } from "react";
 
 import {
   Orientation,
@@ -46,6 +47,19 @@ export const Controlled: Story = {
   args: {
     ...defaultArgs,
     value: defaultOptions.filter((_, i) => i % 2 === 0).map((opt) => opt.id),
+  },
+  render: (args) => {
+    const [value, setValue] = useState<string[]>(args.value as string[]);
+    return (
+      <Select
+        {...args}
+        value={value}
+        onChange={(next) => {
+          args.onChange?.(next);
+          setValue(Array.isArray(next) ? next : next ? [next] : []);
+        }}
+      />
+    );
   },
 };
 
