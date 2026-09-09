@@ -29,6 +29,13 @@
     },
     "./theme.css": "./dist/voodo.css"
   },
+  "typesVersions": {
+    "*": {
+      "tokens": [
+        "./dist/tokens.d.ts"
+      ]
+    }
+  },
   "files": [
     "dist",
     "NOTICE"
