@@ -28,11 +28,13 @@ export default defineConfig({
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
     // A static build, so no story pays for on-demand compilation at test time.
-    command: `npm run build-storybook && npx vite preview --outDir storybook-static --port ${PORT} --strictPort`,
+    // --host pins the IPv4 loopback that baseURL polls; vite's default of
+    // "localhost" can bind only the IPv6 loopback.
+    command: `npm run build-storybook && npx vite preview --outDir storybook-static --host 127.0.0.1 --port ${PORT} --strictPort`,
     url: `${baseURL}/index.json`,
     reuseExistingServer: !process.env.CI,
     timeout: 300_000,
-    stdout: "ignore",
+    stdout: "pipe",
     stderr: "pipe",
   },
 });
