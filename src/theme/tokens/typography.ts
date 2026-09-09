@@ -49,23 +49,23 @@ export const typography = {
    * undefined, and Tailwind would quietly fall back to its own built-in scale
    * across 41 call sites.
    *
-   * **`md` and `lg` are re-pointed to the two steps Figma added.** The 08-25
-   * scale had no 14 or 16; the current one adds exactly those two and nothing
-   * else, and the text styles went 6 -> 12 at the same time. Nothing else in
-   * the file consumes them, so if they are not the new body and heading sizes
-   * they were added for no reason. `md` is body text, so this is the change
-   * that is actually visible.
+   * Values are deliberately unchanged from the previous scale, so this tier is
+   * a rename of nothing.
    *
-   * ASSUMPTION — the text styles are not exportable, so which role binds to 14
-   * vs 16 is inferred, not read. Revert by putting `md` back to 13 and `lg`
-   * to 15; nothing else depends on the choice.
+   * Figma added `font-size/14` and `/16` and nothing consumes them yet. They
+   * are almost certainly the new body and heading sizes, but re-pointing `md`
+   * and `lg` at them in isolation makes type look worse, not better: the
+   * line-heights these sizes are paired with are raw Tailwind numbers
+   * (`text-md/5`), not tokens, so the size moves and the leading does not.
+   * Size and leading have to be tokenised together, against Figma's 12 text
+   * styles. Until then this tier holds still.
    */
   fontSize: {
     xxs: fontSize[9],
     xs: fontSize[11],
     sm: fontSize[12],
-    md: fontSize[14],
-    lg: fontSize[16],
+    md: fontSize[13],
+    lg: fontSize[15],
     xl: fontSize[18],
     xxl: fontSize[23],
   },

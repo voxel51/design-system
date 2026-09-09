@@ -39,12 +39,19 @@ export const spacing = {
  * other numeric utilities, with no error from tsc, eslint or the suite.
  *
  * Values are unchanged from the previous t-shirt scale, so this tier is a
- * rename of nothing: xs was 0.25rem = 4px and still is.
+ * rename of nothing.
+ *
+ * Kept in `rem`, not the `px` of the Figma scale above. These are the values
+ * that reach the browser, and `rem` scales with the user's root font size --
+ * emitting `4px` where `0.25rem` used to be would quietly opt every spacing
+ * utility out of browser text-size settings. Converting the scale to `rem` is
+ * a real decision about whether Figma's pixels are pixels or ratios, and it
+ * belongs with the spacing audit, not here.
  */
 export const spacingRole = {
-  xs: spacing[4],
-  sm: spacing[8],
-  md: spacing[16],
-  lg: spacing[24],
-  xl: spacing[32],
+  xs: "0.25rem",
+  sm: "0.5rem",
+  md: "1rem",
+  lg: "1.5rem",
+  xl: "2rem",
 } as const;
