@@ -94,7 +94,17 @@ export class SelectPom {
    */
   async choose(label: string): Promise<void> {
     await this.open();
+    const options = await this.getOptions();
+    const exclusive =
+      (await options.getAttribute("aria-multiselectable")) !== "true";
     await (await this.getOption(label)).click();
+    if (exclusive) {
+      // An exclusive select blurs its input a tick after selecting; wait for
+      // that so a following open() cannot race it.
+      await this.input
+        .and(this.page.locator(":not(:focus)"))
+        .waitFor({ state: "attached" });
+    }
   }
 
   /**

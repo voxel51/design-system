@@ -206,7 +206,9 @@ export const Select: FC<SelectProps> = ({
       setQuery("");
       onChange?.(value);
 
-      if (exclusive) {
+      // Headless UI also reports null when the typeahead is cleared; only a
+      // real selection dismisses an exclusive select.
+      if (exclusive && value) {
         window.setTimeout(() => {
           inputRef.current?.blur();
         }, 0);
