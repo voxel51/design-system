@@ -109,4 +109,32 @@ export const ListHeader: Story = {
   ),
 };
 
+/**
+ * A long chain repeats names, so the header also carries the pick's ordinal,
+ * pushed to the far end of the row.
+ */
+export const ListHeaderLongChain: Story = {
+  render: () => (
+    <Demo
+      all={EVENT_TYPES}
+      placeholder="Add stage…"
+      listHeader={
+        <span
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 4,
+            fontSize: 12,
+            opacity: 0.7,
+            whiteSpace: "nowrap",
+          }}
+        >
+          Match / <strong>New stage</strong> / Match
+          <span style={{ marginLeft: "auto", paddingLeft: 16 }}>12 of 21</span>
+        </span>
+      }
+    />
+  ),
+};
+
 export default meta;
