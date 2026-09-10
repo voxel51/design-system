@@ -1,6 +1,13 @@
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
-import { BackgroundColor, bgColorClass, Radius, Shadow } from "@/types";
+import {
+  BackgroundColor,
+  bgColorClass,
+  Radius,
+  Shadow,
+  TextColor,
+  textColorClass,
+} from "@/types";
 import { cn } from "@/util/classes";
 
 /**
@@ -14,6 +21,9 @@ export const popoverPanelStyles = (): string =>
     "min-w-[120px]",
     "p-2.5",
     bgColorClass(BackgroundColor.Popover),
+    // A floating surface owns its foreground: portaled to the body, it would
+    // otherwise inherit whatever the host page paints its text
+    textColorClass(TextColor.Primary),
     radiusStyles(Radius.Lg),
     shadowStyles(Shadow.Lg),
     "focus:outline-none"

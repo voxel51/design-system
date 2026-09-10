@@ -460,12 +460,8 @@ export const Combobox: FC<ComboboxProps> = ({
             )}
           >
             {listHeader && (
-              // Wrapped like the empty message: the panel sets no text color
-              // of its own, so bare content would inherit the page's
               <div className="px-2 py-1.5" data-combobox-list-header="">
-                <Text variant={TextVariant.Sm} color={TextColor.Secondary}>
-                  {listHeader}
-                </Text>
+                {listHeader}
               </div>
             )}
             {loading && (
