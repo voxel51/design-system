@@ -94,4 +94,19 @@ export const Empty: Story = {
   ),
 };
 
+/** Context above the rows: where the pick lands, not a row to pick. */
+export const ListHeader: Story = {
+  render: () => (
+    <Demo
+      all={EVENT_TYPES}
+      placeholder="Add stage…"
+      listHeader={
+        <span style={{ fontSize: 12, opacity: 0.7 }}>
+          Match / <strong>New stage</strong> / FilterField
+        </span>
+      }
+    />
+  ),
+};
+
 export default meta;

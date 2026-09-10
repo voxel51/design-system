@@ -315,4 +315,20 @@ describe("Combobox clearing", () => {
 
     expect(onPick).toHaveBeenLastCalledWith(null);
   });
+  it("shows the list header above the rows while open", async () => {
+    render(
+      <Combobox
+        options={[{ id: "a", label: "Alpha" }]}
+        value={null}
+        inputValue=""
+        onInputChange={() => undefined}
+        onChange={() => undefined}
+        listHeader={<span>Where it lands</span>}
+      />
+    );
+    await userEvent.click(screen.getByRole("combobox"));
+    const list = screen.getByRole("listbox");
+    expect(list.textContent?.startsWith("Where it lands")).toBe(true);
+    expect(screen.getAllByRole("option")).toHaveLength(1);
+  });
 });
