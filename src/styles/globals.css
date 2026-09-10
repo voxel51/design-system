@@ -7,13 +7,3 @@
 /* tell tailwind which files to scan for classes */
 @source "./color-classes.ts";
 @source "../**/*.{ts,tsx}";
-
-/* The theme owns the base text color: the tokens live on the root (and swap
-   under `.dark` there), so setting it once on the root gives every element —
-   portaled panels included — the palette's text color instead of the
-   browser's default. */
-@layer base {
-  :root {
-    color: var(--color-content-text-primary);
-  }
-}
