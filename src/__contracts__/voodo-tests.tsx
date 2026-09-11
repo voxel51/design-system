@@ -143,6 +143,7 @@ export const exhaustive = {
     sm: true,
     md: true,
     lg: true,
+    title: true,
     xl: true,
     xxl: true,
     label: true,
