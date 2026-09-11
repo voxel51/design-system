@@ -29,6 +29,6 @@ const meta: Meta = {
 
 type Story = StoryObj<typeof ShadowsDocs>;
 
-export const Empty: Story = {};
+export const Overview: Story = {};
 
 export default meta;

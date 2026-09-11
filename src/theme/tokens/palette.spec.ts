@@ -3,23 +3,29 @@ import { palettePool, paletteSlots } from "./palette";
 
 describe("paletteSlots", () => {
   it("includes every numbered slot the tokens define", () => {
-    const numbered = Object.keys(colors.dark.content.palette).filter((key) =>
-      /^\d+$/.test(key)
+    // pinned, not derived: computing the expectation with the same predicate
+    // the implementation uses makes an empty pool pass. Bump when Figma adds
+    // a slot.
+    expect(paletteSlots.dark).toHaveLength(18);
+    expect(paletteSlots.light).toHaveLength(18);
+    expect(paletteSlots.dark[0]).toBe("1-brand");
+  });
+
+  it("orders by the numeric prefix, not lexicographically", () => {
+    // "10-red" sorts before "2-blue" as a string; the pool must not
+    expect(paletteSlots.dark.indexOf("2-blue")).toBeLessThan(
+      paletteSlots.dark.indexOf("10-red")
     );
-
-    expect(paletteSlots.dark).toHaveLength(numbered.length);
   });
 
-  it("excludes the named aliases", () => {
-    expect(paletteSlots.dark).not.toContain("orange");
-    expect(paletteSlots.dark).not.toContain("teal");
-  });
+  it("orders slots numerically across both modes", () => {
+    const nums = (slots: readonly string[]) =>
+      slots.map((slot) => Number(slot.split("-")[0]));
 
-  it("orders slots numerically, not lexicographically", () => {
-    // Object key order would put "10" before "2"; the pool must not
-    const asNumbers = paletteSlots.dark.map(Number);
-
-    expect(asNumbers).toEqual([...asNumbers].sort((a, b) => a - b));
+    for (const slots of [paletteSlots.dark, paletteSlots.light]) {
+      const asNumbers = nums(slots);
+      expect(asNumbers).toEqual([...asNumbers].sort((a, b) => a - b));
+    }
   });
 });
 

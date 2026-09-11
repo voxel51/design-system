@@ -45,19 +45,19 @@ describe("Icon", () => {
   describe("color prop", () => {
     it("should apply color to the style attribute", () => {
       const { container } = render(
-        <Icon name={IconName.Check} color={IconColor.Destructive} />
+        <Icon name={IconName.Check} color={IconColor.Failure} />
       );
       const svg = container.querySelector("svg");
-      expect(svg).toHaveClass("text-content-icon-destructive");
+      expect(svg).toHaveClass("text-content-icon-failure");
     });
 
     it("should handle CSS color names", () => {
       const { container } = render(
-        <Icon name={IconName.Check} color={IconColor.Destructive} />
+        <Icon name={IconName.Check} color={IconColor.Failure} />
       );
       const svg = container.querySelector("svg");
       // Browser normalizes CSS color names to RGB
-      expect(svg).toHaveClass("text-content-icon-destructive");
+      expect(svg).toHaveClass("text-content-icon-failure");
     });
   });
 
