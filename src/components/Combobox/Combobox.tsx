@@ -93,6 +93,12 @@ export interface ComboboxProps extends Omit<
    * offered in the empty state ("Create one…") can dismiss the list.
    */
   emptyMessage?: ReactNode | ((props: { close: () => void }) => ReactNode);
+  /**
+   * Shown at the top of the list, above the rows, whenever the list is open —
+   * context for the choice being made ("where this lands"), not a row that
+   * can be picked. Keyboard navigation skips it.
+   */
+  listHeader?: ReactNode;
   /** Attributes for the field itself — a test id, a name. */
   inputProps?: HTMLAttributes<HTMLInputElement> & DataAttributes;
   /** Attributes for the list — a test id. */
@@ -204,6 +210,7 @@ ListPortal.displayName = "ListPortal";
  * @param disabled If `true`, the field cannot be interacted with.
  * @param loading Show a spinner in place of the list.
  * @param emptyMessage Shown when there are no options; a function receives `close`.
+ * @param listHeader Context shown above the rows while the list is open.
  * @param className `class` overrides for the wrapper.
  * @param portal Render the list in a portal, anchored to the field.
  * @param zIndex Explicit z-index for the list.
@@ -237,6 +244,7 @@ export const Combobox: FC<ComboboxProps> = ({
   icon,
   focusOnMount = false,
   autoHighlight = false,
+  listHeader,
   inputProps,
   listProps,
   onOpenChange,
@@ -400,6 +408,11 @@ export const Combobox: FC<ComboboxProps> = ({
     }
   };
 
+  // The list has something to show: rows, a spinner, an empty message, or
+  // the header alone
+  const showList =
+    loading || options.length > 0 || emptyMessage !== null || !!listHeader;
+
   return (
     <div ref={setWrapper} className={cn("relative", className)} {...props}>
       <Input
@@ -428,7 +441,7 @@ export const Combobox: FC<ComboboxProps> = ({
           if (value && e.target.value !== value.label) onChange(null);
         }}
       />
-      {open && (loading || options.length > 0 || emptyMessage !== null) && (
+      {open && showList && (
         <ListPortal portal={portal}>
           <div
             id={listId}
@@ -446,6 +459,11 @@ export const Combobox: FC<ComboboxProps> = ({
               )
             )}
           >
+            {listHeader && (
+              <div className="px-2 py-1.5" data-combobox-list-header="">
+                {listHeader}
+              </div>
+            )}
             {loading && (
               <div className="flex justify-center py-2">
                 <Spinner size={Size.Md} />
