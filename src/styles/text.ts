@@ -30,7 +30,7 @@ export const textColor = (variant: Variant): TextColor | undefined => {
     case Variant.Success:
       return TextColor.Success;
     case Variant.Danger:
-      return TextColor.Destructive;
+      return TextColor.Failure;
     case Variant.Icon:
       return TextColor.Primary;
     default:

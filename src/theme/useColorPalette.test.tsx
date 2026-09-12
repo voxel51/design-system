@@ -87,21 +87,30 @@ describe("useColorPalette", () => {
     ).toBe(true);
   });
 
-  it("exposes named aliases alongside the numbered slots", () => {
+  it("exposes every slot under its Figma name", () => {
     const { result } = renderHook(() => useColorPalette());
 
-    expect(result.current.teal).toBe(colors.light.content.palette.teal);
-    expect(result.current["1"]).toBe(colors.light.content.palette[1]);
+    // the hue is part of the slot name now; there is no separate alias key
+    expect(result.current["7-teal"]).toBe(
+      colors.light.content.palette["7-teal"]
+    );
+    expect(result.current["1-brand"]).toBe(
+      colors.light.content.palette["1-brand"]
+    );
   });
 
   it("resolves values for the active mode", async () => {
     const { result } = renderHook(() => useColorPalette());
 
-    expect(result.current["1"]).toBe(colors.light.content.palette[1]);
+    expect(result.current["1-brand"]).toBe(
+      colors.light.content.palette["1-brand"]
+    );
 
     await setDark(true);
 
-    expect(result.current["1"]).toBe(colors.dark.content.palette[1]);
+    expect(result.current["1-brand"]).toBe(
+      colors.dark.content.palette["1-brand"]
+    );
   });
 
   it("returns a stable reference while the mode is unchanged", () => {

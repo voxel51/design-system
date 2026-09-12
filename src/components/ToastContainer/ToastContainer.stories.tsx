@@ -1,6 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { Anchor, Text, ToastContainer } from "@voxel51/voodo";
+import {
+  Anchor,
+  BackgroundColor,
+  bgColorClass,
+  BorderColor,
+  borderColorClass,
+  Text,
+  ToastContainer,
+} from "@voxel51/voodo";
 
 import { generateSentences } from "../../../utils/text";
 
@@ -28,7 +36,13 @@ type Story = StoryObj<typeof ToastContainer>;
 
 const defaultArgs = {
   children: (
-    <div className="border rounded-sm p-4">
+    // Tailwind v4 defaults a bare `border` to currentColor, which renders this
+    // placeholder as a stark text-coloured box. Bind the token explicitly.
+    <div
+      className={`border ${borderColorClass(
+        BorderColor.Default
+      )} ${bgColorClass(BackgroundColor.Card2)} rounded-sm p-4`}
+    >
       <Text>{generateSentences(1)}</Text>
     </div>
   ),
