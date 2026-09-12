@@ -33,6 +33,7 @@ const EXPECTED = {
     "primitives",
     "transitions",
   ],
+  "../dist/e2e.js": ["ContextMenuPom", "SelectPom"],
 };
 
 const failures = [];
@@ -71,19 +72,23 @@ for (const [subpath, target] of Object.entries(pkg.exports)) {
 }
 
 // The tokens entry must stay free of React and CSS — it exists so workers and
-// other non-UI consumers can read token values
-const tokensBundle = readFileSync(
-  new URL("../dist/tokens.js", import.meta.url),
-  "utf8"
-);
-const contamination = ["react", "jsx", ".css"].filter((needle) =>
-  tokensBundle.includes(needle)
-);
-if (contamination.length > 0) {
-  failures.push(
-    `dist/tokens.js should not reference ${contamination.join(", ")} — ` +
-      "the tokens entry must stay importable from non-UI contexts"
-  );
+// other non-UI consumers can read token values. The e2e entry has the same
+// constraint: page objects run inside Playwright, which has neither React nor
+// a CSS pipeline. Its only runtime import is @playwright/test, the peer the
+// consuming suite already has.
+const NON_UI_ENTRIES = {
+  "../dist/tokens.js": ["react", "jsx", ".css"],
+  "../dist/e2e.js": ["react", "jsx", ".css"],
+};
+for (const [entry, needles] of Object.entries(NON_UI_ENTRIES)) {
+  const bundle = readFileSync(new URL(entry, import.meta.url), "utf8");
+  const contamination = needles.filter((needle) => bundle.includes(needle));
+  if (contamination.length > 0) {
+    failures.push(
+      `${entry} should not reference ${contamination.join(", ")} — ` +
+        "this entry must stay importable from non-UI contexts"
+    );
+  }
 }
 
 if (failures.length > 0) {
@@ -92,4 +97,4 @@ if (failures.length > 0) {
   process.exit(1);
 }
 
-console.log("✅ Verified bundle exports (root + tokens entry)");
+console.log("✅ Verified bundle exports (root, tokens, and e2e entries)");

@@ -4,6 +4,8 @@ module.exports = {
   testEnvironment: "jsdom",
   roots: ["<rootDir>/src"],
   testMatch: ["**/__tests__/**/*.ts?(x)", "**/?(*.)+(spec|test).ts?(x)"],
+  // Page-object specs run under Playwright (`npm run test:pom`), not jest
+  testPathIgnorePatterns: ["/node_modules/", "\\.pom\\.spec\\.ts$"],
   moduleNameMapper: {
     "^@/(.*)\\.svg\\?react$": "<rootDir>/src/__mocks__/svgMock.tsx",
     "^@/(.*)$": "<rootDir>/src/$1",

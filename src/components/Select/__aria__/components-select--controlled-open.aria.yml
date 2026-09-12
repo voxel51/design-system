@@ -1,0 +1,12 @@
+- listbox:
+  - option "voluptate consequat reprehenderit" [selected]:
+    - text: ""
+    - img
+  - option "id ullamco quis"
+  - option "duis deserunt nulla" [selected]:
+    - text: ""
+    - img
+  - option "irure voluptate ad"
+  - option "laborum dolor incididunt" [selected]:
+    - text: ""
+    - img

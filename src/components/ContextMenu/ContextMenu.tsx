@@ -130,7 +130,9 @@ export const ContextMenu: FC<ContextMenuProps> = ({
               <MenuButton
                 ref={buttonRef}
                 as="div"
+                data-cy="context-menu-trigger"
                 aria-hidden
+                disabled={disabled}
                 tabIndex={-1}
                 style={{
                   position: "fixed",
@@ -143,6 +145,7 @@ export const ContextMenu: FC<ContextMenuProps> = ({
                 }}
               />
               <MenuItems
+                data-cy="context-menu"
                 anchor={{ to: anchor, gap: 0 }}
                 portal
                 modal={false}

@@ -33,3 +33,52 @@ jobs:
 
       - name: Build Storybook
         run: npm run build-storybook
+
+  # Required check: every component has a story, a page object, and a
+  # page-object spec that agree with each other (utils/check-component-alignment.ts),
+  # and each page object drives every story of its component under Playwright.
+  component_alignment:
+    name: component alignment
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.22.0
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check component alignment
+        run: npm run check:alignment
+
+      # ubuntu-latest ships Google Chrome, so Chromium's shared libraries are
+      # already present; `--with-deps` would only add an apt-get round trip
+      # against third-party mirrors that fails intermittently.
+      - name: Install Playwright browser
+        run: npx playwright install chromium
+
+      - name: Run page-object specs
+        run: npm run test:pom
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report
+          retention-days: 7
+
+      # Missing aria baselines are written by the run and fail it; this makes
+      # the written files retrievable so they can be committed.
+      - name: Upload aria snapshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aria-snapshots
+          path: src/**/__aria__/**
+          retention-days: 7
