@@ -110,6 +110,7 @@ export const Pill: FC<PillProps> = ({
       <div>{children}</div>
       {onRemove && (
         <Button
+          type="button"
           variant={Variant.Icon}
           size={Size.Xs}
           aria-label="Remove"
