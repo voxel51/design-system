@@ -7,7 +7,6 @@ import {
   useCallback,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
 
@@ -174,7 +173,6 @@ export const Select: FC<SelectProps> = ({
 }) => {
   const [query, setQuery] = useState("");
   const [selectionState, setSelectionState] = useState<string[]>(() => []);
-  const inputRef = useRef<HTMLInputElement>(null);
   const { ref: triggerRef, width: triggerWidth } = useElementSize();
 
   const filteredOptions = useMemo(
@@ -205,14 +203,8 @@ export const Select: FC<SelectProps> = ({
 
       setQuery("");
       onChange?.(value);
-
-      if (exclusive) {
-        window.setTimeout(() => {
-          inputRef.current?.blur();
-        }, 0);
-      }
     },
-    [exclusive, onChange]
+    [onChange]
   );
 
   const getDisplayValue = useCallback(
@@ -240,7 +232,6 @@ export const Select: FC<SelectProps> = ({
       >
         <div ref={triggerRef} className="relative flex items-center">
           <ComboboxInput
-            ref={inputRef}
             autoComplete="off" // interferes with dropdown menu
             displayValue={getDisplayValue}
             onChange={(e) => setQuery(e.target.value)}
