@@ -80,7 +80,7 @@ export const RichButton: FC<RichButtonProps> = ({
       )}
       style={{
         ...(active && {
-          backgroundColor: `color-mix(in srgb, var(${getColorCssVar(BrandColor.Primary)}) 10%, transparent)`,
+          backgroundColor: `color-mix(in srgb, ${getColorCssVar(BrandColor.Primary)} 10%, transparent)`,
         }),
         ...style,
       }}

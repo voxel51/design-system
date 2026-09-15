@@ -49,7 +49,7 @@ const toolbarActionClass = (
     "data-[disabled]:cursor-not-allowed",
     "outline-none",
     "data-[focus]:ring-2",
-    `data-[focus]:ring-[var(${getColorCssVar(BorderColor.Focus)})]`,
+    `data-[focus]:ring-[${getColorCssVar(BorderColor.Focus)}]`,
     "data-[focus]:ring-offset-1",
     className
   );
@@ -98,7 +98,7 @@ export const ToolbarAction = forwardRef<HTMLButtonElement, ToolbarActionProps>(
 
     const activeStyle: CSSProperties | undefined = active
       ? {
-          backgroundColor: `color-mix(in srgb, var(${getColorCssVar(IconColor.BrandAccent)}) 20%, transparent)`,
+          backgroundColor: `color-mix(in srgb, ${getColorCssVar(IconColor.BrandAccent)} 20%, transparent)`,
         }
       : undefined;
 
