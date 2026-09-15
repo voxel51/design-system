@@ -654,19 +654,25 @@ export const bgColorClass = (
     return backgroundColorMap[color];
   }
 
-  return withElementState(`bg-[var(${getColorCssVar(color)})]`, elementState);
+  return withElementState(`bg-[${getColorCssVar(color)}]`, elementState);
 };
 
+/**
+ * Resolves a design-token color to a ready-to-use CSS value, e.g.
+ * `var(--color-action-primary-primary)`. Safe to drop directly into an
+ * inline `style` prop (`style={{ color: getColorCssVar(TextColor.Success) }}`)
+ * or wrap in a Tailwind arbitrary value (`` `bg-[${getColorCssVar(color)}]` ``)
+ * — don't wrap the result in `var(...)` yourself, it's already included.
+ */
 export const getColorCssVar = (color: Color | BorderColor): string => {
-  if (
+  const name =
     isEnumValue(color, BrandColor) ||
     isEnumValue(color, SemanticColor) ||
     isEnumValue(color, ActionColor)
-  ) {
-    return `--color-${color}`;
-  }
+      ? `--color-${color}`
+      : `--color-content-${color}`;
 
-  return `--color-content-${color}`;
+  return `var(${name})`;
 };
 
 const isEnumValue = <T extends Record<string, string>>(
@@ -685,7 +691,7 @@ export const borderColorClass = (
   }
 
   return withElementState(
-    `border-[var(${getColorCssVar(color)})]`,
+    `border-[${getColorCssVar(color)}]`,
     elementState
   );
 };
@@ -698,5 +704,5 @@ export const textColorClass = (
     return textColorMap[color];
   }
 
-  return withElementState(`text-[var(${getColorCssVar(color)})]`, elementState);
+  return withElementState(`text-[${getColorCssVar(color)}]`, elementState);
 };
