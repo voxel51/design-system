@@ -125,6 +125,10 @@ export const inputStyle = ({
     bgColorClass(BackgroundColor.Transparent),
     "autofill:bg-transparent",
     "[&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s]",
+    // Chrome's autofill UA styles force text color independently of the background
+    // transition-delay trick above, so pin it to the themed color or autofilled text
+    // renders in the browser's own (often illegible) color.
+    "[&:-webkit-autofill]:[-webkit-text-fill-color:var(--color-content-text-primary)]",
     textColorClass(TextColor.Primary),
     "placeholder:text-content-text-tertiary",
     "transition-colors",
