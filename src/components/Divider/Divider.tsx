@@ -164,7 +164,7 @@ const Line: FC<LineProps> = ({
       <div
         className={cn(
           "border-dotted",
-          `border-[var(${getColorCssVar(TextColor.Placeholder)})]`,
+          `border-[${getColorCssVar(TextColor.Placeholder)}]`,
           isColumn ? "border-l h-full" : "border-t flex-1"
         )}
         {...props}
