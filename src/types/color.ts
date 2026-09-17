@@ -690,10 +690,7 @@ export const borderColorClass = (
     return borderColorMap[color];
   }
 
-  return withElementState(
-    `border-[${getColorCssVar(color)}]`,
-    elementState
-  );
+  return withElementState(`border-[${getColorCssVar(color)}]`, elementState);
 };
 
 export const textColorClass = (
