@@ -34,8 +34,14 @@ const externalPackages = [
 //   externalized CSS import would emit a bare import statement that breaks
 //   CJS consumers and styles nothing.
 // The `${name}/` check also matches subpath imports (e.g. @dnd-kit/core/foo).
+// react-syntax-highlighter is bundled rather than externalized: its ESM build
+// imports highlight.js without file extensions, which Node will not resolve,
+// and its CJS build needs interop unwrapping at every call site.
+const bundledPackages = ["react-syntax-highlighter"];
+
 const isExternal = (id: string) =>
   !id.endsWith(".css") &&
+  !bundledPackages.some((name) => id === name || id.startsWith(`${name}/`)) &&
   externalPackages.some((name) => id === name || id.startsWith(`${name}/`));
 
 export default defineConfig({

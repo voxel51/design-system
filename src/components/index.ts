@@ -15,6 +15,7 @@ export * from "./EmptyState";
 export * from "./FormField";
 export * from "./FormFieldGroup";
 export * from "./Heading";
+export * from "./Highlighted";
 export * from "./Icons";
 export * from "./ImageList";
 export * from "./Input";
