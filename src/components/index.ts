@@ -20,6 +20,7 @@ export * from "./ImageList";
 export * from "./Input";
 export * from "./ListItem";
 export * from "./LoadingDots";
+export * from "./LoadingScreen";
 export * from "./Menu";
 export * from "./Modal";
 export * from "./Pill";
