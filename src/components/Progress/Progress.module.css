@@ -1,0 +1,33 @@
+/*
+ * A band of color that crosses the track and leaves it, for work with no
+ * known end. The ends fade through the bar's own color rather than
+ * `transparent`, which fades through black.
+ */
+.sweep {
+  position: absolute;
+  inset: 0;
+  background-size: 200% 100%;
+  background-image: linear-gradient(
+    130deg,
+    color-mix(in srgb, var(--voodo-progress) 0%, transparent) 0%,
+    var(--voodo-progress) 50%,
+    color-mix(in srgb, var(--voodo-progress) 0%, transparent) 100%
+  );
+  animation: sweep 3s linear infinite;
+}
+
+@keyframes sweep {
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sweep {
+    animation: none;
+    background-position: 50% 0;
+  }
+}

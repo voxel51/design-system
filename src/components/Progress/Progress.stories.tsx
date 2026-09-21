@@ -93,4 +93,12 @@ export const Large: Story = {
   },
 };
 
+/** Work with no known end sweeps rather than filling. */
+export const Unknown: Story = {
+  args: {
+    value: undefined,
+    "aria-label": "Loading",
+  },
+};
+
 export default meta;

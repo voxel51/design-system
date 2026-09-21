@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import type { FC, HTMLAttributes } from "react";
+import type { CSSProperties, FC, HTMLAttributes } from "react";
 
 import radiusStyles from "@/styles/radius";
 import {
@@ -7,15 +7,18 @@ import {
   bgColorClass,
   BrandColor,
   type Color,
+  getColorCssVar,
   Radius,
   Size,
 } from "@/types";
 
+import styles from "./Progress.module.css";
+
 export type ProgressSize = `${Exclude<Size, Size.Xs | Size.Xl>}`;
 
 export interface ProgressProps extends HTMLAttributes<HTMLDivElement> {
-  /** Current value, clamped to `[0, max]`. */
-  value: number;
+  /** Current value, clamped to `[0, max]`. Omit it for work with no known end. */
+  value?: number;
   /** Maximum value the bar represents. */
   max?: number;
   /** Track thickness. See {@link Size}. */
@@ -34,14 +37,17 @@ const sizeStyles: Record<ProgressSize, string> = {
 
 /**
  * A read-only progress / meter bar: a filled track showing `value` as a
- * fraction of `max`. For an interactive range input, see {@link Slider}.
+ * fraction of `max`. Without a `value` it sweeps instead, for work that has
+ * no known end. For an interactive range input, see {@link Slider}.
  *
  * @example
  * ```tsx
  * <Progress value={68} aria-label="Voxel tokens used" />
+ * <Progress aria-label="Loading" />
  * ```
  *
- * @param value Current value, clamped to `[0, max]`.
+ * @param value Current value, clamped to `[0, max]`. Omit it for work with no
+ *  known end, which sweeps rather than filling.
  * @param max Maximum value the bar represents. Defaults to `100`.
  * @param size Track thickness. See {@link Size}. Defaults to {@link Size.Md}.
  * @param color Fill color. See {@link Color}. Defaults to {@link BrandColor.Primary}.
@@ -57,17 +63,26 @@ export const Progress: FC<ProgressProps> = ({
   color = BrandColor.Primary,
   trackColor = BackgroundColor.CardElevated,
   className,
+  style,
   ...props
 }) => {
-  const ratio = max > 0 ? Math.min(Math.max(value, 0), max) / max : 0;
-  const percent = Math.round(ratio * 100);
+  const known = value !== undefined;
+  const ratio = known && max > 0 ? Math.min(Math.max(value, 0), max) / max : 0;
 
   return (
     <div
       role="progressbar"
-      aria-valuenow={percent}
-      aria-valuemin={0}
-      aria-valuemax={100}
+      aria-valuenow={known ? Math.round(ratio * 100) : undefined}
+      aria-valuemin={known ? 0 : undefined}
+      aria-valuemax={known ? 100 : undefined}
+      style={
+        known
+          ? style
+          : ({
+              "--voodo-progress": getColorCssVar(color),
+              ...style,
+            } as CSSProperties)
+      }
       className={clsx(
         "relative w-full overflow-hidden",
         bgColorClass(trackColor),
@@ -77,14 +92,18 @@ export const Progress: FC<ProgressProps> = ({
       )}
       {...props}
     >
-      <div
-        className={clsx(
-          "h-full",
-          bgColorClass(color),
-          radiusStyles(Radius.Full)
-        )}
-        style={{ width: `${ratio * 100}%` }}
-      />
+      {known ? (
+        <div
+          className={clsx(
+            "h-full",
+            bgColorClass(color),
+            radiusStyles(Radius.Full)
+          )}
+          style={{ width: `${ratio * 100}%` }}
+        />
+      ) : (
+        <div className={styles.sweep} />
+      )}
     </div>
   );
 };
