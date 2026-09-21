@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { CodeBlock, Highlighted } from "@voxel51/voodo";
+import { CodeBlock } from "@voxel51/voodo";
+import { Highlighted } from "@voxel51/voodo/code";
 
 const meta: Meta<typeof Highlighted> = {
   title: "Components/Highlighted",

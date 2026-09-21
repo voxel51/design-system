@@ -33,6 +33,7 @@ const EXPECTED = {
     "primitives",
     "transitions",
   ],
+  "../dist/code.js": ["Highlighted"],
 };
 
 const failures = [];

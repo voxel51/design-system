@@ -18,6 +18,10 @@ export default defineConfig({
         replacement: resolve(__dirname, "../src/styles/globals.css"),
       },
       {
+        find: "@voxel51/voodo/code",
+        replacement: resolve(__dirname, "../src/code/index.ts"),
+      },
+      {
         find: "@voxel51/voodo",
         replacement: resolve(__dirname, "../src/index.ts"),
       },

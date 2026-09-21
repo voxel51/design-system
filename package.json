@@ -27,6 +27,11 @@
       "import": "./dist/tokens.js",
       "require": "./dist/tokens.cjs"
     },
+    "./code": {
+      "types": "./dist/code.d.ts",
+      "import": "./dist/code.js",
+      "require": "./dist/code.cjs"
+    },
     "./theme.css": "./dist/voodo.css"
   },
   "files": [
