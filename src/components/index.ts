@@ -3,6 +3,7 @@ export * from "./Button";
 export * from "./Card";
 export * from "./Checkbox";
 export * from "./Clickable";
+export * from "./CodeBlock";
 export * from "./Collapsible";
 export * from "./Combobox";
 export * from "./ContextMenu";
