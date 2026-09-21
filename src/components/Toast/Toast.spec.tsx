@@ -2,6 +2,8 @@ import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { AddIcon } from "@/components/Icons";
+import { ToastContainer } from "@/components/ToastContainer";
+import { Anchor } from "@/types";
 import { randomString } from "@/util/random";
 
 import { DummyIcon, makeChild } from "#/testing-utils";
@@ -120,6 +122,31 @@ describe("Toast", () => {
       expect(
         within(toast).getByRole("button", { name: "Close" })
       ).toBeInTheDocument();
+    });
+  });
+
+  describe("in a container", () => {
+    it("should stack rather than anchor itself again", () => {
+      render(
+        <ToastContainer open anchor={Anchor.TopRight}>
+          <Toast {...defaultProps} title="first" />
+          <Toast {...defaultProps} title="second" />
+        </ToastContainer>
+      );
+
+      const stack = screen.getByText("first").closest("div.fixed");
+      expect(stack).toBe(screen.getByText("second").closest("div.fixed"));
+      expect(document.querySelectorAll("div.fixed")).toHaveLength(1);
+    });
+
+    it("should stay hidden when it is not open", () => {
+      render(
+        <ToastContainer open>
+          <Toast {...defaultProps} open={false} title="hidden" />
+        </ToastContainer>
+      );
+
+      expect(screen.queryByText("hidden")).not.toBeInTheDocument();
     });
   });
 

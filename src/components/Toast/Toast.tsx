@@ -6,13 +6,13 @@ import type {
   MouseEvent,
   ReactNode,
 } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/Button";
 import { CloseIcon, type IconInput, IconWrapper } from "@/components/Icons";
 import { Stack } from "@/components/Stack";
 import { Text } from "@/components/Text";
-import { ToastContainer } from "@/components/ToastContainer";
+import { ToastContainer, ToastStack } from "@/components/ToastContainer";
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
 import {
@@ -118,6 +118,7 @@ export const Toast: FC<ToastProps> = ({
   variant = Variant.Primary,
   ...props
 }) => {
+  const stacked = useContext(ToastStack);
   const [held, setHeld] = useState<boolean>(false);
   const close = useRef(onClose);
   close.current = onClose;
@@ -204,6 +205,10 @@ export const Toast: FC<ToastProps> = ({
       )}
     </Stack>
   );
+
+  // A container is already placing this toast, so anchoring it again would
+  // lift it out of the stack and onto the one below it
+  if (stacked) return open ? toastContent : null;
 
   return (
     <ToastContainer open={open} anchor={anchor}>
