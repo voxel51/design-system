@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { AddIcon } from "@/components/Icons";
@@ -120,6 +120,121 @@ describe("Toast", () => {
       expect(
         within(toast).getByRole("button", { name: "Close" })
       ).toBeInTheDocument();
+    });
+  });
+
+  describe("duration", () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.runOnlyPendingTimers();
+      jest.useRealTimers();
+    });
+
+    it("should close itself once the duration is up", () => {
+      const onClose = jest.fn();
+      render(<Toast {...defaultProps} duration={5000} onClose={onClose} />);
+
+      act(() => {
+        jest.advanceTimersByTime(5000);
+      });
+
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
+    it("should stay until closed when given no duration", () => {
+      const onClose = jest.fn();
+      render(<Toast {...defaultProps} onClose={onClose} />);
+
+      act(() => {
+        jest.advanceTimersByTime(60000);
+      });
+
+      expect(onClose).not.toHaveBeenCalled();
+    });
+
+    it("should not close while closed", () => {
+      const onClose = jest.fn();
+      render(
+        <Toast
+          {...defaultProps}
+          duration={5000}
+          onClose={onClose}
+          open={false}
+        />
+      );
+
+      act(() => {
+        jest.advanceTimersByTime(5000);
+      });
+
+      expect(onClose).not.toHaveBeenCalled();
+    });
+
+    it("should hold while the pointer is over it", () => {
+      const onClose = jest.fn();
+      render(<Toast {...defaultProps} duration={5000} onClose={onClose} />);
+
+      fireEvent.mouseEnter(screen.getByTestId(testId));
+      act(() => {
+        jest.advanceTimersByTime(60000);
+      });
+
+      expect(onClose).not.toHaveBeenCalled();
+    });
+
+    it("should start the wait over when the pointer leaves", () => {
+      const onClose = jest.fn();
+      render(<Toast {...defaultProps} duration={5000} onClose={onClose} />);
+
+      fireEvent.mouseEnter(screen.getByTestId(testId));
+      act(() => {
+        jest.advanceTimersByTime(4000);
+      });
+      fireEvent.mouseLeave(screen.getByTestId(testId));
+      act(() => {
+        jest.advanceTimersByTime(4000);
+      });
+
+      expect(onClose).not.toHaveBeenCalled();
+
+      act(() => {
+        jest.advanceTimersByTime(1000);
+      });
+
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
+    it("should hold while focus is inside it", () => {
+      const onClose = jest.fn();
+      render(
+        <Toast
+          {...defaultProps}
+          duration={5000}
+          onClose={onClose}
+          action={<button type="button">Undo</button>}
+        />
+      );
+
+      fireEvent.focus(screen.getByRole("button", { name: "Undo" }));
+      act(() => {
+        jest.advanceTimersByTime(60000);
+      });
+
+      expect(onClose).not.toHaveBeenCalled();
+    });
+
+    it("should still call a caller's own pointer handlers", () => {
+      const onMouseEnter = jest.fn();
+      render(
+        <Toast {...defaultProps} duration={5000} onMouseEnter={onMouseEnter} />
+      );
+
+      fireEvent.mouseEnter(screen.getByTestId(testId));
+
+      expect(onMouseEnter).toHaveBeenCalledTimes(1);
     });
   });
 });

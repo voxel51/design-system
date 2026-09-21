@@ -1,5 +1,12 @@
 import clsx from "clsx";
-import type { FC, HTMLAttributes, ReactNode } from "react";
+import type {
+  FC,
+  FocusEvent,
+  HTMLAttributes,
+  MouseEvent,
+  ReactNode,
+} from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/Button";
 import { CloseIcon, type IconInput, IconWrapper } from "@/components/Icons";
@@ -35,6 +42,7 @@ export interface ToastProps extends Omit<
   action?: ReactNode;
   anchor?: Anchor;
   description?: ReactNode;
+  duration?: number;
   icon?: IconInput;
   onClose?: () => void;
   open?: boolean;
@@ -82,6 +90,9 @@ const variantStyles: Record<ToastVariant, string> = {
  * @param anchor The location in the viewport to anchor the toast. See {@link Anchor}.
  * @param className `class` overrides to apply to the component.
  * @param description Optional content to display in the "description" slot; this should be considered secondary content.
+ * @param duration How long, in milliseconds, the toast shows itself before calling `onClose`. Omit it and the
+ *  toast stays until something closes it. Hovering or focusing the toast holds it open, and the wait starts
+ *  over when the pointer or focus leaves.
  * @param icon An optional icon component to display in the "icon" slot.
  * @param onClose Optional handler invoked when the close/dismiss control is activated. If provided, a close
  *  control is rendered in the toast.
@@ -95,13 +106,49 @@ export const Toast: FC<ToastProps> = ({
   anchor = Anchor.Bottom,
   className,
   description,
+  duration,
   icon,
   onClose,
+  onBlur,
+  onFocus,
+  onMouseEnter,
+  onMouseLeave,
   open,
   title,
   variant = Variant.Primary,
   ...props
 }) => {
+  const [held, setHeld] = useState<boolean>(false);
+  const close = useRef(onClose);
+  close.current = onClose;
+
+  useEffect(() => {
+    if (!open || !duration || held) return undefined;
+
+    const timer = window.setTimeout(() => close.current?.(), duration);
+    return () => window.clearTimeout(timer);
+  }, [duration, held, open]);
+
+  const hold = (event: MouseEvent<HTMLDivElement>): void => {
+    setHeld(true);
+    onMouseEnter?.(event);
+  };
+
+  const release = (event: MouseEvent<HTMLDivElement>): void => {
+    setHeld(false);
+    onMouseLeave?.(event);
+  };
+
+  const holdForFocus = (event: FocusEvent<HTMLDivElement>): void => {
+    setHeld(true);
+    onFocus?.(event);
+  };
+
+  const releaseForFocus = (event: FocusEvent<HTMLDivElement>): void => {
+    setHeld(false);
+    onBlur?.(event);
+  };
+
   const toastContent = (
     <Stack
       align={Align.Center}
@@ -118,6 +165,10 @@ export const Toast: FC<ToastProps> = ({
         shadowStyles(Shadow.Md),
         className
       )}
+      onBlur={releaseForFocus}
+      onFocus={holdForFocus}
+      onMouseEnter={hold}
+      onMouseLeave={release}
       {...props}
     >
       {/* Content (icon, title, description) on the left. */}
