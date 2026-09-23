@@ -174,7 +174,7 @@ export const Toolbar = ({
   const containerStyle: CSSProperties = {
     left: position.x,
     top: position.y,
-    backgroundColor: `color-mix(in srgb, var(${getColorCssVar(BackgroundColor.CardNested)}) 85%, transparent)`,
+    backgroundColor: `color-mix(in srgb, ${getColorCssVar(BackgroundColor.CardNested)} 85%, transparent)`,
     ...(isCollapsed && collapsedSize !== null
       ? orientation === Orientation.Column
         ? { width: collapsedSize }

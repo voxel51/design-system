@@ -45,6 +45,10 @@ const meta: Meta<typeof Input> = {
       description: "Optional icon to display",
       options: [undefined, ...Object.values(IconName)],
     },
+    borderless: {
+      control: "boolean",
+      description: "No frame, for a field that sits flush in a bar or header",
+    },
   },
   decorators: [withContainer()],
 };
@@ -134,6 +138,14 @@ export const ReadOnly: Story = {
   args: {
     value: "user@example.com",
     readOnly: true,
+  },
+};
+
+export const Borderless: Story = {
+  args: {
+    size: Size.Sm,
+    placeholder: "Search",
+    borderless: true,
   },
 };
 

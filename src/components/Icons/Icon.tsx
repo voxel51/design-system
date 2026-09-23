@@ -18,6 +18,7 @@ import CaretDownIcon from "@/img/CaretDown.svg?react";
 import CheckIcon from "@/img/Check.svg?react";
 import CheckboxIcon from "@/img/Checkbox.svg?react";
 import ChecklistIcon from "@/img/Checklist.svg?react";
+import CheckmarkIcon from "@/img/Checkmark.svg?react";
 import ChevronBottomIcon from "@/img/ChevronBottom.svg?react";
 import ChevronLeftIcon from "@/img/ChevronLeft.svg?react";
 import ChevronRightIcon from "@/img/ChevronRight.svg?react";
@@ -31,6 +32,7 @@ import CodeIcon from "@/img/Code.svg?react";
 import CogIcon from "@/img/Cog.svg?react";
 import ContactIcon from "@/img/Contact.svg?react";
 import ContentCopyIcon from "@/img/ContentCopy.svg?react";
+import CreditCardIcon from "@/img/CreditCard.svg?react";
 import DatabaseIcon from "@/img/Database.svg?react";
 import DateRangeIcon from "@/img/DateRange.svg?react";
 import DeleteIcon from "@/img/Delete.svg?react";
@@ -48,6 +50,7 @@ import FileClockIcon from "@/img/FileClock.svg?react";
 import FineTuneIcon from "@/img/FineTune.svg?react";
 import FingerprintIcon from "@/img/Fingerprint.svg?react";
 import FullscreenIcon from "@/img/Fullscreen.svg?react";
+import GaugeIcon from "@/img/Gauge.svg?react";
 import GridViewIcon from "@/img/GridView.svg?react";
 import HistoryIcon from "@/img/History.svg?react";
 import IdCardIcon from "@/img/IdCard.svg?react";
@@ -86,6 +89,7 @@ import SettingsIcon from "@/img/Settings.svg?react";
 import ShieldCheckIcon from "@/img/ShieldCheck.svg?react";
 import SliderIcon from "@/img/Slider.svg?react";
 import SlidersIcon from "@/img/Sliders.svg?react";
+import SparklesIcon from "@/img/Sparkles.svg?react";
 import TagIcon from "@/img/Tag.svg?react";
 import TextIcon from "@/img/Text.svg?react";
 import ToggleIcon from "@/img/Toggle.svg?react";
@@ -105,7 +109,7 @@ import WaypointsIcon from "@/img/Waypoints.svg?react";
 import WorkflowIcon from "@/img/Workflow.svg?react";
 import WorkspacesIcon from "@/img/Workspaces.svg?react";
 import ZapIcon from "@/img/Zap.svg?react";
-import { BrandColor, IconColor, TextColor, textColorClass } from "@/types";
+import { type ThemeableColor, isColorToken, textColorClass } from "@/types";
 import { IconName } from "@/types/icons";
 import { Size } from "@/types/size";
 
@@ -136,6 +140,7 @@ export const iconMap: Record<
   [IconName.CalendarClock]: CalendarClockIcon,
   [IconName.CaretDown]: CaretDownIcon,
   [IconName.Check]: CheckIcon,
+  [IconName.Checkmark]: CheckmarkIcon,
   [IconName.Checkbox]: CheckboxIcon,
   [IconName.Checklist]: ChecklistIcon,
   [IconName.ChevronBottom]: ChevronBottomIcon,
@@ -152,6 +157,7 @@ export const iconMap: Record<
   [IconName.Contact]: ContactIcon,
   [IconName.ContentCopy]: ContentCopyIcon,
   [IconName.Database]: DatabaseIcon,
+  [IconName.CreditCard]: CreditCardIcon,
   [IconName.DateRange]: DateRangeIcon,
   [IconName.Delete]: DeleteIcon,
   [IconName.Detection]: DetectionIcon,
@@ -168,6 +174,7 @@ export const iconMap: Record<
   [IconName.FineTune]: FineTuneIcon,
   [IconName.Fingerprint]: FingerprintIcon,
   [IconName.Fullscreen]: FullscreenIcon,
+  [IconName.Gauge]: GaugeIcon,
   [IconName.GridView]: GridViewIcon,
   [IconName.History]: HistoryIcon,
   [IconName.IdCard]: IdCardIcon,
@@ -206,6 +213,7 @@ export const iconMap: Record<
   [IconName.ShieldCheck]: ShieldCheckIcon,
   [IconName.Slider]: SliderIcon,
   [IconName.Sliders]: SlidersIcon,
+  [IconName.Sparkles]: SparklesIcon,
   [IconName.Tag]: TagIcon,
   [IconName.Text]: TextIcon,
   [IconName.Toggle]: ToggleIcon,
@@ -243,9 +251,16 @@ const sizeMap: Partial<Record<IconSize, number>> = {
  */
 export interface LegacyIconProps {
   name: IconName;
-  size?: Size;
+  size?: Size | number;
   className?: string;
-  color?: TextColor | IconColor | BrandColor;
+  /**
+   * A theme-aware color token for anything the design system controls, or a
+   * raw CSS color for anything the app controls (user-defined palettes,
+   * data-driven colors) — a token can't exist for a color chosen at runtime
+   * by app data, so this isn't a fallback, it's the correct tool for that
+   * case.
+   */
+  color?: ThemeableColor | (string & {});
   style?: React.CSSProperties;
 }
 
@@ -263,9 +278,11 @@ export interface LegacyIconProps {
  * ```
  *
  * @param name Icon to display. See {@link IconName}.
- * @param size The size of the icon. See {@link Size}.
+ * @param size The size of the icon. Accepts a {@link Size} token, or a raw
+ * pixel number for cases the token scale doesn't cover.
  * @param className `class` overrides to apply to the component.
- * @param color Color of the icon. By default, the icon inherits the text color of its container.
+ * @param color Color of the icon. See {@link LegacyIconProps.color}. By
+ * default, the icon inherits the text color of its container.
  * @param style `style` overrides to apply to the icon.
  * @param props Additional HTML properties to apply to the component.
  */
@@ -274,21 +291,25 @@ export const Icon: FC<LegacyIconProps> = ({
   size = undefined, // if no size specified, fill the parent container
   className,
   color,
+  style,
   ...props
 }) => {
   // We are making a strong opinion here that we should treat the SVG
   // as a square - the viewbox on the SVG will still handle the aspect
   // ratio but it's possible that VERY rectangular SVGs will not behave
   // as expected.
-  const iconSize = size ? sizeMap[size] : undefined;
+  const iconSize =
+    typeof size === "number" ? size : size ? sizeMap[size] : undefined;
   const IconComponent = name === IconName.Spinner ? Spinner : iconMap[name];
+  const isToken = color !== undefined && isColorToken(color);
 
   return (
     <IconComponent
       width={iconSize}
       height={iconSize}
-      size={size}
-      className={clsx(color && textColorClass(color), className)}
+      size={typeof size === "number" ? undefined : size}
+      className={clsx(isToken && textColorClass(color), className)}
+      style={color && !isToken ? { color, ...style } : style}
       {...props}
     />
   );

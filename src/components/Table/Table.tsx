@@ -1,4 +1,9 @@
-import type { FC, HTMLAttributes } from "react";
+import type {
+  FC,
+  HTMLAttributes,
+  TdHTMLAttributes,
+  ThHTMLAttributes,
+} from "react";
 
 import radiusStyles from "@/styles/radius";
 import { textStyles } from "@/styles/text";
@@ -82,7 +87,7 @@ export const TableBody: FC<HTMLAttributes<HTMLTableSectionElement>> = ({
   return <tbody {...props}>{children}</tbody>;
 };
 
-export const TableCell: FC<HTMLAttributes<HTMLTableCellElement>> = ({
+export const TableCell: FC<TdHTMLAttributes<HTMLTableCellElement>> = ({
   children,
   className,
   ...props
@@ -102,7 +107,7 @@ export const TableCell: FC<HTMLAttributes<HTMLTableCellElement>> = ({
   );
 };
 
-export const TableHead: FC<HTMLAttributes<HTMLTableCellElement>> = ({
+export const TableHead: FC<ThHTMLAttributes<HTMLTableCellElement>> = ({
   children,
   className,
   ...props

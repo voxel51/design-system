@@ -70,6 +70,8 @@ export interface InputProps extends ModifiedInputProps {
   type?: InputType;
   error?: boolean;
   icon?: IconInput;
+  /** No frame: for a field that sits flush in a bar or header. */
+  borderless?: boolean;
 }
 
 /**
@@ -99,6 +101,7 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  * @internal For consistent application of input styling of native `input` elements.
  */
 export const inputStyle = ({
+  borderless,
   disabled,
   error,
   icon,
@@ -106,6 +109,7 @@ export const inputStyle = ({
   size = Size.Md,
   trailingControl,
 }: {
+  borderless?: boolean;
   disabled?: boolean;
   error?: boolean;
   icon?: boolean;
@@ -124,24 +128,32 @@ export const inputStyle = ({
     textColorClass(TextColor.Primary),
     "placeholder:text-content-text-tertiary",
     "transition-colors",
-    "border",
-    error
-      ? borderColorClass(BorderColor.Error)
-      : borderColorClass(BorderColor.Default),
-    !disabled &&
+    "focus:outline-none",
+    // A borderless field sits flush in a bar or header: no frame, and no
+    // hover/focus border either — its container carries the affordance
+    !borderless && "border",
+    !borderless &&
+      (error
+        ? borderColorClass(BorderColor.Error)
+        : borderColorClass(BorderColor.Default)),
+    !borderless &&
+      !disabled &&
       !error &&
       borderColorClass(BorderColor.Hover, ElementState.Hover),
-    "focus:outline-none",
-    error
-      ? borderColorClass(BorderColor.Error, ElementState.Focus)
-      : borderColorClass(BorderColor.Focus, ElementState.Focus),
+    !borderless &&
+      (error
+        ? borderColorClass(BorderColor.Error, ElementState.Focus)
+        : borderColorClass(BorderColor.Focus, ElementState.Focus)),
     "disabled:opacity-50",
     "disabled:cursor-not-allowed",
-    borderColorClass(BorderColor.Disabled, ElementState.Disabled),
+    !borderless &&
+      borderColorClass(BorderColor.Disabled, ElementState.Disabled),
     radiusStyles(radius),
     sizeStyles[size],
-    icon ? paddingLeftStyles[size] : "pl-3",
-    trailingControl ? "pr-10" : "pr-3"
+    // A borderless field has no frame to inset from; its container sets the
+    // rhythm, so the text sits close to whatever precedes it
+    icon ? paddingLeftStyles[size] : borderless ? "pl-1.5" : "pl-3",
+    trailingControl ? "pr-10" : borderless ? "pr-1.5" : "pr-3"
   );
 
 /**
@@ -208,6 +220,7 @@ export const Input: FC<InputProps> = ({
   onKeyDown,
   error,
   icon,
+  borderless,
   ...props
 }) => {
   // Password fields toggle their rendered type between "password" and "text".
@@ -277,6 +290,7 @@ export const Input: FC<InputProps> = ({
 
   const inputClasses = cn(
     inputStyle({
+      borderless,
       disabled,
       error: hasError,
       icon: !!icon,

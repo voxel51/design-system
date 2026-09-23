@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ReactNode } from "react";
 
@@ -78,5 +78,46 @@ describe("Select", () => {
         expect(screen.getByTestId(testIds[i])).toBeInTheDocument()
       );
     });
+  });
+
+  it("should close the list after an exclusive pick and keep the choice", async () => {
+    const user = userEvent.setup();
+    const onChange = jest.fn();
+    render(
+      <Select
+        exclusive
+        portal
+        options={[
+          { id: "a", data: { label: "Alpha" } },
+          { id: "b", data: { label: "Beta" } },
+        ]}
+        onChange={onChange}
+      />
+    );
+
+    await user.click(screen.getByRole("combobox"));
+    await user.click(await screen.findByText("Alpha"));
+
+    expect(onChange).toHaveBeenCalledWith("a");
+    await waitFor(() => expect(screen.queryByRole("listbox")).toBeNull());
+  });
+
+  it("should keep the list open after a pick when multiple are allowed", async () => {
+    const user = userEvent.setup();
+    render(
+      <Select
+        portal
+        options={[
+          { id: "a", data: { label: "Alpha" } },
+          { id: "b", data: { label: "Beta" } },
+        ]}
+        onChange={jest.fn()}
+      />
+    );
+
+    await user.click(screen.getByRole("combobox"));
+    await user.click(await screen.findByText("Alpha"));
+
+    expect(screen.getByRole("listbox")).toBeInTheDocument();
   });
 });

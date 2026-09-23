@@ -139,6 +139,15 @@ export const InteractiveColor = {
   DangerDefault: "interactive-danger-default",
   DangerHover: "interactive-danger-hover",
   DangerPressed: "interactive-danger-pressed",
+  ExpressiveDefaultEnd: "interactive-expressive-default-end",
+  ExpressiveDefaultMid: "interactive-expressive-default-mid",
+  ExpressiveDefaultStart: "interactive-expressive-default-start",
+  ExpressiveHoverEnd: "interactive-expressive-hover-end",
+  ExpressiveHoverMid: "interactive-expressive-hover-mid",
+  ExpressiveHoverStart: "interactive-expressive-hover-start",
+  ExpressivePressedEnd: "interactive-expressive-pressed-end",
+  ExpressivePressedMid: "interactive-expressive-pressed-mid",
+  ExpressivePressedStart: "interactive-expressive-pressed-start",
   PrimaryDefault: "interactive-primary-default",
   PrimaryHover: "interactive-primary-hover",
   PrimaryPressed: "interactive-primary-pressed",
@@ -156,6 +165,22 @@ export namespace InteractiveColor {
   export type DangerDefault = typeof InteractiveColor.DangerDefault;
   export type DangerHover = typeof InteractiveColor.DangerHover;
   export type DangerPressed = typeof InteractiveColor.DangerPressed;
+  export type ExpressiveDefaultEnd =
+    typeof InteractiveColor.ExpressiveDefaultEnd;
+  export type ExpressiveDefaultMid =
+    typeof InteractiveColor.ExpressiveDefaultMid;
+  export type ExpressiveDefaultStart =
+    typeof InteractiveColor.ExpressiveDefaultStart;
+  export type ExpressiveHoverEnd = typeof InteractiveColor.ExpressiveHoverEnd;
+  export type ExpressiveHoverMid = typeof InteractiveColor.ExpressiveHoverMid;
+  export type ExpressiveHoverStart =
+    typeof InteractiveColor.ExpressiveHoverStart;
+  export type ExpressivePressedEnd =
+    typeof InteractiveColor.ExpressivePressedEnd;
+  export type ExpressivePressedMid =
+    typeof InteractiveColor.ExpressivePressedMid;
+  export type ExpressivePressedStart =
+    typeof InteractiveColor.ExpressivePressedStart;
   export type PrimaryDefault = typeof InteractiveColor.PrimaryDefault;
   export type PrimaryHover = typeof InteractiveColor.PrimaryHover;
   export type PrimaryPressed = typeof InteractiveColor.PrimaryPressed;
@@ -264,6 +289,7 @@ export const TextColor = {
   Failure: "text-failure",
   Foreground: "text-foreground",
   Info: "text-info",
+  Inverse: "text-inverse",
   Muted: "text-muted",
   Placeholder: "text-placeholder",
   Primary: "text-primary",
@@ -280,6 +306,7 @@ export namespace TextColor {
   export type Failure = typeof TextColor.Failure;
   export type Foreground = typeof TextColor.Foreground;
   export type Info = typeof TextColor.Info;
+  export type Inverse = typeof TextColor.Inverse;
   export type Muted = typeof TextColor.Muted;
   export type Placeholder = typeof TextColor.Placeholder;
   export type Primary = typeof TextColor.Primary;
@@ -403,6 +430,26 @@ export type Color =
   | VizChartColor
   | VizOverlayColor;
 
+export type ThemeableColor = TextColor | IconColor | BrandColor;
+
+const themeableColors = new Set<string>([
+  ...Object.values(TextColor),
+  ...Object.values(IconColor),
+  ...Object.values(BrandColor),
+]);
+
+/**
+ * Whether a value is one of the {@link ThemeableColor} tokens — which
+ * resolve to a CSS var and shift with light/dark theme — as opposed to a
+ * raw CSS color, which is a fixed value the theme can't touch. Components
+ * that accept `color?: ThemeableColor | string` (a token for anything the
+ * design system controls, or a raw value for anything the app controls —
+ * e.g. user-defined palettes) use this to tell the two apart at render time.
+ */
+export function isColorToken(color: string): color is ThemeableColor {
+  return themeableColors.has(color);
+}
+
 const textColorMap: Record<Color, string> = {
   [BackgroundColor.Transparent]: "text-transparent",
   [BackgroundColor.Accent]: "text-content-bg-accent",
@@ -438,6 +485,24 @@ const textColorMap: Record<Color, string> = {
   [InteractiveColor.DangerDefault]: "text-content-interactive-danger-default",
   [InteractiveColor.DangerHover]: "text-content-interactive-danger-hover",
   [InteractiveColor.DangerPressed]: "text-content-interactive-danger-pressed",
+  [InteractiveColor.ExpressiveDefaultEnd]:
+    "text-content-interactive-expressive-default-end",
+  [InteractiveColor.ExpressiveDefaultMid]:
+    "text-content-interactive-expressive-default-mid",
+  [InteractiveColor.ExpressiveDefaultStart]:
+    "text-content-interactive-expressive-default-start",
+  [InteractiveColor.ExpressiveHoverEnd]:
+    "text-content-interactive-expressive-hover-end",
+  [InteractiveColor.ExpressiveHoverMid]:
+    "text-content-interactive-expressive-hover-mid",
+  [InteractiveColor.ExpressiveHoverStart]:
+    "text-content-interactive-expressive-hover-start",
+  [InteractiveColor.ExpressivePressedEnd]:
+    "text-content-interactive-expressive-pressed-end",
+  [InteractiveColor.ExpressivePressedMid]:
+    "text-content-interactive-expressive-pressed-mid",
+  [InteractiveColor.ExpressivePressedStart]:
+    "text-content-interactive-expressive-pressed-start",
   [InteractiveColor.PrimaryDefault]: "text-content-interactive-primary-default",
   [InteractiveColor.PrimaryHover]: "text-content-interactive-primary-hover",
   [InteractiveColor.PrimaryPressed]: "text-content-interactive-primary-pressed",
@@ -477,6 +542,7 @@ const textColorMap: Record<Color, string> = {
   [TextColor.Failure]: "text-content-text-failure",
   [TextColor.Foreground]: "text-content-text-foreground",
   [TextColor.Info]: "text-content-text-info",
+  [TextColor.Inverse]: "text-content-text-inverse",
   [TextColor.Muted]: "text-content-text-muted",
   [TextColor.Placeholder]: "text-content-text-placeholder",
   [TextColor.Primary]: "text-content-text-primary",
@@ -549,6 +615,24 @@ const backgroundColorMap: Record<Color, string> = {
   [InteractiveColor.DangerDefault]: "bg-content-interactive-danger-default",
   [InteractiveColor.DangerHover]: "bg-content-interactive-danger-hover",
   [InteractiveColor.DangerPressed]: "bg-content-interactive-danger-pressed",
+  [InteractiveColor.ExpressiveDefaultEnd]:
+    "bg-content-interactive-expressive-default-end",
+  [InteractiveColor.ExpressiveDefaultMid]:
+    "bg-content-interactive-expressive-default-mid",
+  [InteractiveColor.ExpressiveDefaultStart]:
+    "bg-content-interactive-expressive-default-start",
+  [InteractiveColor.ExpressiveHoverEnd]:
+    "bg-content-interactive-expressive-hover-end",
+  [InteractiveColor.ExpressiveHoverMid]:
+    "bg-content-interactive-expressive-hover-mid",
+  [InteractiveColor.ExpressiveHoverStart]:
+    "bg-content-interactive-expressive-hover-start",
+  [InteractiveColor.ExpressivePressedEnd]:
+    "bg-content-interactive-expressive-pressed-end",
+  [InteractiveColor.ExpressivePressedMid]:
+    "bg-content-interactive-expressive-pressed-mid",
+  [InteractiveColor.ExpressivePressedStart]:
+    "bg-content-interactive-expressive-pressed-start",
   [InteractiveColor.PrimaryDefault]: "bg-content-interactive-primary-default",
   [InteractiveColor.PrimaryHover]: "bg-content-interactive-primary-hover",
   [InteractiveColor.PrimaryPressed]: "bg-content-interactive-primary-pressed",
@@ -588,6 +672,7 @@ const backgroundColorMap: Record<Color, string> = {
   [TextColor.Failure]: "bg-content-text-failure",
   [TextColor.Foreground]: "bg-content-text-foreground",
   [TextColor.Info]: "bg-content-text-info",
+  [TextColor.Inverse]: "bg-content-text-inverse",
   [TextColor.Muted]: "bg-content-text-muted",
   [TextColor.Placeholder]: "bg-content-text-placeholder",
   [TextColor.Primary]: "bg-content-text-primary",
@@ -661,6 +746,15 @@ export const ALL_COLORS: readonly Color[] = [
   InteractiveColor.DangerDefault,
   InteractiveColor.DangerHover,
   InteractiveColor.DangerPressed,
+  InteractiveColor.ExpressiveDefaultEnd,
+  InteractiveColor.ExpressiveDefaultMid,
+  InteractiveColor.ExpressiveDefaultStart,
+  InteractiveColor.ExpressiveHoverEnd,
+  InteractiveColor.ExpressiveHoverMid,
+  InteractiveColor.ExpressiveHoverStart,
+  InteractiveColor.ExpressivePressedEnd,
+  InteractiveColor.ExpressivePressedMid,
+  InteractiveColor.ExpressivePressedStart,
   InteractiveColor.PrimaryDefault,
   InteractiveColor.PrimaryHover,
   InteractiveColor.PrimaryPressed,
@@ -698,6 +792,7 @@ export const ALL_COLORS: readonly Color[] = [
   TextColor.Failure,
   TextColor.Foreground,
   TextColor.Info,
+  TextColor.Inverse,
   TextColor.Muted,
   TextColor.Placeholder,
   TextColor.Primary,
@@ -760,15 +855,23 @@ export const bgColorClass = (
     return backgroundColorMap[color];
   }
 
-  return withElementState(`bg-[var(${getColorCssVar(color)})]`, elementState);
+  return withElementState(`bg-[${getColorCssVar(color)}]`, elementState);
 };
 
+/**
+ * Resolves a design-token color to a ready-to-use CSS value, e.g.
+ * `var(--color-content-text-primary)`. Safe to drop directly into an
+ * inline `style` prop (`style={{ color: getColorCssVar(TextColor.Success) }}`)
+ * or wrap in a Tailwind arbitrary value (`` `bg-[${getColorCssVar(color)}]` ``)
+ * — don't wrap the result in `var(...)` yourself, it's already included.
+ */
 export const getColorCssVar = (color: Color | BorderColor): string => {
-  if (isTokenValue(color, BrandColor) || isTokenValue(color, SemanticColor)) {
-    return `--color-${color}`;
-  }
+  const name =
+    isTokenValue(color, BrandColor) || isTokenValue(color, SemanticColor)
+      ? `--color-${color}`
+      : `--color-content-${color}`;
 
-  return `--color-content-${color}`;
+  return `var(${name})`;
 };
 
 const isTokenValue = <T extends Record<string, string>>(
@@ -786,10 +889,7 @@ export const borderColorClass = (
     return borderColorMap[color];
   }
 
-  return withElementState(
-    `border-[var(${getColorCssVar(color)})]`,
-    elementState
-  );
+  return withElementState(`border-[${getColorCssVar(color)}]`, elementState);
 };
 
 export const textColorClass = (
@@ -800,5 +900,5 @@ export const textColorClass = (
     return textColorMap[color];
   }
 
-  return withElementState(`text-[var(${getColorCssVar(color)})]`, elementState);
+  return withElementState(`text-[${getColorCssVar(color)}]`, elementState);
 };

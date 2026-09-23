@@ -42,6 +42,8 @@ import {
   MenuSeparator,
   Orientation,
   Pill,
+  Popover,
+  PopoverAnchor,
   Radio,
   RadioGroup,
   Radius,
@@ -109,6 +111,7 @@ const easing: TransitionEasing = TransitionEasing.InOut;
 const preset: TransitionPreset = TransitionPreset.Overlay;
 const cardBg: CardBackground = CardBackground.Elevated;
 const dropAnchor: DropdownAnchor = DropdownAnchor.BottomStart;
+const popAnchor: PopoverAnchor = PopoverAnchor.BottomStart;
 const selAnchor: SelectAnchor = SelectAnchor.TopEnd;
 const iconName: IconName = IconName.Add;
 const toggleVariant: ToggleSwitchVariant = ToggleSwitchVariant.Soft;
@@ -345,6 +348,14 @@ export const OldConsumerApp = (
     >
       <MenuSeparator />
     </Dropdown>
+    <Popover
+      anchor={PopoverAnchor.TopEnd}
+      zIndex={ZIndex.Medium}
+      portal={false}
+      trigger={<Button variant={Variant.Icon}>open</Button>}
+    >
+      panel
+    </Popover>
     <Drawer maxSize={400} side="right" defaultOpen={false}>
       drawer body
     </Drawer>
@@ -393,6 +404,7 @@ export const enumCompatChecks = {
   preset,
   cardBg,
   dropAnchor,
+  popAnchor,
   selAnchor,
   iconName,
   toggleVariant,

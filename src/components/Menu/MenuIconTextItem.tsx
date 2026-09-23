@@ -1,6 +1,7 @@
 import { MenuItem } from "@headlessui/react";
 import type { FC, HTMLAttributes, ReactNode } from "react";
 
+import { Icon } from "@/components/Icons";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
 import {
@@ -8,6 +9,7 @@ import {
   bgColorClass,
   ElementState,
   IconColor,
+  IconName,
   Radius,
   TextColor,
   textColorClass,
@@ -15,12 +17,18 @@ import {
 } from "@/types";
 import { cn } from "@/util/classes";
 
+const iconNames = new Set<string>(Object.values(IconName));
+
 /**
  * Props for {@link MenuIconTextItem}.
  */
 export interface MenuIconTextItemProps extends HTMLAttributes<HTMLButtonElement> {
-  /** Icon to display to the left of the text content. */
-  icon: ReactNode;
+  /**
+   * Icon to display to the left of the text content. A legacy
+   * {@link IconName} string renders through the deprecated map-based
+   * {@link Icon}, so 0.x call sites keep their glyphs.
+   */
+  icon: IconName | Exclude<ReactNode, string>;
   /** Primary label text. */
   text: string;
   /** Optional secondary description shown below the primary text. */
@@ -67,6 +75,14 @@ export const MenuIconTextItem: FC<MenuIconTextItemProps> = ({
   const textColor = destructive ? TextColor.Failure : TextColor.Primary;
   const subtextColor = destructive ? TextColor.Failure : TextColor.Secondary;
   const iconColor = destructive ? IconColor.Failure : IconColor.Default;
+  // Legacy IconName strings ride the deprecated map-based Icon; anything
+  // else (elements, arbitrary nodes) renders as-is.
+  const iconContent =
+    typeof icon === "string" && iconNames.has(icon) ? (
+      <Icon name={icon as IconName} />
+    ) : (
+      icon
+    );
 
   return (
     <MenuItem disabled={disabled}>
@@ -92,7 +108,7 @@ export const MenuIconTextItem: FC<MenuIconTextItemProps> = ({
               textColorClass(iconColor)
             )}
           >
-            {icon}
+            {iconContent}
           </span>
 
           <span className="flex flex-col gap-0.5 min-w-0">
