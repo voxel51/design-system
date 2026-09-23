@@ -133,7 +133,7 @@ export const WithIcon: Story = {
     radius: Radius.Full,
     shadow: undefined,
     color: TextColor.Placeholder,
-    backgroundColor: StatusColor.Progress,
+    backgroundColor: StatusColor.ProgressBg,
     icon: IconName.Check,
   },
 };
@@ -190,7 +190,7 @@ export const CustomColors: Story = {
     radius: Radius.Full,
     shadow: undefined,
     color: TextColor.Placeholder,
-    backgroundColor: StatusColor.Progress,
+    backgroundColor: StatusColor.ProgressBg,
   },
 };
 

@@ -113,7 +113,7 @@ export const TextArea: FC<TextAreaProps> = ({
           "transition-colors",
           "border",
 
-          bgColorClass(BackgroundColor.Card1),
+          bgColorClass(BackgroundColor.Card),
           textColorClass(TextColor.Primary),
           "placeholder:text-content-text-tertiary",
 

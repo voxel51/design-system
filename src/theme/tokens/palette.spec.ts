@@ -1,48 +1,66 @@
 import { colors } from "./colors";
-import { palettePool, paletteSlots } from "./palette";
+import { chartPool, overlayPool, paletteSlots } from "./palette";
+
+/**
+ * Written out rather than derived from `paletteSlots`. Rebuilding the
+ * expectation with the thing under test is how the old numbered-slot spec
+ * passed vacuously on an empty array when Figma renamed the slots.
+ */
+const EXPECTED_ORDER = [
+  "blue",
+  "green",
+  "purple",
+  "pink",
+  "yellow",
+  "teal",
+  "red",
+  "lime",
+  "magenta",
+  "neutral",
+];
 
 describe("paletteSlots", () => {
-  it("includes every numbered slot the tokens define", () => {
-    const numbered = Object.keys(colors.dark.content.palette).filter((key) =>
-      /^\d+$/.test(key)
-    );
-
-    expect(paletteSlots.dark).toHaveLength(numbered.length);
+  it("is the hue order, verbatim", () => {
+    expect([...paletteSlots]).toEqual(EXPECTED_ORDER);
   });
 
-  it("excludes the named aliases", () => {
-    expect(paletteSlots.dark).not.toContain("orange");
-    expect(paletteSlots.dark).not.toContain("teal");
-  });
+  it("covers every hue both viz groups define, and no others", () => {
+    const chart = Object.keys(colors.dark.content["viz-chart"]).sort();
+    const overlay = Object.keys(colors.dark.content["viz-overlay"]).sort();
 
-  it("orders slots numerically, not lexicographically", () => {
-    // Object key order would put "10" before "2"; the pool must not
-    const asNumbers = paletteSlots.dark.map(Number);
-
-    expect(asNumbers).toEqual([...asNumbers].sort((a, b) => a - b));
+    expect(chart).toEqual([...EXPECTED_ORDER].sort());
+    expect(overlay).toEqual([...EXPECTED_ORDER].sort());
   });
 });
 
-describe("palettePool", () => {
-  it("resolves slots to their token values in order", () => {
-    const palette: Record<string, string> = colors.dark.content.palette;
+describe("chartPool", () => {
+  it("resolves hues to their token values in order", () => {
+    const chart: Record<string, string> = colors.dark.content["viz-chart"];
 
-    expect(palettePool.dark).toEqual(
-      paletteSlots.dark.map((slot) => palette[slot])
-    );
+    expect(chartPool.dark).toEqual(EXPECTED_ORDER.map((hue) => chart[hue]));
   });
 
-  it("covers both modes", () => {
-    expect(palettePool.light).toEqual(
-      paletteSlots.light.map(
-        (slot) => (colors.light.content.palette as Record<string, string>)[slot]
-      )
-    );
+  it("differs between modes — chart colors sit on a themed surface", () => {
+    expect(chartPool.light).not.toEqual(chartPool.dark);
   });
 
   it("holds only hex colors", () => {
-    for (const color of [...palettePool.dark, ...palettePool.light]) {
+    for (const color of [...chartPool.dark, ...chartPool.light]) {
       expect(color).toMatch(/^#[0-9A-F]{6}$/i);
     }
+  });
+});
+
+describe("overlayPool", () => {
+  it("resolves hues to their token values in order", () => {
+    const overlay: Record<string, string> = colors.dark.content["viz-overlay"];
+
+    expect(overlayPool).toEqual(EXPECTED_ORDER.map((hue) => overlay[hue]));
+  });
+
+  it("is identical in both modes — overlays sit on media, not on the UI", () => {
+    const light: Record<string, string> = colors.light.content["viz-overlay"];
+
+    expect(overlayPool).toEqual(EXPECTED_ORDER.map((hue) => light[hue]));
   });
 });

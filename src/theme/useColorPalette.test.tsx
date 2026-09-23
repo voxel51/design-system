@@ -1,7 +1,7 @@
 import { act, renderHook } from "@testing-library/react";
 
 import { colors } from "./tokens/colors";
-import { palettePool, paletteSlots } from "./tokens/palette";
+import { chartPool, overlayPool, paletteSlots } from "./tokens/palette";
 import { useColorMode, useColorPalette } from "./useColorPalette";
 
 /**
@@ -72,36 +72,40 @@ describe("useColorPalette", () => {
 
     const { result } = renderHook(() => useColorPalette());
 
-    expect(result.current.pool).toEqual(palettePool.dark);
+    expect(result.current.pool).toEqual(chartPool.dark);
   });
 
-  it("exposes every numbered slot the tokens define, and only those", () => {
+  it("exposes every hue the tokens define, and only those", () => {
     const { result } = renderHook(() => useColorPalette());
 
     // A palette is N colors, not a fixed count — assert against the tokens
-    // rather than a hardcoded length, and that named aliases stay out of the
-    // pool even though they sit alongside the slots
-    expect(result.current.pool).toHaveLength(paletteSlots.light.length);
+    // rather than a hardcoded length
+    expect(result.current.pool).toHaveLength(paletteSlots.length);
     expect(
       result.current.pool.every((color) => /^#[0-9A-F]{6}$/i.test(color))
     ).toBe(true);
   });
 
-  it("exposes named aliases alongside the numbered slots", () => {
+  it("exposes the hues by name alongside the pool", () => {
     const { result } = renderHook(() => useColorPalette());
 
-    expect(result.current.teal).toBe(colors.light.content.palette.teal);
-    expect(result.current["1"]).toBe(colors.light.content.palette[1]);
+    expect(result.current.teal).toBe(colors.light.content["viz-chart"].teal);
+  });
+
+  it("exposes the overlay pool, which does not follow the mode", () => {
+    const { result } = renderHook(() => useColorPalette());
+
+    expect(result.current.overlay).toEqual(overlayPool);
   });
 
   it("resolves values for the active mode", async () => {
     const { result } = renderHook(() => useColorPalette());
 
-    expect(result.current["1"]).toBe(colors.light.content.palette[1]);
+    expect(result.current.teal).toBe(colors.light.content["viz-chart"].teal);
 
     await setDark(true);
 
-    expect(result.current["1"]).toBe(colors.dark.content.palette[1]);
+    expect(result.current.teal).toBe(colors.dark.content["viz-chart"].teal);
   });
 
   it("returns a stable reference while the mode is unchanged", () => {

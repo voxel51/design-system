@@ -69,7 +69,7 @@ export const ActivityToast: FC<ActivityToastProps> = ({
         "py-2 pr-4 pl-3",
         "border",
         borderColorClass(BorderColor.Default),
-        bgColorClass(BackgroundColor.Card1),
+        bgColorClass(BackgroundColor.Card),
         radiusStyles(Radius.Md),
         className
       )}

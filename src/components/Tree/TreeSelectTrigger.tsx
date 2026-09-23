@@ -71,7 +71,7 @@ function ClearButton({
         "cursor-pointer",
         "rounded-full",
         "transition-[background-color] duration-150",
-        bgColorClass(BackgroundColor.Card2, ElementState.Hover)
+        bgColorClass(BackgroundColor.CardNested, ElementState.Hover)
       )}
     >
       <CloseIcon
