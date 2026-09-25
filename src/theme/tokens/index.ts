@@ -1,4 +1,5 @@
 import { colors } from "./colors";
+import { gradients } from "./gradients";
 import { spacing } from "./spacing";
 import { transitions } from "./transitions";
 import { typography } from "./typography";
@@ -11,6 +12,7 @@ export { palettePool, paletteSlots } from "./palette";
 
 export default {
   colors,
+  gradients,
   spacing,
   transitions,
   typography,

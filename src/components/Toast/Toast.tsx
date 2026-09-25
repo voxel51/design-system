@@ -26,7 +26,8 @@ import {
 } from "@/types";
 import { cn } from "@/util/classes";
 
-type ToastVariant = `${Exclude<Variant, Variant.Borderless>}`;
+type ToastVariant =
+  `${Exclude<Variant, Variant.Borderless | Variant.Expressive>}`;
 
 export interface ToastProps extends Omit<
   HTMLAttributes<HTMLDivElement>,

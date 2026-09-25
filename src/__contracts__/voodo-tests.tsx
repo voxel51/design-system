@@ -135,6 +135,7 @@ export const exhaustive = {
     danger: true,
     icon: true,
     borderless: true,
+    expressive: true,
   } satisfies Record<Variant, true>,
 
   textVariant: {
