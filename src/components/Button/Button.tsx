@@ -76,6 +76,11 @@ const variantStyles: Record<Variant, string> = {
     bgColorClass(BackgroundColor.CardElevated, ElementState.Hover),
     radiusStyles(Radius.Full)
   ),
+  [Variant.Expressive]: clsx(
+    "bg-(image:--gradient-action-expressive)",
+    "hover:brightness-110",
+    "active:brightness-95"
+  ),
 };
 
 const variantTextStyles: Record<Variant, string> = {
@@ -88,6 +93,7 @@ const variantTextStyles: Record<Variant, string> = {
     textColorClass(TextColor.Secondary),
     textColorClass(ActionColor.PrimaryText, ElementState.Hover)
   ),
+  [Variant.Expressive]: textColorClass(ActionColor.PrimaryText),
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
@@ -151,7 +157,9 @@ export const Button: FC<ButtonProps> = ({
     borderless && "aspect-square min-w-0 shrink-0", // circular
     borderless ? radiusStyles(Radius.Full) : radiusStyles(Radius.Sm),
     "font-medium",
-    "transition-colors",
+    variant === Variant.Expressive
+      ? "transition-[filter]"
+      : "transition-colors",
     "hover:cursor-pointer",
     "disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none",
     isIconOnly ? iconOnlySizeStyles[size] : sizeStyles[size],

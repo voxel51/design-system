@@ -177,6 +177,7 @@ const variantWeights: Record<Variant, number> = {
   [Variant.Danger]: 3,
   [Variant.Icon]: 4,
   [Variant.Borderless]: 5,
+  [Variant.Expressive]: 6,
 };
 
 const edgeOffsets: Record<EdgeAnchors, number> = {
