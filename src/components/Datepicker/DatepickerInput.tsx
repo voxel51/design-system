@@ -1,6 +1,7 @@
 import { type FC, useCallback, useRef } from "react";
 
 import { CaretDownIcon, DateRangeIcon } from "@/components/Icons";
+import formControlStyles from "@/styles/form-control.module.css";
 import radiusStyles from "@/styles/radius";
 import {
   BackgroundColor,
@@ -14,7 +15,6 @@ import {
   textColorClass,
 } from "@/types";
 import { cn } from "@/util/classes";
-import formControlStyles from "@/styles/form-control.module.css";
 
 import { paddingLeftStyles, sizeStyles } from "../Input/styles";
 

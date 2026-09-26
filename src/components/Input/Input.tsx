@@ -11,6 +11,7 @@ import {
 
 import { Button } from "@/components/Button";
 import { LockIcon, type IconInput, UnlockIcon } from "@/components/Icons";
+import formControlStyles from "@/styles/form-control.module.css";
 import radiusStyles from "@/styles/radius";
 import {
   BackgroundColor,
@@ -25,7 +26,6 @@ import {
   Variant,
 } from "@/types";
 import { cn } from "@/util/classes";
-import formControlStyles from "@/styles/form-control.module.css";
 
 import { InputIcon } from "./InputIcon";
 import { numberInputStyles, paddingLeftStyles, sizeStyles } from "./styles";

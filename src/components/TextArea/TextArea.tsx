@@ -2,6 +2,7 @@ import { Field, Textarea as HeadlessTextarea } from "@headlessui/react";
 import clsx from "clsx";
 import { type FC, TextareaHTMLAttributes } from "react";
 
+import formControlStyles from "@/styles/form-control.module.css";
 import radiusStyles from "@/styles/radius";
 import {
   BackgroundColor,
@@ -15,7 +16,6 @@ import {
   textColorClass,
 } from "@/types";
 import { cn } from "@/util/classes";
-import formControlStyles from "@/styles/form-control.module.css";
 
 export const ResizeBehavior = {
   None: "None",
