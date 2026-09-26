@@ -1,6 +1,7 @@
 import { type FC, useCallback, useRef } from "react";
 
 import { CaretDownIcon, DateRangeIcon } from "@/components/Icons";
+import formControlStyles from "@/styles/form-control.module.css";
 import radiusStyles from "@/styles/radius";
 import {
   BackgroundColor,
@@ -34,7 +35,7 @@ const datePickerInputStyle = ({
     "w-full",
     bgColorClass(BackgroundColor.Background),
     textColorClass(TextColor.Primary),
-    "placeholder:text-content-text-tertiary",
+    formControlStyles.control,
     "transition-colors",
     "border",
     error
