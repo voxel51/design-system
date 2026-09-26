@@ -2,6 +2,7 @@ import { Field, Textarea as HeadlessTextarea } from "@headlessui/react";
 import clsx from "clsx";
 import { type FC, TextareaHTMLAttributes } from "react";
 
+import formControlStyles from "@/styles/form-control.module.css";
 import radiusStyles from "@/styles/radius";
 import {
   BackgroundColor,
@@ -115,7 +116,7 @@ export const TextArea: FC<TextAreaProps> = ({
 
           bgColorClass(BackgroundColor.Card1),
           textColorClass(TextColor.Primary),
-          "placeholder:text-content-text-tertiary",
+          formControlStyles.control,
 
           // Default and focus border tokens mirror the `Input` component so all
           // form controls stay visually consistent.

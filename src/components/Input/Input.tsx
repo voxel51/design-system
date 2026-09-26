@@ -11,6 +11,7 @@ import {
 
 import { Button } from "@/components/Button";
 import { LockIcon, type IconInput, UnlockIcon } from "@/components/Icons";
+import formControlStyles from "@/styles/form-control.module.css";
 import radiusStyles from "@/styles/radius";
 import {
   BackgroundColor,
@@ -126,7 +127,7 @@ export const inputStyle = ({
     "autofill:bg-transparent",
     "[&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s]",
     textColorClass(TextColor.Primary),
-    "placeholder:text-content-text-tertiary",
+    formControlStyles.control,
     "transition-colors",
     "focus:outline-none",
     // A borderless field sits flush in a bar or header: no frame, and no

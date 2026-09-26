@@ -1,0 +1,8 @@
+.control::placeholder {
+  color: var(--color-content-text-placeholder);
+  opacity: 1;
+}
+
+.control:-webkit-autofill {
+  -webkit-text-fill-color: var(--color-content-text-primary);
+}
