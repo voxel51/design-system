@@ -15,6 +15,7 @@ import {
   textColorClass,
 } from "@/types";
 import { cn } from "@/util/classes";
+import formControlStyles from "@/styles/form-control.module.css";
 
 export const ResizeBehavior = {
   None: "None",
@@ -115,7 +116,7 @@ export const TextArea: FC<TextAreaProps> = ({
 
           bgColorClass(BackgroundColor.Card1),
           textColorClass(TextColor.Primary),
-          "placeholder:text-content-text-tertiary",
+          formControlStyles.control,
 
           // Default and focus border tokens mirror the `Input` component so all
           // form controls stay visually consistent.

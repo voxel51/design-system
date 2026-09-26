@@ -14,6 +14,7 @@ import {
   textColorClass,
 } from "@/types";
 import { cn } from "@/util/classes";
+import formControlStyles from "@/styles/form-control.module.css";
 
 import { paddingLeftStyles, sizeStyles } from "../Input/styles";
 
@@ -34,7 +35,7 @@ const datePickerInputStyle = ({
     "w-full",
     bgColorClass(BackgroundColor.Background),
     textColorClass(TextColor.Primary),
-    "placeholder:text-content-text-tertiary",
+    formControlStyles.control,
     "transition-colors",
     "border",
     error
