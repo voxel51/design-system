@@ -1,14 +1,22 @@
 import clsx from "clsx";
-import type { FC, HTMLAttributes, ReactNode } from "react";
+import type {
+  FC,
+  FocusEvent,
+  HTMLAttributes,
+  MouseEvent,
+  ReactNode,
+} from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/Button";
 import { CloseIcon, type IconInput, IconWrapper } from "@/components/Icons";
 import { Stack } from "@/components/Stack";
 import { Text } from "@/components/Text";
-import { ToastContainer } from "@/components/ToastContainer";
+import { ToastContainer, ToastStack } from "@/components/ToastContainer";
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
 import {
+  ActionColor,
   Align,
   Anchor,
   BackgroundColor,
@@ -36,9 +44,11 @@ export interface ToastProps extends Omit<
   action?: ReactNode;
   anchor?: Anchor;
   description?: ReactNode;
+  duration?: number;
   icon?: IconInput;
   onClose?: () => void;
   open?: boolean;
+  solid?: boolean;
   title?: ReactNode;
   variant?: ToastVariant;
 }
@@ -50,6 +60,23 @@ const variantStyles: Record<ToastVariant, string> = {
   [Variant.Danger]: textColorClass(IconColor.Destructive),
   [Variant.Icon]: textColorClass(TextColor.Primary),
 };
+
+const solidStyles: Partial<Record<ToastVariant, string>> = {
+  [Variant.Success]: cn(
+    bgColorClass(ActionColor.SuccessDefault),
+    textColorClass(ActionColor.SuccessText)
+  ),
+  [Variant.Danger]: cn(
+    bgColorClass(ActionColor.DangerDefault),
+    textColorClass(ActionColor.DangerText)
+  ),
+};
+
+const onSolidControls = cn(
+  "[&_:is(a,button)]:text-current [&_:is(a,button)_*]:text-current",
+  "[&_:is(a,button)]:bg-transparent [&_:is(a,button)]:border-transparent",
+  "[&_:is(a,button):hover]:bg-white/15"
+);
 
 /**
  * A toast component with opinionated slots for content.
@@ -83,9 +110,13 @@ const variantStyles: Record<ToastVariant, string> = {
  * @param anchor The location in the viewport to anchor the toast. See {@link Anchor}.
  * @param className `class` overrides to apply to the component.
  * @param description Optional content to display in the "description" slot; this should be considered secondary content.
+ * @param duration How long, in milliseconds, the toast shows itself before calling `onClose`. Omit it and the
+ *  toast stays until something closes it. Hovering or focusing the toast holds it open, and the wait starts
+ *  over when the pointer or focus leaves.
  * @param icon An optional icon component to display in the "icon" slot.
  * @param onClose Optional handler invoked when the close/dismiss control is activated. If provided, a close
  *  control is rendered in the toast.
+ * @param solid If `true`, a success or danger toast fills with its action color instead of only tinting its icon.
  * @param open If `true`, the toast will be visible; otherwise it will be hidden.
  * @param title Optional content to display in the "title" slot; this should be considered the primary content.
  * @param variant The variant of the toast; this controls icon styling. See {@link Variant}.
@@ -96,13 +127,56 @@ export const Toast: FC<ToastProps> = ({
   anchor = Anchor.Bottom,
   className,
   description,
+  duration,
   icon,
   onClose,
+  onBlur,
+  onFocus,
+  onMouseEnter,
+  onMouseLeave,
   open,
   title,
+  solid,
   variant = Variant.Primary,
   ...props
 }) => {
+  const solidStyle = solid ? solidStyles[variant] : undefined;
+  const stacked = useContext(ToastStack);
+  const [hovered, setHovered] = useState<boolean>(false);
+  const [focused, setFocused] = useState<boolean>(false);
+  const held = hovered || focused;
+  const close = useRef(onClose);
+  close.current = onClose;
+
+  useEffect(() => {
+    if (!open || !duration || held) return undefined;
+
+    const timer = window.setTimeout(() => close.current?.(), duration);
+    return () => window.clearTimeout(timer);
+  }, [duration, held, open]);
+
+  const hold = (event: MouseEvent<HTMLDivElement>): void => {
+    setHovered(true);
+    onMouseEnter?.(event);
+  };
+
+  const release = (event: MouseEvent<HTMLDivElement>): void => {
+    setHovered(false);
+    onMouseLeave?.(event);
+  };
+
+  const holdForFocus = (event: FocusEvent<HTMLDivElement>): void => {
+    setFocused(true);
+    onFocus?.(event);
+  };
+
+  const releaseForFocus = (event: FocusEvent<HTMLDivElement>): void => {
+    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+      setFocused(false);
+    }
+    onBlur?.(event);
+  };
+
   const toastContent = (
     <Stack
       align={Align.Center}
@@ -115,10 +189,14 @@ export const Toast: FC<ToastProps> = ({
         // (1rem) and clamp the toast to a thin sliver. 28rem (~448px) is the intended cap.
         "w-[90vw] max-w-[28rem]",
         radiusStyles(Radius.Md),
-        bgColorClass(BackgroundColor.Card2),
+        solidStyle ?? bgColorClass(BackgroundColor.Card2),
         shadowStyles(Shadow.Md),
         className
       )}
+      onBlur={releaseForFocus}
+      onFocus={holdForFocus}
+      onMouseEnter={hold}
+      onMouseLeave={release}
       {...props}
     >
       {/* Content (icon, title, description) on the left. */}
@@ -130,15 +208,36 @@ export const Toast: FC<ToastProps> = ({
         <Stack spacing={Spacing.Sm} align={Align.Center}>
           <IconWrapper
             content={icon}
-            className={clsx("size-5 shrink-0", variantStyles[variant])}
+            className={clsx(
+              "size-5 shrink-0",
+              !solidStyle && variantStyles[variant]
+            )}
           />
-          {title && <Text className="font-semibold">{title}</Text>}
+          {title && (
+            <Text
+              className="font-semibold"
+              color={solidStyle ? "inherit" : TextColor.Primary}
+            >
+              {title}
+            </Text>
+          )}
         </Stack>
-        {description && <Text color={TextColor.Secondary}>{description}</Text>}
+        {description && (
+          <Text
+            color={solidStyle ? "inherit" : TextColor.Secondary}
+            className={clsx(solidStyle && "opacity-85")}
+          >
+            {description}
+          </Text>
+        )}
       </Stack>
       {/* Action and/or close control pinned to the right, not stacked under the content. */}
       {(action || onClose) && (
-        <Stack align={Align.Center} spacing={Spacing.Sm} className="shrink-0">
+        <Stack
+          align={Align.Center}
+          spacing={Spacing.Sm}
+          className={cn("shrink-0", solidStyle && onSolidControls)}
+        >
           {action}
           {onClose && (
             <Button
@@ -154,6 +253,10 @@ export const Toast: FC<ToastProps> = ({
       )}
     </Stack>
   );
+
+  // A container is already placing this toast, so anchoring it again would
+  // lift it out of the stack and onto the one below it
+  if (stacked) return open ? toastContent : null;
 
   return (
     <ToastContainer open={open} anchor={anchor}>
