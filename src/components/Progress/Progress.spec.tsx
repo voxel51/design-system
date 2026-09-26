@@ -51,4 +51,33 @@ describe("Progress", () => {
       screen.getByRole("progressbar", { name: "Voxel tokens used" })
     ).toBeInTheDocument();
   });
+
+  describe("with no known end", () => {
+    it("should report no position", () => {
+      render(<Progress aria-label="Loading" />);
+
+      const bar = screen.getByRole("progressbar");
+      expect(bar).not.toHaveAttribute("aria-valuenow");
+      expect(bar).not.toHaveAttribute("aria-valuemin");
+      expect(bar).not.toHaveAttribute("aria-valuemax");
+    });
+
+    it("should sweep rather than fill", () => {
+      render(<Progress aria-label="Loading" data-testid="sweeping" />);
+
+      expect(screen.getByTestId("sweeping").firstChild).toHaveClass("sweep");
+    });
+
+    it("should keep a caller's own style", () => {
+      render(
+        <Progress
+          aria-label="Loading"
+          data-testid="styled"
+          style={{ opacity: 0.5 }}
+        />
+      );
+
+      expect(screen.getByTestId("styled")).toHaveStyle({ opacity: "0.5" });
+    });
+  });
 });

@@ -34,8 +34,14 @@ const externalPackages = [
 //   externalized CSS import would emit a bare import statement that breaks
 //   CJS consumers and styles nothing.
 // The `${name}/` check also matches subpath imports (e.g. @dnd-kit/core/foo).
+// react-syntax-highlighter is bundled rather than externalized: its ESM build
+// imports highlight.js without file extensions, which Node will not resolve,
+// and its CJS build needs interop unwrapping at every call site.
+const bundledPackages = ["react-syntax-highlighter"];
+
 const isExternal = (id: string) =>
   !id.endsWith(".css") &&
+  !bundledPackages.some((name) => id === name || id.startsWith(`${name}/`)) &&
   externalPackages.some((name) => id === name || id.startsWith(`${name}/`));
 
 export default defineConfig({
@@ -75,13 +81,16 @@ export default defineConfig({
   },
   build: {
     lib: {
-      // Two entries: the package root, and a tokens-only entry. The tokens
-      // entry exists so non-UI consumers (looker's workers, Node tooling) can
-      // read token values without pulling in React or globals.css — importing
-      // the root would drag both in, which a worker bundle cannot afford.
+      // Three entries: the package root, a tokens-only entry, and a code
+      // entry. The tokens entry exists so non-UI consumers (looker's workers,
+      // Node tooling) can read token values without pulling in React or
+      // globals.css — importing the root would drag both in, which a worker
+      // bundle cannot afford. The code entry keeps the syntax highlighter out
+      // of the root, which every consumer loads.
       entry: {
         index: resolve(__dirname, "src/index.ts"),
         tokens: resolve(__dirname, "src/theme/tokens/index.ts"),
+        code: resolve(__dirname, "src/code/index.ts"),
       },
       formats: ["es", "cjs"],
       fileName: (format, name) => `${name}.${format === "es" ? "js" : "cjs"}`,
