@@ -1,5 +1,11 @@
 import clsx from "clsx";
-import { twMerge } from "tailwind-merge";
+import { extendTailwindMerge } from "tailwind-merge";
+
+import { typography } from "@/theme/tokens/typography";
+
+const twMerge = extendTailwindMerge({
+  extend: { theme: { text: Object.keys(typography.fontSize) } },
+});
 
 /**
  * Helper function which aggregates and deduplicates class names.

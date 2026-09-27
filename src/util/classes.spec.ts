@@ -34,6 +34,16 @@ describe("cn", () => {
     expect(result).not.toContain(excluded);
   });
 
+  it.each(["xxs", "body-sm", "xxl"])(
+    "should keep the %s text size beside a text color",
+    (size) => {
+      expect(cn(`text-${size}/5`, "text-content-text-primary")).toBe(
+        `text-${size}/5 text-content-text-primary`
+      );
+      expect(cn("text-md/5", `text-${size}/5`)).toBe(`text-${size}/5`);
+    }
+  );
+
   describe("class deduplication", () => {
     it("should dedupe conflicting classes", () => {
       const result = cn("border-0", "border-1");
