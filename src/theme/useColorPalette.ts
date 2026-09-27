@@ -11,7 +11,7 @@ export type ColorMode = "dark" | "light";
  * tokens define. Derived rather than enumerated, so a palette of N colors
  * types correctly without touching this file.
  */
-type PaletteColors = typeof colors.dark.content.palette;
+type PaletteColors = Record<keyof typeof colors.dark.content.palette, string>;
 
 export interface ColorPalette extends PaletteColors {
   /**

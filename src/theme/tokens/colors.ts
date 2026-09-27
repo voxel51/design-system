@@ -3,7 +3,8 @@
  *
  * Two-tier system mirroring the Figma variables:
  *  - `primitives`: raw color scales (neutral/orange/green/red/blue/yellow/
- *    purple/pink/teal). Not emitted as CSS vars directly.
+ *    purple/pink/teal, plus the extended chart hues). Not emitted as CSS vars
+ *    directly.
  *  - `colors.{common,dark,light}`: semantic tokens that reference primitives.
  *    These are flattened to CSS custom properties by the theme generator.
  *
@@ -94,6 +95,34 @@ export const primitives = {
     500: "#0D9488",
     600: "#0A766C",
     700: "#075951",
+  },
+  sky: {
+    400: "#38BDF8",
+    600: "#0284C7",
+  },
+  indigo: {
+    400: "#818CF8",
+    600: "#4F46E5",
+  },
+  lime: {
+    600: "#65A30D",
+    700: "#4D7C0F",
+  },
+  magenta: {
+    600: "#C026D3",
+    700: "#A21CAF",
+  },
+  slate: {
+    500: "#64748B",
+    600: "#475569",
+  },
+  rose: {
+    500: "#F43F5E",
+    600: "#E11D48",
+  },
+  mint: {
+    400: "#34D399",
+    600: "#059669",
   },
 } as const;
 
@@ -210,6 +239,14 @@ export const colors = {
         yellow: primitives.yellow[500],
         teal: primitives.teal[500],
         red: primitives.red[500],
+        sky: primitives.sky[400],
+        indigo: primitives.indigo[400],
+        lime: primitives.lime[600],
+        magenta: primitives.magenta[600],
+        slate: primitives.slate[500],
+        rose: primitives.rose[500],
+        mint: primitives.mint[400],
+        sage: primitives.green[400],
       },
       skeleton: {
         base: primitives.neutral[825],
@@ -363,6 +400,14 @@ export const colors = {
         yellow: primitives.yellow[500],
         teal: primitives.teal[500],
         red: primitives.red[500],
+        sky: primitives.sky[600],
+        indigo: primitives.indigo[600],
+        lime: primitives.lime[700],
+        magenta: primitives.magenta[700],
+        slate: primitives.slate[600],
+        rose: primitives.rose[600],
+        mint: primitives.mint[600],
+        sage: primitives.green[600],
       },
       skeleton: {
         base: primitives.neutral[100],

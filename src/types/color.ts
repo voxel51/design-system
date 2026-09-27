@@ -261,8 +261,9 @@ export const PaletteColor = {
   P10: "palette-10",
   P11: "palette-11",
   P12: "palette-12",
-  // hue-named aliases for the primary (500-shade) entries — same value as the
-  // numeric slot; use numbers to iterate categories, names for a specific hue
+  // hue-named aliases; orange through red share a numeric slot's value, the
+  // rest are chart-only hues outside the pool. Use numbers to iterate
+  // categories, names for a specific hue
   Orange: "palette-orange",
   Blue: "palette-blue",
   Green: "palette-green",
@@ -271,6 +272,14 @@ export const PaletteColor = {
   Yellow: "palette-yellow",
   Teal: "palette-teal",
   Red: "palette-red",
+  Sky: "palette-sky",
+  Indigo: "palette-indigo",
+  Lime: "palette-lime",
+  Magenta: "palette-magenta",
+  Slate: "palette-slate",
+  Rose: "palette-rose",
+  Mint: "palette-mint",
+  Sage: "palette-sage",
 } as const;
 export type PaletteColor =
   `${(typeof PaletteColor)[keyof typeof PaletteColor]}`;
@@ -296,6 +305,14 @@ export namespace PaletteColor {
   export type Yellow = typeof PaletteColor.Yellow;
   export type Teal = typeof PaletteColor.Teal;
   export type Red = typeof PaletteColor.Red;
+  export type Sky = typeof PaletteColor.Sky;
+  export type Indigo = typeof PaletteColor.Indigo;
+  export type Lime = typeof PaletteColor.Lime;
+  export type Magenta = typeof PaletteColor.Magenta;
+  export type Slate = typeof PaletteColor.Slate;
+  export type Rose = typeof PaletteColor.Rose;
+  export type Mint = typeof PaletteColor.Mint;
+  export type Sage = typeof PaletteColor.Sage;
 }
 
 export const SkeletonColor = {
@@ -504,6 +521,14 @@ const textColorMap: Record<Color, string> = {
   [PaletteColor.Yellow]: "text-content-palette-yellow",
   [PaletteColor.Teal]: "text-content-palette-teal",
   [PaletteColor.Red]: "text-content-palette-red",
+  [PaletteColor.Sky]: "text-content-palette-sky",
+  [PaletteColor.Indigo]: "text-content-palette-indigo",
+  [PaletteColor.Lime]: "text-content-palette-lime",
+  [PaletteColor.Magenta]: "text-content-palette-magenta",
+  [PaletteColor.Slate]: "text-content-palette-slate",
+  [PaletteColor.Rose]: "text-content-palette-rose",
+  [PaletteColor.Mint]: "text-content-palette-mint",
+  [PaletteColor.Sage]: "text-content-palette-sage",
   [SkeletonColor.Base]: "text-content-skeleton-base",
   [SkeletonColor.Shimmer]: "text-content-skeleton-shimmer",
   [TooltipColor.Bg]: "text-content-tooltip-bg",
@@ -615,6 +640,14 @@ const backgroundColorMap: Record<Color, string> = {
   [PaletteColor.Yellow]: "bg-content-palette-yellow",
   [PaletteColor.Teal]: "bg-content-palette-teal",
   [PaletteColor.Red]: "bg-content-palette-red",
+  [PaletteColor.Sky]: "bg-content-palette-sky",
+  [PaletteColor.Indigo]: "bg-content-palette-indigo",
+  [PaletteColor.Lime]: "bg-content-palette-lime",
+  [PaletteColor.Magenta]: "bg-content-palette-magenta",
+  [PaletteColor.Slate]: "bg-content-palette-slate",
+  [PaletteColor.Rose]: "bg-content-palette-rose",
+  [PaletteColor.Mint]: "bg-content-palette-mint",
+  [PaletteColor.Sage]: "bg-content-palette-sage",
   [SkeletonColor.Base]: "bg-content-skeleton-base",
   [SkeletonColor.Shimmer]: "bg-content-skeleton-shimmer",
   [TooltipColor.Bg]: "bg-content-tooltip-bg",
