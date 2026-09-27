@@ -22,6 +22,7 @@ import ArrowBackSvg from "@/img/ArrowBack.svg?react";
 import ArrowCircleDownSvg from "@/img/ArrowCircleDown.svg?react";
 import ArrowCircleLeftOutlinedSvg from "@/img/ArrowCircleLeftOutlined.svg?react";
 import ArrowDownSvg from "@/img/ArrowDown.svg?react";
+import ArrowDownRightSvg from "@/img/ArrowDownRight.svg?react";
 import ArrowDownwardSvg from "@/img/ArrowDownward.svg?react";
 import ArrowDropDownSvg from "@/img/ArrowDropDown.svg?react";
 import ArrowDropUpSvg from "@/img/ArrowDropUp.svg?react";
@@ -77,6 +78,7 @@ import CircleUserSvg from "@/img/CircleUser.svg?react";
 import ClearSvg from "@/img/Clear.svg?react";
 import ClearAllSvg from "@/img/ClearAll.svg?react";
 import ClearOutlinedSvg from "@/img/ClearOutlined.svg?react";
+import ClockSvg from "@/img/Clock.svg?react";
 import CloseSvg from "@/img/Close.svg?react";
 import CloseOutlinedSvg from "@/img/CloseOutlined.svg?react";
 import CloseRoundedSvg from "@/img/CloseRounded.svg?react";
@@ -94,6 +96,7 @@ import ContentCopySvg from "@/img/ContentCopy.svg?react";
 import ContentCopyOutlinedSvg from "@/img/ContentCopyOutlined.svg?react";
 import CopyAllOutlinedSvg from "@/img/CopyAllOutlined.svg?react";
 import CorporateFareSvg from "@/img/CorporateFare.svg?react";
+import CpuSvg from "@/img/Cpu.svg?react";
 import CreditCardSvg from "@/img/CreditCard.svg?react";
 import CrisisAlertOutlinedSvg from "@/img/CrisisAlertOutlined.svg?react";
 import CropSquareSvg from "@/img/CropSquare.svg?react";
@@ -158,6 +161,7 @@ import GridOnSvg from "@/img/GridOn.svg?react";
 import GridViewSvg from "@/img/GridView.svg?react";
 import GroupAddSvg from "@/img/GroupAdd.svg?react";
 import GroupAddOutlinedSvg from "@/img/GroupAddOutlined.svg?react";
+import HardDriveSvg from "@/img/HardDrive.svg?react";
 import HelpSvg from "@/img/Help.svg?react";
 import HideImageSvg from "@/img/HideImage.svg?react";
 import HighlightAltSvg from "@/img/HighlightAlt.svg?react";
@@ -169,6 +173,8 @@ import IdCardSvg from "@/img/IdCard.svg?react";
 import ImageSvg from "@/img/Image.svg?react";
 import ImageAspectRatioSvg from "@/img/ImageAspectRatio.svg?react";
 import ImageSearchSvg from "@/img/ImageSearch.svg?react";
+import ImagesSvg from "@/img/Images.svg?react";
+import InfinitySvg from "@/img/Infinity.svg?react";
 import InfoSvg from "@/img/Info.svg?react";
 import InfoOutlinedSvg from "@/img/InfoOutlined.svg?react";
 import InputSvg from "@/img/Input.svg?react";
@@ -211,6 +217,7 @@ import MailOutlineSvg from "@/img/MailOutline.svg?react";
 import MapSvg from "@/img/Map.svg?react";
 import MenuSvg from "@/img/Menu.svg?react";
 import MenuBookSvg from "@/img/MenuBook.svg?react";
+import MessageSquareSvg from "@/img/MessageSquare.svg?react";
 import MoreHorizSvg from "@/img/MoreHoriz.svg?react";
 import MoreHorizontalSvg from "@/img/MoreHorizontal.svg?react";
 import MoreVertSvg from "@/img/MoreVert.svg?react";
@@ -250,6 +257,7 @@ import RestartAltSvg from "@/img/RestartAlt.svg?react";
 import RestartAltOutlinedSvg from "@/img/RestartAltOutlined.svg?react";
 import ReviewSvg from "@/img/Review.svg?react";
 import RocketLaunchSvg from "@/img/RocketLaunch.svg?react";
+import RotateCcwSvg from "@/img/RotateCcw.svg?react";
 import RuleSvg from "@/img/Rule.svg?react";
 import RuleFolderSvg from "@/img/RuleFolder.svg?react";
 import SaveSvg from "@/img/Save.svg?react";
@@ -394,6 +402,10 @@ export const ArrowCircleLeftOutlinedIcon: FC<IconProps> = (props) => (
 
 export const ArrowDownIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ArrowDownSvg} />
+);
+
+export const ArrowDownRightIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ArrowDownRightSvg} />
 );
 
 export const ArrowDownwardIcon: FC<IconProps> = (props) => (
@@ -616,6 +628,10 @@ export const ClearOutlinedIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ClearOutlinedSvg} />
 );
 
+export const ClockIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ClockSvg} />
+);
+
 export const CloseIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={CloseSvg} />
 );
@@ -682,6 +698,10 @@ export const CopyAllOutlinedIcon: FC<IconProps> = (props) => (
 
 export const CorporateFareIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={CorporateFareSvg} />
+);
+
+export const CpuIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={CpuSvg} />
 );
 
 export const CreditCardIcon: FC<IconProps> = (props) => (
@@ -916,12 +936,12 @@ export const FullscreenExitIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={FullscreenExitSvg} />
 );
 
-export const GitHubIcon: FC<IconProps> = (props) => (
-  <IconBase {...props} svg={GitHubSvg} />
-);
-
 export const GaugeIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={GaugeSvg} />
+);
+
+export const GitHubIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={GitHubSvg} />
 );
 
 export const GridOnIcon: FC<IconProps> = (props) => (
@@ -938,6 +958,10 @@ export const GroupAddIcon: FC<IconProps> = (props) => (
 
 export const GroupAddOutlinedIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={GroupAddOutlinedSvg} />
+);
+
+export const HardDriveIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={HardDriveSvg} />
 );
 
 export const HelpIcon: FC<IconProps> = (props) => (
@@ -982,6 +1006,14 @@ export const ImageAspectRatioIcon: FC<IconProps> = (props) => (
 
 export const ImageSearchIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ImageSearchSvg} />
+);
+
+export const ImagesIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ImagesSvg} />
+);
+
+export const InfinityIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={InfinitySvg} />
 );
 
 export const InfoIcon: FC<IconProps> = (props) => (
@@ -1152,6 +1184,10 @@ export const MenuBookIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={MenuBookSvg} />
 );
 
+export const MessageSquareIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={MessageSquareSvg} />
+);
+
 export const MoreHorizIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={MoreHorizSvg} />
 );
@@ -1306,6 +1342,10 @@ export const ReviewIcon: FC<IconProps> = (props) => (
 
 export const RocketLaunchIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={RocketLaunchSvg} />
+);
+
+export const RotateCcwIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={RotateCcwSvg} />
 );
 
 export const RuleIcon: FC<IconProps> = (props) => (
