@@ -5,6 +5,7 @@ export const TEXT_STYLES: Record<TextVariant, string> = {
   [TextVariant.Xs]: "text-xs/5",
   [TextVariant.Sm]: "text-sm/5",
   [TextVariant.Md]: "text-md/5",
+  [TextVariant.BodySm]: "text-body-sm/5",
   [TextVariant.Lg]: "text-lg/5",
   [TextVariant.Xl]: "text-xl/11",
   [TextVariant.Xxl]: "text-xxl/13",

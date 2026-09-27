@@ -185,6 +185,7 @@ export const cssVar = {
     xs: "var(--text-xs)",
     sm: "var(--text-sm)",
     md: "var(--text-md)",
+    "body-sm": "var(--text-body-sm)",
     lg: "var(--text-lg)",
     xl: "var(--text-xl)",
     xxl: "var(--text-xxl)",
