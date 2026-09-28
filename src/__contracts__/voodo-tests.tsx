@@ -37,6 +37,7 @@ import {
   Drawer,
   DrawerSide,
   Dropdown,
+  Dropzone,
   DropdownAnchor,
   ElementState,
   EmptyState,
@@ -591,6 +592,16 @@ export const Everything = (
       ]}
       current="b"
       onSelect={noop}
+    />
+
+    {/* Dropzone: every prop */}
+    <Dropzone
+      title="Drop files"
+      description="or browse"
+      accept="image/*"
+      multiple={false}
+      disabled
+      onFiles={noop}
     />
 
     {/* Form controls */}

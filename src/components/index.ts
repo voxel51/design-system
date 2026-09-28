@@ -10,6 +10,7 @@ export * from "./Datepicker";
 export * from "./Divider";
 export * from "./Drawer";
 export * from "./Dropdown";
+export * from "./Dropzone";
 export * from "./EmptyState";
 export * from "./FormField";
 export * from "./FormFieldGroup";
