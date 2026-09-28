@@ -14,6 +14,7 @@ export type {
   UseResizableDrawerReturn,
   DragAxis,
 } from "./util/useResizableDrawer";
+export { formatBytes } from "./util/formatBytes";
 export { useDragDelta } from "./util/useDragDelta";
 export type {
   UseDragDeltaOptions,

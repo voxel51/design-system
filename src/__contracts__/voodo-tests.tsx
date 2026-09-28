@@ -43,6 +43,7 @@ import {
   EmptyState,
   FocusColor,
   FormField,
+  formatBytes,
   FormFieldGroup,
   Heading,
   HeadingLevel,
@@ -439,6 +440,7 @@ const helperResults: string[] = [
   transitionEasing(TransitionEasing.InOut),
   transitionPreset("menu"),
   transitionPresetValue("panel"),
+  formatBytes(2048),
 ];
 
 /* ────────────────────────────────────────────────────────────────────
