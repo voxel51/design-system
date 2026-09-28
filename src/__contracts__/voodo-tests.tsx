@@ -108,6 +108,7 @@ import {
   transitionPresetValue,
   TreeSelect,
   UnsetHint,
+  UploadList,
   Variant,
   ZIndex,
   zIndexStyles,
@@ -604,6 +605,14 @@ export const Everything = (
       multiple={false}
       disabled
       onFiles={noop}
+    />
+
+    {/* Upload list: removable rows and a custom summary */}
+    <UploadList
+      items={[{ id: "a", name: "a.jpg", kind: "JPG", size: 2048 }]}
+      summary="1 file"
+      onRemove={noop}
+      onRemoveAll={noop}
     />
 
     {/* Form controls */}
