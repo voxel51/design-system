@@ -95,7 +95,27 @@ describe("Popover", () => {
     expect(screen.queryByText("Locked content")).not.toBeInTheDocument();
   });
 
-  it("should stay open on a press inside another overlay layer", async () => {
+  it("should stay open on a press in an overlay layer opened from the panel", async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <Popover trigger={trigger}>
+          <button aria-controls="nested-menu">Layered content</button>
+        </Popover>
+        <div data-headlessui-portal="">
+          <div id="nested-menu" role="menu">
+            <button>Menu option</button>
+          </div>
+        </div>
+      </>
+    );
+
+    await user.click(screen.getByText("Open settings"));
+    await user.click(screen.getByText("Menu option"));
+    expect(screen.getByText("Layered content")).toBeInTheDocument();
+  });
+
+  it("should close on a press in an unrelated overlay layer", async () => {
     const user = userEvent.setup();
     render(
       <>
@@ -108,7 +128,7 @@ describe("Popover", () => {
 
     await user.click(screen.getByText("Open settings"));
     await user.click(screen.getByText("Menu option"));
-    expect(screen.getByText("Layered content")).toBeInTheDocument();
+    expect(screen.queryByText("Layered content")).not.toBeInTheDocument();
   });
 
   it("should be controllable from outside", async () => {
