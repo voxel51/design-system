@@ -22,6 +22,9 @@ describe("TextAction", () => {
   it("sizes by token", () => {
     render(<TextAction size={Size.Sm}>Upgrade</TextAction>);
 
-    expect(screen.getByRole("button")).toHaveClass("h-[28px]", "text-body-sm/5");
+    expect(screen.getByRole("button")).toHaveClass(
+      "h-[28px]",
+      "text-body-sm/5"
+    );
   });
 });
