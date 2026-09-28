@@ -81,6 +81,7 @@ import {
   Spacing,
   Spinner,
   Stack,
+  StepRail,
   StatusColor,
   Text,
   TextArea,
@@ -581,6 +582,16 @@ export const Everything = (
         </Card>
       ))
     )}
+
+    {/* Step rail: static and revisitable */}
+    <StepRail
+      steps={[
+        { id: "a", label: "A" },
+        { id: "b", label: "B" },
+      ]}
+      current="b"
+      onSelect={noop}
+    />
 
     {/* Form controls */}
     <FormFieldGroup orientation="col" spacing="lg">

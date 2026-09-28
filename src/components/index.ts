@@ -34,6 +34,7 @@ export * from "./Sheet";
 export * from "./Slider";
 export * from "./Spinner";
 export * from "./Stack";
+export * from "./StepRail";
 export * from "./Table";
 export * from "./Tabs";
 export * from "./Text";
