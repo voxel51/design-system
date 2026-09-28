@@ -159,11 +159,15 @@ export const Button: FC<ButtonProps> = ({
   rel,
   ...props
 }) => {
-  const isIconOnly = variant === Variant.Icon || borderless;
+  // A borderless button is only a circle when it has nothing but an icon in
+  // it; with a label it is a pill, and forcing aspect-square would inflate it
+  // to its width.
+  const hasLabel = children != null && children !== false && children !== "";
+  const isIconOnly = variant === Variant.Icon || (borderless && !hasLabel);
 
   const classes = cn(
     "inline-flex items-center justify-center",
-    borderless && "aspect-square min-w-0 shrink-0", // circular
+    borderless && !hasLabel && "aspect-square min-w-0 shrink-0", // circular
     borderless ? radiusStyles(Radius.Full) : radiusStyles(Radius.Sm),
     "font-medium",
     variant === Variant.Expressive

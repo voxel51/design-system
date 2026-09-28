@@ -54,7 +54,15 @@ type VizGroup = Record<VizHue, string>;
 const pool = (group: VizGroup): readonly string[] =>
   POOL_ORDER.map((hue) => group[hue]);
 
-/** Hue names in pool order. The slot list, for anything that labels slots. */
+/**
+ * Hue names in pool order. The slot list, for anything that labels slots.
+ *
+ * @deprecated This used to be `{ dark, light }` lists of Figma's numbered
+ * `palette/*` slot keys. The viz groups are keyed by hue and carry no mode
+ * split, so it is now a single flat list; callers indexing `.dark` / `.light`
+ * need updating. Prefer {@link overlayPool} / {@link chartPool} with
+ * {@link VizHue}.
+ */
 export const paletteSlots: readonly VizHue[] = POOL_ORDER;
 
 /**

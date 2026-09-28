@@ -55,7 +55,7 @@ describe("generated icons", () => {
       const { container } = render(<CheckIcon color="#ff0000" />);
       const svg = container.querySelector("svg");
       expect(svg).toHaveStyle({ color: "#ff0000" });
-      expect(svg).not.toHaveClass("text-content-icon-destructive");
+      expect(svg).not.toHaveClass("text-content-icon-failure");
     });
   });
 

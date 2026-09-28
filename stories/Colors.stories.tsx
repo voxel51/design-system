@@ -63,15 +63,24 @@ const buildColorPalette = (
  */
 const semanticGroups = Object.keys(colors.dark.content).sort();
 
+// Some groups nest a level deeper (`status/approved/bg`, the expressive
+// gradient stops), so walk to the leaves and join the path the same way the
+// CSS variable generator does.
+const leafPaths = (node: unknown, prefix: string[] = []): string[][] =>
+  node && typeof node === "object"
+    ? Object.entries(node as Record<string, unknown>).flatMap(([key, value]) =>
+        leafPaths(value, [...prefix, key])
+      )
+    : [prefix];
+
 const groupSwatches = (group: string, themeMode: string) => {
-  const keys = Object.keys(
-    colors.dark.content[group as keyof typeof colors.dark.content]
-  );
   const result: Record<string, string> = {};
 
-  keys.forEach((key) => {
-    result[key] = getCSSValue(`--color-content-${group}-${key}`, themeMode);
-  });
+  leafPaths(colors.dark.content[group as keyof typeof colors.dark.content])
+    .map((path) => path.join("-"))
+    .forEach((key) => {
+      result[key] = getCSSValue(`--color-content-${group}-${key}`, themeMode);
+    });
 
   return result;
 };
