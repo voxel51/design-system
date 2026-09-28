@@ -65,7 +65,7 @@ export const ListItem: FC<ListItemProps> = ({
         "flex flex-col",
         "w-full",
         "py-3 px-3.5",
-        bgColorClass(BackgroundColor.Card2),
+        bgColorClass(BackgroundColor.CardNested),
         radiusStyles(Radius.Sm),
         className
       )}

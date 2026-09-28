@@ -109,7 +109,7 @@ export const FormField: FC<FormFieldProps> = ({
 
         {control}
 
-        {error && <Text color={TextColor.Destructive}>{error}</Text>}
+        {error && <Text color={TextColor.Failure}>{error}</Text>}
       </Stack>
     </Field>
   );
