@@ -47,6 +47,7 @@ import {
   FormFieldGroup,
   Heading,
   HeadingLevel,
+  IconAction,
   IconColor,
   IconName,
   Input,
@@ -86,6 +87,7 @@ import {
   StepRail,
   StatusColor,
   Text,
+  TextAction,
   TextArea,
   TextBadge,
   TextColor,
@@ -597,6 +599,28 @@ export const Everything = (
       onSelect={noop}
     />
 
+    {/* Text and icon actions: every size, string and enum icons */}
+    <Stack orientation="row" spacing="sm">
+      {(["sm", "md"] as const).map((s) => (
+        <TextAction
+          key={s}
+          size={s}
+          leadingIcon="Add"
+          trailingIcon={IconName.ArrowDown}
+          onClick={noop}
+        >
+          {s}
+        </TextAction>
+      ))}
+      {(["sm", "md", "lg"] as const).map((s) => (
+        <IconAction key={s} icon="Add" size={s} aria-label={s} />
+      ))}
+      {/* @ts-expect-error - lg is excluded from TextAction sizes */}
+      <TextAction size="lg">too big</TextAction>
+      {/* @ts-expect-error - aria-label is required */}
+      <IconAction icon="Add" />
+    </Stack>
+
     {/* Dropzone: every prop */}
     <Dropzone
       title="Drop files"
@@ -606,6 +630,8 @@ export const Everything = (
       disabled
       onFiles={noop}
     />
+    {/* @ts-expect-error - Dropzone owns its drop handler */}
+    <Dropzone title="Drop files" onFiles={noop} onDrop={noop} />
 
     {/* Upload list: removable rows and a custom summary */}
     <UploadList
