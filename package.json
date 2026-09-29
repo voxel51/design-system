@@ -36,7 +36,11 @@
       ]
     }
   },
+  "bin": {
+    "voodo": "bin/voodo.mjs"
+  },
   "files": [
+    "bin",
     "dist",
     "NOTICE"
   ],

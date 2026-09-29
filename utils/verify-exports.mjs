@@ -33,6 +33,16 @@ const EXPECTED = {
     "primitives",
     "transitions",
   ],
+  "../dist/cli.js": [
+    "findComponents",
+    "findTokenGroups",
+    "lookup",
+    "renderDocs",
+    "renderList",
+    "renderTokens",
+    "resolveExports",
+    "summarize",
+  ],
 };
 
 const failures = [];
@@ -86,10 +96,26 @@ if (contamination.length > 0) {
   );
 }
 
+// The `voodo` command runs in bare Node from an installed package, where the
+// consumer's React may not resolve: its helpers entry must import nothing
+const cliBundle = readFileSync(
+  new URL("../dist/cli.js", import.meta.url),
+  "utf8"
+);
+if (/^import |\brequire\(/m.test(cliBundle)) {
+  failures.push("dist/cli.js should not import anything");
+}
+
+for (const [name, file] of Object.entries(pkg.bin ?? {})) {
+  if (!existsSync(new URL(`../${file}`, import.meta.url))) {
+    failures.push(`bin["${name}"] points at missing ${file}`);
+  }
+}
+
 if (failures.length > 0) {
   console.error("✗ Export verification failed:");
   for (const failure of failures) console.error(`  - ${failure}`);
   process.exit(1);
 }
 
-console.log("✅ Verified bundle exports (root + tokens entry)");
+console.log("✅ Verified bundle exports (root, tokens and cli entries)");
