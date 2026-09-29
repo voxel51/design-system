@@ -160,8 +160,8 @@ const getTabTextColorClass = (selected: boolean): string => {
  * ```tsx
  * const MyComponent = () => {
  *   const tabs: Descriptor<ToggleSwitchTab>[] = useMemo(() => [
- *       {id: "1", data: {label: "Tab 1", content: "Tab 1 content"}}
- *       {id: "2", data: {label: "Tab 2", content: "Tab 2 content"}}
+ *       {id: "1", data: {label: "Tab 1", content: "Tab 1 content"}},
+ *       {id: "2", data: {label: "Tab 2", content: "Tab 2 content"}},
  *       {id: "3", data: {label: "Tab 3", content: "Tab 3 content"}}
  *     ],
  *     []
@@ -181,13 +181,13 @@ const getTabTextColorClass = (selected: boolean): string => {
  *  Each tab supports optional `disabled` and `tooltip` fields. See {@link ToggleSwitchTab}.
  * @param variant Variant of the tabs.
  *  The variants have the following behaviors:
- *    - {@link ToggleSwitchVariant.Default} - tabs are bordered and have visible boundaries;
+ *    - `"default"` - tabs are bordered and have visible boundaries;
  *      the active tab has a distinct background from inactive tabs.
- *    - {@link ToggleSwitchVariant.Soft} - tabs are not bordered;
+ *    - `"soft"` - tabs are not bordered;
  *      the active tab has a distinct background and is highlighted in an accent color.
- *    - {@link ToggleSwitchVariant.Full} - similar to {@link ToggleSwitchVariant.Default} and expands to fill
+ *    - `"full"` - similar to `"default"` and expands to fill
  *      its container.
- *    - {@link ToggleSwitchVariant.Borderless} - tabs are not bordered; the active tab has a bottom border.
+ *    - `"borderless"` - tabs are not bordered; the active tab has a bottom border.
  *  See {@link ToggleSwitchVariant}.
  * @param defaultIndex The index of the tab which should be considered active when the component first renders (uncontrolled).
  * @param index The active tab index for controlled usage; when set it drives the active tab and overrides `defaultIndex`.

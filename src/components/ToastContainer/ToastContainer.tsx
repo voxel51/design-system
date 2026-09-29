@@ -45,7 +45,15 @@ const stackStyles: Record<Anchor, string> = {
  * Several children stack at the anchor, oldest first, with the newest against
  * the anchored edge.
  *
- * @param anchor The location in the viewport to anchor the toast. See {@link Anchor}.
+ * @example
+ * ```tsx
+ * <ToastContainer anchor="bottom-right" open={open}>
+ *   <Toast title="Saved" variant="success" onClose={() => setOpen(false)} />
+ * </ToastContainer>
+ * ```
+ *
+ * @param anchor The location in the viewport to anchor the toast. Defaults to
+ *  `"bottom"`. See {@link Anchor}.
  * @param children Content wrapped by this component.
  * @param open If `true`, this component and its children will be rendered; otherwise it will be hidden.
  * @param props Additional HTML properties to apply to the component.

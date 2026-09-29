@@ -81,7 +81,7 @@ export interface ComboboxProps extends Omit<
   allowFreeText?: boolean;
   /** Shown when the field is empty. */
   placeholder?: string;
-  /** Field size. See {@link Size}. Defaults to {@link Size.Md}. */
+  /** Field size. See {@link Size}. Defaults to `"md"`. */
   size?: Size;
   disabled?: boolean;
   /** Spinner in place of the list while the caller's query is in flight. */

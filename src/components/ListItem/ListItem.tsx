@@ -40,7 +40,7 @@ export interface ListItemProps extends HTMLAttributes<HTMLDivElement> {
  * @param actions Content to display as "actions" for the list item.
  *  This content will be pushed to the trailing edge of the list item.
  * @param additionalContent Additional content to display in the list item.
- *  This content will be placed between the `secondaryContent` and the `actions.
+ *  This content will be placed between the `secondaryContent` and the `actions`.
  * @param className `class` overrides to apply to the component.
  * @param props Additional HTML properties to apply to the component.
  *

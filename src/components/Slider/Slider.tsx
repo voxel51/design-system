@@ -74,6 +74,14 @@ const clamp = (value: number, min: number, max: number): number =>
  *
  * This component renders a slider with one or more draggable knobs, optional numeric inputs, and optional labels.
  *
+ * @example
+ * ```tsx
+ * <BaseSlider min={0} max={1} step={0.05} value={threshold} onChange={setThreshold} />
+ * // Prefer the type-safe aliases:
+ * <SingleValueSlider min={0} max={100} value={opacity} onChange={setOpacity} />
+ * <MultiValueSlider min={0} max={1} value={[low, high]} onChange={setRange} />
+ * ```
+ *
  * This component operates as both a controlled and uncontrolled component.
  * See `value` and `onChange` for controlled behavior.
  *

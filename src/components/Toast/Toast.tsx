@@ -97,12 +97,12 @@ const onSolidControls = cn(
  *       description="You will be notified when the recipient opens your message"
  *       icon={CheckIcon}
  *       action={
- *         <Button variant={Variant.Secondary} onClick={() => setOpen(false)}>
+ *         <Button variant="secondary" onClick={() => setOpen(false)}>
  *           Undo
  *         </Button>
  *       }
  *       onClose={() => setOpen(false)}
- *       variant={Variant.Success}
+ *       variant="success"
  *     />
  *   );
  * };

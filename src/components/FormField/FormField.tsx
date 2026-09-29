@@ -60,7 +60,7 @@ export interface FormFieldProps extends HTMLAttributes<HTMLDivElement> {
  * @param disabled If `true`, disables the form field.
  * @param error Optional error message to display for the form field.
  * @param required If `true`, displays a destructive-color asterisk after the label.
- * @param spacing Spacing between elements in the field. Defaults to {@link Spacing.Sm}.
+ * @param spacing Spacing between elements in the field. Defaults to `"sm"`.
  * @param className `class` overrides to apply to the field container.
  * @param props Additional HTML properties to apply to the field container.
  */

@@ -59,7 +59,7 @@ export namespace InputType {
 /**
  * The set of border radii supported by {@link Input}.
  *
- * The fully-rounded ({@link Radius.Full}) option is intentionally excluded: a pill-shaped text input
+ * The fully-rounded (`"full"`) option is intentionally excluded: a pill-shaped text input
  * is not part of the design spec and produces awkward results with longer values and prefix icons.
  */
 export type InputRadius = Exclude<Radius, Radius.Full>;
@@ -76,7 +76,7 @@ export interface InputProps extends ModifiedInputProps {
 }
 
 /**
- * Characters permitted within a telephone ({@link InputType.Tel}) input.
+ * Characters permitted within a telephone (`"tel"`) input.
  *
  * Allows digits plus the common formatting characters: `+`, `-`, `(`, `)`, and spaces.
  */
@@ -169,11 +169,11 @@ export const inputStyle = ({
  * This component operates exclusively as a controlled component. See `value` and `onChange` for controlled behavior.
  *
  * Several input {@link InputType}s receive additional behavior:
- * - {@link InputType.Tel}: non-numeric characters (other than common phone formatting characters)
+ * - `"tel"`: non-numeric characters (other than common phone formatting characters)
  *   are blocked at entry.
- * - {@link InputType.Email}: the value is validated against a basic email pattern and the input is
+ * - `"email"`: the value is validated against a basic email pattern and the input is
  *   rendered in an error state when it is non-empty and invalid.
- * - {@link InputType.Password}: a show/hide toggle button is rendered which switches the rendered
+ * - `"password"`: a show/hide toggle button is rendered which switches the rendered
  *   value between obscured and plain text.
  *
  * @example

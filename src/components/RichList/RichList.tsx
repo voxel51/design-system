@@ -60,10 +60,10 @@ export interface RichListProps extends HTMLAttributes<HTMLDivElement> {
  *         id: "1",
  *         data: {
  *           primaryContent: "First Item",
- *           secondaryContent: "First item description"
+ *           secondaryContent: "First item description",
  *           actions: (
  *             <Button
- *               variant={Variant.Icon}
+ *               variant="icon"
  *               aria-label="Settings"
  *               leadingIcon={SettingsIcon}
  *               onClick={() => openSettings("1")}
@@ -75,24 +75,25 @@ export interface RichListProps extends HTMLAttributes<HTMLDivElement> {
  *         id: "2",
  *         data: {
  *           primaryContent: "Second Item",
- *           secondaryContent: "Second item description"
+ *           secondaryContent: "Second item description",
  *           actions: (
  *             <Button
- *               variant={Variant.Icon}
+ *               variant="icon"
  *               aria-label="Settings"
  *               leadingIcon={SettingsIcon}
  *               onClick={() => openSettings("2")}
  *             />
  *           )
  *         },
+ *       },
  *       {
  *         id: "3",
  *         data: {
  *           primaryContent: "Third Item",
- *           secondaryContent: "Third item description"
+ *           secondaryContent: "Third item description",
  *           actions: (
  *             <Button
- *               variant={Variant.Icon}
+ *               variant="icon"
  *               aria-label="Settings"
  *               leadingIcon={SettingsIcon}
  *               onClick={() => openSettings("3")}

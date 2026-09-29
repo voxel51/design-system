@@ -40,7 +40,7 @@ export interface ToolbarProps extends Omit<
   "children"
 > {
   children: ReactNode;
-  /** Layout direction for groups and actions. Default `Orientation.Column`. */
+  /** Layout direction for groups and actions. Default `"col"`. */
   orientation?: Orientation;
   /** Lock horizontal (x-axis) movement. Default `false`. */
   lockX?: boolean;
@@ -50,7 +50,7 @@ export interface ToolbarProps extends Omit<
   xOffset?: string | number;
   /** Initial offset from the top edge of the parent container. Accepts any CSS length (e.g. `20`, `"10%"`, `"2rem"`). Default `20`. */
   yOffset?: string | number;
-  /** Stacking layer for the toolbar. Default `ZIndex.AboveModal`. */
+  /** Stacking layer for the toolbar. Default `"above-modal"`. */
   zIndex?: ZIndex;
   /** Whether the toolbar is rendered. Default `true`. */
   visible?: boolean;
@@ -73,23 +73,23 @@ const DEFAULT_Y_OFFSET = 20;
  *
  * Double-clicking the drag handle collapses the toolbar to just the handle.
  *
- * @param props.children - Tool groups and actions to render inside the toolbar.
- * @param props.orientation - Layout direction for groups and actions. Default `Orientation.Column`.
- * @param props.lockX - Lock horizontal (x-axis) movement. Default `false`.
- * @param props.lockY - Lock vertical (y-axis) movement. Default `false`.
- * @param props.xOffset - Initial offset from the left edge of the parent container. Accepts any CSS length (e.g. `20`, `"10%"`, `"2rem"`). Default `20`.
- * @param props.yOffset - Initial offset from the top edge of the parent container. Accepts any CSS length (e.g. `20`, `"10%"`, `"2rem"`). Default `20`.
- * @param props.zIndex - Stacking layer for the toolbar. Default `ZIndex.AboveModal`.
- * @param props.visible - Whether the toolbar is rendered. Default `true`.
- * @param props.onPositionChange - Called after every drag move with the new pixel position.
- * @param props - Any additional `HTMLDivElement` attributes (e.g. `data-testid`, `aria-label`) are
+ * @param children Tool groups and actions to render inside the toolbar.
+ * @param orientation Layout direction for groups and actions. Default `"col"`.
+ * @param lockX Lock horizontal (x-axis) movement. Default `false`.
+ * @param lockY Lock vertical (y-axis) movement. Default `false`.
+ * @param xOffset Initial offset from the left edge of the parent container. Accepts any CSS length (e.g. `20`, `"10%"`, `"2rem"`). Default `20`.
+ * @param yOffset Initial offset from the top edge of the parent container. Accepts any CSS length (e.g. `20`, `"10%"`, `"2rem"`). Default `20`.
+ * @param zIndex Stacking layer for the toolbar. Default `"above-modal"`.
+ * @param visible Whether the toolbar is rendered. Default `true`.
+ * @param onPositionChange Called after every drag move with the new pixel position.
+ * @param props Any additional `HTMLDivElement` attributes (e.g. `data-testid`, `aria-label`) are
  *   forwarded to the root `div`. Internal `onPointerDown`, `onClick`, and `onKeyDown` handlers that
  *   call `stopPropagation` are merged with any consumer-provided handlers.
  *
  * @example
  * ```tsx
- * <Toolbar orientation={Orientation.Column} xOffset={20} yOffset={100}>
- *   <ToolbarGroup label="Tool">
+ * <Toolbar orientation="col" xOffset={20} yOffset={100}>
+ *   <ToolbarGroup aria-label="Tool">
  *     <ToolbarAction active>
  *       <BrushIcon />
  *     </ToolbarAction>

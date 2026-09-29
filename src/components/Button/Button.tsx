@@ -136,8 +136,8 @@ const iconStyles: Record<ButtonSize, string> = {
  *
  * @example
  * ```tsx
- *   <Button onClick={() => alert("Button clicked")}>
- *     Click me
+ *   <Button variant="primary" size="sm" leadingIcon={AddIcon} onClick={save}>
+ *     Add dataset
  *   </Button>
  * ```
  *

@@ -157,8 +157,8 @@ export interface PopoverProps extends Omit<
  * ```tsx
  * <Popover trigger={<DropdownTrigger>Search settings</DropdownTrigger>}>
  *   {({ close }) => (
- *     <Stack orientation={Orientation.Column} spacing={Spacing.Sm}>
- *       <Text variant={TextVariant.Label}>Similarity index</Text>
+ *     <Stack orientation="col" spacing="sm">
+ *       <Text variant="label">Similarity index</Text>
  *       <Select options={indexes} value={selected} onChange={pick} />
  *       <Button onClick={close}>Done</Button>
  *     </Stack>

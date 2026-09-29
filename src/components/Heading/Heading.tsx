@@ -30,7 +30,7 @@ const variantStyles: Record<HeadingLevel, string> = {
  *
  * @example
  * ```tsx
- * <Heading level={HeadingLevel.H2}>
+ * <Heading level="h2">
  *   Heading content here
  * </Heading>
  * ```

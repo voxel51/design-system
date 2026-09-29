@@ -18,7 +18,7 @@ export interface LoadingDotsProps extends TextProps {
  *
  * @example
  * ```tsx
- * <LoadingDots text={query} color={TextColor.Tertiary} />
+ * <LoadingDots text={query} color="text-tertiary" />
  * ```
  *
  * @param text Label the dots follow.

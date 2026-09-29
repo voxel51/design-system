@@ -47,7 +47,7 @@ export interface MenuIconTextItemProps extends HTMLAttributes<HTMLButtonElement>
  * ```tsx
  * <Dropdown trigger={<DropdownTrigger>Open</DropdownTrigger>}>
  *   <MenuIconTextItem
- *     icon={<ImageSearchIcon size={Size.Lg} />}
+ *     icon={<ImageSearchIcon size="lg" />}
  *     text="Sort by similarity"
  *     subtext="Find visually similar"
  *     onClick={() => {}}

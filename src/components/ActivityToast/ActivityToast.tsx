@@ -38,7 +38,7 @@ export interface ActivityToastProps extends HTMLAttributes<HTMLDivElement> {
  *   open={true}
  *   icon={CheckIcon}
  *   message={"Operation successful"}
- *   variant={Variant.Success}
+ *   variant="success"
  * />
  * ```
  *

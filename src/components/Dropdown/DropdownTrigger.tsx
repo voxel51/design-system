@@ -27,7 +27,7 @@ export type DropdownTriggerProps = Omit<
  * ```
  *
  * @param children Button label.
- * @param size Button size. Defaults to {@link Size.Sm}.
+ * @param size Button size. Defaults to `"sm"`.
  * @param props Additional {@link ButtonProps} (excluding `variant` and `trailingIcon`).
  */
 export const DropdownTrigger: FC<DropdownTriggerProps> = ({

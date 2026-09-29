@@ -21,6 +21,8 @@ export interface IconWrapperProps {
  * @param content Icon {@link FC}, legacy {@link IconName}, or undefined
  * @param size Size forwarded to the icon component
  * @param className Classes applied to the wrapping span
+ *
+ * @internal For VOODO components that take an icon prop.
  */
 export const IconWrapper: FC<IconWrapperProps> = ({
   content,

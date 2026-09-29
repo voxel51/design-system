@@ -265,7 +265,7 @@ export interface LegacyIconProps {
 }
 
 /**
- * An generic icon component which will take the form of the icon specified by `name`.
+ * A generic icon component which will take the form of the icon specified by `name`.
  *
  * @deprecated Use the per-icon components instead (e.g. `<EditIcon />`),
  * which are tree-shakable. `Icon` and {@link IconName} exist only to bridge
@@ -274,7 +274,9 @@ export interface LegacyIconProps {
  *
  * @example
  * ```tsx
- * <Icon name={IconName.Edit} size={Size.Md} />
+ * <Icon name="Edit" size="md" />
+ * // prefer the per-icon component:
+ * <EditIcon size="md" />
  * ```
  *
  * @param name Icon to display. See {@link IconName}.

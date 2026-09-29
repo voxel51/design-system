@@ -75,7 +75,7 @@ const resizeStyles: Record<ResizeBehavior, string> = {
  *   return (
  *     <TextArea
  *       onChange={onChange}
- *       resize={ResizeBehavior.None}
+ *       resize="None"
  *       rows={10}
  *       value={value}
  *     />
