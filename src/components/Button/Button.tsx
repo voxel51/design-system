@@ -1,6 +1,11 @@
 import { Button as HeadlessButton } from "@headlessui/react";
 import clsx from "clsx";
-import { AnchorHTMLAttributes, ButtonHTMLAttributes, FC } from "react";
+import {
+  AnchorHTMLAttributes,
+  ButtonHTMLAttributes,
+  Children,
+  FC,
+} from "react";
 
 import { type IconInput, IconWrapper } from "@/components/Icons";
 import radiusStyles from "@/styles/radius";
@@ -159,10 +164,14 @@ export const Button: FC<ButtonProps> = ({
   rel,
   ...props
 }) => {
-  // A borderless button is only a circle when it has nothing but an icon in
-  // it; with a label it is a pill, and forcing aspect-square would inflate it
-  // to its width.
-  const hasLabel = children != null && children !== false && children !== "";
+  // A borderless button is a circle unless it carries a text label, in which
+  // case it is a pill and aspect-square would inflate it to its width. Only
+  // text nodes count as a label: an icon passed as a child keeps the circle.
+  const hasLabel = Children.toArray(children).some(
+    (child) =>
+      (typeof child === "string" && child.trim() !== "") ||
+      typeof child === "number"
+  );
   const isIconOnly = variant === Variant.Icon || (borderless && !hasLabel);
 
   const classes = cn(

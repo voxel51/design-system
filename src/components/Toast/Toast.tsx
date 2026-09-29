@@ -16,12 +16,12 @@ import { ToastContainer, ToastStack } from "@/components/ToastContainer";
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
 import {
-  ActionColor,
   Align,
   Anchor,
   BackgroundColor,
   bgColorClass,
   IconColor,
+  InteractiveColor,
   Justify,
   Orientation,
   Radius,
@@ -62,13 +62,15 @@ const variantStyles: Record<ToastVariant, string> = {
 };
 
 const solidStyles: Partial<Record<ToastVariant, string>> = {
+  // Filled surfaces take white, as Button does: Figma has no on-fill text
+  // token and the old action-*-text slots were never Figma variables.
   [Variant.Success]: cn(
-    bgColorClass(ActionColor.SuccessDefault),
-    textColorClass(ActionColor.SuccessText)
+    bgColorClass(InteractiveColor.SuccessDefault),
+    "text-white"
   ),
   [Variant.Danger]: cn(
-    bgColorClass(ActionColor.DangerDefault),
-    textColorClass(ActionColor.DangerText)
+    bgColorClass(InteractiveColor.DangerDefault),
+    "text-white"
   ),
 };
 
