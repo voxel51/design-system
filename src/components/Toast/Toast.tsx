@@ -16,12 +16,12 @@ import { ToastContainer, ToastStack } from "@/components/ToastContainer";
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
 import {
-  ActionColor,
   Align,
   Anchor,
   BackgroundColor,
   bgColorClass,
   IconColor,
+  InteractiveColor,
   Justify,
   Orientation,
   Radius,
@@ -57,18 +57,20 @@ const variantStyles: Record<ToastVariant, string> = {
   [Variant.Primary]: textColorClass(TextColor.Primary),
   [Variant.Secondary]: textColorClass(TextColor.Secondary),
   [Variant.Success]: textColorClass(IconColor.Success),
-  [Variant.Danger]: textColorClass(IconColor.Destructive),
+  [Variant.Danger]: textColorClass(IconColor.Failure),
   [Variant.Icon]: textColorClass(TextColor.Primary),
 };
 
 const solidStyles: Partial<Record<ToastVariant, string>> = {
+  // Filled surfaces take white, as Button does: Figma has no on-fill text
+  // token and the old action-*-text slots were never Figma variables.
   [Variant.Success]: cn(
-    bgColorClass(ActionColor.SuccessDefault),
-    textColorClass(ActionColor.SuccessText)
+    bgColorClass(InteractiveColor.SuccessDefault),
+    "text-white"
   ),
   [Variant.Danger]: cn(
-    bgColorClass(ActionColor.DangerDefault),
-    textColorClass(ActionColor.DangerText)
+    bgColorClass(InteractiveColor.DangerDefault),
+    "text-white"
   ),
 };
 
@@ -189,7 +191,7 @@ export const Toast: FC<ToastProps> = ({
         // (1rem) and clamp the toast to a thin sliver. 28rem (~448px) is the intended cap.
         "w-[90vw] max-w-[28rem]",
         radiusStyles(Radius.Md),
-        solidStyle ?? bgColorClass(BackgroundColor.Card2),
+        solidStyle ?? bgColorClass(BackgroundColor.CardNested),
         shadowStyles(Shadow.Md),
         className
       )}

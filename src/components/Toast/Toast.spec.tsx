@@ -23,7 +23,7 @@ describe("Toast", () => {
     render(<Toast {...defaultProps} solid variant={Variant.Success} />);
 
     expect(screen.getByTestId(testId).className).toContain(
-      "action-success-primary"
+      "interactive-success-default"
     );
   });
 

@@ -28,7 +28,7 @@ export const Table: FC<HTMLAttributes<HTMLTableElement>> = ({
     <table
       className={cn(
         "w-full border-collapse",
-        bgColorClass(BackgroundColor.Card1),
+        bgColorClass(BackgroundColor.Card),
         radiusStyles(Radius.Md),
         className
       )}
@@ -51,7 +51,7 @@ export const TableRow: FC<HTMLAttributes<HTMLTableRowElement>> = ({
         "border-b last:border-0",
         borderColorClass(BorderColor.CardElevated),
         isClickable &&
-          `hover:cursor-pointer hover:bg-[var(--color-content-bg-card-2)]`,
+          `hover:cursor-pointer hover:bg-[var(--color-content-bg-card-nested)]`,
         className
       )}
       {...props}

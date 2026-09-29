@@ -37,8 +37,8 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const bgColorMap: Record<CardBackground, Color> = {
-  [CardBackground.Primary]: BackgroundColor.Card1,
-  [CardBackground.Secondary]: BackgroundColor.Card2,
+  [CardBackground.Primary]: BackgroundColor.Card,
+  [CardBackground.Secondary]: BackgroundColor.CardNested,
   [CardBackground.Elevated]: BackgroundColor.CardElevated,
 };
 

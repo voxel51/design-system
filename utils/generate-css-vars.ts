@@ -36,15 +36,17 @@ const flat = (obj: Record<string, unknown>, prefix: string): Nested => {
 const color = {
   brand: walk(tokens.colors.common.brand, "--color-brand"),
   semantic: walk(tokens.colors.common.semantic, "--color-semantic"),
-  // bg / text / border / status / icon / overlay / link / palette / skeleton /
-  // tooltip / code / scrollbar / selection (mode-reactive at runtime)
+  // Every semantic group Figma defines -- bg / text / border / status / icon /
+  // interactive / scrim / link / viz-chart / viz-overlay / skeleton / tooltip /
+  // code / scrollbar / selection / focus (mode-reactive at runtime). Walked
+  // rather than listed, so a new Figma group appears here without an edit.
   ...walk(tokens.colors.dark.content, "--color-content"),
-  action: walk(tokens.colors.dark.action, "--color-action"),
 };
 
 const cssVar = {
   color,
-  spacing: flat(tokens.spacing, "--spacing"),
+  // Roles only: the numeric scale is deliberately not emitted (see spacing.ts).
+  spacing: flat(tokens.spacingRole, "--spacing"),
   text: flat(tokens.typography.fontSize, "--text"),
   fontFamily: flat(tokens.typography.fontFamily, "--font"),
   z: Object.fromEntries(

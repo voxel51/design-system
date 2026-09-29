@@ -29,6 +29,13 @@
     },
     "./theme.css": "./dist/voodo.css"
   },
+  "typesVersions": {
+    "*": {
+      "tokens": [
+        "./dist/tokens.d.ts"
+      ]
+    }
+  },
   "files": [
     "dist",
     "NOTICE"
@@ -36,7 +43,7 @@
   "scripts": {
     "dev": "vite build --watch",
     "build": "tsc && vite build",
-    "build:lib": "npm run prepublish && mkdir -p build/lib && npm pack --pack-destination build/lib/",
+    "build:lib": "npm run build && mkdir -p build/lib && npm pack --pack-destination build/lib/",
     "format": "prettier --write '**/*.{ts,tsx}'",
     "format:check": "prettier --check '**/*.{ts,tsx}'",
     "generate-icons": "tsx utils/generate-icons.ts && prettier --write src/components/Icons/icons.tsx --log-level warn",

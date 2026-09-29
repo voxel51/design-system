@@ -90,7 +90,7 @@ export const FormField: FC<FormFieldProps> = ({
               <Text color={TextColor.Primary}>
                 {label}
                 {required && (
-                  <Text color={TextColor.Destructive} aria-hidden="true">
+                  <Text color={TextColor.Failure} aria-hidden="true">
                     {" "}
                     *
                   </Text>
@@ -109,7 +109,7 @@ export const FormField: FC<FormFieldProps> = ({
 
         {control}
 
-        {error && <Text color={TextColor.Destructive}>{error}</Text>}
+        {error && <Text color={TextColor.Failure}>{error}</Text>}
       </Stack>
     </Field>
   );

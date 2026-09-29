@@ -79,7 +79,7 @@ describe("Table", () => {
     expect(screen.getByRole("table")).toHaveClass("w-full");
     expect(screen.getByRole("table")).toHaveClass("border-collapse");
     expect(screen.getByRole("table")).toHaveClass(
-      bgColorClass(BackgroundColor.Card1)
+      bgColorClass(BackgroundColor.Card)
     );
     expect(screen.getByRole("table")).toHaveClass(radiusStyles(Radius.Md));
     expect(screen.getByRole("columnheader")).toHaveClass("px-6");

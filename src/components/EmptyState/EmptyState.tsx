@@ -49,7 +49,7 @@ export const EmptyState: FC<EmptyStateProps> = ({
       className={cn(
         "text-center p-10",
         radiusStyles(Radius.Md),
-        bgColorClass(BackgroundColor.Card1),
+        bgColorClass(BackgroundColor.Card),
         className
       )}
       {...props}

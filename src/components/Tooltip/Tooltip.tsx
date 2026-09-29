@@ -176,7 +176,7 @@ export const Tooltip: FC<TooltipProps> = ({
     "border",
     borderClass,
     "!overflow-visible",
-    bgColorClass(BackgroundColor.Card2),
+    bgColorClass(BackgroundColor.CardNested),
     textColorClass(TextColor.Primary),
     radiusStyles(Radius.Sm),
     shadowStyles(shadow),

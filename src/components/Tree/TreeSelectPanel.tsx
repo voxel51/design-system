@@ -99,7 +99,7 @@ export const TreeSelectPanel: FC<TreeSelectPanelProps> = ({
           "flex flex-col overflow-hidden",
           "border",
           borderColorClass(BorderColor.Default),
-          bgColorClass(BackgroundColor.Card1),
+          bgColorClass(BackgroundColor.Card),
           getZIndexClass(zIndex, portal),
           radiusStyles(Radius.Lg),
           shadowStyles(Shadow.Lg),
