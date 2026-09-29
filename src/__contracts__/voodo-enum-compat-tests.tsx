@@ -40,6 +40,7 @@ import {
   Justify,
   ListItem,
   MenuSeparator,
+  ModalSize,
   Orientation,
   Pill,
   Popover,
@@ -53,6 +54,7 @@ import {
   Select,
   SelectAnchor,
   Shadow,
+  SheetSide,
   SingleValueSlider,
   Size,
   Spacing,
@@ -115,6 +117,9 @@ const popAnchor: PopoverAnchor = PopoverAnchor.BottomStart;
 const selAnchor: SelectAnchor = SelectAnchor.TopEnd;
 const iconName: IconName = IconName.Add;
 const toggleVariant: ToggleSwitchVariant = ToggleSwitchVariant.Soft;
+// Were TS string enums; the const-object conversion must keep these compiling
+const modalSize: ModalSize = ModalSize.Lg;
+const sheetSide: SheetSide.Left = SheetSide.Left;
 
 /* ────────────────────────────────────────────────────────────────────
  * 2. Members as TYPES — the case the namespace merge exists for.
@@ -409,6 +414,8 @@ export const enumCompatChecks = {
   selAnchor,
   iconName,
   toggleVariant,
+  modalSize,
+  sheetSide,
   oldConfig,
   compact,
   nonIcon,

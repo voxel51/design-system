@@ -34,15 +34,23 @@ import { cn } from "@/util/classes";
  * Width of the modal panel. The panel is always full-width up to this cap so
  * it degrades to the viewport on small screens.
  */
-export enum ModalSize {
+export const ModalSize = {
   /** 400px — confirmations and single-field forms. */
-  Sm = "sm",
+  Sm: "sm",
   /** 600px — the default; forms and short reference content. */
-  Md = "md",
+  Md: "md",
   /** 800px — tables, side-by-side content. */
-  Lg = "lg",
+  Lg: "lg",
   /** 1000px — full editors. */
-  Xl = "xl",
+  Xl: "xl",
+} as const;
+export type ModalSize = `${(typeof ModalSize)[keyof typeof ModalSize]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace ModalSize {
+  export type Sm = typeof ModalSize.Sm;
+  export type Md = typeof ModalSize.Md;
+  export type Lg = typeof ModalSize.Lg;
+  export type Xl = typeof ModalSize.Xl;
 }
 
 const sizeStyles: Record<ModalSize, string> = {
@@ -62,7 +70,7 @@ export interface ModalProps {
   onClose: () => void;
   /** Heading rendered in the modal's title bar. */
   title?: ReactNode;
-  /** Panel width. See {@link ModalSize}. Defaults to {@link ModalSize.Md}. */
+  /** Panel width. See {@link ModalSize}. Defaults to `"md"`. */
   size?: ModalSize;
   /**
    * Whether to render the title bar's close button. Defaults to `true` when
@@ -106,7 +114,7 @@ export interface ModalProps {
  *   open={open}
  *   onClose={close}
  *   title="Keyboard reference"
- *   size={ModalSize.Lg}
+ *   size="lg"
  *   footer={<Button onClick={close}>Done</Button>}
  * >
  *   {rows}
