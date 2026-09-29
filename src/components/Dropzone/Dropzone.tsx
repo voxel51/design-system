@@ -12,7 +12,7 @@ import { Radius, TextColor, textColorClass } from "@/types";
 
 export interface DropzoneProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
-  "onDrop" | "title"
+  "onDrop" | "onDragOver" | "onDragLeave" | "onClick" | "onKeyDown" | "title"
 > {
   onFiles: (files: File[]) => void;
   title: ReactNode;
