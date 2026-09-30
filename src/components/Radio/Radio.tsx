@@ -1,5 +1,4 @@
 import { Field, Radio as HeadlessRadio, Label } from "@headlessui/react";
-import clsx from "clsx";
 import { type FC, InputHTMLAttributes } from "react";
 
 import { textStyles } from "@/styles/text.ts";
@@ -23,21 +22,22 @@ export interface RadioProps extends ModifiedRadioProps {
 }
 
 const textSizeStyles: Partial<Record<Size, string | null>> = {
-  [Size.Sm]: textStyles(TextVariant.Sm),
-  [Size.Md]: textStyles(TextVariant.Md),
-  [Size.Lg]: textStyles(TextVariant.Lg),
+  // Figma RadioButton is one 14px control with a 15/20 label.
+  [Size.Sm]: textStyles(TextVariant.BodyPrimary),
+  [Size.Md]: textStyles(TextVariant.BodyPrimary),
+  [Size.Lg]: textStyles(TextVariant.BodyPrimary),
 };
 
 const sizeStyles: Partial<Record<Size, string>> = {
-  [Size.Sm]: clsx("w-4 h-4"),
-  [Size.Md]: clsx("w-5 h-5"),
-  [Size.Lg]: clsx("w-6 h-6"),
+  [Size.Sm]: "size-3.5",
+  [Size.Md]: "size-4",
+  [Size.Lg]: "size-4.5",
 };
 
 const dotSizeStyles: Partial<Record<Size, string>> = {
-  [Size.Sm]: clsx("before:w-1 before:h-1"),
-  [Size.Md]: clsx("before:w-1.5 before:h-1.5"),
-  [Size.Lg]: clsx("before:w-2 before:h-2"),
+  [Size.Sm]: "before:size-[5px]",
+  [Size.Md]: "before:size-1.5",
+  [Size.Lg]: "before:size-[7px]",
 };
 
 /**
@@ -66,7 +66,7 @@ export const Radio: FC<RadioProps> = ({
   ...props
 }) => {
   return (
-    <Field className="group flex items-center gap-2">
+    <Field className="group flex items-center gap-3">
       <HeadlessRadio
         value={value}
         disabled={disabled}
@@ -76,22 +76,23 @@ export const Radio: FC<RadioProps> = ({
           "appearance-none",
           "border",
           "border-content-text-tertiary",
+          "bg-content-icon-emphasis",
           disabled && "opacity-50",
           "rounded-full",
           sizeStyles[size],
           // on focus - unchecked
           !disabled && "focus:outline-none",
           !disabled && "focus:ring-2",
-          !disabled && "focus:ring-action-primary-primary",
+          !disabled && "focus:ring-content-interactive-primary-default",
           // on hover - unchecked (only when not disabled)
-          !disabled && "hover:border-action-primary-primary",
+          !disabled && "hover:border-content-interactive-primary-hover",
           !disabled && "hover:border-1",
           // when hovering label, also hover radio (only when not disabled)
-          !disabled && "group-hover:border-action-primary-primary",
+          !disabled && "group-hover:border-content-interactive-primary-hover",
           !disabled && "group-hover:border-1",
           // checked styles (override base styles)
           "data-[checked]:border-2",
-          "data-[checked]:border-action-primary-primary",
+          "data-[checked]:border-content-interactive-primary-default",
           "data-[checked]:focus:ring-0",
           "relative",
           // for the dot
@@ -103,7 +104,7 @@ export const Radio: FC<RadioProps> = ({
           "before:-translate-x-1/2",
           "before:-translate-y-1/2",
           "before:rounded-full",
-          "before:bg-action-primary-primary",
+          "before:bg-content-interactive-primary-default",
           "before:opacity-0",
           "data-[checked]:before:opacity-100",
           className

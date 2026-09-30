@@ -13,6 +13,7 @@ import {
   Size,
   BrandColor,
   textColorClass,
+  TextVariant,
 } from "@/types";
 import { cn } from "@/util/classes";
 
@@ -54,7 +55,7 @@ export const Option: FC<OptionProps> = ({
         bgColorClass(BackgroundColor.CardElevated, ElementState.Hover)
       )}
     >
-      <Text>{children}</Text>
+      <Text variant={TextVariant.BodySecondary}>{children}</Text>
       <span
         className={clsx(
           "size-5 flex items-center",

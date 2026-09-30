@@ -4,7 +4,7 @@ import { type IconInput, IconWrapper } from "@/components/Icons";
 import { Size, TextColor, textColorClass } from "@/types";
 import { cn } from "@/util/classes";
 
-import { iconPaddingStyles } from "./styles";
+import { iconPaddingStyles, iconSizes } from "./styles";
 
 export interface InputIconProps {
   icon: IconInput;
@@ -32,7 +32,7 @@ export const InputIcon: FC<InputIconProps> = ({ icon, size, hasText }) => {
         iconPaddingStyles[size]
       )}
     >
-      <IconWrapper size={size} content={icon} />
+      <IconWrapper size={iconSizes[size] ?? size} content={icon} />
     </span>
   );
 };

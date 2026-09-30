@@ -65,8 +65,12 @@ export const EmptyState: FC<EmptyStateProps> = ({
           <IconContent size={Size.Lg} color={BrandColor.Accent} />
         </span>
       )}
-      <Text variant={TextVariant.Xl}>{title}</Text>
-      {description && <Text color={TextColor.Muted}>{description}</Text>}
+      <Text variant={TextVariant.HeadingLg}>{title}</Text>
+      {description && (
+        <Text variant={TextVariant.BodySecondary} color={TextColor.Muted}>
+          {description}
+        </Text>
+      )}
     </Stack>
   );
 };

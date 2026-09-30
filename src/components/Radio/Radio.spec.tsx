@@ -151,24 +151,24 @@ describe("Radio", () => {
   it("should apply correct classes when size is Small", () => {
     renderRadioInGroup(<Radio size={Size.Sm} label={radioLabel} />);
     const radio = screen.getByRole("radio");
-    expect(radio).toHaveClass("w-4", "h-4");
+    expect(radio).toHaveClass("size-3.5");
   });
 
   it("should apply correct classes when size is Medium", () => {
     renderRadioInGroup(<Radio size={Size.Md} label={radioLabel} />);
     const radio = screen.getByRole("radio");
-    expect(radio).toHaveClass("w-5", "h-5");
+    expect(radio).toHaveClass("size-4");
   });
 
   it("should apply correct classes when size is Large", () => {
     renderRadioInGroup(<Radio size={Size.Lg} label={radioLabel} />);
     const radio = screen.getByRole("radio");
-    expect(radio).toHaveClass("w-6", "h-6");
+    expect(radio).toHaveClass("size-4.5");
   });
 
   it("should default to Small size", () => {
     renderRadioInGroup(<Radio label={radioLabel} />);
     const radio = screen.getByRole("radio");
-    expect(radio).toHaveClass("w-4", "h-4");
+    expect(radio).toHaveClass("size-3.5");
   });
 });

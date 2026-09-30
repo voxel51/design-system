@@ -87,7 +87,10 @@ export const FormField: FC<FormFieldProps> = ({
         {label && (
           <Stack orientation={Orientation.Column} spacing={Spacing.Xs}>
             <Label>
-              <Text color={TextColor.Primary}>
+              <Text
+                color={TextColor.Secondary}
+                variant={TextVariant.BodySecondary}
+              >
                 {label}
                 {required && (
                   <Text color={TextColor.Failure} aria-hidden="true">
@@ -109,7 +112,11 @@ export const FormField: FC<FormFieldProps> = ({
 
         {control}
 
-        {error && <Text color={TextColor.Failure}>{error}</Text>}
+        {error && (
+          <Text color={TextColor.Failure} variant={TextVariant.BodyTertiary}>
+            {error}
+          </Text>
+        )}
       </Stack>
     </Field>
   );
