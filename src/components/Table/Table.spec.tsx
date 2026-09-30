@@ -90,7 +90,7 @@ describe("Table", () => {
       textColorClass(TextColor.Secondary)
     );
     expect(screen.getByRole("columnheader")).toHaveClass(
-      textStyles(TextVariant.Md)!
+      textStyles(TextVariant.BodySecondary)!
     );
     expect(screen.getByRole("cell")).toHaveClass("px-6");
     expect(screen.getByRole("cell")).toHaveClass("py-3");
@@ -99,7 +99,9 @@ describe("Table", () => {
     expect(screen.getByRole("cell")).toHaveClass(
       textColorClass(TextColor.Primary)
     );
-    expect(screen.getByRole("cell")).toHaveClass(textStyles(TextVariant.Md)!);
+    expect(screen.getByRole("cell")).toHaveClass(
+      textStyles(TextVariant.BodySecondary)!
+    );
   });
 
   it("should add hover cursor styles when TableRow has an onClick handler", () => {

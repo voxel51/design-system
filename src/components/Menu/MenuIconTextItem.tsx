@@ -7,6 +7,7 @@ import radiusStyles from "@/styles/radius";
 import {
   BackgroundColor,
   bgColorClass,
+  InteractiveColor,
   ElementState,
   IconColor,
   IconName,
@@ -91,13 +92,25 @@ export const MenuIconTextItem: FC<MenuIconTextItemProps> = ({
           type="button"
           disabled={disabled}
           className={cn(
-            "flex w-full items-center gap-2.5",
-            "px-3 py-1.5",
-            radiusStyles(Radius.Sm),
+            // Figma Action Menu Row: 8px gap, 6/10 padding, radius 8, 16px icon
+            "flex w-full items-center gap-2",
+            "px-2.5 py-1.5",
+            radiusStyles(Radius.Lg),
             "cursor-pointer text-left",
             "disabled:opacity-50 disabled:cursor-not-allowed",
-            focus && bgColorClass(BackgroundColor.CardElevated),
-            bgColorClass(BackgroundColor.CardElevated, ElementState.Hover),
+            focus &&
+              bgColorClass(
+                destructive
+                  ? InteractiveColor.DangerDefault
+                  : BackgroundColor.CardNested
+              ),
+            bgColorClass(
+              destructive
+                ? InteractiveColor.DangerDefault
+                : BackgroundColor.CardNested,
+              ElementState.Hover
+            ),
+            destructive && "hover:[&_*]:text-white",
             className
           )}
           {...props}
@@ -113,7 +126,7 @@ export const MenuIconTextItem: FC<MenuIconTextItemProps> = ({
 
           <span className="flex flex-col gap-0.5 min-w-0">
             <Text
-              variant={TextVariant.Sm}
+              variant={TextVariant.BodyPrimary}
               color={textColor}
               className="block truncate"
             >
@@ -121,7 +134,7 @@ export const MenuIconTextItem: FC<MenuIconTextItemProps> = ({
             </Text>
             {subtext && (
               <Text
-                variant={TextVariant.Xs}
+                variant={TextVariant.BodyTertiary}
                 color={subtextColor}
                 className="block truncate"
               >
