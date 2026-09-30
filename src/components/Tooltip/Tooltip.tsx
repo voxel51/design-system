@@ -13,16 +13,16 @@ import { createPortal } from "react-dom";
 
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
+import { TEXT_STYLES } from "@/styles/text";
 import {
   Anchor,
   BackgroundColor,
   bgColorClass,
-  BorderColor,
-  borderColorClass,
   Radius,
   Shadow,
   TextColor,
   textColorClass,
+  TextVariant,
   ZIndex,
   zIndexStyles,
 } from "@/types";
@@ -135,7 +135,8 @@ export const Tooltip: FC<TooltipProps> = ({
   children,
   className,
   portal = false,
-  shadow = Shadow.Lg,
+  // Figma Tooltip: bg/popover, radius 4, 4/10 padding, no edge or shadow
+  shadow = Shadow.None,
   wrapperClassName,
   ...props
 }) => {
@@ -168,15 +169,14 @@ export const Tooltip: FC<TooltipProps> = ({
       window.removeEventListener("scroll", handleScroll, { capture: true });
   }, [isOpen]);
 
-  const borderClass = borderColorClass(BorderColor.Subtle);
+  const borderClass = "";
 
   const panelClasses = cn(
     "w-max",
-    "py-0.75 px-2.5",
-    "border",
-    borderClass,
+    "py-1 px-2.5",
+    TEXT_STYLES[TextVariant.BodySecondary],
     "!overflow-visible",
-    bgColorClass(BackgroundColor.CardNested),
+    bgColorClass(BackgroundColor.Popover),
     textColorClass(TextColor.Primary),
     radiusStyles(Radius.Sm),
     shadowStyles(shadow),

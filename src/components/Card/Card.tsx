@@ -67,7 +67,8 @@ export const Card: FC<CardProps> = ({
   compact,
   background = CardBackground.Primary,
   outlined,
-  shadow = Shadow.Md,
+  // Figma Card: bg/card, radius 8, 20px padding, no shadow or edge
+  shadow = Shadow.None,
   ...props
 }) => {
   const backgroundColor = bgColorMap[background];
