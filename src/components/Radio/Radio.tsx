@@ -76,7 +76,6 @@ export const Radio: FC<RadioProps> = ({
           "appearance-none",
           "border",
           "border-content-text-tertiary",
-          "bg-content-icon-emphasis",
           disabled && "opacity-50",
           "rounded-full",
           sizeStyles[size],
