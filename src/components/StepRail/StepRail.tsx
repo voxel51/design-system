@@ -100,9 +100,9 @@ export const StepRail: FC<StepRailProps> = ({
           <>
             <span
               className={clsx(
-                // Palanquin sets its digits high in the em box, so a 1px top pad centres
-                // them optically in the 18px circle
-                "flex h-[18px] w-[18px] shrink-0 items-center justify-center border pt-px text-[11px] leading-none font-medium transition-colors",
+                // Palanquin sets its digits low in the em box, so a 2px bottom pad
+                // centres them optically in the 18px circle
+                "flex h-[18px] w-[18px] shrink-0 items-center justify-center border pb-0.5 text-[11px] leading-none font-medium transition-colors",
                 radiusStyles(Radius.Full),
                 circleStyles[state]
               )}
