@@ -4,7 +4,14 @@ import { extendTailwindMerge } from "tailwind-merge";
 import { typography } from "@/theme/tokens/typography";
 
 const twMerge = extendTailwindMerge({
-  extend: { theme: { text: Object.keys(typography.fontSize) } },
+  extend: {
+    theme: {
+      text: [
+        ...Object.keys(typography.fontSize),
+        ...Object.keys(typography.textRole),
+      ],
+    },
+  },
 });
 
 /**

@@ -6,15 +6,16 @@ import { type IconInput, IconWrapper } from "@/components/Icons";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
 import {
+  bgColorClass,
   BorderColor,
   borderColorClass,
-  BrandColor,
   ElementState,
-  getColorCssVar,
   IconColor,
+  InteractiveColor,
   Radius,
   TextColor,
   textColorClass,
+  TextVariant,
 } from "@/types";
 import { cn } from "@/util/classes";
 
@@ -69,21 +70,22 @@ export const RichButton: FC<RichButtonProps> = ({
   <Clickable>
     <div
       className={clsx(
+        // Figma RichButton: 12/16 padding, radius/sm, border/default at rest,
+        // border/focus on hover, and Active fills solid with
+        // interactive/primary-default behind a border/active edge.
         "border",
         active
-          ? borderColorClass(BorderColor.Active)
+          ? clsx(
+              borderColorClass(BorderColor.Active),
+              bgColorClass(InteractiveColor.PrimaryDefault)
+            )
           : borderColorClass(BorderColor.Default),
-        !active && borderColorClass(BorderColor.Hover, ElementState.Hover),
-        "p-3",
-        radiusStyles(Radius.Md),
+        !active && borderColorClass(BorderColor.Focus, ElementState.Hover),
+        "px-4 py-3",
+        radiusStyles(Radius.Sm),
         className
       )}
-      style={{
-        ...(active && {
-          backgroundColor: `color-mix(in srgb, ${getColorCssVar(BrandColor.Primary)} 10%, transparent)`,
-        }),
-        ...style,
-      }}
+      style={style}
       onClick={onClick}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -96,20 +98,25 @@ export const RichButton: FC<RichButtonProps> = ({
       {...props}
     >
       <div className="flex flex-col">
-        <span className="flex gap-x-md items-center">
+        <span className="flex gap-2.5 items-center">
           <IconWrapper
             content={icon}
+            size={16}
             className={cn(
-              "size-5",
+              "flex shrink-0",
               active
-                ? textColorClass(IconColor.Brand)
+                ? textColorClass(IconColor.Emphasis)
                 : textColorClass(IconColor.Default)
             )}
           />
-          {label && <Text>{label}</Text>}
+          {label && <Text variant={TextVariant.HeadingSm}>{label}</Text>}
         </span>
 
-        {description && <Text color={TextColor.Secondary}>{description}</Text>}
+        {description && (
+          <Text variant={TextVariant.BodyTertiary} color={TextColor.Secondary}>
+            {description}
+          </Text>
+        )}
       </div>
     </div>
   </Clickable>

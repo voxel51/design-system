@@ -83,22 +83,24 @@ describe("RichButton", () => {
   it("should apply a background color when active", () => {
     render(<RichButton {...defaultProps} active />);
 
-    expect(screen.getByTestId(testId).style.backgroundColor).toContain(
-      "color-mix"
+    expect(screen.getByTestId(testId)).toHaveClass(
+      "bg-content-interactive-primary-default"
     );
   });
 
   it("should not apply a background color when inactive", () => {
     render(<RichButton {...defaultProps} />);
 
-    expect(screen.getByTestId(testId).style.backgroundColor).toBe("");
+    expect(screen.getByTestId(testId)).not.toHaveClass(
+      "bg-content-interactive-primary-default"
+    );
   });
 
-  it("should merge a caller-provided style with the active background", () => {
+  it("should fill with the primary interactive colour when active", () => {
     render(<RichButton {...defaultProps} active style={{ margin: "4px" }} />);
 
     const el = screen.getByTestId(testId);
-    expect(el.style.backgroundColor).toContain("color-mix");
+    expect(el).toHaveClass("bg-content-interactive-primary-default");
     expect(el.style.margin).toBe("4px");
   });
 });

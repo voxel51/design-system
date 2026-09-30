@@ -1,1 +1,27 @@
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<!-- The library never ships fonts; the consuming app loads Palanquin and
+     Roboto Mono itself. Load them here so stories render in the real faces. -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Palanquin:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap"
+/>
+<script>
+  // Apply the theme class before first paint so a story never transitions
+  // from light to dark after it renders; the decorator keeps it in sync.
+  if (/backgrounds\.value:dark/.test(decodeURIComponent(location.search))) {
+    document.documentElement.classList.add("dark");
+  }
+</script>
+<style>
+  /* Storybook's preview body sets its own font and no background; use the
+     theme's so a story looks the way it does inside the app. */
+  #storybook-root,
+  #storybook-docs,
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-content-bg-background);
+    color: var(--color-content-text-primary);
+  }
+</style>

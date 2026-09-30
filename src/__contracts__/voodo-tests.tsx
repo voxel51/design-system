@@ -155,6 +155,16 @@ export const exhaustive = {
     xxl: true,
     label: true,
     caption: true,
+    "heading-xl": true,
+    "heading-lg": true,
+    "heading-md": true,
+    "heading-sm": true,
+    "heading-xs": true,
+    "body-primary": true,
+    "body-secondary": true,
+    "body-tertiary": true,
+    "code-primary": true,
+    "code-secondary": true,
   } satisfies Record<TextVariant, true>,
 
   radius: {
@@ -615,8 +625,8 @@ export const Everything = (
       {(["sm", "md", "lg"] as const).map((s) => (
         <IconAction key={s} icon="Add" size={s} aria-label={s} />
       ))}
-      {/* @ts-expect-error - lg is excluded from TextAction sizes */}
-      <TextAction size="lg">too big</TextAction>
+      {/* @ts-expect-error - xl is excluded from TextAction sizes */}
+      <TextAction size="xl">too big</TextAction>
       {/* @ts-expect-error - aria-label is required */}
       <IconAction icon="Add" />
     </Stack>

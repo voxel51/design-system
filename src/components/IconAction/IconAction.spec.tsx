@@ -26,6 +26,6 @@ describe("IconAction", () => {
       <IconAction icon={IconName.Close} aria-label="Dismiss" size={Size.Sm} />
     );
 
-    expect(screen.getByRole("button")).toHaveClass("h-[24px]", "w-[24px]");
+    expect(screen.getByRole("button")).toHaveClass("size-[26px]");
   });
 });

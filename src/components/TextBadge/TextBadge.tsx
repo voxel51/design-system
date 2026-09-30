@@ -24,7 +24,8 @@ export interface TextBadgeProps extends HTMLAttributes<HTMLSpanElement> {
  * @param props Additional HTML properties to apply to the component.
  */
 export const TextBadge: FC<TextBadgeProps> = ({
-  color = IconColor.Brand,
+  // Figma ReleaseTag: type/label in text/accent.
+  color = TextColor.Accent,
   children,
   ...props
 }) => (

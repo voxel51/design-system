@@ -9,7 +9,7 @@ export interface IconWrapperProps {
   // IconInput (rather than FC<IconProps>) while the legacy icon API is
   // bridged, so pre-0.0.40 consumers can keep passing IconName values
   content?: IconInput;
-  size?: Size;
+  size?: Size | number;
   className?: string;
 }
 
