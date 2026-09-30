@@ -93,10 +93,12 @@ const variantStyles: Record<Variant, string> = {
     radiusStyles(Radius.Full),
     "disabled:opacity-50"
   ),
+  // Figma ExpressiveButton: the gradient itself steps darker on hover and
+  // pressed instead of a brightness filter.
   [Variant.Expressive]: clsx(
     "bg-(image:--gradient-action-expressive)",
-    "hover:brightness-110",
-    "active:brightness-95",
+    "hover:bg-(image:--gradient-action-expressive-hover)",
+    "active:bg-(image:--gradient-action-expressive-pressed)",
     "disabled:opacity-50"
   ),
 };
@@ -164,6 +166,28 @@ const iconSizes: Record<ButtonSize, number> = {
   [Size.Md]: 16,
 };
 
+// Figma ExpressiveButton is its own set with its own scale: Large 36px tall
+// (6/16 padding, 8px gap, 18px icon, 15/20), Medium 32px (6/12, 6px, 16px,
+// 14/20), Small 24px (4/10, 6px, 14px, 12/16), all regular weight. Md / Sm /
+// Xs here map onto Large / Medium / Small.
+const expressiveSizeStyles: Record<ButtonSize, string> = {
+  [Size.Xs]: "px-2.5 py-1 gap-1.5",
+  [Size.Sm]: "px-3 py-1.5 gap-1.5",
+  [Size.Md]: "px-4 py-1.5 gap-2",
+};
+
+const expressiveLabelStyles: Record<ButtonSize, string> = {
+  [Size.Xs]: TEXT_STYLES[TextVariant.BodyTertiary],
+  [Size.Sm]: TEXT_STYLES[TextVariant.BodySecondary],
+  [Size.Md]: TEXT_STYLES[TextVariant.BodyPrimary],
+};
+
+const expressiveIconSizes: Record<ButtonSize, number> = {
+  [Size.Xs]: 14,
+  [Size.Sm]: 16,
+  [Size.Md]: 18,
+};
+
 /**
  * A basic button component.
  *
@@ -209,20 +233,27 @@ export const Button: FC<ButtonProps> = ({
     variant === Variant.Icon ||
     (!hasLabel && (borderless || Boolean(leadingIcon || trailingIcon)));
 
-  const labelStyles =
-    variant === Variant.Secondary ? outlinedLabelStyles : filledLabelStyles;
+  const isExpressive = variant === Variant.Expressive;
+  const labelStyles = isExpressive
+    ? expressiveLabelStyles
+    : variant === Variant.Secondary
+      ? outlinedLabelStyles
+      : filledLabelStyles;
+  const glyphSize = (isExpressive ? expressiveIconSizes : iconSizes)[size];
 
   const classes = cn(
     "inline-flex items-center justify-center",
     borderless && !hasLabel && "aspect-square min-w-0 shrink-0", // circular
     borderless ? radiusStyles(Radius.Full) : radiusStyles(Radius.Sm),
     labelStyles[size],
-    variant === Variant.Expressive
-      ? "transition-[filter]"
-      : "transition-colors",
+    "transition-colors",
     "hover:cursor-pointer",
     "disabled:cursor-not-allowed disabled:pointer-events-none",
-    isIconOnly ? iconOnlySizeStyles[size] : sizeStyles[size],
+    isIconOnly
+      ? iconOnlySizeStyles[size]
+      : isExpressive
+        ? expressiveSizeStyles[size]
+        : sizeStyles[size],
     variantStyles[variant],
     borderless && "border-0",
     className
@@ -231,13 +262,14 @@ export const Button: FC<ButtonProps> = ({
   const content = (
     <div
       className={clsx(
-        "flex flex-nowrap items-center justify-center gap-1.5",
+        "flex flex-nowrap items-center justify-center",
+        isExpressive && size === Size.Md ? "gap-2" : "gap-1.5",
         variantTextStyles[variant]
       )}
     >
       <IconWrapper
         content={leadingIcon}
-        size={iconSizes[size]}
+        size={glyphSize}
         className="flex shrink-0 items-center justify-center"
       />
 
@@ -245,7 +277,7 @@ export const Button: FC<ButtonProps> = ({
 
       <IconWrapper
         content={trailingIcon}
-        size={iconSizes[size]}
+        size={glyphSize}
         className="flex shrink-0 items-center justify-center"
       />
     </div>
