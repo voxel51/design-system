@@ -11,7 +11,6 @@ import {
   BorderColor,
   borderColorClass,
   ElementState,
-  IconColor,
   InteractiveColor,
   Radius,
   Size,
@@ -124,9 +123,10 @@ export const Checkbox: FC<CheckboxProps> = ({
           "cursor-pointer",
           "appearance-none",
           "border",
-          // Figma: icon/emphasis fill with an icon/default edge at rest,
-          // interactive/primary-default on hover, icon/disabled when disabled.
-          bgColorClass(IconColor.Emphasis),
+          // Figma: no fill at rest (the icon/emphasis paint is hidden) with an
+          // icon/default edge, interactive/primary-default on hover,
+          // icon/disabled when disabled.
+          "bg-transparent",
           "border-content-icon-default",
           "group-hover:border-content-interactive-primary-default",
           "data-disabled:border-content-icon-disabled",
