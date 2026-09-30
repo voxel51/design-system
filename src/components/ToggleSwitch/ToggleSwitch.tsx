@@ -5,7 +5,7 @@ import type { FC, HTMLAttributes, ReactNode } from "react";
 import { Tooltip } from "@/components/Tooltip";
 import { textStyles } from "@/styles/text";
 import {
-  InteractiveColor,
+  BackgroundColor,
   bgColorClass,
   BorderColor,
   borderColorClass,
@@ -59,9 +59,10 @@ export interface ToggleSwitchProps extends Omit<
 }
 
 const tabSizeStyles: Record<ToggleSwitchSize, string> = {
-  [Size.Xs]: clsx(textStyles(TextVariant.Xs), "min-w-5 min-h-5"),
-  [Size.Sm]: clsx(textStyles(TextVariant.Sm), "min-w-6 min-h-6"),
-  [Size.Md]: clsx(textStyles(TextVariant.Md), "min-w-7 min-h-7"),
+  // Figma ToggleButton: 12/16, 14/20 and 15/20 labels at Small/Medium/Large.
+  [Size.Xs]: clsx(textStyles(TextVariant.BodyTertiary), "min-w-5 min-h-5"),
+  [Size.Sm]: clsx(textStyles(TextVariant.BodySecondary), "min-w-6 min-h-6"),
+  [Size.Md]: clsx(textStyles(TextVariant.BodyPrimary), "min-w-7 min-h-7"),
 };
 
 const softSizeStyles: Record<ToggleSwitchSize, string> = {
@@ -72,7 +73,7 @@ const softSizeStyles: Record<ToggleSwitchSize, string> = {
 
 const tabPaddingStyles: Record<ToggleSwitchSize, string> = {
   [Size.Xs]: clsx("py-1 px-3"),
-  [Size.Sm]: clsx("py-1.5 px-3.75"),
+  [Size.Sm]: clsx("py-1.5 px-4"),
   [Size.Md]: clsx("py-2 px-4"),
 };
 
@@ -81,8 +82,8 @@ const tabVariantStyles: Record<ToggleSwitchVariant, string> = {
   // not the brand accent. The selected background is applied in tabClassName
   // via action-secondary-primary, so variants only handle layout/text.
   [ToggleSwitchVariant.Soft]: clsx(
-    "m-1",
-    "py-1 px-1.5",
+    // Figma SoftToggle segment: 10px side padding, radius/sm, in a padded tray
+    "py-0.5 px-2.5",
     "rounded-sm",
     textColorClass(TextColor.Primary, ElementState.Selected)
   ),
@@ -115,9 +116,9 @@ const getTabBorderRadius = (
     variant === ToggleSwitchVariant.Borderless
   )
     return "";
-  if (isFirst && isLast) return "rounded-md";
-  if (isFirst) return "rounded-l-md";
-  if (isLast) return "rounded-r-md";
+  if (isFirst && isLast) return "rounded-sm";
+  if (isFirst) return "rounded-l-sm";
+  if (isLast) return "rounded-r-sm";
   return "";
 };
 
@@ -138,8 +139,9 @@ const getTabStyles = (
 
 const getTabListBorderStyles = (variant: ToggleSwitchVariant): string[] => {
   if (variant === ToggleSwitchVariant.Borderless) return [];
-  if (variant === ToggleSwitchVariant.Soft) return [];
-  return ["border", borderColorClass(BorderColor.CardElevated)];
+  if (variant === ToggleSwitchVariant.Soft)
+    return ["p-1 gap-0.5", bgColorClass(BackgroundColor.CardNested)];
+  return ["border", borderColorClass(BorderColor.Default)];
 };
 
 const getTabTextColorClass = (selected: boolean): string => {
@@ -224,7 +226,7 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
         className={cn(
           "toggle-switch-tab-list",
           "flex flex-nowrap items-center",
-          "rounded-md",
+          "rounded-sm",
           fullWidth ? "w-full" : "w-fit",
           ...getTabListBorderStyles(variant),
           tabListClassName
@@ -239,12 +241,15 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
               "flex-1",
               "flex items-center justify-center",
               "whitespace-nowrap",
-              "font-medium",
               "outline-none",
               "transition-colors",
               "bg-transparent",
+              // Figma: the active segment fills bg/card-nested in the bordered
+              // set and bg/card-elevated in the soft tray.
               bgColorClass(
-                InteractiveColor.SecondaryDefault,
+                variant === ToggleSwitchVariant.Soft
+                  ? BackgroundColor.CardElevated
+                  : BackgroundColor.CardNested,
                 ElementState.Selected
               ),
               getTabTextColorClass(selected),

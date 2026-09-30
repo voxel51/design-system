@@ -4,6 +4,7 @@ import type { FC, HTMLAttributes, ReactNode } from "react";
 
 import { CheckIcon } from "@/components/Icons";
 import radiusStyles from "@/styles/radius";
+import { TEXT_STYLES } from "@/styles/text";
 import {
   BackgroundColor,
   BorderColor,
@@ -15,6 +16,7 @@ import {
   Radius,
   TextColor,
   textColorClass,
+  TextVariant,
 } from "@/types";
 
 /** One step in a {@link StepRail}. */
@@ -109,7 +111,8 @@ export const StepRail: FC<StepRailProps> = ({
           </>
         );
         const labelClass = clsx(
-          "flex items-center gap-[8px] whitespace-nowrap py-[4px] pr-[8px] pl-[4px] text-md/5 transition-colors",
+          "flex items-center gap-[8px] whitespace-nowrap py-[4px] pr-[8px] pl-[4px] transition-colors",
+          TEXT_STYLES[TextVariant.BodySecondary],
           radiusStyles(Radius.Full),
           labelStyles[state]
         );

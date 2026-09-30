@@ -19,11 +19,11 @@ describe("Toast", () => {
     defaultProps = { "data-testid": testId, open: true };
   });
 
-  it("should fill a solid success toast with the success action color", () => {
+  it("should fill a solid success toast with the approved status surface", () => {
     render(<Toast {...defaultProps} solid variant={Variant.Success} />);
 
     expect(screen.getByTestId(testId).className).toContain(
-      "interactive-success-default"
+      "status-approved-bg"
     );
   });
 

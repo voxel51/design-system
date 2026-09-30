@@ -7,15 +7,17 @@ import { UnsetHint } from "@/components/UnsetHint";
 import radiusStyles from "@/styles/radius";
 import { TEXT_STYLES } from "@/styles/text";
 import {
-  InteractiveColor,
   bgColorClass,
   BorderColor,
   borderColorClass,
   ElementState,
+  IconColor,
+  InteractiveColor,
   Radius,
   Size,
   TextColor,
   textColorClass,
+  TextVariant,
 } from "@/types";
 import { cn } from "@/util/classes";
 
@@ -38,11 +40,21 @@ export interface CheckboxProps extends ModifiedCheckboxProps {
 }
 
 const sizeStyles: Record<Size, string> = {
-  [Size.Xs]: clsx("w-3 h-3"),
-  [Size.Sm]: clsx("w-4 h-4"),
-  [Size.Md]: clsx("w-5 h-5"),
-  [Size.Lg]: clsx("w-6 h-6"),
-  [Size.Xl]: clsx("w-7 h-7"),
+  // Figma Checkbox: 14px Small, 16px Medium, 18px Large.
+  [Size.Xs]: "size-3",
+  [Size.Sm]: "size-3.5",
+  [Size.Md]: "size-4",
+  [Size.Lg]: "size-4.5",
+  [Size.Xl]: "size-5",
+};
+
+// Figma labels: 12/16 at Small, 14/20 at Medium, 15/20 at Large.
+const labelStyles: Record<Size, string> = {
+  [Size.Xs]: TEXT_STYLES[TextVariant.Caption],
+  [Size.Sm]: TEXT_STYLES[TextVariant.BodyTertiary],
+  [Size.Md]: TEXT_STYLES[TextVariant.BodySecondary],
+  [Size.Lg]: TEXT_STYLES[TextVariant.BodyPrimary],
+  [Size.Xl]: TEXT_STYLES[TextVariant.BodyPrimary],
 };
 
 const checkmarkSizeStyles: Record<Size, string> = {
@@ -90,7 +102,7 @@ export const Checkbox: FC<CheckboxProps> = ({
   onChange,
   indeterminate,
   size = Size.Md,
-  radius = Radius.Xs,
+  radius = Radius.Sm,
   className,
   labelClassName,
   label,
@@ -100,7 +112,7 @@ export const Checkbox: FC<CheckboxProps> = ({
   const showIndeterminate = !!indeterminate && !checked;
 
   return (
-    <Field className="group flex items-center gap-2">
+    <Field className="group flex items-center gap-2.5">
       <HeadlessCheckbox
         checked={checked}
         onChange={onChange}
@@ -112,17 +124,23 @@ export const Checkbox: FC<CheckboxProps> = ({
           "cursor-pointer",
           "appearance-none",
           "border",
-          borderColorClass(BorderColor.Default),
-          "group-hover:border-action-primary-primary",
+          // Figma: icon/emphasis fill with an icon/default edge at rest,
+          // interactive/primary-default on hover, icon/disabled when disabled.
+          bgColorClass(IconColor.Emphasis),
+          "border-content-icon-default",
+          "group-hover:border-content-interactive-primary-default",
+          "data-disabled:border-content-icon-disabled",
           radiusStyles(radius),
           sizeStyles[size],
           checkmarkSizeStyles[size],
-          "disabled:opacity-50",
           "disabled:cursor-not-allowed",
           bgColorClass(InteractiveColor.PrimaryDefault, ElementState.Checked),
           borderColorClass(BorderColor.Active, ElementState.Checked),
           showIndeterminate &&
-            "bg-[var(--color-brand-primary)]/25 border-[var(--color-brand-primary)] ",
+            clsx(
+              bgColorClass(InteractiveColor.PrimaryDefault),
+              borderColorClass(BorderColor.Active)
+            ),
           className
         )}
         {...props}
@@ -146,7 +164,7 @@ export const Checkbox: FC<CheckboxProps> = ({
             // Figma: label is white when enabled, tertiary when disabled
             textColorClass(TextColor.Primary),
             "peer-data-disabled:text-content-text-tertiary",
-            TEXT_STYLES[size],
+            labelStyles[size],
             "cursor-pointer",
             labelClassName
           )}

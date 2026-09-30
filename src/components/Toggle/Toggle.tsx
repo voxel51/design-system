@@ -7,8 +7,8 @@ import { TEXT_STYLES } from "@/styles/text";
 import {
   BackgroundColor,
   bgColorClass,
-  BorderColor,
-  borderColorClass,
+  ElementState,
+  InteractiveColor,
   Radius,
   Size,
   TextColor,
@@ -36,18 +36,19 @@ export interface ToggleProps extends ModifiedToggleProps {
 }
 
 const trackSizeStyles: Record<ToggleSize, string> = {
-  [Size.Sm]: cn("w-8 h-4"),
-  [Size.Md]: cn("w-9 h-5"),
+  // Figma ToggleSwitch: 29×16 Small, 37×20 Medium.
+  [Size.Sm]: "w-[29px] h-4",
+  [Size.Md]: "w-[37px] h-5",
 };
 
 const thumbSizeStyles: Record<ToggleSize, string> = {
-  [Size.Sm]: cn("w-3 h-3"),
-  [Size.Md]: cn("w-4 h-4"),
+  [Size.Sm]: "size-[13px]",
+  [Size.Md]: "size-[17px]",
 };
 
 const textStyles: Record<ToggleSize, string> = {
-  [Size.Sm]: TEXT_STYLES[TextVariant.Sm],
-  [Size.Md]: TEXT_STYLES[TextVariant.Md],
+  [Size.Sm]: TEXT_STYLES[TextVariant.BodyTertiary],
+  [Size.Md]: TEXT_STYLES[TextVariant.BodySecondary],
 };
 
 /**
@@ -62,9 +63,9 @@ const textStyles: Record<ToggleSize, string> = {
 const getThumbTranslateStyles = (size: Size): string => {
   switch (size) {
     case Size.Sm:
-      return "group-data-checked:translate-x-[calc(2.3rem-1rem-0.28rem)]";
+      return "group-data-checked:translate-x-[14.5px]";
     case Size.Md:
-      return "group-data-checked:translate-x-[calc(2.8rem-1.5rem-0.28rem)]";
+      return "group-data-checked:translate-x-[18.5px]";
     default:
       return "";
   }
@@ -121,16 +122,14 @@ export const Toggle: FC<ToggleProps> = ({
         disabled={disabled}
         className={cn(
           "group",
+          "peer",
           "relative",
           "inline-flex",
           "cursor-pointer",
           "items-center",
           bgColorClass(BackgroundColor.CardElevated),
-          "border",
-          borderColorClass(BorderColor.Default),
+          // Figma: the track has no edge and no hover change
           "transition-colors",
-          // when hovered (no hover affordance when disabled)
-          "not-disabled:hover:border-content-border-hover", // TODO - current scheme doesn't have a light grey track hover
           "focus:outline-none",
           "focus:ring-0",
           "focus-visible:outline-none",
@@ -140,8 +139,8 @@ export const Toggle: FC<ToggleProps> = ({
           "disabled:cursor-not-allowed",
           "disabled:pointer-events-none",
           // when checked
-          "data-checked:bg-action-primary-primary",
-          "data-checked:border-action-primary-primary",
+          bgColorClass(InteractiveColor.PrimaryDefault, ElementState.Checked),
+          "data-checked:hover:bg-content-interactive-primary-pressed",
           trackSizeStyles[size],
           radiusStyles(Radius.Full), // intentionally require Full radius
           className
@@ -162,7 +161,7 @@ export const Toggle: FC<ToggleProps> = ({
             "group-data-checked:bg-white",
             "ring-0", // show focus on outside of track
             "transition-transform",
-            "translate-x-0.5",
+            "translate-x-[1.5px]",
             thumbSizeStyles[size],
             getThumbTranslateStyles(size)
           )}
@@ -172,6 +171,7 @@ export const Toggle: FC<ToggleProps> = ({
         <Label
           className={cn(
             textColorClass(TextColor.Secondary),
+            "peer-data-disabled:text-content-text-tertiary",
             textStyles[size],
             "cursor-pointer",
             labelClassName

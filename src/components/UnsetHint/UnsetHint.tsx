@@ -12,7 +12,7 @@ export interface UnsetHintProps extends TextProps {
 /**
  * A basic hint to display to the user.
  *
- * This is an alias for {@link Text} with {@link TextVariant.Xxs}.
+ * This is an alias for {@link Text} with {@link TextVariant.Caption}.
  *
  * @param value A value used to determine whether to display the hint.
  *  If this value is nullish, then the hint is shown.
@@ -26,7 +26,7 @@ export const UnsetHint: FC<UnsetHintProps> = ({ value, hint, ...props }) => {
   const isUnset = isNullish(value);
 
   return isUnset ? (
-    <Text color={TextColor.Muted} variant={TextVariant.Xxs} {...props}>
+    <Text color={TextColor.Muted} variant={TextVariant.Caption} {...props}>
       {hint}
     </Text>
   ) : null;
