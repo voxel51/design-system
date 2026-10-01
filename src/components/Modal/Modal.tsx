@@ -197,7 +197,7 @@ export const Modal: FC<ModalProps> = ({
               )}
               {withCloseButton && (
                 <IconAction
-                  size={Size.Lg}
+                  size={Size.Sm}
                   aria-label="Close"
                   icon={CloseIcon}
                   onClick={onClose}

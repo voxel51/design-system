@@ -63,6 +63,8 @@ export const MenuTextItem: FC<MenuTextItemProps> = ({
             radiusStyles(Radius.Lg),
             "cursor-pointer",
             "disabled:opacity-50 disabled:cursor-not-allowed",
+            // A disabled button still matches :hover; keep its hover fill off
+            "disabled:hover:bg-transparent",
             focus &&
               bgColorClass(
                 destructive
@@ -76,7 +78,7 @@ export const MenuTextItem: FC<MenuTextItemProps> = ({
               ElementState.Hover
             ),
             // White content on the danger fill, on hover and on keyboard focus
-            destructive && "hover:[&_*]:text-white",
+            destructive && "enabled:hover:[&_*]:text-white",
             destructive && focus && "[&_*]:text-white",
             className
           )}

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { Divider, Orientation } from "@voxel51/voodo";
+import { Divider, DividerStyle, Orientation } from "@voxel51/voodo";
 
 const meta: Meta<typeof Divider> = {
   title: "Components/Divider",
@@ -59,3 +59,16 @@ export const LabeledVertical: Story = {
 };
 
 export default meta;
+
+export const Dotted: Story = {
+  args: {
+    dividerStyle: DividerStyle.Dot,
+  },
+};
+
+export const LabeledDotted: Story = {
+  args: {
+    dividerStyle: DividerStyle.Dot,
+    label: "Divider with label",
+  },
+};

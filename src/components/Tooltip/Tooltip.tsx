@@ -125,8 +125,10 @@ export const Tooltip: FC<TooltipProps> = ({
   children,
   className,
   portal = false,
-  // Figma Tooltip: bg/popover, radius 4, 4/10 padding, no edge or shadow
-  shadow = Shadow.None,
+  // Figma Tooltip: bg/popover, radius 4, 4/10 padding, no edge. Figma also
+  // shows no shadow, but in light mode bg/popover and bg/card are both white,
+  // so a flat tooltip vanishes over a card; the shadow is kept as the edge.
+  shadow = Shadow.Lg,
   wrapperClassName,
   ...props
 }) => {

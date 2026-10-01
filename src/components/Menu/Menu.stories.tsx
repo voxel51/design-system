@@ -46,6 +46,9 @@ export const Items: Story = {
       <MenuTextItem>Move to folder</MenuTextItem>
       <MenuSeparator />
       <MenuTextItem destructive>Delete</MenuTextItem>
+      <MenuTextItem destructive disabled>
+        Delete permanently
+      </MenuTextItem>
     </Panel>
   ),
 };

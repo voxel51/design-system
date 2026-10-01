@@ -69,6 +69,8 @@ export const MenuCheckItem: FC<MenuCheckItemProps> = ({
             radiusStyles(Radius.Lg),
             "cursor-pointer",
             "disabled:opacity-50 disabled:cursor-not-allowed",
+            // A disabled button still matches :hover; keep its hover fill off
+            "disabled:hover:bg-transparent",
             focus && bgColorClass(BackgroundColor.CardNested),
             bgColorClass(BackgroundColor.CardNested, ElementState.Hover),
             className

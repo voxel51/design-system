@@ -84,9 +84,10 @@ export const Tab = forwardRef<HTMLElement, TabProps>(
 
     const classes = cn(
       // Figma Tab (Medium): 6px above and 10px below a 16/20 medium label,
-      // text/primary when active and text/secondary otherwise, no side
-      // padding of its own (the list's 4px gap separates tabs).
-      "flex h-full shrink-0 items-center whitespace-nowrap pt-1.5 pb-2.5",
+      // text/primary when active and text/secondary otherwise. 12px side
+      // padding is kept: the list only adds a 4px gap, which is not enough
+      // on its own to separate adjacent tabs.
+      "flex h-full shrink-0 items-center whitespace-nowrap px-3 pt-1.5 pb-2.5",
       "cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
       "focus-visible:outline-none",
       TEXT_STYLES[TextVariant.HeadingMd],
