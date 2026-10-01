@@ -5,7 +5,7 @@ import { type FC, InputHTMLAttributes } from "react";
 import { CheckIcon, RemoveIcon } from "@/components/Icons";
 import { UnsetHint } from "@/components/UnsetHint";
 import radiusStyles from "@/styles/radius";
-import { TEXT_STYLES } from "@/styles/text";
+import { CAPTION_SIZE, TEXT_STYLES } from "@/styles/text";
 import {
   bgColorClass,
   BorderColor,
@@ -48,8 +48,10 @@ const sizeStyles: Record<Size, string> = {
 };
 
 // Figma labels: 12/16 at Small, 14/20 at Medium, 15/20 at Large.
+// Xs takes the caption size alone: the label sets its own colour below, and the
+// full Caption style's tertiary colour would merge it away.
 const labelStyles: Record<Size, string> = {
-  [Size.Xs]: TEXT_STYLES[TextVariant.Caption],
+  [Size.Xs]: CAPTION_SIZE,
   [Size.Sm]: TEXT_STYLES[TextVariant.BodyTertiary],
   [Size.Md]: TEXT_STYLES[TextVariant.BodySecondary],
   [Size.Lg]: TEXT_STYLES[TextVariant.BodyPrimary],
@@ -92,6 +94,7 @@ const checkmarkSizeStyles: Record<Size, string> = {
  * @param radius Border radius of the checkbox; this controls the styling of the checkbox itself. See {@link Radius}.
  * @param className `class` overrides to apply to the checkbox.
  * @param labelClassName `class` overrides for custom styling of the checkbox's label.
+ * @param disabled If `true`, disables the checkbox.
  * @param label Label to display alongside the checkbox.
  * @param showUnsetHint If `true`, displays a hint to the user for checkbox interaction.
  * @param props Additional HTML properties to apply to the checkbox.
@@ -104,6 +107,7 @@ export const Checkbox: FC<CheckboxProps> = ({
   radius = Radius.Sm,
   className,
   labelClassName,
+  disabled,
   label,
   showUnsetHint,
   ...props
@@ -116,6 +120,7 @@ export const Checkbox: FC<CheckboxProps> = ({
         checked={checked}
         onChange={onChange}
         indeterminate={showIndeterminate}
+        disabled={disabled}
         className={cn(
           "group",
           "peer",
@@ -128,18 +133,30 @@ export const Checkbox: FC<CheckboxProps> = ({
           // icon/disabled when disabled.
           "bg-transparent",
           "border-content-icon-default",
-          "group-hover:border-content-interactive-primary-default",
+          // Only when not disabled: `.group:hover .x` outranks `.x[data-disabled]`.
+          !disabled && "group-hover:border-content-interactive-primary-default",
+          // Headless renders a span, so only `data-disabled:` applies here.
           "data-disabled:border-content-icon-disabled",
+          "data-disabled:cursor-not-allowed",
           radiusStyles(radius),
           sizeStyles[size],
           checkmarkSizeStyles[size],
-          "disabled:cursor-not-allowed",
           bgColorClass(InteractiveColor.PrimaryDefault, ElementState.Checked),
           borderColorClass(BorderColor.Active, ElementState.Checked),
           showIndeterminate &&
             clsx(
               bgColorClass(InteractiveColor.PrimaryDefault),
               borderColorClass(BorderColor.Active)
+            ),
+          // A checked or indeterminate box keeps a fill when disabled, but in
+          // icon/disabled so it reads as disabled rather than as an enabled
+          // checked box.
+          "data-disabled:data-checked:bg-content-icon-disabled",
+          "data-disabled:data-checked:border-content-icon-disabled",
+          showIndeterminate &&
+            clsx(
+              "data-disabled:bg-content-icon-disabled",
+              "data-disabled:border-content-icon-disabled"
             ),
           className
         )}

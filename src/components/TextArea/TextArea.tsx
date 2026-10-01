@@ -4,7 +4,7 @@ import { type FC, TextareaHTMLAttributes } from "react";
 
 import formControlStyles from "@/styles/form-control.module.css";
 import radiusStyles from "@/styles/radius";
-import { TEXT_STYLES } from "@/styles/text";
+import { CAPTION_SIZE, TEXT_STYLES } from "@/styles/text";
 import {
   BackgroundColor,
   bgColorClass,
@@ -51,7 +51,9 @@ const TEXTAREA_RADIUS = Radius.Sm;
 
 const sizeStyles: Record<Size, string> = {
   // TextInput's three Figma sizes; Xs and Xl extend the scale a step each way.
-  [Size.Xs]: clsx("px-2.5 py-1", TEXT_STYLES[TextVariant.Caption]),
+  // Xs takes the caption size alone so the control's own primary text colour
+  // is not merged away by Caption's tertiary colour.
+  [Size.Xs]: clsx("px-2.5 py-1", CAPTION_SIZE),
   [Size.Sm]: clsx("px-2.5 py-1.5", TEXT_STYLES[TextVariant.BodyTertiary]),
   [Size.Md]: clsx("px-3 py-2", TEXT_STYLES[TextVariant.BodySecondary]),
   [Size.Lg]: clsx("px-3 py-2.5", TEXT_STYLES[TextVariant.BodySecondary]),

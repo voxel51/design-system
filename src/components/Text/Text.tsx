@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import type { FC, HTMLAttributes } from "react";
 
 import { textStyles } from "@/styles/text";
@@ -9,6 +8,7 @@ import {
   textColorClass,
   TextVariant,
 } from "@/types";
+import { cn } from "@/util/classes";
 
 export interface TextProps extends HTMLAttributes<HTMLSpanElement> {
   variant?: TextVariant;
@@ -52,9 +52,11 @@ export const Text: FC<TextProps> = ({
 
   return (
     <span
-      className={clsx(
-        isToken && textColorClass(color),
+      // Merged rather than concatenated: the Caption role carries its own
+      // tertiary colour, so an explicit `color` must come after it to win.
+      className={cn(
         textStyles(variant),
+        isToken && textColorClass(color),
         className
       )}
       style={!isToken ? { color, ...style } : style}

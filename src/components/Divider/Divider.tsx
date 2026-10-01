@@ -6,7 +6,6 @@ import {
   getColorCssVar,
   Orientation,
   TextColor,
-  textColorClass,
   TextVariant,
 } from "@/types";
 import { cn } from "@/util/classes";
@@ -127,10 +126,7 @@ export const Divider: FC<DividerProps> = ({
               <Text
                 color={TextColor.Primary}
                 variant={TextVariant.Caption}
-                className={cn(
-                  isColumn ? "my-1" : "mx-2",
-                  textColorClass(TextColor.Primary)
-                )}
+                className={isColumn ? "my-1" : "mx-2"}
                 data-testid="divider-label"
                 {...textProps}
               >

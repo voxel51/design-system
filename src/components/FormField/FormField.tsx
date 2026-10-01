@@ -93,7 +93,11 @@ export const FormField: FC<FormFieldProps> = ({
               >
                 {label}
                 {required && (
-                  <Text color={TextColor.Failure} aria-hidden="true">
+                  <Text
+                    color={TextColor.Failure}
+                    variant={TextVariant.BodySecondary}
+                    aria-hidden="true"
+                  >
                     {" "}
                     *
                   </Text>

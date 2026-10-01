@@ -12,7 +12,8 @@ export interface UnsetHintProps extends TextProps {
 /**
  * A basic hint to display to the user.
  *
- * This is an alias for {@link Text} with {@link TextVariant.Caption}.
+ * This is an alias for {@link Text} with {@link TextVariant.Caption} in the
+ * muted colour.
  *
  * @param value A value used to determine whether to display the hint.
  *  If this value is nullish, then the hint is shown.
