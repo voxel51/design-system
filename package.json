@@ -1,6 +1,6 @@
 {
   "name": "@voxel51/voodo",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Voxel51's official design ontology (VOODO) system",
   "type": "module",
   "author": "Voxel Engineering <engineering@voxel51.com>",
