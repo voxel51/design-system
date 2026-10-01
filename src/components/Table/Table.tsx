@@ -12,6 +12,7 @@ import {
   bgColorClass,
   BorderColor,
   borderColorClass,
+  ElementState,
   Radius,
   TextColor,
   textColorClass,
@@ -90,8 +91,9 @@ export const TableRow: FC<HTMLAttributes<HTMLTableRowElement>> = ({
       className={cn(
         "border-b last:border-0",
         borderColorClass(BorderColor.CardElevated),
+        isClickable && "hover:cursor-pointer",
         isClickable &&
-          `hover:cursor-pointer hover:bg-[var(--color-content-bg-card-nested)]`,
+          bgColorClass(BackgroundColor.CardNested, ElementState.Hover),
         className
       )}
       {...props}
