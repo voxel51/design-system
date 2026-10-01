@@ -4,7 +4,6 @@ import { textStyles } from "@/styles/text";
 import {
   type ThemeableColor,
   isColorToken,
-  TextColor,
   textColorClass,
   TextVariant,
 } from "@/types";
@@ -42,13 +41,15 @@ export interface TextProps extends HTMLAttributes<HTMLSpanElement> {
  */
 export const Text: FC<TextProps> = ({
   variant = TextVariant.BodyPrimary,
-  color = TextColor.Primary,
+  color,
   children,
   className,
   style,
   ...props
 }) => {
-  const isToken = isColorToken(color);
+  // No default colour: a role that carries its own (Caption is tertiary)
+  // shows it, and everything else inherits the surrounding text colour.
+  const isToken = color !== undefined && isColorToken(color);
 
   return (
     <span
@@ -59,7 +60,7 @@ export const Text: FC<TextProps> = ({
         isToken && textColorClass(color),
         className
       )}
-      style={!isToken ? { color, ...style } : style}
+      style={color !== undefined && !isToken ? { color, ...style } : style}
       {...props}
     >
       {children}

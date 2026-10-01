@@ -16,29 +16,21 @@ export interface RadioProps extends ModifiedRadioProps {
   value?: string;
   label?: string;
   disabled?: boolean;
+  /**
+   * @deprecated Figma draws one radio size, so this no longer changes the
+   * control or its label. Accepted so existing callers keep compiling.
+   */
   size?: Size;
   className?: string;
   labelClassName?: string;
 }
 
-const textSizeStyles: Partial<Record<Size, string | null>> = {
-  // Figma RadioButton is one 14px control with a 15/20 label.
-  [Size.Sm]: textStyles(TextVariant.BodyPrimary),
-  [Size.Md]: textStyles(TextVariant.BodyPrimary),
-  [Size.Lg]: textStyles(TextVariant.BodyPrimary),
-};
-
-const sizeStyles: Partial<Record<Size, string>> = {
-  [Size.Sm]: "size-3.5",
-  [Size.Md]: "size-4",
-  [Size.Lg]: "size-4.5",
-};
-
-const dotSizeStyles: Partial<Record<Size, string>> = {
-  [Size.Sm]: "before:size-[5px]",
-  [Size.Md]: "before:size-1.5",
-  [Size.Lg]: "before:size-[7px]",
-};
+// Figma RadioButton is a single control: 14px circle, 5px dot, 15/20 label.
+// There is no size axis, so `size` is accepted for compatibility and ignored
+// rather than scaling the circle while the label stays put.
+const controlStyles = "size-3.5";
+const dotStyles = "before:size-[5px]";
+const labelTextStyles = textStyles(TextVariant.BodyPrimary);
 
 /**
  * A basic radio component.
@@ -49,7 +41,7 @@ const dotSizeStyles: Partial<Record<Size, string>> = {
  * ```
  *
  * @param value The value of the radio element.
- * @param size The size of the radio element. See {@link Size}.
+ * @param size Deprecated; Figma draws a single radio size, so this is ignored.
  * @param className `class` overrides to apply to the radio.
  * @param labelClassName `class` overrides to apply to the radio's label.
  * @param label Label to display for the radio element.
@@ -58,11 +50,13 @@ const dotSizeStyles: Partial<Record<Size, string>> = {
  */
 export const Radio: FC<RadioProps> = ({
   value,
-  size = Size.Sm,
   className,
   labelClassName,
   label,
   disabled,
+  // Deprecated and intentionally unused; kept out of `...props` so it never
+  // reaches the DOM.
+  size: _size,
   ...props
 }) => {
   return (
@@ -78,7 +72,7 @@ export const Radio: FC<RadioProps> = ({
           "border-content-text-tertiary",
           disabled && "opacity-50",
           "rounded-full",
-          sizeStyles[size],
+          controlStyles,
           // on focus - unchecked
           !disabled && "focus:outline-none",
           !disabled && "focus:ring-2",
@@ -97,7 +91,7 @@ export const Radio: FC<RadioProps> = ({
           // for the dot
           "before:content-['']",
           "before:absolute",
-          dotSizeStyles[size],
+          dotStyles,
           "before:top-1/2",
           "before:left-1/2",
           "before:-translate-x-1/2",
@@ -128,7 +122,7 @@ export const Radio: FC<RadioProps> = ({
           className={cn(
             // Figma: label is white when enabled, tertiary when disabled
             textColorClass(disabled ? TextColor.Tertiary : TextColor.Primary),
-            textSizeStyles[size],
+            labelTextStyles,
             !disabled && "cursor-pointer",
             labelClassName
           )}

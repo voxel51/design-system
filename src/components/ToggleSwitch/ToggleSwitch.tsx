@@ -78,9 +78,10 @@ const tabPaddingStyles: Record<ToggleSwitchSize, string> = {
 };
 
 const tabVariantStyles: Record<ToggleSwitchVariant, string> = {
-  // Figma: the selected tab uses a neutral surface (#232526) with white text —
-  // not the brand accent. The selected background is applied in tabClassName
-  // via action-secondary-primary, so variants only handle layout/text.
+  // Figma: the selected tab uses a neutral surface (bg/card-nested, or
+  // bg/card-elevated in the Soft tray) with white text, not the brand accent.
+  // The selected background is applied in tabClassName, so variants only
+  // handle layout/text.
   [ToggleSwitchVariant.Soft]: clsx(
     // Figma SoftToggle segment: 10px side padding, radius/sm, in a padded tray
     "py-0.5 px-2.5",

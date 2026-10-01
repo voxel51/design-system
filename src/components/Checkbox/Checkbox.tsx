@@ -58,14 +58,6 @@ const labelStyles: Record<Size, string> = {
   [Size.Xl]: TEXT_STYLES[TextVariant.BodyPrimary],
 };
 
-const checkmarkSizeStyles: Record<Size, string> = {
-  [Size.Xs]: clsx("checked:after:text-xs"),
-  [Size.Sm]: clsx("checked:after:text-sm"),
-  [Size.Md]: clsx("checked:after:text-base"),
-  [Size.Lg]: clsx("checked:after:text-lg"),
-  [Size.Xl]: clsx("checked:after:text-xl"),
-};
-
 /**
  * A basic checkbox component.
  *
@@ -129,18 +121,15 @@ export const Checkbox: FC<CheckboxProps> = ({
           "appearance-none",
           "border",
           // Figma: no fill at rest (the icon/emphasis paint is hidden) with an
-          // icon/default edge, interactive/primary-default on hover,
-          // icon/disabled when disabled.
+          // icon/default edge and interactive/primary-hover on hover (the same
+          // token Radio uses).
           "bg-transparent",
           "border-content-icon-default",
-          // Only when not disabled: `.group:hover .x` outranks `.x[data-disabled]`.
-          !disabled && "group-hover:border-content-interactive-primary-default",
+          !disabled && "group-hover:border-content-interactive-primary-hover",
           // Headless renders a span, so only `data-disabled:` applies here.
-          "data-disabled:border-content-icon-disabled",
           "data-disabled:cursor-not-allowed",
           radiusStyles(radius),
           sizeStyles[size],
-          checkmarkSizeStyles[size],
           bgColorClass(InteractiveColor.PrimaryDefault, ElementState.Checked),
           borderColorClass(BorderColor.Active, ElementState.Checked),
           showIndeterminate &&
@@ -148,8 +137,9 @@ export const Checkbox: FC<CheckboxProps> = ({
               bgColorClass(InteractiveColor.PrimaryDefault),
               borderColorClass(BorderColor.Active)
             ),
-          // Half opacity when disabled (matches Radio) so a checked or
-          // indeterminate box still reads as disabled.
+          // Disabled is half opacity alone (matches Radio): it dims the edge,
+          // the fill and the mark together, so a checked or indeterminate box
+          // still reads as disabled without a second disabled border token.
           "data-disabled:opacity-50",
           className
         )}

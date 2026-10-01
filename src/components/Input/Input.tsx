@@ -33,6 +33,7 @@ import {
   paddingLeftStyles,
   paddingStyles,
   sizeStyles,
+  toInputSize,
 } from "./styles";
 
 type ModifiedInputProps = Omit<
@@ -112,7 +113,7 @@ export const inputStyle = ({
   error,
   icon,
   radius = Radius.Sm,
-  size = Size.Md,
+  size: requestedSize = Size.Md,
   trailingControl,
 }: {
   borderless?: boolean;
@@ -122,8 +123,9 @@ export const inputStyle = ({
   radius?: InputRadius;
   size?: Size;
   trailingControl?: boolean;
-}): string =>
-  cn(
+}): string => {
+  const size = toInputSize(requestedSize);
+  return cn(
     "w-full",
     // Keep the themed surface color in every state. `bg-transparent` lets the surrounding
     // surface show through; we also pin the autofill background so the browser does not paint a
@@ -162,6 +164,7 @@ export const inputStyle = ({
     icon ? paddingLeftStyles[size] : borderless ? "pl-1.5" : undefined,
     trailingControl ? "pr-10" : borderless ? "pr-1.5" : undefined
   );
+};
 
 /**
  * A basic input component.

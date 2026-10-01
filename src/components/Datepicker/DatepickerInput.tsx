@@ -16,7 +16,7 @@ import {
 } from "@/types";
 import { cn } from "@/util/classes";
 
-import { paddingLeftStyles, sizeStyles } from "../Input/styles";
+import { paddingLeftStyles, sizeStyles, toInputSize } from "../Input/styles";
 
 import DatepickerIconButton, { IconPosition } from "./DatepickerIconButton";
 
@@ -52,8 +52,8 @@ const datePickerInputStyle = ({
     "disabled:cursor-not-allowed",
     borderColorClass(BorderColor.Disabled, ElementState.Disabled),
     radiusStyles(radius),
-    sizeStyles[size],
-    paddingLeftStyles[size],
+    sizeStyles[toInputSize(size)],
+    paddingLeftStyles[toInputSize(size)],
     "pr-8"
   );
 

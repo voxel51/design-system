@@ -60,7 +60,7 @@ describe("Checkbox", () => {
   it("should apply correct classes when size is Large", () => {
     render(<Checkbox size={Size.Lg} label={checkboxLabel} />);
     const checkbox = screen.getByRole("checkbox");
-    expect(checkbox).toHaveClass("size-4.5", "checked:after:text-lg");
+    expect(checkbox).toHaveClass("size-4.5");
   });
 
   describe("indeterminate", () => {
