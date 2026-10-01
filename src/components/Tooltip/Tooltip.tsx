@@ -82,17 +82,9 @@ function getFixedPosition(rect: DOMRect, anchor: TooltipAnchor): CSSProperties {
   }
 }
 
-const rotatedSquareBorderStyles: Record<TooltipAnchor, string> = {
-  [Anchor.Top]: "border-b border-r",
-  [Anchor.Bottom]: "border-t border-l",
-  [Anchor.Right]: "border-b border-l",
-  [Anchor.Left]: "border-t border-r",
-};
-
-const RotatedSquare: FC<{ anchor: TooltipAnchor; borderClass: string }> = ({
-  anchor,
-  borderClass,
-}) => {
+// Borderless like the panel: with Tailwind's preflight any `border-*` side
+// here would paint a currentColor hairline on the arrow.
+const RotatedSquare: FC<{ anchor: TooltipAnchor }> = ({ anchor }) => {
   return (
     <div
       className={clsx(
@@ -100,8 +92,6 @@ const RotatedSquare: FC<{ anchor: TooltipAnchor; borderClass: string }> = ({
         "w-2 h-2",
         "rotate-45",
         "bg-inherit",
-        rotatedSquareBorderStyles[anchor],
-        borderClass,
         rotatedSquareStyles[anchor]
       )}
     />
@@ -169,8 +159,6 @@ export const Tooltip: FC<TooltipProps> = ({
       window.removeEventListener("scroll", handleScroll, { capture: true });
   }, [isOpen]);
 
-  const borderClass = "";
-
   const panelClasses = cn(
     "w-max",
     "py-1 px-2.5",
@@ -196,7 +184,7 @@ export const Tooltip: FC<TooltipProps> = ({
       style={positionStyle}
     >
       <div className="max-w-[500px] break-words">{content}</div>
-      <RotatedSquare anchor={anchor} borderClass={borderClass} />
+      <RotatedSquare anchor={anchor} />
     </div>
   );
 

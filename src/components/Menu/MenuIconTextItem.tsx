@@ -110,7 +110,9 @@ export const MenuIconTextItem: FC<MenuIconTextItemProps> = ({
                 : BackgroundColor.CardNested,
               ElementState.Hover
             ),
+            // White content on the danger fill, on hover and on keyboard focus
             destructive && "hover:[&_*]:text-white",
+            destructive && focus && "[&_*]:text-white",
             className
           )}
           {...props}
