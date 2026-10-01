@@ -7,7 +7,7 @@ const meta: Meta<typeof TextAction> = {
   component: TextAction,
   parameters: { layout: "centered" },
   argTypes: {
-    size: { control: "select", options: [Size.Sm, Size.Md] },
+    size: { control: "select", options: [Size.Sm, Size.Md, Size.Lg] },
   },
 };
 
@@ -19,6 +19,10 @@ export const Default: Story = {
 
 export const Small: Story = {
   args: { ...Default.args, size: Size.Sm },
+};
+
+export const Large: Story = {
+  args: { ...Default.args, size: Size.Lg },
 };
 
 export default meta;

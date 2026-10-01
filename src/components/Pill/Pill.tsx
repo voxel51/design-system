@@ -11,13 +11,13 @@ import {
 import { Stack } from "@/components/Stack";
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
+import { CAPTION_SIZE } from "@/styles/text";
 import {
   BackgroundColor,
   Radius,
   SemanticColor,
   Shadow,
   Size,
-  Spacing,
   StatusColor,
   TextColor,
   Variant,
@@ -38,10 +38,19 @@ export interface PillProps extends HTMLAttributes<HTMLSpanElement> {
   onRemove?: () => void;
 }
 
+// Figma pills all set type/caption (11/16). Xs is the Tag Pill (2/8 padding,
+// 20px tall), Sm and Md the two StatusPill sizes (4/10 → 24px, 6/12 → 28px).
 const sizeStyles: Record<PillSize, string> = {
-  [Size.Xs]: clsx("px-2.5 py-0.75", "text-xs/5"),
-  [Size.Sm]: clsx("px-3.5 py-1.5", "text-sm/5"),
-  [Size.Md]: clsx("px-4 py-2", "text-md/5"),
+  [Size.Xs]: "px-2 py-0.5",
+  [Size.Sm]: "px-2.5 py-1",
+  [Size.Md]: "px-3 py-1.5",
+};
+
+// The status dot is a 5px ellipse at Small and 6px at Medium.
+const dotSizes: Record<PillSize, number> = {
+  [Size.Xs]: 5,
+  [Size.Sm]: 5,
+  [Size.Md]: 6,
 };
 
 /**
@@ -71,8 +80,8 @@ export const Pill: FC<PillProps> = ({
   size = Size.Sm,
   radius = Radius.Full,
   shadow = undefined,
-  color = TextColor.Muted,
-  backgroundColor = BackgroundColor.Muted,
+  color = TextColor.Primary,
+  backgroundColor = BackgroundColor.CardElevated,
   icon,
   isStatus = false,
   onRemove,
@@ -84,10 +93,9 @@ export const Pill: FC<PillProps> = ({
 
   return (
     <Stack
-      spacing={Spacing.Xs}
       className={clsx(
-        "items-center",
-        "font-small",
+        "items-center gap-1.5",
+        CAPTION_SIZE, // colour is the prop
         textColorClass(color),
         bgColorClass(backgroundColor),
         radiusStyles(radius),
@@ -99,7 +107,11 @@ export const Pill: FC<PillProps> = ({
     >
       {isStatus && (
         <div>
-          <CircleIcon size={Size.Xs} color={color} style={{ minWidth: 10 }} />
+          <CircleIcon
+            size={dotSizes[size]}
+            color={color}
+            className="shrink-0"
+          />
         </div>
       )}
       {IconContent && (
@@ -120,7 +132,7 @@ export const Pill: FC<PillProps> = ({
             onRemove();
           }}
           // Round corners so the hover affordance is a small circle, matching the pill shape.
-          className="shrink-0 rounded-full"
+          className="shrink-0 rounded-full p-0 size-4"
         />
       )}
     </Stack>

@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import type { FC, HTMLAttributes } from "react";
 
-import { textStyles } from "@/styles/text";
+import { TEXT_STYLES } from "@/styles/text";
 import { TextColor, textColorClass, TextVariant } from "@/types";
 import HeadingLevel from "@/types/heading";
 
@@ -16,11 +16,13 @@ const elementMap: Record<HeadingLevel, FC<HeadingProps>> = {
   h4: ({ children, ...props }: HeadingProps) => <h4 {...props}>{children}</h4>,
 };
 
+// Figma's `type/*` roles: h1 is the 23px display title and the only regular
+// weight; the rest are medium. Weight comes from the role utility itself.
 const variantStyles: Record<HeadingLevel, string> = {
-  h1: clsx(textStyles(TextVariant.Xxl), "text-bold"),
-  h2: clsx(textStyles(TextVariant.Xl), "text-semibold"),
-  h3: clsx(textStyles(TextVariant.Lg), "text-semibold"),
-  h4: clsx(textStyles(TextVariant.Md)),
+  h1: TEXT_STYLES[TextVariant.HeadingXl],
+  h2: TEXT_STYLES[TextVariant.HeadingLg],
+  h3: TEXT_STYLES[TextVariant.HeadingMd],
+  h4: TEXT_STYLES[TextVariant.HeadingSm],
 };
 
 /**

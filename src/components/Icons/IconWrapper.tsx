@@ -9,7 +9,7 @@ export interface IconWrapperProps {
   // IconInput (rather than FC<IconProps>) while the legacy icon API is
   // bridged, so pre-0.0.40 consumers can keep passing IconName values
   content?: IconInput;
-  size?: Size;
+  size?: Size | number;
   className?: string;
 }
 
@@ -30,8 +30,19 @@ export const IconWrapper: FC<IconWrapperProps> = ({
   const Content = resolveIconInput(content);
   if (!Content) return null;
 
+  // A numeric size also boxes the wrapper and fills the svg into it, so a
+  // third-party icon component that ignores `size` (heroicons, for one)
+  // still renders at the requested glyph size instead of its own default.
+  const px = typeof size === "number" ? size : undefined;
+
   return (
-    <span className={cn(className)}>
+    <span
+      className={cn(
+        px !== undefined && "inline-flex shrink-0 [&>svg]:size-full",
+        className
+      )}
+      style={px !== undefined ? { width: px, height: px } : undefined}
+    >
       <Content size={size} />
     </span>
   );
