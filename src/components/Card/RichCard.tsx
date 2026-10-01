@@ -35,7 +35,7 @@ export interface RichCardProps extends CardProps {
  * @example
  * ```tsx
  * <RichCard
- *   icon={StarIcon}
+ *   icon={SearchIcon}
  *   title="Getting Started"
  *   description="Follow these steps to set up your workspace."
  *   badge="New"

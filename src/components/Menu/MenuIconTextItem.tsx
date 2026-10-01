@@ -36,7 +36,7 @@ export interface MenuIconTextItemProps extends HTMLAttributes<HTMLButtonElement>
   subtext?: string;
   /** If `true`, the item cannot be interacted with and is rendered in a muted style. */
   disabled?: boolean;
-  /** If `true`, renders text and icon in the destructive color palette. */
+  /** If `true`, renders the text and icon in the failure color, and fills the row with the danger color (white content) on hover and focus. */
   destructive?: boolean;
 }
 
@@ -56,11 +56,11 @@ export interface MenuIconTextItemProps extends HTMLAttributes<HTMLButtonElement>
  * </Dropdown>
  * ```
  *
- * @param icon A ReactNode (typically an icon component) rendered in the leading slot.
+ * @param icon An icon element (e.g. `<EditIcon />`) rendered in the leading slot; a legacy {@link IconName} is still accepted.
  * @param text The primary label for the item.
  * @param subtext An optional secondary line rendered below the primary text in muted color.
  * @param disabled If `true`, the item cannot be interacted with.
- * @param destructive If `true`, renders text colors in the destructive palette.
+ * @param destructive If `true`, renders the text and icon in the failure color, and fills the row with the danger color (white content) on hover and focus.
  * @param className `class` overrides to apply to the component.
  * @param props Additional HTML properties to apply to the component.
  */

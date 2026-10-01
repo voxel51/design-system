@@ -74,8 +74,9 @@ export interface ModalProps {
   size?: ModalSize;
   /**
    * Whether to render the title bar's close button. Defaults to `true` when
-   * a `title` is given. A modal with no title bar has no close button; give
-   * it a dismiss control of its own.
+   * a `title` is given. Without a `title`, no close button renders unless
+   * `showCloseButton` is `true`; otherwise give the modal a dismiss control
+   * of its own.
    */
   showCloseButton?: boolean;
   /** Pinned below the scrollable body — typically the action buttons. */

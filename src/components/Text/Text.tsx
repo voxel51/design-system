@@ -28,12 +28,16 @@ export interface TextProps extends HTMLAttributes<HTMLSpanElement> {
  *
  * @example
  * ```tsx
- * <Text>
- *   Some text
+ * <Text>Plain body text</Text>
+ * <Text variant="heading-md">Section title</Text>
+ * <Text variant="body-secondary" color="text-secondary">
+ *   Supporting detail
  * </Text>
  * ```
  *
- * @param variant The variant of the text; this controls the size and related styling of the text. See {@link Variant}.
+ * @param variant The text's role in the type tier, which sets its size, line
+ *  height and weight together. Defaults to `"body-primary"`. The size-only
+ *  variants (`"xxs"` to `"xxl"`) are deprecated. See {@link TextVariant}.
  * @param color The color of the text. See {@link TextProps.color}.
  * @param children The content wrapped by this component.
  * @param className `class` overrides to apply to the component.

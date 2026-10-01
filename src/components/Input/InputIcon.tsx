@@ -17,7 +17,7 @@ export interface InputIconProps {
  *
  * @param icon Icon component specifying the icon to use.
  * @param size The size of the icon. See {@link Size}.
- * @param hasText If `true`, de-emphasizes the icon in favor of the input text.
+ * @param hasText If `true`, shows the icon in the primary text color; otherwise it is muted.
  *
  * @internal For use by {@link Input}.
  */

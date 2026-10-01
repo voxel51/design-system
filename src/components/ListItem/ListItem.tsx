@@ -33,7 +33,7 @@ export interface ListItemProps extends HTMLAttributes<HTMLDivElement> {
  *
  * @param canSelect If `true`, the component will include a {@link Checkbox} to enable selection.
  * @param selected Controls the selection state of the list item. If `canSelect` is not truthy, this has no effect.
- * @param onSelected Callback triggered when this item is selected.
+ * @param onSelected Called when the checkbox toggles, with the new selected state.
  * @param canDrag If `true`, displays a {@link DragHandleGripIcon} to allow dragging this component.
  * @param dragHandleListeners Optional mapping of `listenerId: listener` for drag events.
  * @param primaryContent Primary content to display in the list item.
@@ -41,7 +41,7 @@ export interface ListItemProps extends HTMLAttributes<HTMLDivElement> {
  * @param actions Content to display as "actions" for the list item.
  *  This content will be pushed to the trailing edge of the list item.
  * @param additionalContent Additional content to display in the list item.
- *  This content will be placed between the `secondaryContent` and the `actions`.
+ *  Rendered below the main row, indented to line up with `primaryContent`.
  * @param className `class` overrides to apply to the component.
  * @param props Additional HTML properties to apply to the component.
  *

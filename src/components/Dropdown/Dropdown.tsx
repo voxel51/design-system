@@ -64,7 +64,7 @@ export interface DropdownProps extends HTMLAttributes<HTMLDivElement> {
    * @default true
    */
   portal?: boolean;
-  /** Explicit z-index override for the menu panel. */
+  /** Explicit z-index for the panel. Only applied when `portal` is `false`; a portaled panel always stacks above modals. */
   zIndex?: ZIndex;
   /**
    * If `true`, the trigger cannot open the menu. Also inferred automatically
@@ -107,8 +107,8 @@ export interface DropdownProps extends HTMLAttributes<HTMLDivElement> {
  * @param trigger The trigger element that opens the menu.
  * @param children Menu content — use the Menu* primitive components.
  * @param anchor Position of the menu panel relative to the trigger. See {@link DropdownAnchor}.
- * @param portal If `true`, renders the panel in a portal with a high z-index.
- * @param zIndex Explicit z-index for the panel.
+ * @param portal If `true` (the default), renders the panel in a portal above modals.
+ * @param zIndex Explicit z-index for the panel; only applied when `portal` is `false`.
  * @param disabled If `true`, the menu cannot be opened.
  * @param className `class` overrides for the root wrapper.
  * @param props Additional HTML properties for the root wrapper.

@@ -222,7 +222,9 @@ interface TreeViewSharedProps extends TreeDataProps {
   query?: string;
   /** Required when `query` is controlled. */
   onQueryChange?: (q: string) => void;
+  /** Maximum height of the tree, as any CSS length. Defaults to `"100%"`. */
   maxHeight?: string;
+  /** `class` overrides to apply to the tree's root element. */
   className?: string;
 }
 

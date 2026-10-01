@@ -58,16 +58,17 @@ const dotSizes: Record<PillSize, number> = {
  *
  * @example
  * ```tsx
- * <Pill isStatus={true}>
- *   Success
+ * <Pill isStatus size="md" color="text-success" backgroundColor="status-approved-bg">
+ *   Approved
  * </Pill>
  * ```
  *
- * @param size The size of the pill. See {@link Size}.
+ * @param size The size of the pill: `"xs"`, `"sm"` or `"md"`. Defaults to `"sm"`. See {@link PillSize}.
+ * @param icon Optional leading icon component, sized to the pill and tinted with `color`.
  * @param radius The border radius of the pill. See {@link Radius}.
  * @param shadow Optional drop shadow to apply to the pill. See {@link Shadow}.
  * @param color Text color of the pill. See {@link TextColor}.
- * @param backgroundColor Background color of the pill. See {@link BackgroundColor}.
+ * @param backgroundColor Background color of the pill. Defaults to `"bg-card-elevated"`. See {@link PillColor}.
  * @param isStatus If `true`, prefixes the content with a bullet-like icon.
  * @param onRemove Callback triggered when the remove control is clicked. Providing this makes the pill
  *  removable: a trailing icon {@link Button} is rendered which calls `onRemove` when clicked. Omit it

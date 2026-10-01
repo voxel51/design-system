@@ -286,7 +286,6 @@ export interface LegacyIconProps {
  * @param color Color of the icon. See {@link LegacyIconProps.color}. By
  * default, the icon inherits the text color of its container.
  * @param style `style` overrides to apply to the icon.
- * @param props Additional HTML properties to apply to the component.
  */
 export const Icon: FC<LegacyIconProps> = ({
   name,

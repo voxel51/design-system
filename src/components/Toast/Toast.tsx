@@ -106,7 +106,7 @@ const onSolidControls = cn(
  * ```
  *
  * @param action Optional content to display in the "action" slot; this is typically a {@link Button}/CTA.
- * @param anchor The location in the viewport to anchor the toast. See {@link Anchor}.
+ * @param anchor The location in the viewport to anchor the toast; ignored inside a {@link ToastContainer}. Defaults to `"bottom"`. See {@link Anchor}.
  * @param className `class` overrides to apply to the component.
  * @param description Optional content to display in the "description" slot; this should be considered secondary content.
  * @param duration How long, in milliseconds, the toast shows itself before calling `onClose`. Omit it and the
@@ -118,7 +118,7 @@ const onSolidControls = cn(
  * @param solid If `true`, a success or danger toast fills with its action color instead of only tinting its icon.
  * @param open If `true`, the toast will be visible; otherwise it will be hidden.
  * @param title Optional content to display in the "title" slot; this should be considered the primary content.
- * @param variant The variant of the toast; this controls icon styling. See {@link Variant}.
+ * @param variant The variant of the toast: `"primary"`, `"secondary"`, `"success"`, `"danger"` or `"icon"`. It sets the icon color, and with `solid` the fill. Defaults to `"primary"`.
  * @param props Additional HTML properties to apply to the component.
  */
 export const Toast: FC<ToastProps> = ({

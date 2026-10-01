@@ -14,7 +14,7 @@ import { ZIndex, zIndexStyles } from "@/types";
 import { cn } from "@/util/classes";
 
 /**
- * Anchor placements used when the cursor is far from any viewport edge
+ * Menu placements used when the cursor is far from any viewport edge
  * vs. flipped placements when the menu would overflow.
  */
 type MenuAnchor = "bottom start" | "bottom end" | "top start" | "top end";

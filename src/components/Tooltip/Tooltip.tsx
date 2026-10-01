@@ -108,7 +108,7 @@ const RotatedSquare: FC<{ anchor: TooltipAnchor }> = ({ anchor }) => {
  * </Tooltip>
  * ```
  *
- * @param anchor Position to anchor the tooltip relative to its content. See {@link Anchor}.
+ * @param anchor Position of the tooltip relative to its content: `"top"`, `"right"`, `"bottom"` or `"left"`. Defaults to `"top"`. See {@link TooltipAnchor}.
  * @param content The content of the tooltip.
  * @param children The content which this component wraps; this acts as the element anchor and the hover trigger.
  * @param className `class` overrides to apply to the tooltip panel.

@@ -166,7 +166,7 @@ ListPortal.displayName = "ListPortal";
  *
  * Keyboard: ArrowDown / ArrowUp move the highlight (opening the list if
  * closed), Enter picks the highlighted row, Escape closes without picking,
- * and blur commits the text when `allowFreeText` is set.
+ * and blur commits the text when `allowFreeText` is set (unless `commitOnBlur` is `false`).
  *
  * @example
  * ```tsx
@@ -190,7 +190,7 @@ ListPortal.displayName = "ListPortal";
  * @example
  * ```tsx
  * // Open domain: suggestions help, but any string is allowed.
- * <Combobox allowFreeText options={knownTypes} ... />
+ * <Combobox allowFreeText options={knownTypes} value={type} inputValue={text} onInputChange={setText} onChange={setType} />
  * ```
  *
  * @param options Rows to offer, already filtered by the caller.

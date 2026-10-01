@@ -62,7 +62,7 @@ export interface FormFieldProps extends HTMLAttributes<HTMLDivElement> {
  * @param required If `true`, displays a destructive-color asterisk after the label.
  * @param spacing Spacing between elements in the field. Defaults to `"sm"`.
  * @param className `class` overrides to apply to the field container.
- * @param props Additional HTML properties to apply to the field container.
+ * @param props Additional HTML properties, applied to the inner Stack that lays out the label, control and error (`className` goes to the outer field).
  */
 export const FormField: FC<FormFieldProps> = ({
   control,

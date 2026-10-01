@@ -19,7 +19,7 @@ export interface TextBadgeProps extends HTMLAttributes<HTMLSpanElement> {
  * </TextBadge>
  * ```
  *
- * @param color Color of the content. See {@link Color}.
+ * @param color Color of the content: a {@link TextColor} or {@link IconColor} token. Defaults to `"text-accent"`.
  * @param children Content wrapped by this component.
  * @param props Additional HTML properties to apply to the component.
  */

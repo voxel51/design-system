@@ -13,10 +13,9 @@ import { cn } from "@/util/classes";
 /**
  * The visual style used to render a {@link Divider}.
  *
- * - `Line` renders a solid 1px rule (the default).
- * - `Dot` renders a centered dot separator. When a `label` is present the dot
- *   is placed on either side of the label; otherwise a single centered dot is
- *   rendered.
+ * - `"line"` renders a solid 1px rule (the default).
+ * - `"dot"` renders dotted rules: with a `label`, dotted lines flank the
+ *   label; without one, a centered dot sits between two solid rules.
  *
  * Defined locally to the Divider component so it does not pollute the shared
  * `@/types` enums.

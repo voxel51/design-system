@@ -33,11 +33,19 @@ const dotStyles = "before:size-[5px]";
 const labelTextStyles = textStyles(TextVariant.BodyPrimary);
 
 /**
- * A basic radio component.
+ * A single radio option. Render radios through {@link RadioGroup} and its
+ * `options`, not on their own: a `Radio` needs a parent radio group to work.
  *
  * @example
  * ```tsx
- * <Radio value="car" label="Car" />
+ * <RadioGroup
+ *   options={[
+ *     { value: "car", label: "Car" },
+ *     { value: "truck", label: "Truck" },
+ *   ]}
+ *   value={vehicle}
+ *   onChange={setVehicle}
+ * />
  * ```
  *
  * @param value The value of the radio element.

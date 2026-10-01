@@ -33,12 +33,12 @@ export interface RadioGroupProps extends Omit<
 /**
  * A group of radio controls; supports selection via one-of semantics.
  *
- * This component operates exclusively as a controlled component. See `value` and `onChange` for controlled behavior.
+ * Controlled via `value` + `onChange`, or uncontrolled with `defaultValue`.
  *
  * @example
  * ```tsx
  * const MyComponent = () => {
- *   const [value, setValue] = useState<string | null>(null);
+ *   const [value, setValue] = useState<string>("car");
  *
  *   const onChange = useCallback((selectedValue: string) => {
  *       setValue(selectedValue);

@@ -57,7 +57,7 @@ export interface DatePickerProps extends Omit<
  * @param error If `true`, displays an error state in the datepicker input.
  * @param dateFormat The format to use for displaying the value.
  *  If not specified, the following formats are used in order of precedence:
- *    - `HH:mm` if `showTimeSelectOnly` is `true`
+ *    - `HH:mm` if both `showTimeSelect` and `showTimeSelectOnly` are `true`
  *    - `yyyy-MM-dd · HH:mm` if `showTimeSelect` is `true`
  *    - `yyyy-MM-dd`
  * @param onChange Callback triggered when the user changes the date/time value.

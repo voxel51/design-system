@@ -49,7 +49,7 @@ const iconSizes: Record<TextActionSize, number> = {
  * </TextAction>
  * ```
  *
- * @param size `"sm"` or `"md"`. Defaults to `"md"`.
+ * @param size `"sm"`, `"md"` or `"lg"`. Defaults to `"md"`.
  * @param leadingIcon Optional icon before the label: a per-icon component.
  * @param trailingIcon Optional icon after the label: a per-icon component.
  * @param className Additional CSS class names to apply to the button.

@@ -42,9 +42,10 @@ JSDoc is the documentation agents read: it ships in the `.d.ts` files, and
 - The first sentence is a standalone summary; `voodo list` shows exactly it.
 - Every prop the component declares itself has a `@param`, and every `@param`
   names a real prop.
-- At least one `@example`, written with string token props. Examples are not
-  compiled, so check that yours would: wrong member names have shipped in
-  examples unnoticed.
+- At least one `@example`, written with string token props and no deprecated
+  values (such as the size-only text variants). Examples are not compiled, so
+  check that yours would: wrong member names have shipped in examples
+  unnoticed.
 
 `npm test` fails when an exported component has no summary or no `@example`.
 Mark plumbing that consumers should not use `@internal`: it is exempt, and

@@ -56,7 +56,7 @@ const bgColorMap: Record<CardBackground, Color> = {
  * @param border Whether to render a border around the card.
  * @param className Additional CSS class names to apply to the card.
  * @param compact When true, reduces internal padding.
- * @param shadow The shadow depth applied to the card. Defaults to `"md"`.
+ * @param shadow The shadow depth applied to the card. Defaults to `"none"`.
  * @param outlined When true, replaces the shadow with a border outline.
  * @param children The content of the card.
  * @param props Additional HTML properties to apply to the card.

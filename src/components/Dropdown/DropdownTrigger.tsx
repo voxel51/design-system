@@ -22,7 +22,7 @@ export type DropdownTriggerProps = Omit<
  * @example
  * ```tsx
  * <Dropdown trigger={<DropdownTrigger>Actions</DropdownTrigger>}>
- *   <DropdownTextItem onClick={() => {}}>Edit</DropdownTextItem>
+ *   <MenuTextItem onClick={() => {}}>Edit</MenuTextItem>
  * </Dropdown>
  * ```
  *
