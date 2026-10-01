@@ -1,14 +1,13 @@
-import clsx from "clsx";
 import type { FC, HTMLAttributes } from "react";
 
 import { textStyles } from "@/styles/text";
 import {
   type ThemeableColor,
   isColorToken,
-  TextColor,
   textColorClass,
   TextVariant,
 } from "@/types";
+import { cn } from "@/util/classes";
 
 export interface TextProps extends HTMLAttributes<HTMLSpanElement> {
   variant?: TextVariant;
@@ -42,22 +41,26 @@ export interface TextProps extends HTMLAttributes<HTMLSpanElement> {
  */
 export const Text: FC<TextProps> = ({
   variant = TextVariant.BodyPrimary,
-  color = TextColor.Primary,
+  color,
   children,
   className,
   style,
   ...props
 }) => {
-  const isToken = isColorToken(color);
+  // No default colour: a role that carries its own (Caption is tertiary)
+  // shows it, and everything else inherits the surrounding text colour.
+  const isToken = color !== undefined && isColorToken(color);
 
   return (
     <span
-      className={clsx(
-        isToken && textColorClass(color),
+      // Merged rather than concatenated: the Caption role carries its own
+      // tertiary colour, so an explicit `color` must come after it to win.
+      className={cn(
         textStyles(variant),
+        isToken && textColorClass(color),
         className
       )}
-      style={!isToken ? { color, ...style } : style}
+      style={color !== undefined && !isToken ? { color, ...style } : style}
       {...props}
     >
       {children}

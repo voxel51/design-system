@@ -40,7 +40,7 @@ export const SliderKnob: FC<SliderKnobProps> = ({
     <div
       className={clsx(
         "absolute",
-        "size-4 -ml-2",
+        "size-[15px] -ml-[7.5px]",
         "cursor-pointer",
         bgColorClass(BrandColor.Primary),
         radiusStyles(Radius.Full),

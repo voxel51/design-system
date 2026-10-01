@@ -1,5 +1,4 @@
 import { Field, Radio as HeadlessRadio, Label } from "@headlessui/react";
-import clsx from "clsx";
 import { type FC, InputHTMLAttributes } from "react";
 
 import { textStyles } from "@/styles/text.ts";
@@ -17,28 +16,21 @@ export interface RadioProps extends ModifiedRadioProps {
   value?: string;
   label?: string;
   disabled?: boolean;
+  /**
+   * @deprecated Figma draws one radio size, so this no longer changes the
+   * control or its label. Accepted so existing callers keep compiling.
+   */
   size?: Size;
   className?: string;
   labelClassName?: string;
 }
 
-const textSizeStyles: Partial<Record<Size, string | null>> = {
-  [Size.Sm]: textStyles(TextVariant.Sm),
-  [Size.Md]: textStyles(TextVariant.Md),
-  [Size.Lg]: textStyles(TextVariant.Lg),
-};
-
-const sizeStyles: Partial<Record<Size, string>> = {
-  [Size.Sm]: clsx("w-4 h-4"),
-  [Size.Md]: clsx("w-5 h-5"),
-  [Size.Lg]: clsx("w-6 h-6"),
-};
-
-const dotSizeStyles: Partial<Record<Size, string>> = {
-  [Size.Sm]: clsx("before:w-1 before:h-1"),
-  [Size.Md]: clsx("before:w-1.5 before:h-1.5"),
-  [Size.Lg]: clsx("before:w-2 before:h-2"),
-};
+// Figma RadioButton is a single control: 14px circle, 5px dot, 15/20 label.
+// There is no size axis, so `size` is accepted for compatibility and ignored
+// rather than scaling the circle while the label stays put.
+const controlStyles = "size-3.5";
+const dotStyles = "before:size-[5px]";
+const labelTextStyles = textStyles(TextVariant.BodyPrimary);
 
 /**
  * A basic radio component.
@@ -49,7 +41,7 @@ const dotSizeStyles: Partial<Record<Size, string>> = {
  * ```
  *
  * @param value The value of the radio element.
- * @param size The size of the radio element. See {@link Size}.
+ * @param size Deprecated; Figma draws a single radio size, so this is ignored.
  * @param className `class` overrides to apply to the radio.
  * @param labelClassName `class` overrides to apply to the radio's label.
  * @param label Label to display for the radio element.
@@ -58,15 +50,17 @@ const dotSizeStyles: Partial<Record<Size, string>> = {
  */
 export const Radio: FC<RadioProps> = ({
   value,
-  size = Size.Sm,
   className,
   labelClassName,
   label,
   disabled,
+  // Deprecated and intentionally unused; kept out of `...props` so it never
+  // reaches the DOM.
+  size: _size,
   ...props
 }) => {
   return (
-    <Field className="group flex items-center gap-2">
+    <Field className="group flex items-center gap-3">
       <HeadlessRadio
         value={value}
         disabled={disabled}
@@ -78,32 +72,32 @@ export const Radio: FC<RadioProps> = ({
           "border-content-text-tertiary",
           disabled && "opacity-50",
           "rounded-full",
-          sizeStyles[size],
+          controlStyles,
           // on focus - unchecked
           !disabled && "focus:outline-none",
           !disabled && "focus:ring-2",
-          !disabled && "focus:ring-action-primary-primary",
+          !disabled && "focus:ring-content-interactive-primary-default",
           // on hover - unchecked (only when not disabled)
-          !disabled && "hover:border-action-primary-primary",
+          !disabled && "hover:border-content-interactive-primary-hover",
           !disabled && "hover:border-1",
           // when hovering label, also hover radio (only when not disabled)
-          !disabled && "group-hover:border-action-primary-primary",
+          !disabled && "group-hover:border-content-interactive-primary-hover",
           !disabled && "group-hover:border-1",
           // checked styles (override base styles)
           "data-[checked]:border-2",
-          "data-[checked]:border-action-primary-primary",
+          "data-[checked]:border-content-interactive-primary-default",
           "data-[checked]:focus:ring-0",
           "relative",
           // for the dot
           "before:content-['']",
           "before:absolute",
-          dotSizeStyles[size],
+          dotStyles,
           "before:top-1/2",
           "before:left-1/2",
           "before:-translate-x-1/2",
           "before:-translate-y-1/2",
           "before:rounded-full",
-          "before:bg-action-primary-primary",
+          "before:bg-content-interactive-primary-default",
           "before:opacity-0",
           "data-[checked]:before:opacity-100",
           className
@@ -128,7 +122,7 @@ export const Radio: FC<RadioProps> = ({
           className={cn(
             // Figma: label is white when enabled, tertiary when disabled
             textColorClass(disabled ? TextColor.Tertiary : TextColor.Primary),
-            textSizeStyles[size],
+            labelTextStyles,
             !disabled && "cursor-pointer",
             labelClassName
           )}

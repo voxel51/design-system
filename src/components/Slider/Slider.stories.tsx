@@ -51,9 +51,12 @@ const meta: Meta<typeof BaseSlider> = {
         "Called once when an interaction completes — drag release, track click, or input blur — rather than continuously. Pair with debounceDelay={0} for live onChange + a single commit on release.",
     },
   },
+  // A slider fills its container and has no width of its own. `w-md` here
+  // resolved to the 16px `--spacing-md` token, so every story collapsed to
+  // the knob.
   decorators: [
     (Story) => (
-      <div className="w-md">
+      <div className="w-96">
         <Story />
       </div>
     ),

@@ -287,7 +287,7 @@ export const SliderBar: FC<SliderBarProps> = ({
       className={clsx(
         "relative",
         "flex items-center",
-        "w-full h-2",
+        "w-full h-1.5",
         "cursor-pointer",
         bgColorClass(BackgroundColor.CardElevated),
         radiusStyles(Radius.Full)
@@ -301,7 +301,7 @@ export const SliderBar: FC<SliderBarProps> = ({
           <div
             className={clsx(
               "absolute",
-              "h-2",
+              "h-1.5",
               bgColorClass(BrandColor.Primary),
               radiusStyles(Radius.Full)
             )}

@@ -70,19 +70,19 @@ describe("Input", () => {
     it("should apply sm size styles", () => {
       render(<Input size={Size.Sm} data-testid="input" />);
       const input = screen.getByTestId("input");
-      expect(input.className).toContain("text-sm/5");
+      expect(input.className).toContain("text-body-tertiary");
     });
 
     it("should apply md size styles", () => {
       render(<Input size={Size.Md} data-testid="input" />);
       const input = screen.getByTestId("input");
-      expect(input.className).toContain("text-md/5");
+      expect(input.className).toContain("text-body-secondary");
     });
 
     it("should apply Lg size styles", () => {
       render(<Input size={Size.Lg} data-testid="input" />);
       const input = screen.getByTestId("input");
-      expect(input.className).toContain("text-lg/5");
+      expect(input.className).toContain("text-body-secondary");
     });
   });
 
@@ -126,7 +126,7 @@ describe("Input", () => {
       render(<Input data-testid="input" />);
       const input = screen.getByTestId("input");
       expect(input).not.toHaveAttribute("aria-invalid");
-      expect(input.className).toContain("border-content-border-default");
+      expect(input.className).toContain("border-content-border-input");
     });
   });
 
@@ -159,7 +159,7 @@ describe("Input", () => {
       await user.type(input, "user@example.com");
 
       expect(input).not.toHaveAttribute("aria-invalid");
-      expect(input.className).toContain("border-content-border-default");
+      expect(input.className).toContain("border-content-border-input");
     });
 
     it("validates a controlled value", () => {

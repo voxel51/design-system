@@ -75,13 +75,13 @@ describe("TextArea", () => {
   it("should apply correct classes for Size.Xs", () => {
     render(<TextArea size={Size.Xs} data-testid="xs-textarea" />);
     const textarea = screen.getByTestId("xs-textarea");
-    expect(textarea).toHaveClass("px-2.5", "py-1.5", "text-xs/5");
+    expect(textarea).toHaveClass("px-2.5", "py-1", "text-caption");
   });
 
   it("should apply correct classes for Size.Lg", () => {
     render(<TextArea size={Size.Lg} data-testid="lg-textarea" />);
     const textarea = screen.getByTestId("lg-textarea");
-    expect(textarea).toHaveClass("px-4", "py-3", "text-lg/9");
+    expect(textarea).toHaveClass("px-3", "py-2.5", "text-body-secondary");
   });
 
   // Radius (fixed)
