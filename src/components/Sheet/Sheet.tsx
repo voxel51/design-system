@@ -156,7 +156,7 @@ export const Sheet: FC<SheetProps> = ({
             )}
             {withCloseButton && (
               <IconAction
-                size={Size.Sm}
+                size={Size.Lg}
                 aria-label="Close"
                 icon={CloseIcon}
                 onClick={onClose}
