@@ -40,7 +40,7 @@ const spacingStyles: Record<Spacing, string> = {
  *
  * @example
  * ```tsx
- * <Stack orientation={Orientation.Vertical} spacing={Spacing.Md}>
+ * <Stack orientation="col" spacing="md">
  *   <Text>Top</Text>
  *   <Text>Middle</Text>
  *   <Text>Bottom</Text>
@@ -49,7 +49,7 @@ const spacingStyles: Record<Spacing, string> = {
  *
  * @example
  * ```tsx
- * <Stack orientation={Orientation.Horizontal} spacing={Spacing.Md}>
+ * <Stack orientation="row" spacing="md">
  *   <Text>Left</Text>
  *   <Text>Middle</Text>
  *   <Text>Right</Text>
@@ -58,7 +58,7 @@ const spacingStyles: Record<Spacing, string> = {
  *
  * @example
  * ```tsx
- * <Stack orientation={Orientation.Horizontal} align={Align.Center} justify={Justify.Between}>
+ * <Stack orientation="row" align="center" justify="between">
  *   <Text>Left</Text>
  *   <Text>Middle</Text>
  *   <Text>Right</Text>

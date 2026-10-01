@@ -90,7 +90,7 @@ const KnobLabel: FC<{
  *  otherwise, this is a single numeric value.
  * @param props Additional HTML properties to apply to the component.
  *
- * @internal For use by {@link Slider}.
+ * @internal For use by {@link BaseSlider}.
  */
 export const SliderLabels: FC<SliderLabelProps> = ({
   className,

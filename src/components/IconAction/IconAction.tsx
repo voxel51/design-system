@@ -42,8 +42,14 @@ const iconSizes: Record<IconActionSize, number> = {
  *
  * @example
  * ```tsx
- * <IconAction icon={IconName.Close} aria-label="Dismiss" onClick={dismiss} />
+ * <IconAction icon={CloseIcon} aria-label="Dismiss" onClick={dismiss} />
  * ```
+ *
+ * @param icon The icon to show: a per-icon component such as `CloseIcon`.
+ * @param size `"sm"`, `"md"` or `"lg"`. Defaults to `"md"`.
+ * @param aria-label Required, because the action has no visible text.
+ * @param className Additional CSS class names to apply to the button.
+ * @param props Additional HTML button properties, such as `onClick`.
  */
 export const IconAction: FC<IconActionProps> = ({
   icon,

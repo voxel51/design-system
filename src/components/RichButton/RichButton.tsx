@@ -41,6 +41,8 @@ export interface RichButtonProps extends HTMLAttributes<HTMLDivElement> {
  *
  *   return (
  *     <RichButton
+ *       active={active}
+ *       icon={DetectionIcon}
  *       label="Detection"
  *       description="Create a new detection"
  *       onClick={onClick}

@@ -173,13 +173,15 @@ const iconSizes: Record<ButtonSize, number> = {
  *
  * @example
  * ```tsx
- *   <Button onClick={() => alert("Button clicked")}>
- *     Click me
+ *   <Button variant="primary" size="sm" leadingIcon={AddIcon} onClick={save}>
+ *     Add dataset
  *   </Button>
  * ```
  *
  * @param variant The button variant; this controls the general styling of the button. See {@link Variant}.
- * @param size The size of the button; this controls both the text size and the button size. See {@link Size}.
+ * @param size The size of the button; this controls both the text size and the button size: `"xs"`, `"sm"` or `"md"`. Defaults to `"md"`.
+ * @param target Link target; only used with `href`.
+ * @param rel Link rel; only used with `href`. Defaults to `"noreferrer"` when `target` is `"_blank"`.
  * @param borderless Boolean controlling whether the button should be "borderless," removing any borders and
  *  rounding the corners.
  * @param leadingIcon Optional icon component which prefixes the button's content.

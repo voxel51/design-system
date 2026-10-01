@@ -22,7 +22,7 @@ const sizeStyles: Record<Size, string> = {
  *
  * @example
  * ```tsx
- * <Spinner size={Size.Md} />
+ * <Spinner size="md" />
  * ```
  *
  * @param className `class` overrides to apply to the component.

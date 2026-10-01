@@ -74,6 +74,14 @@ const clamp = (value: number, min: number, max: number): number =>
  *
  * This component renders a slider with one or more draggable knobs, optional numeric inputs, and optional labels.
  *
+ * @example
+ * ```tsx
+ * <BaseSlider min={0} max={1} step={0.05} value={threshold} onChange={setThreshold} />
+ * // Prefer the type-safe aliases:
+ * <SingleValueSlider min={0} max={100} value={opacity} onChange={setOpacity} />
+ * <MultiValueSlider min={0} max={1} value={[low, high]} onChange={setRange} />
+ * ```
+ *
  * This component operates as both a controlled and uncontrolled component.
  * See `value` and `onChange` for controlled behavior.
  *
@@ -326,11 +334,14 @@ export const BaseSlider: FC<SliderProps> = ({
  *
  * @param onChange Callback triggered when the slider value changes.
  *   This change can be triggered in three ways:
- *    - The user modifies the value in the minimum or maximum input field.
+ *    - The user modifies the value in the input field.
  *    - The user drags a slider knob.
  *    - The user clicks on the slider track.
  * @param max Maximum value of the slider
  * @param min Minimum value of the slider
+ * @param value The controlled value: a single number in `[min, max]`.
+ * @param onChangeCommitted Called once when an interaction completes (drag
+ *  release, track click, input blur), with a single number.
  * @param props See {@link BaseSlider} for all available properties.
  */
 export const SingleValueSlider: FC<SingleValueSliderProps> = ({
@@ -381,6 +392,9 @@ export const SingleValueSlider: FC<SingleValueSliderProps> = ({
  *    - The user clicks on the slider track.
  * @param max Maximum value of the slider
  * @param min Minimum value of the slider
+ * @param value The controlled value: `[low, high]`, each in `[min, max]`.
+ * @param onChangeCommitted Called once when an interaction completes (drag
+ *  release, track click, input blur), with `[low, high]`.
  * @param props See {@link BaseSlider} for all available properties.
  */
 export const MultiValueSlider: FC<MultiValueSliderProps> = ({

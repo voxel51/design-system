@@ -47,16 +47,16 @@ const bgColorMap: Record<CardBackground, Color> = {
  *
  * @example
  * ```tsx
- * <Card background={CardBackground.Secondary} compact>
+ * <Card background="secondary" compact>
  *   Card content here
  * </Card>
  * ```
  *
- * @param background The background color variant. Defaults to {@link CardBackground.Primary}.
+ * @param background The background color variant. Defaults to `"primary"`.
  * @param border Whether to render a border around the card.
  * @param className Additional CSS class names to apply to the card.
  * @param compact When true, reduces internal padding.
- * @param shadow The shadow depth applied to the card. Defaults to {@link Shadow.Md}.
+ * @param shadow The shadow depth applied to the card. Defaults to `"none"`.
  * @param outlined When true, replaces the shadow with a border outline.
  * @param children The content of the card.
  * @param props Additional HTML properties to apply to the card.

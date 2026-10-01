@@ -163,8 +163,8 @@ const getTabTextColorClass = (selected: boolean): string => {
  * ```tsx
  * const MyComponent = () => {
  *   const tabs: Descriptor<ToggleSwitchTab>[] = useMemo(() => [
- *       {id: "1", data: {label: "Tab 1", content: "Tab 1 content"}}
- *       {id: "2", data: {label: "Tab 2", content: "Tab 2 content"}}
+ *       {id: "1", data: {label: "Tab 1", content: "Tab 1 content"}},
+ *       {id: "2", data: {label: "Tab 2", content: "Tab 2 content"}},
  *       {id: "3", data: {label: "Tab 3", content: "Tab 3 content"}}
  *     ],
  *     []
@@ -182,20 +182,21 @@ const getTabTextColorClass = (selected: boolean): string => {
  *
  * @param tabs List of component descriptors which will be used to create {@link ToggleSwitchTab} children.
  *  Each tab supports optional `disabled` and `tooltip` fields. See {@link ToggleSwitchTab}.
- * @param variant Variant of the tabs.
- *  The variants have the following behaviors:
- *    - {@link ToggleSwitchVariant.Default} - tabs are bordered and have visible boundaries;
+ * @param variant Visual style of the tab set:
+ *    - `"default"` - tabs are bordered and have visible boundaries;
  *      the active tab has a distinct background from inactive tabs.
- *    - {@link ToggleSwitchVariant.Soft} - tabs are not bordered;
- *      the active tab has a distinct background and is highlighted in an accent color.
- *    - {@link ToggleSwitchVariant.Full} - similar to {@link ToggleSwitchVariant.Default} and expands to fill
- *      its container.
- *    - {@link ToggleSwitchVariant.Borderless} - tabs are not bordered; the active tab has a bottom border.
+ *    - `"soft"` - tabs sit in a padded, filled tray with no border;
+ *      the active tab gets a raised neutral background and primary text.
+ *    - `"full"` - like `"default"`, with primary text on the active tab.
+ *      Use `fullWidth` to fill the container.
+ *    - `"borderless"` - tabs are not bordered; the active tab has a bottom border.
  *  See {@link ToggleSwitchVariant}.
  * @param defaultIndex The index of the tab which should be considered active when the component first renders (uncontrolled).
+ *  Defaults to `0`.
  * @param index The active tab index for controlled usage; when set it drives the active tab and overrides `defaultIndex`.
  * @param onChange Callback triggered when the active tab changes.
- * @param size Size of the tabs; this controls the text size and padding. See {@link Size}.
+ * @param size Size of the tabs: `"xs"`, `"sm"` or `"md"`; this controls the text size and padding.
+ *  Defaults to `"sm"`. See {@link ToggleSwitchSize}.
  * @param fullWidth If `true`, the tab group will fill the width of their container.
  * @param tabListClassName `class` overrides to apply to the tabs.
  * @param tabPanelClassName `class` overrides to apply to the active content container.

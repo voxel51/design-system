@@ -44,7 +44,7 @@ interface SliderBarProps extends Omit<
  *  If `multi` is true, this must be a value of the form [low, high]; otherwise, this is a single numeric value.
  * @param props Additional HTML properties to apply to the component.
  *
- * @internal For use by {@link Slider}.
+ * @internal For use by {@link BaseSlider}.
  */
 export const SliderBar: FC<SliderBarProps> = ({
   max,

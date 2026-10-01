@@ -75,13 +75,16 @@ export default defineConfig({
   },
   build: {
     lib: {
-      // Two entries: the package root, and a tokens-only entry. The tokens
-      // entry exists so non-UI consumers (looker's workers, Node tooling) can
-      // read token values without pulling in React or globals.css — importing
-      // the root would drag both in, which a worker bundle cannot afford.
+      // Three entries: the package root, a tokens-only entry, and the `voodo`
+      // command's helpers. The tokens entry exists so non-UI consumers
+      // (looker's workers, Node tooling) can read token values without pulling
+      // in React or globals.css — importing the root would drag both in, which
+      // a worker bundle cannot afford. `cli` is pure string handling for
+      // `bin/voodo.mjs`, for the same reason: it runs in bare Node.
       entry: {
         index: resolve(__dirname, "src/index.ts"),
         tokens: resolve(__dirname, "src/theme/tokens/index.ts"),
+        cli: resolve(__dirname, "src/cli/reference.ts"),
       },
       formats: ["es", "cjs"],
       fileName: (format, name) => `${name}.${format === "es" ? "js" : "cjs"}`,

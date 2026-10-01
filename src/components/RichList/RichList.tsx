@@ -49,21 +49,22 @@ export interface RichListProps extends HTMLAttributes<HTMLDivElement> {
 /**
  * A list-like component which renders a group of {@link ListItem} children.
  *
- * This component operates as both a controlled and uncontrolled component.
- * See `selected`/`onSelected` and `listItems`/`onOrderChange` for controlled behavior.
+ * Selection works controlled (`selected` + `onSelected`) or uncontrolled.
+ * Ordering is always controlled: with `draggable`, items only move when you
+ * feed `onOrderChange`'s result back into `listItems`.
  *
  * @example
  * ```tsx
  * const MyComponent = ({openSettings}: {openSettings: (id: string) => void}) => {
- *   const items: Descriptor<ListItemProps>[] = useMemo(() => [
+ *   const [items, setItems] = useState<Descriptor<ListItemProps>[]>(() => [
  *       {
  *         id: "1",
  *         data: {
  *           primaryContent: "First Item",
- *           secondaryContent: "First item description"
+ *           secondaryContent: "First item description",
  *           actions: (
  *             <Button
- *               variant={Variant.Icon}
+ *               variant="icon"
  *               aria-label="Settings"
  *               leadingIcon={SettingsIcon}
  *               onClick={() => openSettings("1")}
@@ -75,24 +76,25 @@ export interface RichListProps extends HTMLAttributes<HTMLDivElement> {
  *         id: "2",
  *         data: {
  *           primaryContent: "Second Item",
- *           secondaryContent: "Second item description"
+ *           secondaryContent: "Second item description",
  *           actions: (
  *             <Button
- *               variant={Variant.Icon}
+ *               variant="icon"
  *               aria-label="Settings"
  *               leadingIcon={SettingsIcon}
  *               onClick={() => openSettings("2")}
  *             />
  *           )
  *         },
+ *       },
  *       {
  *         id: "3",
  *         data: {
  *           primaryContent: "Third Item",
- *           secondaryContent: "Third item description"
+ *           secondaryContent: "Third item description",
  *           actions: (
  *             <Button
- *               variant={Variant.Icon}
+ *               variant="icon"
  *               aria-label="Settings"
  *               leadingIcon={SettingsIcon}
  *               onClick={() => openSettings("3")}
@@ -100,12 +102,10 @@ export interface RichListProps extends HTMLAttributes<HTMLDivElement> {
  *           )
  *         },
  *       },
- *     ],
- *     []
- *   );
+ *   ]);
  *
  *   return (
- *     <RichList listItems={items} />
+ *     <RichList listItems={items} draggable onOrderChange={setItems} spacing="sm" />
  *   );
  * };
  * ```
@@ -114,6 +114,7 @@ export interface RichListProps extends HTMLAttributes<HTMLDivElement> {
  * @param listItems List of component descriptors which will be used to create {@link ListItem} child components.
  *  The order of this list dictates the order of the children from top to bottom.
  * @param draggable If `true`, allows reordering of children via dragging {@link ListItem} components.
+ * @param spacing Vertical gap between items. Defaults to `"md"`. See {@link Spacing}.
  * @param onSelected Callback triggered when selection state changes.
  *  This callback includes a list of currently-selected descriptor IDs.
  * @param onOrderChange Callback triggered when {@link ListItem} ordering changes.

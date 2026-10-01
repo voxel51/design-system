@@ -74,7 +74,7 @@ const getThumbTranslateStyles = (size: Size): string => {
 /**
  * A component supporting a boolean toggle.
  *
- * This component operates exclusively as a controlled component. See `value` and `onChange` for controlled behavior.
+ * This component operates exclusively as a controlled component. See `checked` and `onChange` for controlled behavior.
  *
  * @example
  * ```tsx
@@ -96,7 +96,7 @@ const getThumbTranslateStyles = (size: Size): string => {
  * @param checked If `true`, renders the toggle in the "active" state.
  * @param disabled If `true`, disables the toggle.
  * @param onChange Callback triggered when the toggle value changes.
- * @param size Size of the toggle. See {@link Size}.
+ * @param size Size of the toggle: `"sm"` or `"md"`. Defaults to `"md"`.
  * @param className `class` overrides to apply to the component.
  * @param labelClassName `class` overrides to apply to the toggle's label.
  * @param label Optional label for the toggle.

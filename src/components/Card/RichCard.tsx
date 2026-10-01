@@ -35,7 +35,7 @@ export interface RichCardProps extends CardProps {
  * @example
  * ```tsx
  * <RichCard
- *   icon={StarIcon}
+ *   icon={SearchIcon}
  *   title="Getting Started"
  *   description="Follow these steps to set up your workspace."
  *   badge="New"
@@ -117,6 +117,8 @@ export const RichCard: FC<RichCardProps> = ({
  * an array of strings is rendered as a bulleted list.
  *
  * @param text The description content.
+ *
+ * @internal Rendered by {@link RichCard}; pass `description` to it instead.
  */
 export const Description: FC<{ text: string | string[] }> = ({ text }) => {
   if (typeof text === "string") {

@@ -34,15 +34,23 @@ import { cn } from "@/util/classes";
  * Width of the modal panel. The panel is always full-width up to this cap so
  * it degrades to the viewport on small screens.
  */
-export enum ModalSize {
+export const ModalSize = {
   /** 400px — confirmations and single-field forms. */
-  Sm = "sm",
+  Sm: "sm",
   /** 600px — the default; forms and short reference content. */
-  Md = "md",
+  Md: "md",
   /** 800px — tables, side-by-side content. */
-  Lg = "lg",
+  Lg: "lg",
   /** 1000px — full editors. */
-  Xl = "xl",
+  Xl: "xl",
+} as const;
+export type ModalSize = `${(typeof ModalSize)[keyof typeof ModalSize]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace ModalSize {
+  export type Sm = typeof ModalSize.Sm;
+  export type Md = typeof ModalSize.Md;
+  export type Lg = typeof ModalSize.Lg;
+  export type Xl = typeof ModalSize.Xl;
 }
 
 const sizeStyles: Record<ModalSize, string> = {
@@ -62,12 +70,13 @@ export interface ModalProps {
   onClose: () => void;
   /** Heading rendered in the modal's title bar. */
   title?: ReactNode;
-  /** Panel width. See {@link ModalSize}. Defaults to {@link ModalSize.Md}. */
+  /** Panel width. See {@link ModalSize}. Defaults to `"md"`. */
   size?: ModalSize;
   /**
    * Whether to render the title bar's close button. Defaults to `true` when
-   * a `title` is given. A modal with no title bar has no close button; give
-   * it a dismiss control of its own.
+   * a `title` is given. Without a `title`, no close button renders unless
+   * `showCloseButton` is `true`; otherwise give the modal a dismiss control
+   * of its own.
    */
   showCloseButton?: boolean;
   /** Pinned below the scrollable body — typically the action buttons. */
@@ -106,7 +115,7 @@ export interface ModalProps {
  *   open={open}
  *   onClose={close}
  *   title="Keyboard reference"
- *   size={ModalSize.Lg}
+ *   size="lg"
  *   footer={<Button onClick={close}>Done</Button>}
  * >
  *   {rows}

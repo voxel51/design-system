@@ -20,7 +20,7 @@ import { cn } from "@/util/classes";
 export interface MenuTextItemProps extends HTMLAttributes<HTMLButtonElement> {
   /** If `true`, the item cannot be interacted with and is rendered in a muted style. */
   disabled?: boolean;
-  /** If `true`, renders the label in the destructive text color (e.g. for "Delete"). */
+  /** If `true`, renders the label in the failure color, and fills the row with the danger color (white text) on hover and focus. */
   destructive?: boolean;
 }
 
@@ -30,7 +30,7 @@ export interface MenuTextItemProps extends HTMLAttributes<HTMLButtonElement> {
  * @example
  * ```tsx
  * <Dropdown trigger={<DropdownTrigger>Open</DropdownTrigger>}>
- *   <MenuTextItem onClick={() => console.log("clicked")}>
+ *   <MenuTextItem destructive onClick={() => console.log("clicked")}>
  *     Delete item
  *   </MenuTextItem>
  * </Dropdown>
@@ -38,7 +38,7 @@ export interface MenuTextItemProps extends HTMLAttributes<HTMLButtonElement> {
  *
  * @param children The label text.
  * @param disabled If `true`, the item cannot be interacted with.
- * @param destructive If `true`, renders the label in the destructive text color.
+ * @param destructive If `true`, renders the label in the failure color, and fills the row with the danger color (white text) on hover and focus.
  * @param className `class` overrides to apply to the component.
  * @param props Additional HTML properties to apply to the component.
  */

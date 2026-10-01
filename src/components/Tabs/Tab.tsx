@@ -45,6 +45,9 @@ export interface TabProps
  * @param active Whether this is the selected tab. The {@link Tabs} underline slides to it.
  * @param count Optional trailing count rendered after the label.
  * @param href Renders the tab as an anchor. See {@link TabProps.href}.
+ * @param target Anchor target, used with `href`.
+ * @param rel Anchor rel, used with `href`. Defaults to `"noreferrer"` when
+ *  `target` is `"_blank"`.
  * @param disabled If `true`, disables the tab.
  * @param className `class` overrides to apply to the component.
  * @param children The tab's label.

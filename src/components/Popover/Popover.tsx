@@ -110,7 +110,7 @@ export interface PopoverProps extends Omit<
    */
   zIndex?: ZIndex;
   /**
-   * Size the panel to the trigger's width — for a panel that reads as a
+   * Match the panel's width to the trigger's width — for a panel that reads as a
    * second row of the control it hangs from, rather than a card beside it.
    * @default false
    */
@@ -157,8 +157,8 @@ export interface PopoverProps extends Omit<
  * ```tsx
  * <Popover trigger={<DropdownTrigger>Search settings</DropdownTrigger>}>
  *   {({ close }) => (
- *     <Stack orientation={Orientation.Column} spacing={Spacing.Sm}>
- *       <Text variant={TextVariant.Label}>Similarity index</Text>
+ *     <Stack orientation="col" spacing="sm">
+ *       <Text variant="label">Similarity index</Text>
  *       <Select options={indexes} value={selected} onChange={pick} />
  *       <Button onClick={close}>Done</Button>
  *     </Stack>
@@ -170,10 +170,10 @@ export interface PopoverProps extends Omit<
  * @param children Panel content, or a function of {@link PopoverRenderProps}.
  * @param open Controlled open state.
  * @param onOpenChange Fires when the panel wants to open or close.
- * @param anchor Position of the panel relative to the trigger. See {@link PopoverAnchor}.
+ * @param anchor Position of the panel relative to the trigger. Defaults to `"bottom-start"`. See {@link PopoverAnchor}.
  * @param portal If `true`, renders the panel in a portal with a high z-index.
  * @param zIndex Stacking tier for the panel.
- * @param matchTriggerWidth Size the panel to the trigger's width.
+ * @param matchTriggerWidth Match the panel's width to the trigger's width.
  * @param closeOnEscape Close on Escape (default `true`).
  * @param disabled If `true`, the panel cannot be opened from the trigger.
  * @param panelClassName `class` overrides for the panel.

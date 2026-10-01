@@ -13,10 +13,9 @@ import { cn } from "@/util/classes";
 /**
  * The visual style used to render a {@link Divider}.
  *
- * - `Line` renders a solid 1px rule (the default).
- * - `Dot` renders a centered dot separator. When a `label` is present the dot
- *   is placed on either side of the label; otherwise a single centered dot is
- *   rendered.
+ * - `"line"` renders a solid 1px rule (the default).
+ * - `"dot"` renders dotted rules: with a `label`, dotted lines flank the
+ *   label; without one, a centered dot sits between two solid rules.
  *
  * Defined locally to the Divider component so it does not pollute the shared
  * `@/types` enums.
@@ -37,7 +36,7 @@ export interface DividerProps extends HTMLAttributes<HTMLDivElement> {
   orientation?: Orientation;
   label?: string;
   /**
-   * The visual style of the divider. Defaults to {@link DividerStyle.Line}.
+   * The visual style of the divider. Defaults to `"line"`.
    */
   dividerStyle?: DividerStyle;
   textProps?: TextProps;
@@ -55,20 +54,28 @@ interface DotProps extends HTMLAttributes<HTMLDivElement> {
 /**
  * A divider component used to separate content.
  *
+ * @example
+ * ```tsx
+ * <Divider />
+ * <Divider label="or" />
+ * <Stack orientation="row" align="center">
+ *   <Text>Left</Text>
+ *   <Divider orientation="col" />
+ *   <Text>Right</Text>
+ * </Stack>
+ * ```
+ *
  * @param orientation The {@link Orientation} of the divider. Defaults to a
- *   horizontal (row) rule. Use {@link Orientation.Column} for a vertical rule.
+ *   horizontal (`"row"`) rule. Use `"col"` for a vertical rule.
  * @param label The label to display in the middle of the divider. Labels are
- *   only supported for horizontal dividers — when a label is supplied together
- *   with {@link Orientation.Column} the label is dropped and a development
- *   warning is emitted via `console.warn`, since a vertical divider has no
- *   sensible place to render text.
+ *   only supported for horizontal dividers: with `"col"` the label is dropped
+ *   and a development warning is emitted via `console.warn`, since a vertical
+ *   divider has no sensible place to render text.
  * @param dividerStyle The {@link DividerStyle} used to render the divider.
- *   Defaults to {@link DividerStyle.Line}. Use {@link DividerStyle.Dot} to
- *   render a dotted line, or — when no `label` is present — a single centered
- *   dot separator.
+ *   Defaults to `"line"`. Use `"dot"` to render a dotted line, or, when no
+ *   `label` is present, a single centered dot separator.
  * @param textProps Additional props forwarded to the label {@link Text}.
  * @param props Additional HTML properties to apply to the component.
- *
  */
 export const Divider: FC<DividerProps> = ({
   orientation,

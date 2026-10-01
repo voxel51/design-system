@@ -35,30 +35,15 @@ export interface FormFieldGroupProps extends HTMLAttributes<HTMLFieldSetElement>
  *
  * @example
  * ```tsx
- * <FormFieldGroup orientation={Orientation.Vertical} spacing={Spacing.Lg}>
- *   <FormField
- *     control={
- *       <Input
- *         // input configuration
- *       />
- *     }
- *     label="First name"
- *   />
- *
- *   <FormField
- *    control={
- *       <Input
- *         // input configuration
- *       />
- *     }
- *     label="Last name"
- *   />
+ * <FormFieldGroup orientation="col" spacing="lg">
+ *   <FormField label="First name" control={<Input placeholder="Ada" />} />
+ *   <FormField label="Last name" control={<Input placeholder="Lovelace" />} />
  * </FormFieldGroup>
  * ```
  *
  * @param orientation The orientation of the form group;
  *  controls whether children are stacked horizontally or vertically.
- *  When horizontal ({@link Orientation.Row}), the fields are laid out in a grid that is
+ *  When horizontal (`"row"`), the fields are laid out in a grid that is
  *  capped at two columns rather than an unbounded single row.
  *  See {@link Orientation}.
  * @param spacing Spacing to apply between form fields. See {@link Spacing}.

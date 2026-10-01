@@ -44,10 +44,17 @@ const iconSizes: Record<TextActionSize, number> = {
  *
  * @example
  * ```tsx
- * <TextAction size={Size.Sm} trailingIcon={IconName.ArrowUpRight} onClick={upgrade}>
+ * <TextAction size="sm" trailingIcon={ArrowUpRightIcon} onClick={upgrade}>
  *   Upgrade
  * </TextAction>
  * ```
+ *
+ * @param size `"sm"`, `"md"` or `"lg"`. Defaults to `"md"`.
+ * @param leadingIcon Optional icon before the label: a per-icon component.
+ * @param trailingIcon Optional icon after the label: a per-icon component.
+ * @param className Additional CSS class names to apply to the button.
+ * @param children The label.
+ * @param props Additional HTML button properties, such as `onClick`.
  */
 export const TextAction: FC<TextActionProps> = ({
   size = Size.Md,

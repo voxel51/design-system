@@ -56,6 +56,7 @@ import {
   ListItem,
   LoadingDots,
   MenuSeparator,
+  ModalSize,
   Orientation,
   ScrimColor,
   VizChartColor,
@@ -78,6 +79,7 @@ import {
   SelectionColor,
   SemanticColor,
   Shadow,
+  SheetSide,
   SingleValueSlider,
   Size,
   SkeletonColor,
@@ -391,6 +393,19 @@ export const exhaustive = {
     top: true,
     bottom: true,
   } satisfies Record<DrawerSide, true>,
+
+  // These two were TS string enums, which rejected plain strings
+  modalSize: {
+    sm: true,
+    md: true,
+    lg: true,
+    xl: true,
+  } satisfies Record<ModalSize, true>,
+
+  sheetSide: {
+    left: true,
+    right: true,
+  } satisfies Record<SheetSide, true>,
 
   // PillColor spans three color families; spot-check assignability from each
   pillColor: ["bg-card", "bg-transparent"] satisfies readonly PillColor[],

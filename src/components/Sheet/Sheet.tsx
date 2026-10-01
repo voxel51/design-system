@@ -27,9 +27,15 @@ import {
 import { cn } from "@/util/classes";
 
 /** Edge the sheet slides in from. */
-export enum SheetSide {
-  Left = "left",
-  Right = "right",
+export const SheetSide = {
+  Left: "left",
+  Right: "right",
+} as const;
+export type SheetSide = `${(typeof SheetSide)[keyof typeof SheetSide]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace SheetSide {
+  export type Left = typeof SheetSide.Left;
+  export type Right = typeof SheetSide.Right;
 }
 
 const sideStyles: Record<SheetSide, string> = {
@@ -42,7 +48,7 @@ export interface SheetProps {
   open: boolean;
   /** Invoked on the close button, the backdrop, or Escape. */
   onClose: () => void;
-  /** Edge it slides in from. Defaults to {@link SheetSide.Right}. */
+  /** Edge it slides in from. Defaults to `"right"`. */
   side?: SheetSide;
   /** Heading rendered in the sheet's title bar. */
   title?: ReactNode;

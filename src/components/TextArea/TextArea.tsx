@@ -75,12 +75,15 @@ const resizeStyles: Record<ResizeBehavior, string> = {
  * const MyComponent = () => {
  *   const [value, setValue] = useState<string>("");
  *
- *   const onChange = useCallback((newValue: string) => setValue(newValue), [setValue]);
+ *   const onChange = useCallback(
+ *     (event: ChangeEvent<HTMLTextAreaElement>) => setValue(event.target.value),
+ *     []
+ *   );
  *
  *   return (
  *     <TextArea
  *       onChange={onChange}
- *       resize={ResizeBehavior.None}
+ *       resize="None"
  *       rows={10}
  *       value={value}
  *     />
@@ -91,7 +94,8 @@ const resizeStyles: Record<ResizeBehavior, string> = {
  * @param size The size of the textarea; this controls the size of the text itself and container padding.
  *  See {@link Size}.
  * @param error If `true`, renders the textarea in an error state.
- * @param resize Resize behavior. See {@link ResizeBehavior}.
+ * @param resize Resize behavior: `"None"`, `"Vertical"`, `"Horizontal"` or
+ *  `"BiDirectional"`. Defaults to `"Vertical"`. See {@link ResizeBehavior}.
  * @param rows The number of text rows to display in the textarea.
  * @param className `class` overrides to apply to the component.
  * @param containerClassName `class` overrides to apply to the component's container.

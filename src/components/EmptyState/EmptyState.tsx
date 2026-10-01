@@ -26,12 +26,19 @@ export interface EmptyStateProps extends StackProps {
 /**
  * A basic empty state to display to the user.
  *
- * @param icon The icon to display in the empty state.
+ * @example
+ * ```tsx
+ * <EmptyState
+ *   icon={SearchIcon}
+ *   title="No results"
+ *   description="Try a different search term."
+ * />
+ * ```
+ *
+ * @param icon The icon to display in the empty state: a per-icon component.
  * @param title The title to display in the empty state.
  * @param description An optional description to display in the empty state.
- * @param props Additional HTML properties to apply to the component.
- *
- *
+ * @param props Additional {@link Stack} properties to apply to the component.
  */
 export const EmptyState: FC<EmptyStateProps> = ({
   icon,
