@@ -52,6 +52,21 @@ function Demo(args: Partial<ComponentProps<typeof Sheet>>) {
 
 export const Right: Story = { render: (args) => <Demo {...args} /> };
 
+/** Rendered open, with no trigger, so the panel can be screenshotted. */
+export const Open: Story = {
+  render: (args) => (
+    <Sheet title="Sample details" {...args} open onClose={() => undefined}>
+      <Stack orientation={Orientation.Column} spacing={Spacing.Md}>
+        {Array.from({ length: 4 }, (_, i) => (
+          <Text key={i} color={TextColor.Secondary}>
+            {generateWords(12)}
+          </Text>
+        ))}
+      </Stack>
+    </Sheet>
+  ),
+};
+
 export const Left: Story = {
   render: (args) => <Demo {...args} side={SheetSide.Left} />,
 };

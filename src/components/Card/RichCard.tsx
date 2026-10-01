@@ -72,14 +72,13 @@ export const RichCard: FC<RichCardProps> = ({
         justify={Justify.Between}
         className={cn("w-full h-full")}
       >
+        {/* Figma Card: 12px between header, description and metadata; 12px
+            between icon and text; 2px between badge and title. */}
         <Stack
           orientation={Orientation.Column}
-          spacing={compact ? Spacing.Xs : Spacing.Md}
+          className={compact ? "gap-1" : "gap-3"}
         >
-          <Stack
-            spacing={compact ? Spacing.Sm : Spacing.Md}
-            align={Align.Center}
-          >
+          <Stack className={compact ? "gap-2" : "gap-3"} align={Align.Center}>
             {IconContent && !compact && (
               <Card
                 compact
@@ -92,24 +91,16 @@ export const RichCard: FC<RichCardProps> = ({
             {IconContent && compact && (
               <IconContent size={Size.Xl} color={BrandColor.Accent} />
             )}
-            <Stack
-              orientation={Orientation.Column}
-              spacing={compact ? Spacing.Xs : Spacing.Sm}
-            >
+            <Stack orientation={Orientation.Column} className="gap-0.5">
               {badge && (
                 <Text
-                  variant={TextVariant.Md}
-                  color={BrandColor.Accent}
-                  className={cn("leading-normal")}
+                  variant={TextVariant.CodeSecondary}
+                  color={TextColor.Accent}
                 >
                   {badge}
                 </Text>
               )}
-              {title && (
-                <Text variant={TextVariant.Lg} className={cn("leading-normal")}>
-                  {title}
-                </Text>
-              )}
+              {title && <Text variant={TextVariant.HeadingMd}>{title}</Text>}
             </Stack>
           </Stack>
           {description && <Description text={description} />}
@@ -129,14 +120,20 @@ export const RichCard: FC<RichCardProps> = ({
  */
 export const Description: FC<{ text: string | string[] }> = ({ text }) => {
   if (typeof text === "string") {
-    return <Text color={TextColor.Secondary}>{text}</Text>;
+    return (
+      <Text variant={TextVariant.BodySecondary} color={TextColor.Secondary}>
+        {text}
+      </Text>
+    );
   }
 
   return (
     <ul className="list-disc list-inside mx-2 marker:text-xs">
       {text.map((line) => (
         <li key={line} className={textColorClass(TextColor.Secondary)}>
-          <Text color={TextColor.Secondary}>{line}</Text>
+          <Text variant={TextVariant.BodySecondary} color={TextColor.Secondary}>
+            {line}
+          </Text>
         </li>
       ))}
     </ul>

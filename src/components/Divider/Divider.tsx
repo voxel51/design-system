@@ -2,8 +2,8 @@ import type { FC, HTMLAttributes } from "react";
 
 import { Text, TextProps } from "@/components/Text";
 import {
-  bgColorClass,
-  getColorCssVar,
+  BorderColor,
+  borderColorClass,
   Orientation,
   TextColor,
   TextVariant,
@@ -159,8 +159,12 @@ const Line: FC<LineProps> = ({
     return (
       <div
         className={cn(
+          // Figma Divider: border/subtle line, border/default dot. Use the
+          // static class rather than a runtime-built `border-[var(...)]`,
+          // which Tailwind's scanner cannot see and the safelist does not
+          // cover without a state prefix.
           "border-dotted",
-          `border-[${getColorCssVar(TextColor.Placeholder)}]`,
+          borderColorClass(BorderColor.Subtle),
           isColumn ? "border-l h-full" : "border-t flex-1"
         )}
         {...props}
@@ -171,7 +175,7 @@ const Line: FC<LineProps> = ({
   return (
     <div
       className={cn(
-        bgColorClass(TextColor.Placeholder),
+        "bg-content-border-subtle",
         isColumn ? "w-px h-full" : "h-px flex-1",
         className
       )}
@@ -184,8 +188,8 @@ const Dot: FC<DotProps> = ({ className, ...props }) => {
   return (
     <div
       className={cn(
-        bgColorClass(TextColor.Placeholder),
-        "rounded-full w-1 h-1 shrink-0 mx-1",
+        "bg-content-border-default",
+        "rounded-full size-[3px] shrink-0 mx-1",
         className
       )}
       {...props}

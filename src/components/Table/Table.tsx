@@ -97,7 +97,7 @@ export const TableCell: FC<TdHTMLAttributes<HTMLTableCellElement>> = ({
       className={cn(
         "px-6 py-3 text-left font-normal",
         textColorClass(TextColor.Primary),
-        textStyles(TextVariant.Md),
+        textStyles(TextVariant.BodySecondary),
         className
       )}
       {...props}
@@ -117,7 +117,7 @@ export const TableHead: FC<ThHTMLAttributes<HTMLTableCellElement>> = ({
       className={cn(
         "px-6 py-3 text-left font-normal",
         textColorClass(TextColor.Secondary),
-        textStyles(TextVariant.Md),
+        textStyles(TextVariant.BodySecondary),
         className
       )}
       {...props}

@@ -13,16 +13,16 @@ import { createPortal } from "react-dom";
 
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
+import { TEXT_STYLES } from "@/styles/text";
 import {
   Anchor,
   BackgroundColor,
   bgColorClass,
-  BorderColor,
-  borderColorClass,
   Radius,
   Shadow,
   TextColor,
   textColorClass,
+  TextVariant,
   ZIndex,
   zIndexStyles,
 } from "@/types";
@@ -82,17 +82,9 @@ function getFixedPosition(rect: DOMRect, anchor: TooltipAnchor): CSSProperties {
   }
 }
 
-const rotatedSquareBorderStyles: Record<TooltipAnchor, string> = {
-  [Anchor.Top]: "border-b border-r",
-  [Anchor.Bottom]: "border-t border-l",
-  [Anchor.Right]: "border-b border-l",
-  [Anchor.Left]: "border-t border-r",
-};
-
-const RotatedSquare: FC<{ anchor: TooltipAnchor; borderClass: string }> = ({
-  anchor,
-  borderClass,
-}) => {
+// Borderless like the panel: with Tailwind's preflight any `border-*` side
+// here would paint a currentColor hairline on the arrow.
+const RotatedSquare: FC<{ anchor: TooltipAnchor }> = ({ anchor }) => {
   return (
     <div
       className={clsx(
@@ -100,8 +92,6 @@ const RotatedSquare: FC<{ anchor: TooltipAnchor; borderClass: string }> = ({
         "w-2 h-2",
         "rotate-45",
         "bg-inherit",
-        rotatedSquareBorderStyles[anchor],
-        borderClass,
         rotatedSquareStyles[anchor]
       )}
     />
@@ -135,6 +125,9 @@ export const Tooltip: FC<TooltipProps> = ({
   children,
   className,
   portal = false,
+  // Figma Tooltip: bg/popover, radius 4, 4/10 padding, no edge. Figma also
+  // shows no shadow, but in light mode bg/popover and bg/card are both white,
+  // so a flat tooltip vanishes over a card; the shadow is kept as the edge.
   shadow = Shadow.Lg,
   wrapperClassName,
   ...props
@@ -168,15 +161,12 @@ export const Tooltip: FC<TooltipProps> = ({
       window.removeEventListener("scroll", handleScroll, { capture: true });
   }, [isOpen]);
 
-  const borderClass = borderColorClass(BorderColor.Subtle);
-
   const panelClasses = cn(
     "w-max",
-    "py-0.75 px-2.5",
-    "border",
-    borderClass,
+    "py-1 px-2.5",
+    TEXT_STYLES[TextVariant.BodySecondary],
     "!overflow-visible",
-    bgColorClass(BackgroundColor.CardNested),
+    bgColorClass(BackgroundColor.Popover),
     textColorClass(TextColor.Primary),
     radiusStyles(Radius.Sm),
     shadowStyles(shadow),
@@ -196,7 +186,7 @@ export const Tooltip: FC<TooltipProps> = ({
       style={positionStyle}
     >
       <div className="max-w-[500px] break-words">{content}</div>
-      <RotatedSquare anchor={anchor} borderClass={borderClass} />
+      <RotatedSquare anchor={anchor} />
     </div>
   );
 
