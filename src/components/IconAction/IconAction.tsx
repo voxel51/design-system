@@ -5,12 +5,12 @@ import type { ButtonHTMLAttributes, FC } from "react";
 import { type IconInput, IconWrapper } from "@/components/Icons";
 import radiusStyles from "@/styles/radius";
 import {
-  BackgroundColor,
   bgColorClass,
   ElementState,
+  IconColor,
+  InteractiveColor,
   Radius,
   Size,
-  TextColor,
   textColorClass,
 } from "@/types";
 
@@ -22,16 +22,19 @@ export interface IconActionProps extends ButtonHTMLAttributes<HTMLButtonElement>
   "aria-label": string;
 }
 
+// Figma BorderlessButton, icon style: 26px round hit area with a 14px glyph
+// at Small, 36px with 16px at Medium (the file says 35), 40px with 20px at
+// Large.
 const sizeStyles: Record<IconActionSize, string> = {
-  [Size.Sm]: "h-[24px] w-[24px]",
-  [Size.Md]: "h-[28px] w-[28px]",
-  [Size.Lg]: "h-[32px] w-[32px]",
+  [Size.Sm]: "size-[26px]",
+  [Size.Md]: "size-9",
+  [Size.Lg]: "size-10",
 };
 
-const iconSizes: Record<IconActionSize, Size> = {
-  [Size.Sm]: Size.Md,
-  [Size.Md]: Size.Md,
-  [Size.Lg]: Size.Lg,
+const iconSizes: Record<IconActionSize, number> = {
+  [Size.Sm]: 14,
+  [Size.Md]: 16,
+  [Size.Lg]: 20,
 };
 
 /**
@@ -60,9 +63,10 @@ export const IconAction: FC<IconActionProps> = ({
       "hover:cursor-pointer disabled:pointer-events-none disabled:opacity-50",
       radiusStyles(Radius.Full),
       sizeStyles[size],
-      textColorClass(TextColor.Secondary),
-      textColorClass(TextColor.Primary, ElementState.Hover),
-      bgColorClass(BackgroundColor.CardNested, ElementState.Hover),
+      textColorClass(IconColor.Default),
+      textColorClass(IconColor.Emphasis, ElementState.Hover),
+      bgColorClass(InteractiveColor.SecondaryHover, ElementState.Hover),
+      bgColorClass(InteractiveColor.SecondaryPressed, ElementState.Active),
       className
     )}
     {...props}

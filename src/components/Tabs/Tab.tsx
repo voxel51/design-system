@@ -72,7 +72,7 @@ export const Tab = forwardRef<HTMLElement, TabProps>(
           <span
             className={cn(
               "ml-1.5 tabular-nums",
-              TEXT_STYLES[TextVariant.Md],
+              TEXT_STYLES[TextVariant.BodySecondary],
               textColorClass(IconColor.Subtle)
             )}
           >
@@ -83,15 +83,19 @@ export const Tab = forwardRef<HTMLElement, TabProps>(
     );
 
     const classes = cn(
-      "flex h-full shrink-0 items-center whitespace-nowrap px-3 py-1.5",
+      // Figma Tab (Medium): 6px above and 10px below a 16/20 medium label,
+      // text/primary when active and text/secondary otherwise. 12px side
+      // padding is kept: the list only adds a 4px gap, which is not enough
+      // on its own to separate adjacent tabs.
+      "flex h-full shrink-0 items-center whitespace-nowrap px-3 pt-1.5 pb-2.5",
       "cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
       "focus-visible:outline-none",
-      TEXT_STYLES[TextVariant.Lg],
+      TEXT_STYLES[TextVariant.HeadingMd],
       transitionPreset(TransitionPreset.Colors),
       active
-        ? cn("font-medium", textColorClass(TextColor.Primary))
+        ? textColorClass(TextColor.Primary)
         : cn(
-            textColorClass(TextColor.Muted),
+            textColorClass(TextColor.Secondary),
             textColorClass(TextColor.Primary, ElementState.Hover)
           ),
       className

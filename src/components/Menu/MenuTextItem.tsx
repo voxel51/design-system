@@ -6,6 +6,7 @@ import radiusStyles from "@/styles/radius";
 import {
   BackgroundColor,
   bgColorClass,
+  InteractiveColor,
   ElementState,
   Radius,
   TextColor,
@@ -56,18 +57,35 @@ export const MenuTextItem: FC<MenuTextItemProps> = ({
           disabled={disabled}
           className={cn(
             "flex w-full items-center",
-            "px-3 py-1.5",
-            radiusStyles(Radius.Sm),
+            // Figma Action Menu Row: 6/10 padding, radius 8 on hover, 15/20
+            // label, bg/card-nested hover; danger rows fill danger-default
+            "px-2.5 py-1.5",
+            radiusStyles(Radius.Lg),
             "cursor-pointer",
             "disabled:opacity-50 disabled:cursor-not-allowed",
-            focus && bgColorClass(BackgroundColor.CardElevated),
-            bgColorClass(BackgroundColor.CardElevated, ElementState.Hover),
+            // A disabled button still matches :hover; keep its hover fill off
+            "disabled:hover:bg-transparent",
+            focus &&
+              bgColorClass(
+                destructive
+                  ? InteractiveColor.DangerDefault
+                  : BackgroundColor.CardNested
+              ),
+            bgColorClass(
+              destructive
+                ? InteractiveColor.DangerDefault
+                : BackgroundColor.CardNested,
+              ElementState.Hover
+            ),
+            // White content on the danger fill, on hover and on keyboard focus
+            destructive && "enabled:hover:[&_*]:text-white",
+            destructive && focus && "[&_*]:text-white",
             className
           )}
           {...props}
         >
           <Text
-            variant={TextVariant.Sm}
+            variant={TextVariant.BodyPrimary}
             color={destructive ? TextColor.Failure : TextColor.Primary}
             className="block min-w-0 truncate"
           >

@@ -5,6 +5,7 @@ import { Checkbox } from "@/components/Checkbox";
 import { DragHandleGripIcon } from "@/components/Icons/DragHandle";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
+import { TEXT_STYLES } from "@/styles/text";
 import {
   BackgroundColor,
   bgColorClass,
@@ -95,11 +96,11 @@ export const ListItem: FC<ListItemProps> = ({
               />
             </span>
           )}
-          <Text variant={TextVariant.Lg}>{primaryContent}</Text>
+          <Text variant={TextVariant.BodyPrimary}>{primaryContent}</Text>
           <div
             className={cn(
               "flex items-center",
-              "text-md/7",
+              TEXT_STYLES[TextVariant.BodySecondary],
               textColorClass(TextColor.Secondary)
             )}
           >

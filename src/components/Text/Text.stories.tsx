@@ -26,6 +26,119 @@ const meta: Meta<typeof Text> = {
 
 type Story = StoryObj<typeof Text>;
 
+const ROLES = [
+  TextVariant.HeadingXl,
+  TextVariant.HeadingLg,
+  TextVariant.HeadingMd,
+  TextVariant.HeadingSm,
+  TextVariant.HeadingXs,
+  TextVariant.BodyPrimary,
+  TextVariant.BodySecondary,
+  TextVariant.BodyTertiary,
+  TextVariant.Label,
+  TextVariant.Caption,
+  TextVariant.CodePrimary,
+  TextVariant.CodeSecondary,
+] as const;
+
+/** Every Figma `type/*` role, in the order the Foundations page lists them. */
+export const TypeScale: Story = {
+  render: () => (
+    <div className="flex flex-col gap-2">
+      {ROLES.map((variant) => (
+        <Text key={variant} variant={variant}>
+          {variant}
+        </Text>
+      ))}
+    </div>
+  ),
+};
+
+export const HeadingXl: Story = {
+  args: {
+    children: generateSentences(1),
+    variant: TextVariant.HeadingXl,
+  },
+};
+
+export const HeadingLg: Story = {
+  args: {
+    children: generateSentences(1),
+    variant: TextVariant.HeadingLg,
+  },
+};
+
+export const HeadingMd: Story = {
+  args: {
+    children: generateSentences(1),
+    variant: TextVariant.HeadingMd,
+  },
+};
+
+export const HeadingSm: Story = {
+  args: {
+    children: generateSentences(1),
+    variant: TextVariant.HeadingSm,
+  },
+};
+
+export const HeadingXs: Story = {
+  args: {
+    children: generateSentences(1),
+    variant: TextVariant.HeadingXs,
+  },
+};
+
+export const BodyPrimary: Story = {
+  args: {
+    children: generateSentences(1),
+    variant: TextVariant.BodyPrimary,
+  },
+};
+
+export const BodySecondary: Story = {
+  args: {
+    children: generateSentences(1),
+    variant: TextVariant.BodySecondary,
+  },
+};
+
+export const BodyTertiary: Story = {
+  args: {
+    children: generateSentences(1),
+    variant: TextVariant.BodyTertiary,
+  },
+};
+
+export const Label: Story = {
+  args: {
+    children: generateSentences(1),
+    variant: TextVariant.Label,
+  },
+};
+
+export const Caption: Story = {
+  args: {
+    children: generateSentences(1),
+    variant: TextVariant.Caption,
+  },
+};
+
+export const CodePrimary: Story = {
+  args: {
+    children: generateSentences(1),
+    variant: TextVariant.CodePrimary,
+  },
+};
+
+export const CodeSecondary: Story = {
+  args: {
+    children: generateSentences(1),
+    variant: TextVariant.CodeSecondary,
+  },
+};
+
+/** @deprecated size-only scale; kept so the visual stays checkable. */
 export const XXS: Story = {
   args: {
     children: generateSentences(1),

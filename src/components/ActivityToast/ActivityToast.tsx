@@ -13,6 +13,7 @@ import {
   borderColorClass,
   Radius,
   textColorClass,
+  TextVariant,
   Variant,
 } from "@/types";
 import { cn } from "@/util/classes";
@@ -69,18 +70,24 @@ export const ActivityToast: FC<ActivityToastProps> = ({
         "py-2 pr-4 pl-3",
         "border",
         borderColorClass(BorderColor.Default),
-        bgColorClass(BackgroundColor.Card),
-        radiusStyles(Radius.Md),
+        // Figma ActivityToast: bg/background, border/default, radius/sm, 18px icon
+        bgColorClass(BackgroundColor.Background),
+        radiusStyles(Radius.Sm),
         className
       )}
       {...props}
     >
       <IconWrapper
         content={icon}
-        className={cn("size-5", textColorClass(textColor(variant)!))}
+        size={18}
+        className={cn("shrink-0", textColorClass(textColor(variant)!))}
       />
 
-      {message && <Text color={textColor(variant)}>{message}</Text>}
+      {message && (
+        <Text variant={TextVariant.BodySecondary} color={textColor(variant)}>
+          {message}
+        </Text>
+      )}
     </div>
   </ToastContainer>
 );

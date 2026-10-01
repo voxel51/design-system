@@ -8,7 +8,8 @@ import {
 } from "react";
 
 import radiusStyles from "@/styles/radius";
-import { Radius, TextColor, textColorClass } from "@/types";
+import { TEXT_STYLES } from "@/styles/text";
+import { Radius, TextColor, textColorClass, TextVariant } from "@/types";
 
 export interface DropzoneProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
@@ -94,12 +95,20 @@ export const Dropzone: FC<DropzoneProps> = ({
       }}
       {...props}
     >
-      <span className={clsx("text-lg/5", textColorClass(TextColor.Primary))}>
+      <span
+        className={clsx(
+          TEXT_STYLES[TextVariant.BodyPrimary],
+          textColorClass(TextColor.Primary)
+        )}
+      >
         {title}
       </span>
       {description && (
         <span
-          className={clsx("text-md/5", textColorClass(TextColor.Secondary))}
+          className={clsx(
+            TEXT_STYLES[TextVariant.BodySecondary],
+            textColorClass(TextColor.Secondary)
+          )}
         >
           {description}
         </span>

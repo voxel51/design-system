@@ -67,7 +67,7 @@ const KnobLabel: FC<{
     <Text
       className={clsx("absolute", "-translate-x-1/2")}
       style={{ left: `${relativeValue * 100}%` }}
-      variant={TextVariant.Sm}
+      variant={TextVariant.HeadingXs}
     >
       {displayValue}
     </Text>
@@ -114,10 +114,10 @@ export const SliderLabels: FC<SliderLabelProps> = ({
       {...props}
     >
       {minLabel && (
-        <Text variant={TextVariant.Sm}>{truncate(min, precision)}</Text>
+        <Text variant={TextVariant.HeadingXs}>{truncate(min, precision)}</Text>
       )}
       {maxLabel && (
-        <Text variant={TextVariant.Sm}>{truncate(max, precision)}</Text>
+        <Text variant={TextVariant.HeadingXs}>{truncate(max, precision)}</Text>
       )}
 
       {value !== undefined &&

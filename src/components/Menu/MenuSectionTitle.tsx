@@ -36,10 +36,11 @@ export const MenuSectionTitle: FC<MenuSectionTitleProps> = ({
   return (
     <div
       role="presentation"
-      className={cn("px-3 pt-2.5 pb-1", className)}
+      // Figma section title: 6/8 padding, label role in text/secondary
+      className={cn("px-2 py-1.5", className)}
       {...props}
     >
-      <Text variant={TextVariant.Label} color={TextColor.Muted}>
+      <Text variant={TextVariant.Label} color={TextColor.Secondary}>
         {children}
       </Text>
     </div>

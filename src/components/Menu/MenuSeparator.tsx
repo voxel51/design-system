@@ -33,7 +33,7 @@ export const MenuSeparator: FC<MenuSeparatorProps> = ({
       role="separator"
       className={cn(
         "my-1 -mx-1.5 border-t",
-        borderColorClass(BorderColor.Subtle),
+        borderColorClass(BorderColor.Default),
         className
       )}
       {...props}

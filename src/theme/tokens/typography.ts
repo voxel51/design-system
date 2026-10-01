@@ -32,6 +32,79 @@ export const lineHeight = {
   52: "52px",
 } as const;
 
+/**
+ * The Figma `type/*` tier — the twelve text roles every text layer in the
+ * design file binds to. Each role pairs a size with its leading and weight,
+ * which is the thing the size-only scale below could never express.
+ *
+ * Read live from the design file on 2026-09-30. `code-secondary` is 11px
+ * there, not the 12px an earlier hand-off table recorded.
+ */
+export const textRole = {
+  "heading-xl": {
+    fontSize: fontSize[23],
+    lineHeight: lineHeight[28],
+    fontWeight: 400,
+  },
+  "heading-lg": {
+    fontSize: fontSize[18],
+    lineHeight: lineHeight[24],
+    fontWeight: 500,
+  },
+  "heading-md": {
+    fontSize: fontSize[16],
+    lineHeight: lineHeight[20],
+    fontWeight: 500,
+  },
+  "heading-sm": {
+    fontSize: fontSize[14],
+    lineHeight: lineHeight[20],
+    fontWeight: 500,
+  },
+  "heading-xs": {
+    fontSize: fontSize[12],
+    lineHeight: lineHeight[16],
+    fontWeight: 500,
+  },
+  "body-primary": {
+    fontSize: fontSize[15],
+    lineHeight: lineHeight[20],
+    fontWeight: 400,
+  },
+  "body-secondary": {
+    fontSize: fontSize[14],
+    lineHeight: lineHeight[20],
+    fontWeight: 400,
+  },
+  "body-tertiary": {
+    fontSize: fontSize[12],
+    lineHeight: lineHeight[16],
+    fontWeight: 400,
+  },
+  label: {
+    fontSize: fontSize[12],
+    lineHeight: lineHeight[16],
+    fontWeight: 600,
+  },
+  caption: {
+    fontSize: fontSize[11],
+    lineHeight: lineHeight[16],
+    fontWeight: 400,
+  },
+  "code-primary": {
+    fontSize: fontSize[12],
+    lineHeight: lineHeight[16],
+    fontWeight: 400,
+  },
+  "code-secondary": {
+    fontSize: fontSize[11],
+    lineHeight: lineHeight[16],
+    fontWeight: 400,
+  },
+} as const;
+
+export type TextRole = keyof typeof textRole;
+
 export const typography = {
   fontFamily: {
     sans: ["Palanquin", "sans-serif"],
@@ -69,6 +142,14 @@ export const typography = {
     xl: fontSize[18],
     xxl: fontSize[23],
   },
+
+  /**
+   * The role tier, emitted as `--text-<role>` plus the `--line-height` and
+   * `--font-weight` sub-properties Tailwind reads for the `text-<role>`
+   * utility. This is what components bind to; the size-only tier above stays
+   * for consumers that have not migrated.
+   */
+  textRole,
 
   /**
    * Figma's `font-weight/*` scale, verbatim.

@@ -8,7 +8,7 @@ import type {
 } from "react";
 import { useContext, useEffect, useRef, useState } from "react";
 
-import { Button } from "@/components/Button";
+import { IconAction } from "@/components/IconAction";
 import { CloseIcon, type IconInput, IconWrapper } from "@/components/Icons";
 import { Stack } from "@/components/Stack";
 import { Text } from "@/components/Text";
@@ -20,16 +20,19 @@ import {
   Anchor,
   BackgroundColor,
   bgColorClass,
+  BorderColor,
+  borderColorClass,
   IconColor,
-  InteractiveColor,
   Justify,
   Orientation,
   Radius,
   Shadow,
   Size,
   Spacing,
+  StatusColor,
   TextColor,
   textColorClass,
+  TextVariant,
   Variant,
 } from "@/types";
 import { cn } from "@/util/classes";
@@ -64,14 +67,8 @@ const variantStyles: Record<ToastVariant, string> = {
 const solidStyles: Partial<Record<ToastVariant, string>> = {
   // Filled surfaces take white, as Button does: Figma has no on-fill text
   // token and the old action-*-text slots were never Figma variables.
-  [Variant.Success]: cn(
-    bgColorClass(InteractiveColor.SuccessDefault),
-    "text-white"
-  ),
-  [Variant.Danger]: cn(
-    bgColorClass(InteractiveColor.DangerDefault),
-    "text-white"
-  ),
+  [Variant.Success]: cn(bgColorClass(StatusColor.ApprovedBg), "text-white"),
+  [Variant.Danger]: cn(bgColorClass(StatusColor.FailedBg), "text-white"),
 };
 
 const onSolidControls = cn(
@@ -185,13 +182,20 @@ export const Toast: FC<ToastProps> = ({
       justify={Justify.Between}
       spacing={Spacing.Lg}
       className={cn(
-        "p-4",
+        // Figma RichToast: 16px padding, radius 8, bg/card with a border/default
+        // edge. BoldToast (solid): 8/12 padding, radius 4, no edge.
+        solidStyle ? "px-3 py-2" : "p-4",
         // NB: use an explicit max-width. In this design system the Tailwind theme remaps the
         // named scales to spacing tokens, so `max-w-md` would resolve to `var(--spacing-md)`
         // (1rem) and clamp the toast to a thin sliver. 28rem (~448px) is the intended cap.
         "w-[90vw] max-w-[28rem]",
-        radiusStyles(Radius.Md),
-        solidStyle ?? bgColorClass(BackgroundColor.CardNested),
+        solidStyle ? radiusStyles(Radius.Sm) : radiusStyles(Radius.Lg),
+        solidStyle ??
+          cn(
+            bgColorClass(BackgroundColor.Card),
+            "border",
+            borderColorClass(BorderColor.Default)
+          ),
         shadowStyles(Shadow.Md),
         className
       )}
@@ -202,22 +206,18 @@ export const Toast: FC<ToastProps> = ({
       {...props}
     >
       {/* Content (icon, title, description) on the left. */}
-      <Stack
-        orientation={Orientation.Column}
-        spacing={Spacing.Sm}
-        className="min-w-0"
-      >
-        <Stack spacing={Spacing.Sm} align={Align.Center}>
+      <Stack orientation={Orientation.Column} className="min-w-0 gap-0.5">
+        <Stack align={Align.Center} className="gap-2.5">
           <IconWrapper
             content={icon}
-            className={clsx(
-              "size-5 shrink-0",
-              !solidStyle && variantStyles[variant]
-            )}
+            size={solidStyle ? 18 : 20}
+            className={clsx("shrink-0", !solidStyle && variantStyles[variant])}
           />
           {title && (
             <Text
-              className="font-semibold"
+              variant={
+                solidStyle ? TextVariant.BodySecondary : TextVariant.HeadingSm
+              }
               color={solidStyle ? "inherit" : TextColor.Primary}
             >
               {title}
@@ -226,6 +226,7 @@ export const Toast: FC<ToastProps> = ({
         </Stack>
         {description && (
           <Text
+            variant={TextVariant.BodySecondary}
             color={solidStyle ? "inherit" : TextColor.Secondary}
             className={clsx(solidStyle && "opacity-85")}
           >
@@ -242,11 +243,10 @@ export const Toast: FC<ToastProps> = ({
         >
           {action}
           {onClose && (
-            <Button
-              variant={Variant.Icon}
+            <IconAction
               size={Size.Sm}
               aria-label="Close"
-              leadingIcon={CloseIcon}
+              icon={CloseIcon}
               onClick={onClose}
               className="shrink-0"
             />

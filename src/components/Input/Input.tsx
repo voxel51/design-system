@@ -28,7 +28,13 @@ import {
 import { cn } from "@/util/classes";
 
 import { InputIcon } from "./InputIcon";
-import { numberInputStyles, paddingLeftStyles, sizeStyles } from "./styles";
+import {
+  numberInputStyles,
+  paddingLeftStyles,
+  paddingStyles,
+  sizeStyles,
+  toInputSize,
+} from "./styles";
 
 type ModifiedInputProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
@@ -107,7 +113,7 @@ export const inputStyle = ({
   error,
   icon,
   radius = Radius.Sm,
-  size = Size.Md,
+  size: requestedSize = Size.Md,
   trailingControl,
 }: {
   borderless?: boolean;
@@ -117,8 +123,9 @@ export const inputStyle = ({
   radius?: InputRadius;
   size?: Size;
   trailingControl?: boolean;
-}): string =>
-  cn(
+}): string => {
+  const size = toInputSize(requestedSize);
+  return cn(
     "w-full",
     // Keep the themed surface color in every state. `bg-transparent` lets the surrounding
     // surface show through; we also pin the autofill background so the browser does not paint a
@@ -136,26 +143,28 @@ export const inputStyle = ({
     !borderless &&
       (error
         ? borderColorClass(BorderColor.Error)
-        : borderColorClass(BorderColor.Default)),
+        : borderColorClass(BorderColor.Input)),
     !borderless &&
       !disabled &&
       !error &&
-      borderColorClass(BorderColor.Hover, ElementState.Hover),
+      borderColorClass(BorderColor.InputHover, ElementState.Hover),
     !borderless &&
       (error
         ? borderColorClass(BorderColor.Error, ElementState.Focus)
-        : borderColorClass(BorderColor.Focus, ElementState.Focus)),
+        : borderColorClass(BorderColor.InputFocus, ElementState.Focus)),
     "disabled:opacity-50",
     "disabled:cursor-not-allowed",
     !borderless &&
       borderColorClass(BorderColor.Disabled, ElementState.Disabled),
     radiusStyles(radius),
     sizeStyles[size],
+    paddingStyles[size],
     // A borderless field has no frame to inset from; its container sets the
     // rhythm, so the text sits close to whatever precedes it
-    icon ? paddingLeftStyles[size] : borderless ? "pl-1.5" : "pl-3",
-    trailingControl ? "pr-10" : borderless ? "pr-1.5" : "pr-3"
+    icon ? paddingLeftStyles[size] : borderless ? "pl-1.5" : undefined,
+    trailingControl ? "pr-10" : borderless ? "pr-1.5" : undefined
   );
+};
 
 /**
  * A basic input component.

@@ -4,6 +4,7 @@ import type { FC, HTMLAttributes, ReactNode } from "react";
 
 import { CheckIcon } from "@/components/Icons";
 import radiusStyles from "@/styles/radius";
+import { TEXT_STYLES } from "@/styles/text";
 import {
   BackgroundColor,
   BorderColor,
@@ -15,6 +16,7 @@ import {
   Radius,
   TextColor,
   textColorClass,
+  TextVariant,
 } from "@/types";
 
 /** One step in a {@link StepRail}. */
@@ -98,7 +100,9 @@ export const StepRail: FC<StepRailProps> = ({
           <>
             <span
               className={clsx(
-                "flex h-[18px] w-[18px] shrink-0 items-center justify-center border text-[11px] leading-none font-medium transition-colors",
+                // Palanquin sets its digits low in the em box, so a 2px bottom pad
+                // centres them optically in the 18px circle
+                "flex h-[18px] w-[18px] shrink-0 items-center justify-center border pb-0.5 text-[11px] leading-none font-medium transition-colors",
                 radiusStyles(Radius.Full),
                 circleStyles[state]
               )}
@@ -109,7 +113,8 @@ export const StepRail: FC<StepRailProps> = ({
           </>
         );
         const labelClass = clsx(
-          "flex items-center gap-[8px] whitespace-nowrap py-[4px] pr-[8px] pl-[4px] text-md/5 transition-colors",
+          "flex items-center gap-[8px] whitespace-nowrap py-[4px] pr-[8px] pl-[4px] transition-colors",
+          TEXT_STYLES[TextVariant.BodySecondary],
           radiusStyles(Radius.Full),
           labelStyles[state]
         );

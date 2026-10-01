@@ -9,11 +9,12 @@ export interface SpinnerProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const sizeStyles: Record<Size, string> = {
-  [Size.Xs]: "size-3",
-  [Size.Sm]: "size-4",
-  [Size.Md]: "size-5",
-  [Size.Lg]: "size-6",
-  [Size.Xl]: "size-7",
+  // Figma LoadingIndicator: XXS 10, SM-XS 14, MD 16, LG 18, XL 22.
+  [Size.Xs]: "size-2.5",
+  [Size.Sm]: "size-3.5",
+  [Size.Md]: "size-4",
+  [Size.Lg]: "size-4.5",
+  [Size.Xl]: "size-[22px]",
 };
 
 /**

@@ -4,6 +4,7 @@ import type { FC, HTMLAttributes, ReactNode } from "react";
 import { IconAction } from "@/components/IconAction";
 import { TextAction } from "@/components/TextAction";
 import radiusStyles from "@/styles/radius";
+import { TEXT_STYLES } from "@/styles/text";
 import {
   BackgroundColor,
   bgColorClass,
@@ -12,6 +13,7 @@ import {
   Size,
   TextColor,
   textColorClass,
+  TextVariant,
 } from "@/types";
 import { formatBytes } from "@/util/formatBytes";
 
@@ -63,7 +65,9 @@ export const UploadList: FC<UploadListProps> = ({
   return (
     <div className={className} {...props}>
       <div className="flex items-center justify-between">
-        <span className={clsx("text-md/5", secondary)}>
+        <span
+          className={clsx(TEXT_STYLES[TextVariant.BodySecondary], secondary)}
+        >
           {summary ??
             `${items.length} file${items.length === 1 ? "" : "s"} · ${formatBytes(bytes)}`}
         </span>
@@ -83,7 +87,10 @@ export const UploadList: FC<UploadListProps> = ({
         {items.map((item) => (
           <li
             key={item.id}
-            className="group flex items-center gap-[12px] py-[10px] text-md/5"
+            className={clsx(
+              "group flex items-center gap-[12px] py-[10px]",
+              TEXT_STYLES[TextVariant.BodySecondary]
+            )}
           >
             <span
               className={clsx(

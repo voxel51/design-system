@@ -6,17 +6,18 @@ import {
 } from "@headlessui/react";
 import type { FC, ReactNode } from "react";
 
-import { Button } from "@/components/Button";
+import { IconAction } from "@/components/IconAction";
 import { CloseIcon } from "@/components/Icons";
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
-import { textStyles } from "@/styles/text";
+import { TEXT_STYLES } from "@/styles/text";
 import {
   BackgroundColor,
   bgColorClass,
   BorderColor,
   borderColorClass,
   Radius,
+  ScrimColor,
   Shadow,
   Size,
   TextColor,
@@ -24,7 +25,6 @@ import {
   TextVariant,
   TransitionDuration,
   transitionDuration,
-  Variant,
   ZIndex,
   zIndexStyles,
 } from "@/types";
@@ -158,7 +158,9 @@ export const Modal: FC<ModalProps> = ({
       )}
       {...props}
     >
-      <DialogBackdrop className="fixed inset-0 bg-black/50" />
+      <DialogBackdrop
+        className={cn("fixed inset-0", bgColorClass(ScrimColor.Default))}
+      />
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <DialogPanel
           data-testid="modal-panel"
@@ -166,7 +168,9 @@ export const Modal: FC<ModalProps> = ({
             "flex w-full flex-col overflow-hidden",
             "max-h-[85vh]",
             sizeStyles[size],
-            bgColorClass(BackgroundColor.CardElevated),
+            // Figma Confirmation Modal: bg/background, border/default, radius 8,
+            // 24px padding, scrim/default backdrop
+            bgColorClass(BackgroundColor.Background),
             // A surface that paints its own background owns its foreground
             // too: without this the panel inherits whatever the host page
             // set, which is black text on the dark card in an app that
@@ -174,7 +178,7 @@ export const Modal: FC<ModalProps> = ({
             textColorClass(TextColor.Primary),
             borderColorClass(BorderColor.Default),
             "border-1",
-            radiusStyles(Radius.Xl),
+            radiusStyles(Radius.Lg),
             shadowStyles(Shadow.Lg),
             className
           )}
@@ -183,15 +187,15 @@ export const Modal: FC<ModalProps> = ({
             <div
               className={cn(
                 "flex flex-none items-center justify-between gap-md",
-                "px-5 pt-5 pb-3"
+                "px-6 pt-6 pb-5"
               )}
             >
               {title ? (
                 <DialogTitle
                   className={cn(
-                    textStyles(TextVariant.Lg),
+                    TEXT_STYLES[TextVariant.HeadingLg],
                     textColorClass(TextColor.Primary),
-                    "text-semibold min-w-0"
+                    "min-w-0"
                   )}
                 >
                   {title}
@@ -200,11 +204,10 @@ export const Modal: FC<ModalProps> = ({
                 <span />
               )}
               {withCloseButton && (
-                <Button
-                  variant={Variant.Icon}
-                  size={Size.Sm}
+                <IconAction
+                  size={Size.Lg}
                   aria-label="Close"
-                  leadingIcon={CloseIcon}
+                  icon={CloseIcon}
                   onClick={onClose}
                   className="shrink-0"
                 />
@@ -213,8 +216,8 @@ export const Modal: FC<ModalProps> = ({
           )}
           <div
             className={cn(
-              "min-h-0 flex-1 overflow-y-auto px-5",
-              title || withCloseButton ? "pb-5" : "py-5",
+              "min-h-0 flex-1 overflow-y-auto px-6",
+              title || withCloseButton ? "pb-6" : "py-6",
               contentClassName
             )}
           >
@@ -223,10 +226,9 @@ export const Modal: FC<ModalProps> = ({
           {footer && (
             <div
               className={cn(
-                "flex flex-none items-center justify-end gap-sm",
-                "border-t-1",
-                borderColorClass(BorderColor.Subtle),
-                "px-5 py-4"
+                // Figma: 16px between actions, 40px above them, no divider
+                "flex flex-none items-center justify-end gap-4",
+                "px-6 pt-4 pb-6"
               )}
             >
               {footer}

@@ -1,6 +1,13 @@
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
-import { BackgroundColor, bgColorClass, Radius, Shadow } from "@/types";
+import {
+  BackgroundColor,
+  bgColorClass,
+  BorderColor,
+  borderColorClass,
+  Radius,
+  Shadow,
+} from "@/types";
 import { cn } from "@/util/classes";
 
 /**
@@ -20,9 +27,13 @@ export const menuPanelStyles = (): string =>
     // exactly 120px. Written as an arbitrary value so the panel width
     // can't be captured by a spacing token again.
     "min-w-[120px] max-w-[20rem]",
+    // Figma ActionMenu: bg/card, border/default edge, radius 6, 6px padding,
+    // soft drop shadow
     "p-1.5",
-    bgColorClass(BackgroundColor.Popover),
-    radiusStyles(Radius.Lg),
-    shadowStyles(Shadow.Lg),
+    bgColorClass(BackgroundColor.Card),
+    "border",
+    borderColorClass(BorderColor.Default),
+    radiusStyles(Radius.Md),
+    shadowStyles(Shadow.Md),
     "focus:outline-none"
   );

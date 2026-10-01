@@ -5,17 +5,18 @@ import { type FC, InputHTMLAttributes } from "react";
 import { CheckIcon, RemoveIcon } from "@/components/Icons";
 import { UnsetHint } from "@/components/UnsetHint";
 import radiusStyles from "@/styles/radius";
-import { TEXT_STYLES } from "@/styles/text";
+import { CAPTION_SIZE, TEXT_STYLES } from "@/styles/text";
 import {
-  InteractiveColor,
   bgColorClass,
   BorderColor,
   borderColorClass,
   ElementState,
+  InteractiveColor,
   Radius,
   Size,
   TextColor,
   textColorClass,
+  TextVariant,
 } from "@/types";
 import { cn } from "@/util/classes";
 
@@ -38,19 +39,23 @@ export interface CheckboxProps extends ModifiedCheckboxProps {
 }
 
 const sizeStyles: Record<Size, string> = {
-  [Size.Xs]: clsx("w-3 h-3"),
-  [Size.Sm]: clsx("w-4 h-4"),
-  [Size.Md]: clsx("w-5 h-5"),
-  [Size.Lg]: clsx("w-6 h-6"),
-  [Size.Xl]: clsx("w-7 h-7"),
+  // Figma Checkbox: 14px Small, 16px Medium, 18px Large.
+  [Size.Xs]: "size-3",
+  [Size.Sm]: "size-3.5",
+  [Size.Md]: "size-4",
+  [Size.Lg]: "size-4.5",
+  [Size.Xl]: "size-5",
 };
 
-const checkmarkSizeStyles: Record<Size, string> = {
-  [Size.Xs]: clsx("checked:after:text-xs"),
-  [Size.Sm]: clsx("checked:after:text-sm"),
-  [Size.Md]: clsx("checked:after:text-base"),
-  [Size.Lg]: clsx("checked:after:text-lg"),
-  [Size.Xl]: clsx("checked:after:text-xl"),
+// Figma labels: 12/16 at Small, 14/20 at Medium, 15/20 at Large.
+// Xs takes the caption size alone: the label sets its own colour below, and the
+// full Caption style's tertiary colour would merge it away.
+const labelStyles: Record<Size, string> = {
+  [Size.Xs]: CAPTION_SIZE,
+  [Size.Sm]: TEXT_STYLES[TextVariant.BodyTertiary],
+  [Size.Md]: TEXT_STYLES[TextVariant.BodySecondary],
+  [Size.Lg]: TEXT_STYLES[TextVariant.BodyPrimary],
+  [Size.Xl]: TEXT_STYLES[TextVariant.BodyPrimary],
 };
 
 /**
@@ -81,6 +86,7 @@ const checkmarkSizeStyles: Record<Size, string> = {
  * @param radius Border radius of the checkbox; this controls the styling of the checkbox itself. See {@link Radius}.
  * @param className `class` overrides to apply to the checkbox.
  * @param labelClassName `class` overrides for custom styling of the checkbox's label.
+ * @param disabled If `true`, disables the checkbox.
  * @param label Label to display alongside the checkbox.
  * @param showUnsetHint If `true`, displays a hint to the user for checkbox interaction.
  * @param props Additional HTML properties to apply to the checkbox.
@@ -90,9 +96,10 @@ export const Checkbox: FC<CheckboxProps> = ({
   onChange,
   indeterminate,
   size = Size.Md,
-  radius = Radius.Xs,
+  radius = Radius.Sm,
   className,
   labelClassName,
+  disabled,
   label,
   showUnsetHint,
   ...props
@@ -100,11 +107,12 @@ export const Checkbox: FC<CheckboxProps> = ({
   const showIndeterminate = !!indeterminate && !checked;
 
   return (
-    <Field className="group flex items-center gap-2">
+    <Field className="group flex items-center gap-2.5">
       <HeadlessCheckbox
         checked={checked}
         onChange={onChange}
         indeterminate={showIndeterminate}
+        disabled={disabled}
         className={cn(
           "group",
           "peer",
@@ -112,17 +120,27 @@ export const Checkbox: FC<CheckboxProps> = ({
           "cursor-pointer",
           "appearance-none",
           "border",
-          borderColorClass(BorderColor.Default),
-          "group-hover:border-action-primary-primary",
+          // Figma: no fill at rest (the icon/emphasis paint is hidden) with an
+          // icon/default edge and interactive/primary-hover on hover (the same
+          // token Radio uses).
+          "bg-transparent",
+          "border-content-icon-default",
+          !disabled && "group-hover:border-content-interactive-primary-hover",
+          // Headless renders a span, so only `data-disabled:` applies here.
+          "data-disabled:cursor-not-allowed",
           radiusStyles(radius),
           sizeStyles[size],
-          checkmarkSizeStyles[size],
-          "disabled:opacity-50",
-          "disabled:cursor-not-allowed",
           bgColorClass(InteractiveColor.PrimaryDefault, ElementState.Checked),
           borderColorClass(BorderColor.Active, ElementState.Checked),
           showIndeterminate &&
-            "bg-[var(--color-brand-primary)]/25 border-[var(--color-brand-primary)] ",
+            clsx(
+              bgColorClass(InteractiveColor.PrimaryDefault),
+              borderColorClass(BorderColor.Active)
+            ),
+          // Disabled is half opacity alone (matches Radio): it dims the edge,
+          // the fill and the mark together, so a checked or indeterminate box
+          // still reads as disabled without a second disabled border token.
+          "data-disabled:opacity-50",
           className
         )}
         {...props}
@@ -146,7 +164,7 @@ export const Checkbox: FC<CheckboxProps> = ({
             // Figma: label is white when enabled, tertiary when disabled
             textColorClass(TextColor.Primary),
             "peer-data-disabled:text-content-text-tertiary",
-            TEXT_STYLES[size],
+            labelStyles[size],
             "cursor-pointer",
             labelClassName
           )}
