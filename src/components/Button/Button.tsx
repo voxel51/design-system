@@ -5,11 +5,12 @@ import {
   ButtonHTMLAttributes,
   Children,
   FC,
+  isValidElement,
 } from "react";
 
 import { type IconInput, IconWrapper } from "@/components/Icons";
 import radiusStyles from "@/styles/radius";
-import { TEXT_STYLES } from "@/styles/text";
+import { CAPTION_SIZE, TEXT_STYLES } from "@/styles/text";
 import {
   InteractiveColor,
   bgColorClass,
@@ -79,7 +80,7 @@ const variantStyles: Record<Variant, string> = {
   // Icon and borderless share BorderlessButton's surface: no fill at rest,
   // interactive/secondary-hover on hover, -pressed while pressed.
   [Variant.Icon]: clsx(
-    "aspect-square min-w-0 shrink-0", // square icon button, not a rectangle
+    "min-w-0 shrink-0", // Figma: 40×36, not a square; padding sets the size
     "bg-transparent",
     bgColorClass(InteractiveColor.SecondaryHover, ElementState.Hover),
     bgColorClass(InteractiveColor.SecondaryPressed, ElementState.Active),
@@ -108,6 +109,9 @@ const variantStyles: Record<Variant, string> = {
 // mode-independent, so one literal is correct in both themes.
 const ON_FILL = "text-white";
 
+// Applied to the <button> itself, not the content wrapper: `disabled:` only
+// matches form elements, so a disabled text colour on an inner div never
+// fires, and `hover:` should cover the padding too.
 const variantTextStyles: Record<Variant, string> = {
   [Variant.Primary]: ON_FILL,
   [Variant.Secondary]: clsx(
@@ -146,13 +150,13 @@ const iconOnlySizeStyles: Record<ButtonSize, string> = {
 // outlined secondary carries a regular one (type/body-secondary, -tertiary).
 // X-small is type/caption for both.
 const filledLabelStyles: Record<ButtonSize, string> = {
-  [Size.Xs]: TEXT_STYLES[TextVariant.Caption],
+  [Size.Xs]: CAPTION_SIZE,
   [Size.Sm]: TEXT_STYLES[TextVariant.HeadingXs],
   [Size.Md]: TEXT_STYLES[TextVariant.HeadingSm],
 };
 
 const outlinedLabelStyles: Record<ButtonSize, string> = {
-  [Size.Xs]: TEXT_STYLES[TextVariant.Caption],
+  [Size.Xs]: CAPTION_SIZE,
   [Size.Sm]: TEXT_STYLES[TextVariant.BodyTertiary],
   [Size.Md]: TEXT_STYLES[TextVariant.BodySecondary],
 };
@@ -200,14 +204,20 @@ export const Button: FC<ButtonProps> = ({
   // A borderless button is a circle unless it carries a text label, in which
   // case it is a pill and aspect-square would inflate it to its width. Only
   // text nodes count as a label: an icon passed as a child keeps the circle.
-  const hasLabel = Children.toArray(children).some(
+  const childArray = Children.toArray(children);
+  const hasLabel = childArray.some(
     (child) =>
       (typeof child === "string" && child.trim() !== "") ||
       typeof child === "number"
   );
+  // With an icon prop set, an element child (e.g. a translation component)
+  // is the label, not a second icon, so it keeps the rectangular padding.
+  const hasElementChild = childArray.some((child) => isValidElement(child));
   const isIconOnly =
     variant === Variant.Icon ||
-    (!hasLabel && (borderless || Boolean(leadingIcon || trailingIcon)));
+    (!hasLabel &&
+      (borderless ||
+        (!hasElementChild && Boolean(leadingIcon || trailingIcon))));
 
   const labelStyles =
     variant === Variant.Secondary ? outlinedLabelStyles : filledLabelStyles;
@@ -224,17 +234,13 @@ export const Button: FC<ButtonProps> = ({
     "disabled:cursor-not-allowed disabled:pointer-events-none",
     isIconOnly ? iconOnlySizeStyles[size] : sizeStyles[size],
     variantStyles[variant],
+    variantTextStyles[variant],
     borderless && "border-0",
     className
   );
 
   const content = (
-    <div
-      className={clsx(
-        "flex flex-nowrap items-center justify-center gap-1.5",
-        variantTextStyles[variant]
-      )}
-    >
+    <div className="flex flex-nowrap items-center justify-center gap-1.5">
       <IconWrapper
         content={leadingIcon}
         size={iconSizes[size]}

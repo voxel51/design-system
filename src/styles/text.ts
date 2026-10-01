@@ -2,6 +2,13 @@ import { TextColor, TextVariant, Variant } from "@/types";
 
 // Each role utility (`text-heading-sm`) carries size, leading and weight from
 // the theme, so a role never needs a `/leading` suffix or a `font-*` class.
+/**
+ * The caption role's size alone. `TEXT_STYLES[TextVariant.Caption]` also
+ * carries the tertiary colour Figma binds to captions; components that set
+ * their own colour (Button, Pill) take the size from here instead.
+ */
+export const CAPTION_SIZE = "text-caption";
+
 export const TEXT_STYLES: Record<TextVariant, string> = {
   [TextVariant.HeadingXl]: "text-heading-xl",
   [TextVariant.HeadingLg]: "text-heading-lg",
@@ -12,7 +19,7 @@ export const TEXT_STYLES: Record<TextVariant, string> = {
   [TextVariant.BodySecondary]: "text-body-secondary",
   [TextVariant.BodyTertiary]: "text-body-tertiary",
   [TextVariant.Label]: "text-label uppercase",
-  [TextVariant.Caption]: "text-caption text-content-text-tertiary",
+  [TextVariant.Caption]: `${CAPTION_SIZE} text-content-text-tertiary`,
   [TextVariant.CodePrimary]: "text-code-primary font-mono",
   [TextVariant.CodeSecondary]: "text-code-secondary font-mono",
 

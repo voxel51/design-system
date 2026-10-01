@@ -11,7 +11,7 @@ import {
 import { Stack } from "@/components/Stack";
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
-import { TEXT_STYLES } from "@/styles/text";
+import { CAPTION_SIZE } from "@/styles/text";
 import {
   BackgroundColor,
   Radius,
@@ -20,7 +20,6 @@ import {
   Size,
   StatusColor,
   TextColor,
-  TextVariant,
   Variant,
 } from "@/types";
 import { bgColorClass, textColorClass } from "@/types/color";
@@ -96,7 +95,7 @@ export const Pill: FC<PillProps> = ({
     <Stack
       className={clsx(
         "items-center gap-1.5",
-        TEXT_STYLES[TextVariant.Caption].split(" ")[0], // size only; colour is the prop
+        CAPTION_SIZE, // colour is the prop
         textColorClass(color),
         bgColorClass(backgroundColor),
         radiusStyles(radius),
