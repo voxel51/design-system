@@ -148,16 +148,9 @@ export const Checkbox: FC<CheckboxProps> = ({
               bgColorClass(InteractiveColor.PrimaryDefault),
               borderColorClass(BorderColor.Active)
             ),
-          // A checked or indeterminate box keeps a fill when disabled, but in
-          // icon/disabled so it reads as disabled rather than as an enabled
-          // checked box.
-          "data-disabled:data-checked:bg-content-icon-disabled",
-          "data-disabled:data-checked:border-content-icon-disabled",
-          showIndeterminate &&
-            clsx(
-              "data-disabled:bg-content-icon-disabled",
-              "data-disabled:border-content-icon-disabled"
-            ),
+          // Half opacity when disabled (matches Radio) so a checked or
+          // indeterminate box still reads as disabled.
+          "data-disabled:opacity-50",
           className
         )}
         {...props}
