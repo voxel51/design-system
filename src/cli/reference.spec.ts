@@ -83,7 +83,30 @@ export declare const Size: {
 };
 export declare const Variant: {
     readonly Primary: "primary";
+};
+export declare const Weight: {
+    readonly Regular: "regular";
+    /**
+     * @deprecated Use Regular.
+     */
+    readonly Normal: "normal";
 };`;
+
+/** Every narrowing shape the components use, plus one the CLI leaves alone. */
+const NARROWED = `import { FC } from 'react';
+import { Size, Variant, Weight } from '../../types';
+export type PickSize = \`\${Extract<Size, Size.Sm | Size.Md>}\`;
+type ListSize = \`\${Size.Lg | Size.Sm}\`;
+export type BareSize = Exclude<Size, Size.Sm>;
+type OldWeight = \`\${Exclude<Weight, Weight.Regular>}\`;
+type Unknown = \`\${(typeof Size)[keyof typeof Size]}\`;
+export interface ThingProps {
+    size?: PickSize;
+}
+/**
+ * A thing. Its Variant is up to you. Stacks at a {@link ZIndex}.
+ */
+export declare const Thing: FC<ThingProps>;`;
 
 describe("summarize", () => {
   it("skips the empty first line and keeps the first sentence", () => {
@@ -142,11 +165,27 @@ describe("findTokenGroups", () => {
   const groups = findTokenGroups([{ path: "tokens.d.ts", text: TOKENS }]);
 
   it("reads string consts, skipping member comments", () => {
-    expect(groups.ZIndex).toEqual(["default", "high"]);
+    expect(groups.ZIndex).toEqual({
+      values: ["default", "high"],
+      deprecated: [],
+      members: { Default: "default", High: "high" },
+    });
   });
 
   it("reads string enums", () => {
-    expect(groups.Legacy).toEqual(["sm", "md"]);
+    expect(groups.Legacy).toEqual({
+      values: ["sm", "md"],
+      deprecated: [],
+      members: { Sm: "sm", Md: "md" },
+    });
+  });
+
+  it("sets deprecated members apart, whatever their comment's shape", () => {
+    expect(groups.Weight).toEqual({
+      values: ["regular"],
+      deprecated: ["normal"],
+      members: { Regular: "regular", Normal: "normal" },
+    });
   });
 
   it("ignores consts that are not all strings, and component object types", () => {
@@ -203,9 +242,40 @@ describe("renderDocs", () => {
   });
 
   it("writes out the token values the declaration mentions", () => {
-    expect(docs).toContain('type Size = "sm" | "md" | "lg" | "xl";');
     expect(docs).toContain('type Variant = "primary";');
     expect(docs).not.toContain("type ZIndex");
+  });
+
+  it("writes out a narrowed alias instead of the group it narrows", () => {
+    expect(docs).toContain('type ButtonSize = "sm" | "md";');
+    expect(docs).not.toContain("type Size =");
+  });
+});
+
+describe("renderDocs with narrowed aliases", () => {
+  const tokens = findTokenGroups([{ path: "tokens.d.ts", text: TOKENS }]);
+  const [thing] = findComponents([{ path: "Thing.d.ts", text: NARROWED }]);
+  const docs = thing ? renderDocs(thing, NARROWED, tokens) : "";
+
+  it("resolves Extract, member lists and an unwrapped Exclude", () => {
+    expect(docs).toContain('type PickSize = "sm" | "md";');
+    expect(docs).toContain('type ListSize = "lg" | "sm";');
+    expect(docs).toContain('type BareSize = "md" | "lg" | "xl";');
+  });
+
+  it("keeps a narrowed group's deprecated values apart", () => {
+    expect(docs).toContain('type OldWeight = never; // deprecated: "normal"');
+    expect(docs).not.toContain("type Weight =");
+  });
+
+  it("leaves other shapes as written, with the group they mention", () => {
+    expect(docs).not.toMatch(/^type Unknown = "/m);
+    expect(docs).toContain('type Size = "sm" | "md" | "lg" | "xl";');
+  });
+
+  it("counts a group the JSDoc links to, but not one it only names", () => {
+    expect(docs).toContain('type ZIndex = "default" | "high";');
+    expect(docs).not.toContain("type Variant =");
   });
 });
 
@@ -231,6 +301,12 @@ describe("renderTokens and lookup", () => {
 
   it("prints one group, case-insensitively", () => {
     expect(renderTokens(tokens, "legacy")).toBe('type Legacy = "sm" | "md";');
+  });
+
+  it("names deprecated values in a comment, out of the union", () => {
+    expect(renderTokens(tokens, "Weight")).toBe(
+      'type Weight = "regular"; // deprecated: "normal"'
+    );
   });
 
   it("finds components case-insensitively and suggests near names", () => {
@@ -268,6 +344,20 @@ const built =
     expect(docs).toContain('type Variant = "primary"');
   });
 
+  it("documents narrowed sizes as the values they allow", () => {
+    const button = run("docs", "Button");
+    const toggle = run("docs", "Toggle");
+
+    expect(button).toContain('type ButtonSize = "xs" | "sm" | "md";');
+    expect(toggle).toContain('type ToggleSize = "sm" | "md";');
+    expect(run("docs", "IconAction")).toContain(
+      'type IconActionSize = "sm" | "md" | "lg";'
+    );
+    for (const docs of [button, toggle]) {
+      expect(docs).not.toContain("type Size =");
+    }
+  });
+
   it("documents Modal's sizes as a const, not an enum", () => {
     const docs = run("docs", "Modal");
 
@@ -284,6 +374,16 @@ const built =
       'type Size = "xs" | "sm" | "md" | "lg" | "xl";\n'
     );
     expect(run("tokens")).toContain("type TextColor = ");
+  });
+
+  it("keeps deprecated text variants out of the union", () => {
+    const [union = "", comment = ""] = run("tokens", "TextVariant").split(
+      " // deprecated: "
+    );
+
+    expect(union).toContain('"body-primary"');
+    expect(union).not.toContain('"md"');
+    expect(comment).toContain('"md"');
   });
 
   it("prints every icon name", () => {

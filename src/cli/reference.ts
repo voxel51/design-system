@@ -27,8 +27,19 @@ export interface DeclarationFile {
   text: string;
 }
 
-/** Token group name → its string values. */
-export type TokenGroups = Record<string, string[]>;
+/** Token string values, current ones apart from deprecated ones. */
+export interface TokenValues {
+  values: string[];
+  deprecated: string[];
+}
+
+/** One token group's values, plus each member's value by member name. */
+export interface TokenGroup extends TokenValues {
+  members: Record<string, string>;
+}
+
+/** Token group name → its values. */
+export type TokenGroups = Record<string, TokenGroup>;
 
 /**
  * An optional JSDoc block followed by a top-level `declare const` or
@@ -61,8 +72,9 @@ const isComponent = (
 const docLines = (doc: string): string[] =>
   doc.split("\n").map((line) => line.replace(/^\s*\* ?/, "").trimEnd());
 
-const stripLinks = (text: string): string =>
-  text.replace(/\{@link\s+([^}\s]+)\s*\}/g, "$1");
+const LINK = /\{@link\s+([^}\s]+)\s*\}/g;
+
+const stripLinks = (text: string): string => text.replace(LINK, "$1");
 
 /**
  * The first sentence of a JSDoc description: the text before the first blank
@@ -202,6 +214,40 @@ const isComment = (line: string): boolean =>
   line.startsWith("/") || line.startsWith("*");
 
 /**
+ * Reads a group body's members with `member`, which captures a member's name
+ * and then its value, sorting each value into current or deprecated by
+ * whether the JSDoc just above it says `@deprecated`. Returns `undefined`
+ * when a non-comment line is not a string member, which means the body is
+ * not a token group.
+ */
+const readMembers = (body: string, member: RegExp): TokenGroup | undefined => {
+  const group: TokenGroup = { values: [], deprecated: [], members: {} };
+  let deprecated = false;
+
+  for (const line of body.split("\n").map((raw) => raw.trim())) {
+    if (!line) continue;
+
+    if (isComment(line)) {
+      deprecated ||= line.includes("@deprecated");
+      continue;
+    }
+
+    const [, name, value] = line.match(member) ?? [];
+
+    if (name === undefined || value === undefined) return undefined;
+
+    group.members[name] = value;
+
+    const list = deprecated ? group.deprecated : group.values;
+
+    if (!list.includes(value)) list.push(value);
+    deprecated = false;
+  }
+
+  return group.values.length || group.deprecated.length ? group : undefined;
+};
+
+/**
  * String-valued token consts (`export declare const Size: { readonly Sm: "sm" … }`)
  * and string enums (`export declare enum X { A = "a" … }`), by name.
  */
@@ -210,30 +256,21 @@ export const findTokenGroups = (files: DeclarationFile[]): TokenGroups => {
 
   for (const { text } of files) {
     for (const [, name, body] of text.matchAll(CONST_GROUP)) {
-      if (!name || body === undefined) continue;
+      const group =
+        body === undefined
+          ? undefined
+          : readMembers(body, /^readonly ([A-Za-z0-9]+): "([^"]*)";$/);
 
-      const members = body
-        .split("\n")
-        .map((line) => line.trim())
-        .filter((line) => line && !isComment(line));
-      const values = members
-        .map((line) => line.match(/^readonly [A-Za-z0-9]+: "([^"]*)";$/)?.[1])
-        .filter((value): value is string => value !== undefined);
-
-      // Every member must be a string literal, or this is not a token group.
-      if (values.length && values.length === members.length) {
-        groups[name] = [...new Set(values)];
-      }
+      if (name && group) groups[name] = group;
     }
 
     for (const [, name, body] of text.matchAll(ENUM_GROUP)) {
-      if (!name || body === undefined) continue;
+      const group =
+        body === undefined
+          ? undefined
+          : readMembers(body, /^([A-Za-z0-9]+) = "([^"]*)",?$/);
 
-      const values = [...body.matchAll(/[A-Za-z0-9]+ = "([^"]*)"/g)]
-        .map((match) => match[1])
-        .filter((value): value is string => value !== undefined);
-
-      if (values.length) groups[name] = values;
+      if (name && group) groups[name] = group;
     }
   }
 
@@ -242,8 +279,79 @@ export const findTokenGroups = (files: DeclarationFile[]): TokenGroups => {
   );
 };
 
-const renderUnion = (name: string, values: readonly string[]): string =>
-  `type ${name} = ${values.map((value) => JSON.stringify(value)).join(" | ")};`;
+/** A one-line type alias: its name, then its type. */
+const ALIAS = /^(?:export )?type ([A-Z][A-Za-z0-9]*) = ([^\n]+);$/gm;
+const NARROWING = /^(Exclude|Extract)<([A-Z][A-Za-z0-9]*), (.+)>$/;
+const MEMBER = /^([A-Z][A-Za-z0-9]*)\.([A-Za-z0-9]+)$/;
+
+/**
+ * The values of a `|` list of members such as `Size.Sm | Size.Md`, each kept
+ * current or deprecated as its own group has it. `undefined` when any part is
+ * not a known member.
+ */
+const readMemberList = (
+  list: string,
+  tokens: TokenGroups
+): TokenValues | undefined => {
+  const result: TokenValues = { values: [], deprecated: [] };
+
+  for (const part of list.split("|").map((raw) => raw.trim())) {
+    const [, groupName = "", memberName = ""] = part.match(MEMBER) ?? [];
+    const group: TokenGroup | undefined = tokens[groupName];
+    const value: string | undefined = group?.members[memberName];
+
+    if (!group || value === undefined) return undefined;
+
+    const into = group.deprecated.includes(value)
+      ? result.deprecated
+      : result.values;
+
+    into.push(value);
+  }
+
+  return result;
+};
+
+/**
+ * The values a narrowed token type allows. Handles the shapes components
+ * use: `Exclude<Size, Size.Lg | Size.Xl>`, `Extract<Size, Size.Sm | Size.Md>`
+ * and `Size.Sm | Size.Md`, each with or without a `` `${…}` `` wrapper.
+ * `undefined` for any other type, which is then left as written.
+ */
+const resolveAlias = (
+  type: string,
+  tokens: TokenGroups
+): TokenValues | undefined => {
+  const inner = type.match(/^`\$\{(.*)\}`$/)?.[1] ?? type;
+  const [, kind, groupName = "", list = ""] = inner.match(NARROWING) ?? [];
+
+  if (!kind) return readMemberList(inner, tokens);
+
+  const group: TokenGroup | undefined = tokens[groupName];
+  const named = readMemberList(list, tokens);
+
+  if (!group || !named) return undefined;
+
+  const listed = [...named.values, ...named.deprecated];
+  const keep = (value: string): boolean =>
+    listed.includes(value) === (kind === "Extract");
+
+  return {
+    values: group.values.filter(keep),
+    deprecated: group.deprecated.filter(keep),
+  };
+};
+
+const quote = (values: readonly string[]): string[] =>
+  values.map((value) => JSON.stringify(value));
+
+/** `type Size = "sm" | "md";`, plus a comment naming any deprecated values. */
+const renderUnion = (
+  name: string,
+  { values, deprecated }: TokenValues
+): string =>
+  `type ${name} = ${quote(values).join(" | ") || "never"};` +
+  (deprecated.length ? ` // deprecated: ${quote(deprecated).join(", ")}` : "");
 
 export const renderList = (
   components: readonly ComponentEntry[],
@@ -270,7 +378,10 @@ export const renderList = (
 
 /**
  * The declaration file for one component, trimmed for reading, with the value
- * of every token type it mentions written out below it.
+ * of every token type it mentions written out below it. A narrowed alias
+ * (`type ButtonSize = Exclude<Size, …>`) is written out as the values it
+ * allows, and the group it narrows only when the file uses that group
+ * elsewhere.
  *
  * @param text The declaring file's contents.
  */
@@ -289,24 +400,39 @@ export const renderDocs = (
     )
     .join("\n")
     .trim();
+  const aliases = [...body.matchAll(ALIAS)].flatMap(([line, name, type]) => {
+    const values = name && type ? resolveAlias(type, tokens) : undefined;
+
+    return values ? [{ line, name, values }] : [];
+  });
+  // Types and `{@link}`s count as using a group. Prose does not ("Size of
+  // the toggle"), and neither does the group a resolved alias narrows.
+  const references = aliases
+    .reduce((rest, { line }) => rest.replace(line, ""), body)
+    .split("\n")
+    .map((line) =>
+      isComment(line.trim())
+        ? [...line.matchAll(LINK)].map(([, target]) => target).join(" ")
+        : line
+    )
+    .join("\n");
   // Groups declared in this file are already visible in `body`.
   const local = Object.keys(findTokenGroups([{ path: entry.file, text }]));
   const used = Object.entries(tokens).filter(
-    ([name]) => !local.includes(name) && new RegExp(`\\b${name}\\b`).test(body)
+    ([name]) =>
+      !local.includes(name) && new RegExp(`\\b${name}\\b`).test(references)
   );
+  const unions = [
+    ...aliases.map(({ name, values }) => renderUnion(name, values)),
+    ...used.map(([name, group]) => renderUnion(name, group)),
+  ];
 
   return [
     `import { ${entry.name} } from "@voxel51/voodo";`,
     `// ${entry.file}`,
     "",
     body,
-    ...(used.length
-      ? [
-          "",
-          "// Token values used above",
-          ...used.map(([name, values]) => renderUnion(name, values)),
-        ]
-      : []),
+    ...(unions.length ? ["", "// Token values used above", ...unions] : []),
   ].join("\n");
 };
 
@@ -314,7 +440,7 @@ export const renderDocs = (
 export const renderTokens = (tokens: TokenGroups, only?: string): string =>
   Object.entries(tokens)
     .filter(([name]) => !only || name.toLowerCase() === only.toLowerCase())
-    .map(([name, values]) => renderUnion(name, values))
+    .map(([name, group]) => renderUnion(name, group))
     .join("\n");
 
 /** Case-insensitive lookup, with near matches when there is no exact one. */
