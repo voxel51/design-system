@@ -102,6 +102,28 @@ describe("Select", () => {
     await waitFor(() => expect(screen.queryByRole("listbox")).toBeNull());
   });
 
+  it("should reopen the list on click after an exclusive pick", async () => {
+    const user = userEvent.setup();
+    render(
+      <Select
+        exclusive
+        portal
+        options={[
+          { id: "a", data: { label: "Alpha" } },
+          { id: "b", data: { label: "Beta" } },
+        ]}
+      />
+    );
+
+    await user.click(screen.getByRole("combobox"));
+    await user.click(await screen.findByText("Alpha"));
+    await waitFor(() => expect(screen.queryByRole("listbox")).toBeNull());
+
+    await user.click(screen.getByRole("combobox"));
+
+    expect(await screen.findByRole("listbox")).toBeInTheDocument();
+  });
+
   it("should keep the list open after a pick when multiple are allowed", async () => {
     const user = userEvent.setup();
     render(
