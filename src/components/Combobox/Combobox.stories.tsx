@@ -2,7 +2,14 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ComponentProps } from "react";
 import { useMemo, useState } from "react";
 
-import { Combobox, type ComboboxOption } from "@voxel51/voodo";
+import {
+  Combobox,
+  type ComboboxOption,
+  StatusDot,
+  Text,
+  TextColor,
+  TextVariant,
+} from "@voxel51/voodo";
 
 const meta: Meta<typeof Combobox> = {
   title: "Components/Combobox",
@@ -91,6 +98,24 @@ export const Loading: Story = {
 export const Empty: Story = {
   render: () => (
     <Demo all={[]} emptyMessage="No matching datasets" placeholder="Search" />
+  ),
+};
+
+export const WithHeader: Story = {
+  render: () => (
+    <Demo
+      all={DATASETS}
+      placeholder="Search"
+      aria-label="Dataset"
+      header={
+        <div className="flex items-start gap-2 px-2 py-1.5">
+          <StatusDot pulse aria-hidden className="mt-1.5" />
+          <Text variant={TextVariant.Sm} color={TextColor.Secondary}>
+            Indexing new samples
+          </Text>
+        </div>
+      }
+    />
   ),
 };
 
