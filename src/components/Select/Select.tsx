@@ -1,4 +1,9 @@
-import { Combobox, ComboboxInput, ComboboxOptions } from "@headlessui/react";
+import {
+  Combobox,
+  ComboboxButton,
+  ComboboxInput,
+  ComboboxOptions,
+} from "@headlessui/react";
 import clsx from "clsx";
 import {
   FC,
@@ -7,6 +12,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
@@ -184,6 +190,7 @@ export const Select: FC<SelectProps> = ({
   const [query, setQuery] = useState("");
   const [selectionState, setSelectionState] = useState<string[]>(() => []);
   const { ref: triggerRef, width: triggerWidth } = useElementSize();
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const filteredOptions = useMemo(
     () =>
@@ -245,6 +252,10 @@ export const Select: FC<SelectProps> = ({
             autoComplete="off" // interferes with dropdown menu
             displayValue={getDisplayValue}
             onChange={(e) => setQuery(e.target.value)}
+            onClick={(e) =>
+              e.currentTarget.getAttribute("aria-expanded") !== "true" &&
+              buttonRef.current?.click()
+            }
             // We'd normally prefer to use `as={Input}`,
             // but ref forwarding doesn't work here properly in react 18,
             // which causes the dropdown menu to be anchored in the wrong place.
@@ -255,18 +266,18 @@ export const Select: FC<SelectProps> = ({
               "w-full pr-8 cursor-pointer"
             )}
           />
-          <span
+          <ComboboxButton
+            ref={buttonRef}
             className={clsx(
-              "pointer-events-none absolute right-2.5 flex items-center",
+              "absolute right-2.5 flex items-center cursor-pointer",
               disabled && "opacity-50"
             )}
-            aria-hidden
           >
             <CaretDownIcon
               size={Size.Sm}
               className={textColorClass(TextColor.Secondary)}
             />
-          </span>
+          </ComboboxButton>
         </div>
 
         <ComboboxOptions
