@@ -85,6 +85,7 @@ import {
   SkeletonColor,
   Spacing,
   Spinner,
+  StatusDot,
   Stack,
   StepRail,
   StatusColor,
@@ -577,6 +578,7 @@ export const Everything = (
         <AddIcon key={c} size="sm" color={c} />
       ))}
       <AddIcon size={Size.Xl} color={BrandColor.Accent} />
+      <StatusDot pulse color={BrandColor.Accent} />
     </Stack>
 
     {/* Pills: size × radius × shadow, plus rich buttons */}
