@@ -9,6 +9,19 @@ on:
   workflow_dispatch:
 
 jobs:
+  commitlint:
+    name: lint commit messages
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: wagoid/commitlint-github-action@v6
+
   run_tests:
     name: run unit tests
     uses: ./.github/workflows/_run_tests.yaml

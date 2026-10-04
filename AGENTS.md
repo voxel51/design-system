@@ -59,7 +59,8 @@ export or token is a breaking change and needs a major version.
 
 Merging to `main` releases to npm and the Storybook site; semantic-release
 derives the version from conventional commits (`feat:` minor, `fix:` and others
-patch, `!` or `BREAKING CHANGE:` major). Never bump `package.json` by hand.
+patch, `!` or `BREAKING CHANGE:` major). Never bump `package.json` by hand. PR
+checks lint every commit message with commitlint.
 
 ## Before opening a PR
 
