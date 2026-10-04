@@ -314,7 +314,7 @@ export const colors = {
         accent: primitives.orange[400],
         background: primitives.neutral[50],
         card: primitives.neutral[0],
-        "card-elevated": primitives.neutral[0],
+        "card-elevated": primitives.neutral[125],
         "card-nested": primitives.neutral[75],
         failure: primitives.red[500],
         info: primitives.blue[500],
