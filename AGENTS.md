@@ -57,8 +57,9 @@ Mark plumbing that consumers should not use `@internal`: it is exempt, and
 an intended API change, and let the diff show it. Renaming or removing an
 export or token is a breaking change and needs a major version.
 
-Merging to `main` publishes nothing. Pushing a `vX.Y.Z` tag publishes to npm
-and to the Storybook site; `package.json` must already carry that version.
+Merging to `main` releases to npm and the Storybook site; semantic-release
+derives the version from conventional commits (`feat:` minor, `fix:` and others
+patch, `!` or `BREAKING CHANGE:` major). Never bump `package.json` by hand.
 
 ## Before opening a PR
 

@@ -1,0 +1,101 @@
+---
+# .releaserc.yaml
+#
+# Every merge to main is released automatically: commit-analyzer derives the
+# version bump from conventional commits, npm bumps package.json and publishes
+# to npm, and git/github commit, tag, and publish the release. See
+# .github/workflows/release.yaml.
+
+branches:
+  - main
+
+plugins:
+  - "@semantic-release/commit-analyzer"
+  - "@semantic-release/release-notes-generator"
+  - "@semantic-release/npm"
+  - "@semantic-release/git"
+  - "@semantic-release/github"
+
+analyzeCommits:
+  - path: "@semantic-release/commit-analyzer"
+    preset: conventionalcommits
+    releaseRules:
+      - breaking: true
+        release: major
+      - type: build
+        release: patch
+      - type: chore
+        release: patch
+      - type: ci
+        release: patch
+      - type: docs
+        release: patch
+      - type: feat
+        release: minor
+      - type: fix
+        release: patch
+      - type: perf
+        release: patch
+      - type: refactor
+        release: patch
+      - type: revert
+        release: patch
+      - type: style
+        release: patch
+      - type: test
+        release: patch
+
+generateNotes:
+  - path: "@semantic-release/release-notes-generator"
+    writerOpts:
+      groupBy: "type"
+      commitGroupsSort: "title"
+      commitsSort: "header"
+    linkCompare: true
+    linkReferences: true
+    preset: conventionalcommits
+    presetConfig:
+      types:
+        - type: "build"
+          section: "CI/CD"
+          hidden: false
+        - type: "chore"
+          section: "Other"
+          hidden: false
+        - type: "ci"
+          section: "CI/CD"
+          hidden: false
+        - type: "docs"
+          section: "Docs"
+          hidden: false
+        - type: "feat"
+          section: "Features"
+          hidden: false
+        - type: "fix"
+          section: "Bug Fixes"
+          hidden: false
+        - type: "perf"
+          section: "Performance"
+        - type: "refactor"
+          section: "Refactor"
+          hidden: false
+        - type: "revert"
+          section: "Reverts"
+        - type: "style"
+          section: "Style"
+        - type: "test"
+          section: "Tests"
+          hidden: false
+
+prepare:
+  - path: "@semantic-release/npm"
+  - path: "@semantic-release/git"
+    assets:
+      - package.json
+      - package-lock.json
+    message: "chore(release): ${nextRelease.version}\n\n${nextRelease.notes}"
+
+github:
+  assets: []
+  successComment: false
+  failComment: false

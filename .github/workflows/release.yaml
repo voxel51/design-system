@@ -1,13 +1,25 @@
 name: release
 
+# Releases automatically on every push to main: semantic-release derives the
+# next version from conventional commits, bumps and commits package.json,
+# publishes to npm, then tags and publishes a GitHub Release. Prerelease tags
+# (vX.Y.Z-<id>.N) still publish on push, under dist-tag <id>.
+
 on:
   push:
+    branches:
+      - main
     tags:
-      - v*
+      - v*-*
+
+concurrency:
+  group: voodo-release-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   run_tests:
     name: run unit tests
+    if: ${{ !startsWith(github.event.head_commit.message, 'chore(release):') }}
     uses: ./.github/workflows/_run_tests.yaml
     with:
       node-version: 24.15.0
@@ -15,7 +27,48 @@ jobs:
     permissions:
       contents: read
 
-  publish:
+  release:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    needs: run_tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
+    outputs:
+      version: ${{ steps.release.outputs.version }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.15.0
+
+      - name: Clean install
+        run: npm ci
+
+      - name: Semantic Release
+        id: release
+        run: |
+          BEFORE=$(node -p "require('./package.json').version")
+          npx semantic-release
+          AFTER=$(node -p "require('./package.json').version")
+          if [[ "$BEFORE" != "$AFTER" ]]; then
+            echo "version=${AFTER}" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GIT_AUTHOR_NAME: voxelbuildbot
+          GIT_AUTHOR_EMAIL: voxelbot@voxel51.com
+          GIT_COMMITTER_NAME: voxelbuildbot
+          GIT_COMMITTER_EMAIL: voxelbot@voxel51.com
+
+  publish_prerelease:
+    if: ${{ startsWith(github.ref, 'refs/tags/') }}
     needs: run_tests
     runs-on: ubuntu-latest
     permissions:
@@ -30,45 +83,36 @@ jobs:
           node-version: 24.15.0
           registry-url: https://registry.npmjs.org
 
-      # Stable tags (vX.Y.Z) must match package.json. Prerelease versions
-      # (vX.Y.Z-<id>.N) never live in source — they are stamped from the tag
-      # and published under dist-tag <id> so `latest` never moves.
-      - name: Resolve version and dist-tag
+      - name: Stamp version and resolve dist-tag
         id: version
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
-          BASE="${VERSION%%-*}"
-          CURRENT=$(node -p "require('./package.json').version")
-          echo "package.json version: ${CURRENT}"
-          echo "tagged version: ${VERSION}"
-          if [[ "$VERSION" == "$BASE" ]]; then
-            test "$CURRENT" = "$VERSION"
-            echo "dist_tag=latest" >> "$GITHUB_OUTPUT"
-          else
-            SUFFIX="${VERSION#*-}"
-            npm version "$VERSION" --no-git-tag-version
-            echo "dist_tag=$(echo "$SUFFIX" | sed -E 's/\.[0-9]+$//')" >> "$GITHUB_OUTPUT"
-          fi
+          SUFFIX="${VERSION#*-}"
+          npm version "$VERSION" --no-git-tag-version
+          echo "dist_tag=$(echo "$SUFFIX" | sed -E 's/\.[0-9]+$//')" >> "$GITHUB_OUTPUT"
 
       - name: Clean install
         run: npm ci
 
       - name: Publish package
-        run: | # NODE_AUTH_TOKEN needs to be cleared explicitly; see https://github.com/actions/setup-node/issues/1440
+        run:
+          | # NODE_AUTH_TOKEN needs to be cleared explicitly; see https://github.com/actions/setup-node/issues/1440
           NODE_AUTH_TOKEN="" npm publish --provenance --access public --tag "${{ steps.version.outputs.dist_tag }}"
 
-  # Storybook builds against the source at the release tag, so the published
-  # site always matches the released package. Stable tags only — a prerelease
-  # from a feature branch must not overwrite the official site.
+  # Storybook builds against the release tag, so the published site always
+  # matches the released package. Stable releases only — a prerelease from a
+  # feature branch must not overwrite the official site.
   publish_storybook:
-    if: ${{ !contains(github.ref_name, '-') }}
-    needs: publish
+    if: ${{ needs.release.outputs.version }}
+    needs: release
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: v${{ needs.release.outputs.version }}
 
       - name: Setup Node
         uses: actions/setup-node@v6
