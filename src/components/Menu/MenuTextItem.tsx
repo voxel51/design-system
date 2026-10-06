@@ -46,7 +46,15 @@ export const MenuTextItem: FC<MenuTextItemProps> = ({
     <Menu.Item
       disabled={disabled}
       nativeButton
-      render={<button type="button" {...props} />}
+      // Consumer handlers ride the rendered button, outside Base UI's own
+      // disabled gate, so a disabled item drops its click handler here
+      render={
+        <button
+          type="button"
+          {...props}
+          onClick={disabled ? undefined : props.onClick}
+        />
+      }
       className={(state) => cn(menuRowStyles(state, destructive), className)}
     >
       <Text

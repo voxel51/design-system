@@ -22,6 +22,7 @@ describe("MenuIconTextItem", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
     expect(screen.getByText("Edit item")).toBeInTheDocument();
     expect(screen.getByText("Make changes")).toBeInTheDocument();
   });
@@ -34,6 +35,7 @@ describe("MenuIconTextItem", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
     expect(screen.getByText("Edit item")).toBeInTheDocument();
   });
 
@@ -45,6 +47,7 @@ describe("MenuIconTextItem", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
     // Exactly one "Fullscreen" — the label. The icon slot must hold an svg,
     // not the raw enum string (the 0.x regression this guards against).
     expect(screen.getByText("Fullscreen")).toBeInTheDocument();
@@ -62,6 +65,7 @@ describe("MenuIconTextItem", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
     expect(screen.getByTestId("custom-icon")).toBeInTheDocument();
   });
 
@@ -74,6 +78,7 @@ describe("MenuIconTextItem", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
     await user.click(screen.getByText("Edit"));
     expect(onClick).toHaveBeenCalledTimes(1);
   });
@@ -86,8 +91,9 @@ describe("MenuIconTextItem", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
     const item = screen.getByText("Edit").closest("button")!;
-    expect(item).toBeDisabled();
+    expect(item).toHaveAttribute("aria-disabled", "true");
   });
 
   it("should not fire onClick when disabled", async () => {
@@ -104,6 +110,7 @@ describe("MenuIconTextItem", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
     await user.click(screen.getByText("Edit"));
     expect(onClick).not.toHaveBeenCalled();
   });
@@ -121,6 +128,7 @@ describe("MenuIconTextItem", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
     expect(screen.getByText("Delete").className).toMatch(/failure/i);
     expect(screen.getByText("Permanent").className).toMatch(/failure/i);
   });
@@ -137,6 +145,7 @@ describe("MenuIconTextItem", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
     const item = screen.getByText("Edit").closest("button")!;
     expect(item).toHaveClass("custom-item");
   });

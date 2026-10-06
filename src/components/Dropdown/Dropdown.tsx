@@ -43,6 +43,10 @@ export namespace DropdownAnchor {
   export type TopEnd = typeof DropdownAnchor.TopEnd;
 }
 
+/** The consumer's trigger element, or the first focusable thing in it. */
+const FOCUSABLE =
+  'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
 /**
  * Props for {@link Dropdown}.
  */
@@ -138,18 +142,31 @@ export const Dropdown: FC<DropdownProps> = ({
 
   // An unportaled panel renders here, inside the trigger's DOM subtree
   const inlineContainer = useRef<HTMLSpanElement>(null);
+  // The trigger is the first focusable element in the root
+  const root = useRef<HTMLDivElement>(null);
+  const focusableTrigger = (): HTMLElement | null =>
+    root.current?.querySelector<HTMLElement>(FOCUSABLE) ?? null;
   const [side, align = "center"] = anchor.split(" ") as [
     "top" | "bottom",
     ("start" | "end")?,
   ];
 
   return (
-    <div className={cn("relative inline-block", className)} {...props}>
+    <div
+      ref={root}
+      className={cn("relative inline-block", className)}
+      {...props}
+    >
       <Menu.Root modal={false} disabled={isDisabled}>
         <Menu.Trigger
           disabled={isDisabled}
           nativeButton={false}
-          render={<div />}
+          // The wrapper only catches presses; the consumer's own element is
+          // the button keyboard and assistive tech see, so the wrapper drops
+          // the role and tab stop Base UI gives a non-native trigger
+          render={(triggerProps) => (
+            <div {...triggerProps} role={undefined} tabIndex={undefined} />
+          )}
           className={isDisabled ? "cursor-not-allowed" : "cursor-pointer"}
         >
           {trigger}
@@ -162,7 +179,13 @@ export const Dropdown: FC<DropdownProps> = ({
             sideOffset={4}
             className={panelZIndex}
           >
-            <Menu.Popup className={menuPanelStyles()}>{children}</Menu.Popup>
+            <Menu.Popup
+              className={menuPanelStyles()}
+              // Return focus to the consumer's trigger, not the wrapper
+              finalFocus={focusableTrigger}
+            >
+              {children}
+            </Menu.Popup>
           </Menu.Positioner>
         </Menu.Portal>
       </Menu.Root>

@@ -55,7 +55,15 @@ export const MenuCheckItem: FC<MenuCheckItemProps> = ({
       // Selecting an option closes the menu, as every other item does
       closeOnClick
       nativeButton
-      render={<button type="button" {...props} />}
+      // Consumer handlers ride the rendered button, outside Base UI's own
+      // disabled gate, so a disabled item drops its click handler here
+      render={
+        <button
+          type="button"
+          {...props}
+          onClick={disabled ? undefined : props.onClick}
+        />
+      }
       className={(state) => cn(menuRowStyles(state), "gap-2", className)}
     >
       {/* Reserved slot so text aligns whether checked or not */}

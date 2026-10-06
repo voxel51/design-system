@@ -85,7 +85,15 @@ export const MenuIconTextItem: FC<MenuIconTextItemProps> = ({
     <Menu.Item
       disabled={disabled}
       nativeButton
-      render={<button type="button" {...props} />}
+      // Consumer handlers ride the rendered button, outside Base UI's own
+      // disabled gate, so a disabled item drops its click handler here
+      render={
+        <button
+          type="button"
+          {...props}
+          onClick={disabled ? undefined : props.onClick}
+        />
+      }
       className={(state) =>
         // Figma Action Menu Row: 8px gap, 16px icon
         cn(menuRowStyles(state, destructive), "gap-2", className)
