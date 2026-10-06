@@ -36,11 +36,18 @@ export const MenuSectionTitle: FC<MenuSectionTitleProps> = ({
   return (
     <div
       role="presentation"
-      // Figma section title: 6/8 padding, label role in text/secondary
-      className={cn("px-2 py-1.5", className)}
+      // Figma ActionMenu title: a 28px row (6/8 padding around a 16px label
+      // line), then 6px before the first item
+      className={cn("px-2 pt-1.5 pb-3", className)}
       {...props}
     >
-      <Text variant={TextVariant.Label} color={TextColor.Secondary}>
+      {/* Block, so the label keeps its own 16px line instead of the
+          parent's taller line box */}
+      <Text
+        variant={TextVariant.Label}
+        color={TextColor.Secondary}
+        className="block"
+      >
         {children}
       </Text>
     </div>
