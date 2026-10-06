@@ -15,8 +15,7 @@
 This library acts as both a design system and a component library for Voxel51's
 front-end applications.
 
-This library adheres to [semantic versioning](https://semver.org/)
-best-practices.
+This library adheres to [semantic versioning](https://semver.org/) best-practices.
 
 ## Installation
 
@@ -28,8 +27,7 @@ npm i @voxel51/voodo
 
 ### Using components
 
-This library exports a number of React components which are consistent with
-VOODO's look and feel.
+This library exports a number of React components which are consistent with VOODO's look and feel.
 
 ```typescript jsx
 import { Button } from "@voxel51/voodo";
@@ -43,9 +41,8 @@ export const Component = () => {
 };
 ```
 
-Note that you'll need to import this library's theme somewhere in your
-application for the components to be styled correctly. See
-[CSS Themes](#css-themes).
+Note that you'll need to import this library's theme somewhere in your application for the components
+to be styled correctly. See [CSS Themes](#css-themes).
 
 ### Using icons
 
@@ -66,11 +63,11 @@ To add a new icon, drop the SVG in `src/img` (PascalCase filename) and run
 
 #### CSS Themes
 
-This library is based on Tailwind and exports a set of CSS variables which
-capture the relevant colors, spacing, typography, etc.
+This library is based on Tailwind and exports a set of CSS variables which capture
+the relevant colors, spacing, typography, etc.
 
-To consume the CSS variables, simply include the following line somewhere in
-your application.
+To consume the CSS variables, simply include the following line somewhere in your
+application.
 
 ```typescript
 import "@voxel51/voodo/theme.css";
@@ -121,17 +118,15 @@ pool, via a script that runs `node` against the installed dependency.
 
 ## Contributing
 
-This library is based on [HeadlessUI](https://headlessui.com/) and
-[Tailwind](https://tailwindcss.com/). Components should be minimal,
-intentional, and adhere strictly to the Voxel51's internal design guidelines.
+This library is based on [HeadlessUI](https://headlessui.com/) and [Tailwind](https://tailwindcss.com/). 
+Components should be minimal, intentional, and adhere strictly to the Voxel51's internal design guidelines.
 
 General rules of thumb:
-
-- Prefer explicit behavior over implicit
-- Provide configurability where appropriate
-    - Ensure top-level properties adhere to design guidelines
-    - Allow for property overrides
-- Prefer small, composable components
+ - Prefer explicit behavior over implicit
+ - Provide configurability where appropriate
+   - Ensure top-level properties adhere to design guidelines
+   - Allow for property overrides
+ - Prefer small, composable components
 
 ## Publishing
 
@@ -156,15 +151,14 @@ git tag v0.2.0-dev-my-feature.0 && git push origin v0.2.0-dev-my-feature.0
 Prerelease versions (`vX.Y.Z-<id>.N`) are stamped from the tag — they never
 appear in `package.json` — and publish under NPM dist-tag `<id>`
 (`npm i @voxel51/voodo@dev-my-feature`), so `latest` only moves on stable
-releases.
+releases. Use `rc` as the id for release candidates from `main` and
+`dev-<branch>` for feature-branch builds.
 
 ## License
 
-Copyright 2024-2026 Voxel51, Inc. Licensed under the
-[Apache License, Version 2.0](LICENSE).
+Copyright 2024-2026 Voxel51, Inc. Licensed under the [Apache License, Version 2.0](LICENSE).
 
 A portion of the icon artwork is derived from
 [Google Material Icons](https://fonts.google.com/icons) (Apache License 2.0),
-extracted via
-[`@mui/icons-material`](https://mui.com/material-ui/material-icons/) (MIT
-License). See [NOTICE](NOTICE) for attribution details.
+extracted via [`@mui/icons-material`](https://mui.com/material-ui/material-icons/)
+(MIT License). See [NOTICE](NOTICE) for attribution details.
