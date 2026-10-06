@@ -16,7 +16,7 @@ import {
 } from "@/types";
 import { cn } from "@/util/classes";
 
-import { menuPanelStyles, menuRowStyles } from "./styles";
+import { actionMenuPanelStyles, menuRowStyles } from "./styles";
 
 const iconNames = new Set<string>(Object.values(IconName));
 
@@ -158,7 +158,9 @@ export const MenuSubmenuItem: FC<MenuSubmenuItemProps> = ({
           alignOffset={PANEL_ALIGN_OFFSET_PX}
           className={zIndexStyles(ZIndex.AboveModal)}
         >
-          <Menu.Popup className={menuPanelStyles()}>{children}</Menu.Popup>
+          <Menu.Popup className={actionMenuPanelStyles()}>
+            {children}
+          </Menu.Popup>
         </Menu.Positioner>
       </Menu.Portal>
     </Menu.SubmenuRoot>

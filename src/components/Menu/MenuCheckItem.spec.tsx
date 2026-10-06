@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { Dropdown, DropdownTrigger } from "@/components/Dropdown";
@@ -61,6 +61,21 @@ describe("MenuCheckItem", () => {
     await screen.findByRole("menu");
     await user.click(screen.getByText("Option"));
     expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("should keep the menu open after it is clicked", async () => {
+    const user = userEvent.setup();
+    render(
+      <Dropdown trigger={trigger}>
+        <MenuCheckItem>Option</MenuCheckItem>
+      </Dropdown>
+    );
+    await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
+    await user.click(screen.getByText("Option"));
+    // a frame for a close to (wrongly) begin
+    await act(() => new Promise((resolve) => window.setTimeout(resolve, 100)));
+    expect(screen.getByRole("menu")).toBeInTheDocument();
   });
 
   it("should be disabled when disabled is true", async () => {

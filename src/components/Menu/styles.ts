@@ -40,6 +40,18 @@ export const menuPanelStyles = (): string =>
   );
 
 /**
+ * Panel styles for action menus (Dropdown, ContextMenu, submenu flyouts):
+ * {@link menuPanelStyles} plus the width floor of the Figma ActionMenu, so a
+ * menu of short labels is not squeezed to a sliver. Lists sized to an input,
+ * such as Combobox, keep the plain panel styles.
+ *
+ * @internal
+ */
+export const actionMenuPanelStyles = (): string =>
+  // Figma ActionMenu: 226px wide (214px rows inside 6px panel padding)
+  cn(menuPanelStyles(), "min-w-[226px]");
+
+/**
  * State the menu row styles depend on. Base UI reports `highlighted` for
  * both pointer hover and keyboard focus, so one flag drives the fill.
  *

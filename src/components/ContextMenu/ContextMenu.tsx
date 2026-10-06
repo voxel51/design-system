@@ -1,7 +1,7 @@
 import { ContextMenu as BaseContextMenu } from "@base-ui/react/context-menu";
 import type { FC, HTMLAttributes, MouseEvent, ReactNode } from "react";
 
-import { menuPanelStyles } from "@/components/Menu";
+import { actionMenuPanelStyles } from "@/components/Menu";
 import { ZIndex, zIndexStyles } from "@/types";
 
 /**
@@ -111,7 +111,7 @@ export const ContextMenu: FC<ContextMenuProps> = ({
       </BaseContextMenu.Trigger>
       <BaseContextMenu.Portal>
         <BaseContextMenu.Positioner className={zIndexStyles(ZIndex.AboveModal)}>
-          <BaseContextMenu.Popup className={menuPanelStyles()}>
+          <BaseContextMenu.Popup className={actionMenuPanelStyles()}>
             {menu}
           </BaseContextMenu.Popup>
         </BaseContextMenu.Positioner>

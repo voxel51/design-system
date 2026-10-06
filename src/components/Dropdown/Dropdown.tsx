@@ -7,7 +7,7 @@ import {
   type ReactNode,
 } from "react";
 
-import { menuPanelStyles } from "@/components/Menu";
+import { actionMenuPanelStyles } from "@/components/Menu";
 import { ZIndex, zIndexStyles } from "@/types";
 import { cn } from "@/util/classes";
 
@@ -180,7 +180,7 @@ export const Dropdown: FC<DropdownProps> = ({
             className={panelZIndex}
           >
             <Menu.Popup
-              className={menuPanelStyles()}
+              className={actionMenuPanelStyles()}
               // Return focus to the consumer's trigger, not the wrapper
               finalFocus={focusableTrigger}
             >

@@ -22,6 +22,7 @@ export interface MenuCheckItemProps extends HTMLAttributes<HTMLButtonElement> {
  * A selectable menu item with a leading checkmark indicator.
  * The checkmark is shown when `checked` is `true`; otherwise the slot is empty
  * but reserved so that text alignment stays consistent across items.
+ * Clicking it runs `onClick` and keeps the menu open.
  *
  * @example
  * ```tsx
@@ -52,8 +53,8 @@ export const MenuCheckItem: FC<MenuCheckItemProps> = ({
     <Menu.CheckboxItem
       checked={!!checked}
       disabled={disabled}
-      // Selecting an option closes the menu, as every other item does
-      closeOnClick
+      // Toggling keeps the menu open so several options can be set in a row
+      closeOnClick={false}
       nativeButton
       // Consumer handlers ride the rendered button, outside Base UI's own
       // disabled gate, so a disabled item drops its click handler here
