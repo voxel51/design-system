@@ -1,22 +1,18 @@
-import { MenuItem } from "@headlessui/react";
+import { Menu } from "@base-ui/react/menu";
 import type { FC, HTMLAttributes, ReactNode } from "react";
 
 import { Icon } from "@/components/Icons";
 import { Text } from "@/components/Text";
-import radiusStyles from "@/styles/radius";
 import {
-  BackgroundColor,
-  bgColorClass,
-  InteractiveColor,
-  ElementState,
   IconColor,
   IconName,
-  Radius,
   TextColor,
   textColorClass,
   TextVariant,
 } from "@/types";
 import { cn } from "@/util/classes";
+
+import { menuRowStyles } from "./styles";
 
 const iconNames = new Set<string>(Object.values(IconName));
 
@@ -86,69 +82,43 @@ export const MenuIconTextItem: FC<MenuIconTextItemProps> = ({
     );
 
   return (
-    <MenuItem disabled={disabled}>
-      {({ focus }) => (
-        <button
-          type="button"
-          disabled={disabled}
-          className={cn(
-            // Figma Action Menu Row: 8px gap, 6/10 padding, radius 8, 16px icon
-            "flex w-full items-center gap-2",
-            "px-2.5 py-1.5",
-            radiusStyles(Radius.Lg),
-            "cursor-pointer text-left",
-            "disabled:opacity-50 disabled:cursor-not-allowed",
-            // A disabled button still matches :hover; keep its hover fill off
-            "disabled:hover:bg-transparent",
-            focus &&
-              bgColorClass(
-                destructive
-                  ? InteractiveColor.DangerDefault
-                  : BackgroundColor.CardNested
-              ),
-            bgColorClass(
-              destructive
-                ? InteractiveColor.DangerDefault
-                : BackgroundColor.CardNested,
-              ElementState.Hover
-            ),
-            // White content on the danger fill, on hover and on keyboard focus
-            destructive && "enabled:hover:[&_*]:text-white",
-            destructive && focus && "[&_*]:text-white",
-            className
-          )}
-          {...props}
-        >
-          <span
-            className={cn(
-              "flex size-5 shrink-0 items-center justify-center",
-              textColorClass(iconColor)
-            )}
-          >
-            {iconContent}
-          </span>
+    <Menu.Item
+      disabled={disabled}
+      nativeButton
+      render={<button type="button" {...props} />}
+      className={(state) =>
+        // Figma Action Menu Row: 8px gap, 16px icon
+        cn(menuRowStyles(state, destructive), "gap-2", className)
+      }
+    >
+      <span
+        className={cn(
+          "flex size-5 shrink-0 items-center justify-center",
+          textColorClass(iconColor)
+        )}
+      >
+        {iconContent}
+      </span>
 
-          <span className="flex flex-col gap-0.5 min-w-0">
-            <Text
-              variant={TextVariant.BodyPrimary}
-              color={textColor}
-              className="block truncate"
-            >
-              {text}
-            </Text>
-            {subtext && (
-              <Text
-                variant={TextVariant.BodyTertiary}
-                color={subtextColor}
-                className="block truncate"
-              >
-                {subtext}
-              </Text>
-            )}
-          </span>
-        </button>
-      )}
-    </MenuItem>
+      <span className="flex flex-col gap-0.5 min-w-0">
+        <Text
+          variant={TextVariant.BodyPrimary}
+          color={textColor}
+          className="block truncate"
+        >
+          {text}
+        </Text>
+        {subtext && (
+          <Text
+            variant={TextVariant.BodyTertiary}
+            color={subtextColor}
+            className="block truncate"
+          >
+            {subtext}
+          </Text>
+        )}
+      </span>
+    </Menu.Item>
   );
 };
 

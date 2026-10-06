@@ -1,18 +1,11 @@
-import { MenuItem } from "@headlessui/react";
+import { Menu } from "@base-ui/react/menu";
 import type { FC, HTMLAttributes } from "react";
 
 import { Text } from "@/components/Text";
-import radiusStyles from "@/styles/radius";
-import {
-  BackgroundColor,
-  bgColorClass,
-  InteractiveColor,
-  ElementState,
-  Radius,
-  TextColor,
-  TextVariant,
-} from "@/types";
+import { TextColor, TextVariant } from "@/types";
 import { cn } from "@/util/classes";
+
+import { menuRowStyles } from "./styles";
 
 /**
  * Props for {@link MenuTextItem}.
@@ -50,50 +43,20 @@ export const MenuTextItem: FC<MenuTextItemProps> = ({
   ...props
 }) => {
   return (
-    <MenuItem disabled={disabled}>
-      {({ focus }) => (
-        <button
-          type="button"
-          disabled={disabled}
-          className={cn(
-            "flex w-full items-center",
-            // Figma Action Menu Row: 6/10 padding, radius 8 on hover, 15/20
-            // label, bg/card-nested hover; danger rows fill danger-default
-            "px-2.5 py-1.5",
-            radiusStyles(Radius.Lg),
-            "cursor-pointer",
-            "disabled:opacity-50 disabled:cursor-not-allowed",
-            // A disabled button still matches :hover; keep its hover fill off
-            "disabled:hover:bg-transparent",
-            focus &&
-              bgColorClass(
-                destructive
-                  ? InteractiveColor.DangerDefault
-                  : BackgroundColor.CardNested
-              ),
-            bgColorClass(
-              destructive
-                ? InteractiveColor.DangerDefault
-                : BackgroundColor.CardNested,
-              ElementState.Hover
-            ),
-            // White content on the danger fill, on hover and on keyboard focus
-            destructive && "enabled:hover:[&_*]:text-white",
-            destructive && focus && "[&_*]:text-white",
-            className
-          )}
-          {...props}
-        >
-          <Text
-            variant={TextVariant.BodyPrimary}
-            color={destructive ? TextColor.Failure : TextColor.Primary}
-            className="block min-w-0 truncate"
-          >
-            {children}
-          </Text>
-        </button>
-      )}
-    </MenuItem>
+    <Menu.Item
+      disabled={disabled}
+      nativeButton
+      render={<button type="button" {...props} />}
+      className={(state) => cn(menuRowStyles(state, destructive), className)}
+    >
+      <Text
+        variant={TextVariant.BodyPrimary}
+        color={destructive ? TextColor.Failure : TextColor.Primary}
+        className="block min-w-0 truncate"
+      >
+        {children}
+      </Text>
+    </Menu.Item>
   );
 };
 

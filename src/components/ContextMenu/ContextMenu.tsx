@@ -1,17 +1,8 @@
-import { Menu, MenuButton, MenuItems } from "@headlessui/react";
-import {
-  useRef,
-  useState,
-  type FC,
-  type HTMLAttributes,
-  type MouseEvent,
-  type ReactNode,
-} from "react";
-import { flushSync } from "react-dom";
+import { ContextMenu as BaseContextMenu } from "@base-ui/react/context-menu";
+import type { FC, HTMLAttributes, MouseEvent, ReactNode } from "react";
 
 import { menuPanelStyles } from "@/components/Menu";
 import { ZIndex, zIndexStyles } from "@/types";
-import { cn } from "@/util/classes";
 
 /**
  * Menu placements used when the cursor is far from any viewport edge
@@ -31,6 +22,9 @@ const ESTIMATED_MENU_SIZE = { width: 320, height: 320 };
  * Pick the menu anchor based on whether the menu would overflow the
  * viewport when opened in the default `bottom start` direction.
  *
+ * @deprecated {@link ContextMenu} no longer uses this: Base UI flips the
+ * menu away from viewport edges itself. Kept only so the export does not
+ * break; it will be removed in the next major version.
  * @internal
  */
 export const pickAnchor = (
@@ -60,9 +54,11 @@ export interface ContextMenuProps extends HTMLAttributes<HTMLDivElement> {
  * click outside, item selection, or Escape.
  *
  * Composes with the Menu primitives ({@link MenuTextItem},
- * {@link MenuIconTextItem}, {@link MenuCheckItem}, {@link MenuSectionTitle},
- * {@link MenuSeparator}). Built on HeadlessUI's `Menu`, so keyboard
- * navigation and ARIA `role="menu"` semantics work out of the box.
+ * {@link MenuIconTextItem}, {@link MenuCheckItem}, {@link MenuSubmenuItem},
+ * {@link MenuSectionTitle}, {@link MenuSeparator}). Built on Base UI's
+ * `ContextMenu`, so keyboard navigation, long-press on touch, and ARIA
+ * `role="menu"` semantics work out of the box. An `onContextMenu` handler
+ * that calls `preventDefault()` keeps the menu closed.
  *
  * @example
  * ```tsx
@@ -96,68 +92,31 @@ export const ContextMenu: FC<ContextMenuProps> = ({
   onContextMenu,
   ...props
 }) => {
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const closeRef = useRef<(() => void) | null>(null);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [anchor, setAnchor] = useState<MenuAnchor>("bottom start");
-
-  const handleContextMenu = (e: MouseEvent<HTMLDivElement>): void => {
-    onContextMenu?.(e);
-    if (e.defaultPrevented || disabled) return;
-    e.preventDefault();
-    closeRef.current?.();
-    const nextAnchor = pickAnchor(
-      { x: e.clientX, y: e.clientY },
-      { width: window.innerWidth, height: window.innerHeight }
-    );
-    flushSync(() => {
-      setPosition({ x: e.clientX, y: e.clientY });
-      setAnchor(nextAnchor);
-    });
-    buttonRef.current?.click();
+  const handleContextMenu = (
+    event: MouseEvent<HTMLDivElement> & { preventBaseUIHandler: () => void }
+  ): void => {
+    onContextMenu?.(event);
+    // A consumer that handled the right-click itself keeps the menu closed
+    if (event.defaultPrevented) event.preventBaseUIHandler();
   };
 
   return (
-    <>
-      <div onContextMenu={handleContextMenu} className={className} {...props}>
+    <BaseContextMenu.Root disabled={disabled}>
+      <BaseContextMenu.Trigger
+        onContextMenu={handleContextMenu}
+        className={className}
+        {...props}
+      >
         {children}
-      </div>
-      <Menu>
-        {({ close }) => {
-          closeRef.current = close;
-          return (
-            <>
-              <MenuButton
-                ref={buttonRef}
-                as="div"
-                aria-hidden
-                tabIndex={-1}
-                style={{
-                  position: "fixed",
-                  left: position.x,
-                  top: position.y,
-                  width: 1,
-                  height: 1,
-                  opacity: 0,
-                  pointerEvents: "none",
-                }}
-              />
-              <MenuItems
-                anchor={{ to: anchor, gap: 0 }}
-                portal
-                modal={false}
-                className={cn(
-                  menuPanelStyles(),
-                  zIndexStyles(ZIndex.AboveModal)
-                )}
-              >
-                {menu}
-              </MenuItems>
-            </>
-          );
-        }}
-      </Menu>
-    </>
+      </BaseContextMenu.Trigger>
+      <BaseContextMenu.Portal>
+        <BaseContextMenu.Positioner className={zIndexStyles(ZIndex.AboveModal)}>
+          <BaseContextMenu.Popup className={menuPanelStyles()}>
+            {menu}
+          </BaseContextMenu.Popup>
+        </BaseContextMenu.Positioner>
+      </BaseContextMenu.Portal>
+    </BaseContextMenu.Root>
   );
 };
 

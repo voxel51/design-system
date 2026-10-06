@@ -1,6 +1,7 @@
-import { Menu, MenuButton, MenuItems } from "@headlessui/react";
+import { Menu } from "@base-ui/react/menu";
 import {
   isValidElement,
+  useRef,
   type FC,
   type HTMLAttributes,
   type ReactNode,
@@ -12,9 +13,9 @@ import { cn } from "@/util/classes";
 
 /**
  * Position of the dropdown menu panel relative to its trigger.
- * Values follow the `<edge> <alignment>` convention used by HeadlessUI's
- * floating UI — e.g. `BottomStart` opens the menu below the trigger,
- * left-aligned with it.
+ * Values follow the `<side> <alignment>` convention — e.g. `BottomStart`
+ * opens the menu below the trigger, left-aligned with it. The menu flips to
+ * the other side when it would leave the viewport.
  */
 export const DropdownAnchor = {
   /** Below the trigger, horizontally centered. */
@@ -48,7 +49,7 @@ export namespace DropdownAnchor {
 export interface DropdownProps extends HTMLAttributes<HTMLDivElement> {
   /**
    * The element that opens the dropdown when clicked.
-   * Rendered inside a `MenuButton` wrapper — any focusable element works.
+   * Rendered inside the menu's trigger wrapper — any focusable element works.
    */
   trigger: ReactNode;
   /** Menu content. Use the Menu* primitive components as children. */
@@ -76,10 +77,11 @@ export interface DropdownProps extends HTMLAttributes<HTMLDivElement> {
 /**
  * A click-triggered menu component. Composes with the Menu primitives:
  * {@link MenuTextItem}, {@link MenuIconTextItem}, {@link MenuCheckItem},
- * {@link MenuSectionTitle}, and {@link MenuSeparator}.
+ * {@link MenuSubmenuItem}, {@link MenuSectionTitle}, and {@link MenuSeparator}.
  *
- * Built on HeadlessUI's `Menu`, providing full keyboard navigation
- * (arrow keys, Enter, Escape) and ARIA `role="menu"` semantics automatically.
+ * Built on Base UI's `Menu`, providing full keyboard navigation
+ * (arrow keys, Enter, Escape, type-ahead), nested menus through
+ * {@link MenuSubmenuItem}, and ARIA `role="menu"` semantics automatically.
  *
  * @example
  * ```tsx
@@ -134,26 +136,37 @@ export const Dropdown: FC<DropdownProps> = ({
     : false;
   const isDisabled = disabled || triggerDisabled;
 
+  // An unportaled panel renders here, inside the trigger's DOM subtree
+  const inlineContainer = useRef<HTMLSpanElement>(null);
+  const [side, align = "center"] = anchor.split(" ") as [
+    "top" | "bottom",
+    ("start" | "end")?,
+  ];
+
   return (
     <div className={cn("relative inline-block", className)} {...props}>
-      <Menu>
-        <MenuButton
-          as="div"
+      <Menu.Root modal={false} disabled={isDisabled}>
+        <Menu.Trigger
           disabled={isDisabled}
+          nativeButton={false}
+          render={<div />}
           className={isDisabled ? "cursor-not-allowed" : "cursor-pointer"}
         >
           {trigger}
-        </MenuButton>
+        </Menu.Trigger>
 
-        <MenuItems
-          anchor={{ to: anchor, gap: 4 }}
-          portal={portal}
-          modal={false}
-          className={cn(menuPanelStyles(), panelZIndex)}
-        >
-          {children}
-        </MenuItems>
-      </Menu>
+        <Menu.Portal container={portal ? undefined : inlineContainer}>
+          <Menu.Positioner
+            side={side}
+            align={align}
+            sideOffset={4}
+            className={panelZIndex}
+          >
+            <Menu.Popup className={menuPanelStyles()}>{children}</Menu.Popup>
+          </Menu.Positioner>
+        </Menu.Portal>
+      </Menu.Root>
+      {!portal && <span ref={inlineContainer} />}
     </div>
   );
 };
