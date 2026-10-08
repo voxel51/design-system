@@ -54,6 +54,7 @@ import {
   Justify,
   LinkColor,
   ListItem,
+  Loader,
   LoadingDots,
   MenuSeparator,
   ModalSize,
@@ -743,6 +744,8 @@ export const Everything = (
     <Popover trigger={<Button>anchor</Button>} open onOpenChange={() => {}}>
       controlled
     </Popover>
+    <Loader type="bars" size="xl" aria-label="Generating" />
+    <Text gradient>Generating</Text>
     <LoadingDots text="Searching" variant="sm" color="text-tertiary" />
     {MENU_ANCHORS.map((a) => (
       <Select

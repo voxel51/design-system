@@ -1,0 +1,81 @@
+/*
+ * Three bars that start as dots and grow in turn, left to right, then reset.
+ * Everything scales from --loader-size (the bars' container, in px), after
+ * the 32-unit Figma frames: 5-unit bars on a 10-unit pitch, 16 units tall.
+ */
+.bars {
+  --unit: calc(var(--loader-size) / 32);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--unit) * 5);
+  box-sizing: border-box;
+  width: var(--loader-size);
+  height: var(--loader-size);
+  padding-inline: calc(var(--unit) * 4);
+}
+
+.bar {
+  flex: none;
+  width: calc(var(--unit) * 5);
+  height: calc(var(--unit) * 5);
+  border-radius: 9999px;
+  background-image: var(--gradient-action-expressive);
+  animation-duration: 2.5s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+.bar:nth-child(1) {
+  animation-name: grow-first;
+}
+
+.bar:nth-child(2) {
+  animation-name: grow-second;
+}
+
+.bar:nth-child(3) {
+  animation-name: grow-third;
+}
+
+@keyframes grow-first {
+  0%,
+  20%,
+  100% {
+    height: calc(var(--unit) * 5);
+  }
+  30%,
+  92% {
+    height: calc(var(--unit) * 16);
+  }
+}
+
+@keyframes grow-second {
+  0%,
+  45%,
+  100% {
+    height: calc(var(--unit) * 5);
+  }
+  55%,
+  92% {
+    height: calc(var(--unit) * 16);
+  }
+}
+
+@keyframes grow-third {
+  0%,
+  70%,
+  100% {
+    height: calc(var(--unit) * 5);
+  }
+  80%,
+  92% {
+    height: calc(var(--unit) * 16);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar {
+    animation: none;
+    height: calc(var(--unit) * 16);
+  }
+}
