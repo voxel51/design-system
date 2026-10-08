@@ -6,12 +6,12 @@ import { type IconInput, IconWrapper } from "@/components/Icons";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
 import {
+  BackgroundColor,
   bgColorClass,
   BorderColor,
   borderColorClass,
   ElementState,
   IconColor,
-  InteractiveColor,
   Radius,
   TextColor,
   textColorClass,
@@ -73,13 +73,14 @@ export const RichButton: FC<RichButtonProps> = ({
     <div
       className={clsx(
         // Figma RichButton: 12/16 padding, radius/sm, border/default at rest,
-        // border/focus on hover, and Active fills solid with
-        // interactive/primary-default behind a border/active edge.
+        // border/focus on hover, and Active tints with bg/selected behind a
+        // border/active edge (node 708:879). `group` lets hover reach the icon.
+        "group",
         "border",
         active
           ? clsx(
               borderColorClass(BorderColor.Active),
-              bgColorClass(InteractiveColor.PrimaryDefault)
+              bgColorClass(BackgroundColor.Selected)
             )
           : borderColorClass(BorderColor.Default),
         !active && borderColorClass(BorderColor.Focus, ElementState.Hover),
@@ -106,9 +107,13 @@ export const RichButton: FC<RichButtonProps> = ({
             size={16}
             className={cn(
               "flex shrink-0",
+              // icon/default at rest, icon/emphasis on hover and when active.
               active
                 ? textColorClass(IconColor.Emphasis)
-                : textColorClass(IconColor.Default)
+                : clsx(
+                    textColorClass(IconColor.Default),
+                    "group-hover:text-content-icon-emphasis"
+                  )
             )}
           />
           {label && <Text variant={TextVariant.HeadingSm}>{label}</Text>}
