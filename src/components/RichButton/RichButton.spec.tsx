@@ -83,24 +83,41 @@ describe("RichButton", () => {
   it("should apply a background color when active", () => {
     render(<RichButton {...defaultProps} active />);
 
-    expect(screen.getByTestId(testId)).toHaveClass(
-      "bg-content-interactive-primary-default"
-    );
+    expect(screen.getByTestId(testId)).toHaveClass("bg-content-bg-selected");
   });
 
   it("should not apply a background color when inactive", () => {
     render(<RichButton {...defaultProps} />);
 
     expect(screen.getByTestId(testId)).not.toHaveClass(
-      "bg-content-interactive-primary-default"
+      "bg-content-bg-selected"
     );
   });
 
-  it("should fill with the primary interactive colour when active", () => {
+  it("should emphasize the icon on hover only while inactive", () => {
+    const { container, rerender } = render(
+      <RichButton {...defaultProps} icon={AddIcon} />
+    );
+    const iconWrapper = () =>
+      container.querySelector("svg")?.parentElement as HTMLElement;
+
+    expect(screen.getByTestId(testId)).toHaveClass("group/rich-button");
+    expect(iconWrapper()).toHaveClass(
+      "group-hover/rich-button:text-content-icon-emphasis"
+    );
+
+    rerender(<RichButton {...defaultProps} icon={AddIcon} active />);
+    expect(iconWrapper()).toHaveClass("text-content-icon-emphasis");
+    expect(iconWrapper()).not.toHaveClass(
+      "group-hover/rich-button:text-content-icon-emphasis"
+    );
+  });
+
+  it("should tint with the selected background when active", () => {
     render(<RichButton {...defaultProps} active style={{ margin: "4px" }} />);
 
     const el = screen.getByTestId(testId);
-    expect(el).toHaveClass("bg-content-interactive-primary-default");
+    expect(el).toHaveClass("bg-content-bg-selected");
     expect(el.style.margin).toBe("4px");
   });
 });
