@@ -1,7 +1,7 @@
 /*
  * Three bars that start as dots and grow in turn, left to right, then reset.
  * Everything scales from --loader-size (the bars' container, in px), after
- * the 32-unit Figma frames: 5-unit bars on a 10-unit pitch, 16 units tall.
+ * the 32-unit Figma frames: 5-unit bars on a 10-unit pitch, 3.5-unit side padding, 16 units tall.
  */
 .bars {
   --unit: calc(var(--loader-size) / 32);
@@ -11,7 +11,8 @@
   box-sizing: border-box;
   width: var(--loader-size);
   height: var(--loader-size);
-  padding-inline: calc(var(--unit) * 4);
+  padding-inline: calc(var(--unit) * 3.5);
+  contain: strict;
 }
 
 .bar {

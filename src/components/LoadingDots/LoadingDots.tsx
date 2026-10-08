@@ -5,7 +5,7 @@ import { cn } from "@/util/classes";
 
 import styles from "./LoadingDots.module.css";
 
-export interface LoadingDotsProps extends TextProps {
+export interface LoadingDotsProps extends Omit<TextProps, "gradient"> {
   /** Optional label the dots trail, e.g. the query being resolved. */
   text?: ReactNode;
 }
