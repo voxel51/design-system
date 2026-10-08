@@ -124,6 +124,14 @@ export const Caption: Story = {
   },
 };
 
+export const Gradient: Story = {
+  args: {
+    children: "Generating AI labels",
+    variant: TextVariant.HeadingLg,
+    gradient: true,
+  },
+};
+
 export const CodePrimary: Story = {
   args: {
     children: generateSentences(1),
