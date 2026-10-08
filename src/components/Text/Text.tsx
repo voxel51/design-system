@@ -19,7 +19,12 @@ export interface TextProps extends HTMLAttributes<HTMLSpanElement> {
    * case.
    */
   color?: ThemeableColor | (string & {});
+  /** Fills the text with the expressive gradient, overriding `color`. */
+  gradient?: boolean;
 }
+
+const GRADIENT_TEXT =
+  "bg-(image:--gradient-action-expressive) bg-clip-text text-transparent";
 
 /**
  * A basic text component.
@@ -39,6 +44,7 @@ export interface TextProps extends HTMLAttributes<HTMLSpanElement> {
  *  height and weight together. Defaults to `"body-primary"`. The size-only
  *  variants (`"xxs"` to `"xxl"`) are deprecated. See {@link TextVariant}.
  * @param color The color of the text. See {@link TextProps.color}.
+ * @param gradient Fills the text with the expressive gradient, overriding `color`.
  * @param children The content wrapped by this component.
  * @param className `class` overrides to apply to the component.
  * @param props Additional HTML properties to apply to the component.
@@ -46,6 +52,7 @@ export interface TextProps extends HTMLAttributes<HTMLSpanElement> {
 export const Text: FC<TextProps> = ({
   variant = TextVariant.BodyPrimary,
   color,
+  gradient,
   children,
   className,
   style,
@@ -61,10 +68,15 @@ export const Text: FC<TextProps> = ({
       // tertiary colour, so an explicit `color` must come after it to win.
       className={cn(
         textStyles(variant),
-        isToken && textColorClass(color),
+        isToken && !gradient && textColorClass(color),
+        gradient && GRADIENT_TEXT,
         className
       )}
-      style={color !== undefined && !isToken ? { color, ...style } : style}
+      style={
+        color !== undefined && !isToken && !gradient
+          ? { color, ...style }
+          : style
+      }
       {...props}
     >
       {children}
