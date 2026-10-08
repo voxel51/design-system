@@ -63,6 +63,7 @@ import KeyIcon from "@/img/Key.svg?react";
 import KeyRoundIcon from "@/img/KeyRound.svg?react";
 import KeySquareIcon from "@/img/KeySquare.svg?react";
 import LabelIcon from "@/img/Label.svg?react";
+import ListChecksIcon from "@/img/ListChecks.svg?react";
 import LockIcon from "@/img/Lock.svg?react";
 import LogsIcon from "@/img/Logs.svg?react";
 import MenuIcon from "@/img/Menu.svg?react";
@@ -187,6 +188,7 @@ export const iconMap: Record<
   [IconName.KeyRound]: KeyRoundIcon,
   [IconName.KeySquare]: KeySquareIcon,
   [IconName.Label]: LabelIcon,
+  [IconName.ListChecks]: ListChecksIcon,
   [IconName.Lock]: LockIcon,
   [IconName.Logs]: LogsIcon,
   [IconName.Menu]: MenuIcon,
