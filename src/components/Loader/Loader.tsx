@@ -44,7 +44,9 @@ const barsSizes: Record<Size, number> = {
  * `"spinner"` is the spinning ring and `"bars"` is three gradient bars that grow
  * in turn, for work done by generative AI. Where {@link LoadingDots} marks a
  * piece of text as still resolving, this stands alone. {@link Spinner} is
- * `<Loader type="spinner" />`.
+ * `<Loader type="spinner" />`. Both announce "Loading" unless `aria-label` says
+ * otherwise. `size` is per type: at `"xs"` the spinner is 10px and the bars are
+ * 16px, so changing only `type` changes the footprint.
  *
  * @example
  * ```tsx
@@ -66,6 +68,7 @@ export const Loader: FC<LoaderProps> = ({
   type === LoaderType.Bars ? (
     <div
       role="status"
+      aria-label="Loading"
       className={cn(styles.bars, className)}
       style={
         { "--loader-size": `${barsSizes[size]}px`, ...style } as CSSProperties
@@ -78,6 +81,8 @@ export const Loader: FC<LoaderProps> = ({
     </div>
   ) : (
     <div
+      role="status"
+      aria-label="Loading"
       className={cn(
         spinnerSizeStyles[size],
         textColorClass(TextColor.Primary),

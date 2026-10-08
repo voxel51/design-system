@@ -24,7 +24,7 @@ export interface TextProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 const GRADIENT_TEXT =
-  "bg-(image:--gradient-action-expressive) bg-clip-text text-transparent";
+  "bg-(image:--gradient-action-expressive) bg-clip-text text-transparent selection:text-[HighlightText]";
 
 /**
  * A basic text component.

@@ -6,7 +6,7 @@ describe("Loader", () => {
   it("should render a spinner by default", () => {
     render(<Loader data-testid="loader" />);
     expect(screen.getByTestId("loader").querySelector("svg")).not.toBeNull();
-    expect(screen.queryByRole("status")).toBeNull();
+    expect(screen.getByRole("status", { name: "Loading" })).toBeTruthy();
   });
 
   it("should render bars as a status region", () => {
