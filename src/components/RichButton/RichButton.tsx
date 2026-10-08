@@ -74,8 +74,9 @@ export const RichButton: FC<RichButtonProps> = ({
       className={clsx(
         // Figma RichButton: 12/16 padding, radius/sm, border/default at rest,
         // border/focus on hover, and Active tints with bg/selected behind a
-        // border/active edge (node 708:879). `group` lets hover reach the icon.
-        "group",
+        // border/active edge (node 708:879). The named group lets hover reach the
+        // icon without reacting to a consumer's own `.group` ancestor.
+        "group/rich-button",
         "border",
         active
           ? clsx(
@@ -112,7 +113,7 @@ export const RichButton: FC<RichButtonProps> = ({
                 ? textColorClass(IconColor.Emphasis)
                 : clsx(
                     textColorClass(IconColor.Default),
-                    "group-hover:text-content-icon-emphasis"
+                    "group-hover/rich-button:text-content-icon-emphasis"
                   )
             )}
           />

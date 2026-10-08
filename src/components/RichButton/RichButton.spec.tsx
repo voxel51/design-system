@@ -101,13 +101,15 @@ describe("RichButton", () => {
     const iconWrapper = () =>
       container.querySelector("svg")?.parentElement as HTMLElement;
 
-    expect(screen.getByTestId(testId)).toHaveClass("group");
-    expect(iconWrapper()).toHaveClass("group-hover:text-content-icon-emphasis");
+    expect(screen.getByTestId(testId)).toHaveClass("group/rich-button");
+    expect(iconWrapper()).toHaveClass(
+      "group-hover/rich-button:text-content-icon-emphasis"
+    );
 
     rerender(<RichButton {...defaultProps} icon={AddIcon} active />);
     expect(iconWrapper()).toHaveClass("text-content-icon-emphasis");
     expect(iconWrapper()).not.toHaveClass(
-      "group-hover:text-content-icon-emphasis"
+      "group-hover/rich-button:text-content-icon-emphasis"
     );
   });
 
