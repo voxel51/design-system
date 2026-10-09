@@ -19,6 +19,7 @@ describe("MenuSeparator", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
     expect(screen.getByRole("separator")).toBeInTheDocument();
   });
 
@@ -32,6 +33,7 @@ describe("MenuSeparator", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
     expect(screen.getByRole("separator")).toHaveClass("custom-separator");
   });
 });
