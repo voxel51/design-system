@@ -7,6 +7,7 @@ import radiusStyles from "@/styles/radius";
 import {
   BackgroundColor,
   bgColorClass,
+  BrandColor,
   ElementState,
   Radius,
   Size,
@@ -73,18 +74,21 @@ export const MenuCheckItem: FC<MenuCheckItemProps> = ({
             "disabled:hover:bg-transparent",
             focus && bgColorClass(BackgroundColor.CardNested),
             bgColorClass(BackgroundColor.CardNested, ElementState.Hover),
+            checked && "bg-brand-primary/10 hover:bg-brand-primary/15",
             className
           )}
           {...props}
         >
           {/* Reserved slot so text aligns whether checked or not */}
           <span className="flex size-4 shrink-0 items-center justify-center">
-            {checked && <CheckIcon size={Size.Sm} color={TextColor.Primary} />}
+            {checked && (
+              <CheckIcon size={Size.Sm} color={BrandColor.Primary} />
+            )}
           </span>
           <Text
             variant={TextVariant.BodyPrimary}
             color={TextColor.Primary}
-            className="block min-w-0 truncate"
+            className={cn("block min-w-0 truncate", checked && "font-medium")}
           >
             {children}
           </Text>
