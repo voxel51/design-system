@@ -81,9 +81,7 @@ export const MenuCheckItem: FC<MenuCheckItemProps> = ({
         >
           {/* Reserved slot so text aligns whether checked or not */}
           <span className="flex size-4 shrink-0 items-center justify-center">
-            {checked && (
-              <CheckIcon size={Size.Sm} color={BrandColor.Primary} />
-            )}
+            {checked && <CheckIcon size={Size.Sm} color={BrandColor.Primary} />}
           </span>
           <Text
             variant={TextVariant.BodyPrimary}
