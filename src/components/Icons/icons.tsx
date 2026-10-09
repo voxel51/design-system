@@ -227,10 +227,12 @@ import LogsSvg from "@/img/Logs.svg?react";
 import MailOutlineSvg from "@/img/MailOutline.svg?react";
 import MapSvg from "@/img/Map.svg?react";
 import MaximizeSvg from "@/img/Maximize.svg?react";
+import Maximize2Svg from "@/img/Maximize2.svg?react";
 import MenuSvg from "@/img/Menu.svg?react";
 import MenuBookSvg from "@/img/MenuBook.svg?react";
 import MessageSquareSvg from "@/img/MessageSquare.svg?react";
 import MinimizeSvg from "@/img/Minimize.svg?react";
+import Minimize2Svg from "@/img/Minimize2.svg?react";
 import MoreHorizSvg from "@/img/MoreHoriz.svg?react";
 import MoreHorizontalSvg from "@/img/MoreHorizontal.svg?react";
 import MoreVertSvg from "@/img/MoreVert.svg?react";
@@ -1254,6 +1256,10 @@ export const MaximizeIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={MaximizeSvg} />
 );
 
+export const Maximize2Icon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={Maximize2Svg} />
+);
+
 export const MenuIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={MenuSvg} />
 );
@@ -1268,6 +1274,10 @@ export const MessageSquareIcon: FC<IconProps> = (props) => (
 
 export const MinimizeIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={MinimizeSvg} />
+);
+
+export const Minimize2Icon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={Minimize2Svg} />
 );
 
 export const MoreHorizIcon: FC<IconProps> = (props) => (
