@@ -26,6 +26,7 @@ export interface SliderProps extends Omit<
 > {
   bare?: boolean;
   debounceDelay?: number;
+  formatLabel?: (value: number) => ReactNode;
   labeled?: boolean;
   knobLabel?: boolean;
   min: number;
@@ -90,8 +91,12 @@ const clamp = (value: number, min: number, max: number): number =>
  * @param debounceDelay Time in milliseconds to debounce `onChange` events.
  *  Set this to `0` for a fully-responsive slider.
  *  Note that internal state updates are *not* debounced, so this value does not affect slider responsiveness.
+ * @param formatLabel Renders the endpoint and knob labels for a value, e.g. a date for a timestamp.
+ *  Defaults to the value truncated to `step`.
  * @param labeled If `true`, displays labels for `min` and `max` slider endpoints.
  * @param knobLabel If `true`, displays labels above all slider knobs.
+ *  With `labeled`, a knob label near an endpoint is hidden so it can't overlap the endpoint label;
+ *  without it, knob labels always show and stay within the track.
  * @param max Maximum slider value
  * @param maxLabel Optional label to display for maximum numeric input.
  * @param min Minimum slider value.
@@ -133,6 +138,7 @@ export const BaseSlider: FC<SliderProps> = ({
   bare,
   className,
   debounceDelay = 200,
+  formatLabel,
   labeled,
   knobLabel,
   max,
@@ -254,6 +260,7 @@ export const BaseSlider: FC<SliderProps> = ({
     >
       {(labeled || knobLabel) && (
         <SliderLabels
+          formatLabel={formatLabel}
           knobLabel={knobLabel}
           min={min}
           minLabel={labeled} // todo - dedicated prop

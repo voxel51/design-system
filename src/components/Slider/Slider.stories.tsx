@@ -42,6 +42,9 @@ const meta: Meta<typeof BaseSlider> = {
       control: "boolean",
       description: "Whether to display labels for the slider knobs",
     },
+    formatLabel: {
+      description: "Renders the endpoint and knob labels for a value",
+    },
     debounceDelay: {
       control: "number",
       description: "Delay in ms to apply debounce for onChange events",
@@ -213,6 +216,35 @@ export const CommittedRange: Story = {
           committed: [{committed[0].toFixed(2)}, {committed[1].toFixed(2)}]
         </div>
       </div>
+    );
+  },
+};
+
+/**
+ * `formatLabel` renders the knob (and endpoint) labels, here a timestamp range
+ * as dates. Without `labeled`, knob labels stay visible at the track ends.
+ */
+export const FormattedKnobLabels: Story = {
+  args: {
+    min: Date.UTC(2024, 0, 1),
+    max: Date.UTC(2024, 11, 31),
+    step: 24 * 60 * 60 * 1000,
+    bare: true,
+    knobLabel: true,
+  },
+  render: (props) => {
+    const [value, setValue] = useState<number[]>(() => [
+      Date.UTC(2024, 0, 1),
+      Date.UTC(2024, 11, 31),
+    ]);
+
+    return (
+      <MultiValueSlider
+        {...props}
+        value={value}
+        onChange={setValue}
+        formatLabel={(v) => new Date(v).toISOString().slice(0, 10)}
+      />
     );
   },
 };

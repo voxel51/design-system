@@ -440,6 +440,49 @@ describe("Slider", () => {
       expect(within(slider).getByText(maxLabel)).toBeInTheDocument();
     });
 
+    it("should render knob labels with formatLabel", () => {
+      render(
+        <MultiValueSlider
+          {...defaultProps}
+          bare
+          knobLabel
+          formatLabel={(v) => `v=${v}`}
+        />
+      );
+
+      const slider = screen.getByTestId(testId);
+      expect(within(slider).getByText("v=0.25")).toBeInTheDocument();
+      expect(within(slider).getByText("v=0.75")).toBeInTheDocument();
+    });
+
+    it("should show knob labels at the track ends without endpoint labels", () => {
+      render(
+        <MultiValueSlider {...defaultProps} bare knobLabel value={[0, 1]} />
+      );
+
+      const slider = screen.getByTestId(testId);
+      expect(within(slider).getByText("0")).toBeInTheDocument();
+      expect(within(slider).getByText("1")).toBeInTheDocument();
+    });
+
+    it("should hide knob labels at the track ends beside endpoint labels", () => {
+      render(
+        <MultiValueSlider
+          {...defaultProps}
+          bare
+          knobLabel
+          labeled
+          formatLabel={(v) => `v=${v}`}
+          value={[0, 0.5]}
+        />
+      );
+
+      const slider = screen.getByTestId(testId);
+      // only the endpoint label for the minimum, not the knob sitting on it
+      expect(within(slider).getAllByText("v=0")).toHaveLength(1);
+      expect(within(slider).getByText("v=0.5")).toBeInTheDocument();
+    });
+
     it("should not render inputs when bare", () => {
       render(<MultiValueSlider {...defaultProps} bare />);
 
