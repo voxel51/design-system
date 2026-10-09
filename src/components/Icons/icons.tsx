@@ -23,6 +23,7 @@ import ArrowCircleDownSvg from "@/img/ArrowCircleDown.svg?react";
 import ArrowCircleLeftOutlinedSvg from "@/img/ArrowCircleLeftOutlined.svg?react";
 import ArrowDownSvg from "@/img/ArrowDown.svg?react";
 import ArrowDownRightSvg from "@/img/ArrowDownRight.svg?react";
+import ArrowDownWideNarrowSvg from "@/img/ArrowDownWideNarrow.svg?react";
 import ArrowDownwardSvg from "@/img/ArrowDownward.svg?react";
 import ArrowDropDownSvg from "@/img/ArrowDropDown.svg?react";
 import ArrowDropUpSvg from "@/img/ArrowDropUp.svg?react";
@@ -32,6 +33,7 @@ import ArrowLeftSvg from "@/img/ArrowLeft.svg?react";
 import ArrowOutwardSvg from "@/img/ArrowOutward.svg?react";
 import ArrowRightSvg from "@/img/ArrowRight.svg?react";
 import ArrowUpSvg from "@/img/ArrowUp.svg?react";
+import ArrowUpNarrowWideSvg from "@/img/ArrowUpNarrowWide.svg?react";
 import ArrowUpRightSvg from "@/img/ArrowUpRight.svg?react";
 import ArrowUpwardSvg from "@/img/ArrowUpward.svg?react";
 import ArticleOutlinedSvg from "@/img/ArticleOutlined.svg?react";
@@ -231,6 +233,7 @@ import NotificationsActiveSvg from "@/img/NotificationsActive.svg?react";
 import OpenInNewSvg from "@/img/OpenInNew.svg?react";
 import OpenWithSvg from "@/img/OpenWith.svg?react";
 import OrchestratorSvg from "@/img/Orchestrator.svg?react";
+import PackageSvg from "@/img/Package.svg?react";
 import PaletteSvg from "@/img/Palette.svg?react";
 import PauseSvg from "@/img/Pause.svg?react";
 import PauseCircleOutlineSvg from "@/img/PauseCircleOutline.svg?react";
@@ -282,6 +285,7 @@ import ShuffleSvg from "@/img/Shuffle.svg?react";
 import SkipNextSvg from "@/img/SkipNext.svg?react";
 import SliderSvg from "@/img/Slider.svg?react";
 import SlidersSvg from "@/img/Sliders.svg?react";
+import SlidersHorizontalSvg from "@/img/SlidersHorizontal.svg?react";
 import SmartToySvg from "@/img/SmartToy.svg?react";
 import SparklesSvg from "@/img/Sparkles.svg?react";
 import SpeedSvg from "@/img/Speed.svg?react";
@@ -412,6 +416,10 @@ export const ArrowDownRightIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ArrowDownRightSvg} />
 );
 
+export const ArrowDownWideNarrowIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ArrowDownWideNarrowSvg} />
+);
+
 export const ArrowDownwardIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ArrowDownwardSvg} />
 );
@@ -446,6 +454,10 @@ export const ArrowRightIcon: FC<IconProps> = (props) => (
 
 export const ArrowUpIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ArrowUpSvg} />
+);
+
+export const ArrowUpNarrowWideIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ArrowUpNarrowWideSvg} />
 );
 
 export const ArrowUpRightIcon: FC<IconProps> = (props) => (
@@ -1244,6 +1256,10 @@ export const OrchestratorIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={OrchestratorSvg} />
 );
 
+export const PackageIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={PackageSvg} />
+);
+
 export const PaletteIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={PaletteSvg} />
 );
@@ -1446,6 +1462,10 @@ export const SliderIcon: FC<IconProps> = (props) => (
 
 export const SlidersIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={SlidersSvg} />
+);
+
+export const SlidersHorizontalIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={SlidersHorizontalSvg} />
 );
 
 export const SmartToyIcon: FC<IconProps> = (props) => (
