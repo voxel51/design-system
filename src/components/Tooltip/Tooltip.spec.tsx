@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 
 import { Tooltip } from "@/components/Tooltip";
 import { randomString } from "@/util/random";
@@ -53,6 +53,34 @@ describe("Tooltip", () => {
     fireEvent.mouseLeave(within(element).getByText(children));
 
     expect(screen.queryByText(content)).not.toBeInTheDocument();
+  });
+
+  it("should stay open while the pointer crosses into an interactive panel", () => {
+    jest.useFakeTimers();
+    const content = randomString();
+    const children = randomString();
+
+    render(
+      <Tooltip {...defaultProps} content={content} interactive>
+        {children}
+      </Tooltip>
+    );
+
+    const element = screen.getByTestId(testId);
+    fireEvent.mouseEnter(within(element).getByText(children));
+    fireEvent.mouseLeave(within(element).getByText(children));
+    act(() => jest.advanceTimersByTime(50));
+    // the pointer reaches the panel, inside the wrapper, before the delay ends
+    fireEvent.mouseEnter(screen.getByText(content));
+    act(() => jest.advanceTimersByTime(500));
+
+    expect(screen.getByText(content)).toBeInTheDocument();
+
+    fireEvent.mouseLeave(element);
+    act(() => jest.advanceTimersByTime(500));
+
+    expect(screen.queryByText(content)).not.toBeInTheDocument();
+    jest.useRealTimers();
   });
 
   it("should apply above-modal z-index to tooltip panel when portal is true", () => {

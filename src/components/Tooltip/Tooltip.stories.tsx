@@ -71,4 +71,18 @@ export const LongTooltip: Story = {
   },
 };
 
+/** The panel stays open while the pointer crosses into it, so its link can be clicked. */
+export const Interactive: Story = {
+  args: {
+    ...commonArgs,
+    anchor: Anchor.Bottom,
+    interactive: true,
+    content: (
+      <Text>
+        {generateSentences(1)} <a href="https://docs.voxel51.com">Read more</a>
+      </Text>
+    ),
+  },
+};
+
 export default meta;

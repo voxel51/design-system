@@ -39,6 +39,7 @@ export interface TooltipProps extends Omit<
 > {
   anchor?: TooltipAnchor;
   content: ReactNode;
+  interactive?: boolean;
   portal?: boolean;
   shadow?: Shadow;
   wrapperClassName?: string;
@@ -52,6 +53,8 @@ const rotatedSquareStyles: Record<TooltipAnchor, string> = {
 };
 
 const ANCHOR_GAP = 8;
+// long enough for the pointer to cross the gap into an interactive panel
+const INTERACTIVE_CLOSE_DELAY = 150;
 
 function getFixedPosition(rect: DOMRect, anchor: TooltipAnchor): CSSProperties {
   switch (anchor) {
@@ -112,6 +115,8 @@ const RotatedSquare: FC<{ anchor: TooltipAnchor }> = ({ anchor }) => {
  * @param content The content of the tooltip.
  * @param children The content which this component wraps; this acts as the element anchor and the hover trigger.
  * @param className `class` overrides to apply to the tooltip panel.
+ * @param interactive If `true`, the tooltip stays open while the pointer moves from the content
+ * into the panel, so the panel can hold links or buttons.
  * @param portal If `true`, renders the tooltip via a React portal into `document.body` with an
  * above-modal z-index, so it escapes ancestor stacking contexts (e.g. inside modals). The default
  * tooltip already uses fixed positioning, so it is never clipped by overflow-hidden/scroll ancestors.
@@ -124,6 +129,7 @@ export const Tooltip: FC<TooltipProps> = ({
   content,
   children,
   className,
+  interactive = false,
   portal = false,
   // Figma Tooltip: bg/popover, radius 4, 4/10 padding, no edge. Figma also
   // shows no shadow, but in light mode bg/popover and bg/card are both white,
@@ -135,8 +141,12 @@ export const Tooltip: FC<TooltipProps> = ({
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [positionStyle, setPositionStyle] = useState<CSSProperties>({});
+  const closeTimer = useRef<number | undefined>(undefined);
+
+  useEffect(() => () => window.clearTimeout(closeTimer.current), []);
 
   const handleMouseEnter = useCallback(() => {
+    window.clearTimeout(closeTimer.current);
     if (wrapperRef.current) {
       const rect = wrapperRef.current.getBoundingClientRect();
       setPositionStyle(getFixedPosition(rect, anchor));
@@ -145,8 +155,15 @@ export const Tooltip: FC<TooltipProps> = ({
   }, [anchor]);
 
   const handleMouseLeave = useCallback(() => {
+    if (interactive) {
+      closeTimer.current = window.setTimeout(
+        () => setIsOpen(false),
+        INTERACTIVE_CLOSE_DELAY
+      );
+      return;
+    }
     setIsOpen(false);
-  }, []);
+  }, [interactive]);
 
   // Dismisses the tooltip when scrolling is detected; the fixed position is
   // measured on open and would otherwise go stale
