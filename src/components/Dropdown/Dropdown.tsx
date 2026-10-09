@@ -43,6 +43,19 @@ export namespace DropdownAnchor {
   export type TopEnd = typeof DropdownAnchor.TopEnd;
 }
 
+/** Base UI positioner side and alignment for each anchor. */
+const ANCHOR_PLACEMENT: Record<
+  DropdownAnchor,
+  { side: "top" | "bottom"; align: "start" | "center" | "end" }
+> = {
+  [DropdownAnchor.Bottom]: { side: "bottom", align: "center" },
+  [DropdownAnchor.BottomStart]: { side: "bottom", align: "start" },
+  [DropdownAnchor.BottomEnd]: { side: "bottom", align: "end" },
+  [DropdownAnchor.Top]: { side: "top", align: "center" },
+  [DropdownAnchor.TopStart]: { side: "top", align: "start" },
+  [DropdownAnchor.TopEnd]: { side: "top", align: "end" },
+};
+
 /** The consumer's trigger element, or the first focusable thing in it. */
 const FOCUSABLE =
   'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
@@ -146,10 +159,7 @@ export const Dropdown: FC<DropdownProps> = ({
   const root = useRef<HTMLDivElement>(null);
   const focusableTrigger = (): HTMLElement | null =>
     root.current?.querySelector<HTMLElement>(FOCUSABLE) ?? null;
-  const [side, align = "center"] = anchor.split(" ") as [
-    "top" | "bottom",
-    ("start" | "end")?,
-  ];
+  const { side, align } = ANCHOR_PLACEMENT[anchor];
 
   return (
     <div
