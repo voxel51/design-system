@@ -242,6 +242,7 @@ import PanelRightCloseSvg from "@/img/PanelRightClose.svg?react";
 import PanelRightOpenSvg from "@/img/PanelRightOpen.svg?react";
 import PauseSvg from "@/img/Pause.svg?react";
 import PauseCircleOutlineSvg from "@/img/PauseCircleOutline.svg?react";
+import PenLineSvg from "@/img/PenLine.svg?react";
 import PencilSvg from "@/img/Pencil.svg?react";
 import PercentSvg from "@/img/Percent.svg?react";
 import PersonAddAltSvg from "@/img/PersonAddAlt.svg?react";
@@ -273,6 +274,7 @@ import RuleSvg from "@/img/Rule.svg?react";
 import RuleFolderSvg from "@/img/RuleFolder.svg?react";
 import SaveSvg from "@/img/Save.svg?react";
 import SaveOutlinedSvg from "@/img/SaveOutlined.svg?react";
+import ScanEyeSvg from "@/img/ScanEye.svg?react";
 import ScatterPlotSvg from "@/img/ScatterPlot.svg?react";
 import SchoolSvg from "@/img/School.svg?react";
 import SearchSvg from "@/img/Search.svg?react";
@@ -1299,6 +1301,10 @@ export const PauseCircleOutlineIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={PauseCircleOutlineSvg} />
 );
 
+export const PenLineIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={PenLineSvg} />
+);
+
 export const PencilIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={PencilSvg} />
 );
@@ -1421,6 +1427,10 @@ export const SaveIcon: FC<IconProps> = (props) => (
 
 export const SaveOutlinedIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={SaveOutlinedSvg} />
+);
+
+export const ScanEyeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ScanEyeSvg} />
 );
 
 export const ScatterPlotIcon: FC<IconProps> = (props) => (
