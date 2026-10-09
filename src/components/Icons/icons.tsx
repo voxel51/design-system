@@ -341,6 +341,8 @@ import WorkflowSvg from "@/img/Workflow.svg?react";
 import WorkspacesSvg from "@/img/Workspaces.svg?react";
 import ZapSvg from "@/img/Zap.svg?react";
 import ZoomSvg from "@/img/Zoom.svg?react";
+import ZoomInSvg from "@/img/ZoomIn.svg?react";
+import ZoomOutSvg from "@/img/ZoomOut.svg?react";
 
 import { IconBase, type IconProps } from "./IconBase";
 
@@ -1686,4 +1688,12 @@ export const ZapIcon: FC<IconProps> = (props) => (
 
 export const ZoomIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ZoomSvg} />
+);
+
+export const ZoomInIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ZoomInSvg} />
+);
+
+export const ZoomOutIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ZoomOutSvg} />
 );
