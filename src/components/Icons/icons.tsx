@@ -255,6 +255,7 @@ import RemoveSvg from "@/img/Remove.svg?react";
 import RemoveCircleOutlineSvg from "@/img/RemoveCircleOutline.svg?react";
 import ReplaySvg from "@/img/Replay.svg?react";
 import ReportProblemSvg from "@/img/ReportProblem.svg?react";
+import ResizeSvg from "@/img/Resize.svg?react";
 import RestartAltSvg from "@/img/RestartAlt.svg?react";
 import RestartAltOutlinedSvg from "@/img/RestartAltOutlined.svg?react";
 import ReviewSvg from "@/img/Review.svg?react";
@@ -335,6 +336,7 @@ import WestSvg from "@/img/West.svg?react";
 import WorkflowSvg from "@/img/Workflow.svg?react";
 import WorkspacesSvg from "@/img/Workspaces.svg?react";
 import ZapSvg from "@/img/Zap.svg?react";
+import ZoomSvg from "@/img/Zoom.svg?react";
 
 import { IconBase, type IconProps } from "./IconBase";
 
@@ -1338,6 +1340,10 @@ export const ReportProblemIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ReportProblemSvg} />
 );
 
+export const ResizeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ResizeSvg} />
+);
+
 export const RestartAltIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={RestartAltSvg} />
 );
@@ -1656,4 +1662,8 @@ export const WorkspacesIcon: FC<IconProps> = (props) => (
 
 export const ZapIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ZapSvg} />
+);
+
+export const ZoomIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ZoomSvg} />
 );
