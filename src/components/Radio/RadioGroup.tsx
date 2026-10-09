@@ -10,8 +10,8 @@ export interface RadioOption {
   value: string;
   label: string;
   disabled?: boolean;
-  /** Additional HTML properties for this option's {@link Radio} alone */
-  radioProps?: RadioProps;
+  /** Additional HTML properties for this option's row alone */
+  fieldProps?: RadioProps["fieldProps"];
 }
 
 export type RadioGroupSize = `${Exclude<Size, Size.Xs>}`;
@@ -76,8 +76,7 @@ export interface RadioGroupProps extends Omit<
  * @param size Deprecated; Figma draws a single radio size, so the wrapped {@link Radio} components ignore it.
  * @param disabled If `true`, disables the radio group.
  * @param className `class` overrides to apply to the radio group.
- * @param radioProps Additional HTML properties to apply to each of the wrapped {@link Radio} components;
- *  an option's own `radioProps` add to them.
+ * @param radioProps Additional HTML properties to apply to each of the wrapped {@link Radio} components.
  * @param props Additional HTML properties to apply to the component.
  */
 export const RadioGroup: FC<RadioGroupProps> = ({
@@ -115,7 +114,7 @@ export const RadioGroup: FC<RadioGroupProps> = ({
           size={size}
           disabled={disabled || option.disabled}
           {...radioProps}
-          {...option.radioProps}
+          fieldProps={option.fieldProps}
         />
       ))}
     </HeadlessRadioGroup>

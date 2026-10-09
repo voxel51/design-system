@@ -1,5 +1,5 @@
 import { Field, Radio as HeadlessRadio, Label } from "@headlessui/react";
-import { type FC, InputHTMLAttributes } from "react";
+import { type FC, type HTMLAttributes, InputHTMLAttributes } from "react";
 
 import { textStyles } from "@/styles/text.ts";
 import { Size, TextColor, textColorClass, TextVariant } from "@/types";
@@ -23,6 +23,8 @@ export interface RadioProps extends ModifiedRadioProps {
   size?: Size;
   className?: string;
   labelClassName?: string;
+  /** Additional HTML properties for the row holding the radio and its label */
+  fieldProps?: HTMLAttributes<HTMLDivElement>;
 }
 
 // Figma RadioButton is a single control: 14px circle, 5px dot, 15/20 label.
@@ -54,6 +56,7 @@ const labelTextStyles = textStyles(TextVariant.BodyPrimary);
  * @param labelClassName `class` overrides to apply to the radio's label.
  * @param label Label to display for the radio element.
  * @param disabled If `true`, disables the radio element.
+ * @param fieldProps Additional HTML properties to apply to the row holding the radio and its label.
  * @param props Additional HTML properties to apply to the radio.
  */
 export const Radio: FC<RadioProps> = ({
@@ -62,13 +65,14 @@ export const Radio: FC<RadioProps> = ({
   labelClassName,
   label,
   disabled,
+  fieldProps,
   // Deprecated and intentionally unused; kept out of `...props` so it never
   // reaches the DOM.
   size: _size,
   ...props
 }) => {
   return (
-    <Field className="group flex items-center gap-3">
+    <Field className="group flex items-center gap-3" {...fieldProps}>
       <HeadlessRadio
         value={value}
         disabled={disabled}

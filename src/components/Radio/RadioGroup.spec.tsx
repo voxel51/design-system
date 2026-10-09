@@ -43,24 +43,26 @@ describe("RadioGroup", () => {
       expect(group).toHaveAttribute("data-testid", "radio-group");
     });
 
-    it("should pass an option's own props to its radio alone", () => {
+    it("should pass an option's own props to its row alone", () => {
       render(
         <RadioGroup
           options={[
-            { ...defaultOptions[0], radioProps: { id: "first" } },
+            {
+              ...defaultOptions[0],
+              fieldProps: {
+                "data-testid": "first",
+              } as RadioOption["fieldProps"],
+            },
             defaultOptions[1],
           ]}
           value="option1"
           onChange={jest.fn()}
-          radioProps={{ title: "shared" }}
         />
       );
 
-      const [first, second] = screen.getAllByRole("radio");
-      expect(first).toHaveAttribute("id", "first");
-      expect(first).toHaveAttribute("title", "shared");
-      expect(second).not.toHaveAttribute("id", "first");
-      expect(second).toHaveAttribute("title", "shared");
+      const row = screen.getByTestId("first");
+      expect(row).toContainElement(screen.getByLabelText("Option 1"));
+      expect(row).not.toContainElement(screen.getByLabelText("Option 2"));
     });
   });
 
