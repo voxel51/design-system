@@ -30,6 +30,7 @@ import ArrowDropUpSvg from "@/img/ArrowDropUp.svg?react";
 import ArrowForwardIosSvg from "@/img/ArrowForwardIos.svg?react";
 import ArrowForwardIosSharpSvg from "@/img/ArrowForwardIosSharp.svg?react";
 import ArrowLeftSvg from "@/img/ArrowLeft.svg?react";
+import ArrowLeftStrokeSvg from "@/img/ArrowLeftStroke.svg?react";
 import ArrowOutwardSvg from "@/img/ArrowOutward.svg?react";
 import ArrowRightSvg from "@/img/ArrowRight.svg?react";
 import ArrowUpSvg from "@/img/ArrowUp.svg?react";
@@ -72,7 +73,9 @@ import ChecklistSvg from "@/img/Checklist.svg?react";
 import CheckmarkSvg from "@/img/Checkmark.svg?react";
 import ChevronBottomSvg from "@/img/ChevronBottom.svg?react";
 import ChevronLeftSvg from "@/img/ChevronLeft.svg?react";
+import ChevronLeftStrokeSvg from "@/img/ChevronLeftStroke.svg?react";
 import ChevronRightSvg from "@/img/ChevronRight.svg?react";
+import ChevronRightStrokeSvg from "@/img/ChevronRightStroke.svg?react";
 import ChevronTopSvg from "@/img/ChevronTop.svg?react";
 import CircleSvg from "@/img/Circle.svg?react";
 import CircleOutlinedSvg from "@/img/CircleOutlined.svg?react";
@@ -240,6 +243,7 @@ import OpenWithSvg from "@/img/OpenWith.svg?react";
 import OrchestratorSvg from "@/img/Orchestrator.svg?react";
 import PackageSvg from "@/img/Package.svg?react";
 import PaletteSvg from "@/img/Palette.svg?react";
+import PaletteStrokeSvg from "@/img/PaletteStroke.svg?react";
 import PanelLeftCloseSvg from "@/img/PanelLeftClose.svg?react";
 import PanelLeftOpenSvg from "@/img/PanelLeftOpen.svg?react";
 import PanelRightCloseSvg from "@/img/PanelRightClose.svg?react";
@@ -284,6 +288,7 @@ import ScatterPlotSvg from "@/img/ScatterPlot.svg?react";
 import SchoolSvg from "@/img/School.svg?react";
 import SearchSvg from "@/img/Search.svg?react";
 import SearchOutlinedSvg from "@/img/SearchOutlined.svg?react";
+import SearchStrokeSvg from "@/img/SearchStroke.svg?react";
 import SellSvg from "@/img/Sell.svg?react";
 import ServerSvg from "@/img/Server.svg?react";
 import SettingsSvg from "@/img/Settings.svg?react";
@@ -313,6 +318,7 @@ import SwapHorizSvg from "@/img/SwapHoriz.svg?react";
 import SyncSvg from "@/img/Sync.svg?react";
 import TableChartOutlinedSvg from "@/img/TableChartOutlined.svg?react";
 import TagSvg from "@/img/Tag.svg?react";
+import TagStrokeSvg from "@/img/TagStroke.svg?react";
 import TextSvg from "@/img/Text.svg?react";
 import TextureSvg from "@/img/Texture.svg?react";
 import ThreeSixtySvg from "@/img/ThreeSixty.svg?react";
@@ -457,6 +463,10 @@ export const ArrowForwardIosSharpIcon: FC<IconProps> = (props) => (
 
 export const ArrowLeftIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ArrowLeftSvg} />
+);
+
+export const ArrowLeftStrokeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ArrowLeftStrokeSvg} />
 );
 
 export const ArrowOutwardIcon: FC<IconProps> = (props) => (
@@ -627,8 +637,16 @@ export const ChevronLeftIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ChevronLeftSvg} />
 );
 
+export const ChevronLeftStrokeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ChevronLeftStrokeSvg} />
+);
+
 export const ChevronRightIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ChevronRightSvg} />
+);
+
+export const ChevronRightStrokeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ChevronRightStrokeSvg} />
 );
 
 export const ChevronTopIcon: FC<IconProps> = (props) => (
@@ -1299,6 +1317,10 @@ export const PaletteIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={PaletteSvg} />
 );
 
+export const PaletteStrokeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={PaletteStrokeSvg} />
+);
+
 export const PanelLeftCloseIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={PanelLeftCloseSvg} />
 );
@@ -1475,6 +1497,10 @@ export const SearchOutlinedIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={SearchOutlinedSvg} />
 );
 
+export const SearchStrokeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={SearchStrokeSvg} />
+);
+
 export const SellIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={SellSvg} />
 );
@@ -1589,6 +1615,10 @@ export const TableChartOutlinedIcon: FC<IconProps> = (props) => (
 
 export const TagIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={TagSvg} />
+);
+
+export const TagStrokeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={TagStrokeSvg} />
 );
 
 export const TextIcon: FC<IconProps> = (props) => (
