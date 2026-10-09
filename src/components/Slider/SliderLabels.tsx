@@ -131,9 +131,10 @@ export const SliderLabels: FC<SliderLabelProps> = ({
       {minLabel && <Text variant={TextVariant.HeadingXs}>{format(min)}</Text>}
       {maxLabel && <Text variant={TextVariant.HeadingXs}>{format(max)}</Text>}
       {threshold === null && (
-        // knob labels are absolute; this holds the row's height for them
+        // knob labels are absolute; a hidden label holds the row's height for
+        // them, which a multi-line label (a date over a time) needs
         <Text variant={TextVariant.HeadingXs} className="invisible" aria-hidden>
-          {"\u00a0"}
+          {format(min)}
         </Text>
       )}
 

@@ -461,7 +461,8 @@ describe("Slider", () => {
       );
 
       const slider = screen.getByTestId(testId);
-      expect(within(slider).getByText("0")).toBeInTheDocument();
+      // the minimum's label also sizes the (hidden) label row
+      expect(within(slider).getAllByText("0")).toHaveLength(2);
       expect(within(slider).getByText("1")).toBeInTheDocument();
     });
 
