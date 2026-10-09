@@ -49,6 +49,7 @@ import BarChartSvg from "@/img/BarChart.svg?react";
 import BlocksSvg from "@/img/Blocks.svg?react";
 import BoltSvg from "@/img/Bolt.svg?react";
 import BookmarkSvg from "@/img/Bookmark.svg?react";
+import BookmarkStrokeSvg from "@/img/BookmarkStroke.svg?react";
 import BoxesSvg from "@/img/Boxes.svg?react";
 import BrushSvg from "@/img/Brush.svg?react";
 import BubbleChartSvg from "@/img/BubbleChart.svg?react";
@@ -539,6 +540,10 @@ export const BoltIcon: FC<IconProps> = (props) => (
 
 export const BookmarkIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={BookmarkSvg} />
+);
+
+export const BookmarkStrokeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={BookmarkStrokeSvg} />
 );
 
 export const BoxesIcon: FC<IconProps> = (props) => (
