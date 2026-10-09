@@ -235,6 +235,10 @@ import OpenWithSvg from "@/img/OpenWith.svg?react";
 import OrchestratorSvg from "@/img/Orchestrator.svg?react";
 import PackageSvg from "@/img/Package.svg?react";
 import PaletteSvg from "@/img/Palette.svg?react";
+import PanelLeftCloseSvg from "@/img/PanelLeftClose.svg?react";
+import PanelLeftOpenSvg from "@/img/PanelLeftOpen.svg?react";
+import PanelRightCloseSvg from "@/img/PanelRightClose.svg?react";
+import PanelRightOpenSvg from "@/img/PanelRightOpen.svg?react";
 import PauseSvg from "@/img/Pause.svg?react";
 import PauseCircleOutlineSvg from "@/img/PauseCircleOutline.svg?react";
 import PencilSvg from "@/img/Pencil.svg?react";
@@ -1264,6 +1268,22 @@ export const PackageIcon: FC<IconProps> = (props) => (
 
 export const PaletteIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={PaletteSvg} />
+);
+
+export const PanelLeftCloseIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={PanelLeftCloseSvg} />
+);
+
+export const PanelLeftOpenIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={PanelLeftOpenSvg} />
+);
+
+export const PanelRightCloseIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={PanelRightCloseSvg} />
+);
+
+export const PanelRightOpenIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={PanelRightOpenSvg} />
 );
 
 export const PauseIcon: FC<IconProps> = (props) => (
