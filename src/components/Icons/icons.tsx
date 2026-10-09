@@ -207,6 +207,7 @@ import LightModeSvg from "@/img/LightMode.svg?react";
 import LightbulbSvg from "@/img/Lightbulb.svg?react";
 import ListSvg from "@/img/List.svg?react";
 import ListChecksSvg from "@/img/ListChecks.svg?react";
+import ListTreeSvg from "@/img/ListTree.svg?react";
 import LocalOfferSvg from "@/img/LocalOffer.svg?react";
 import LocalOfferOutlinedSvg from "@/img/LocalOfferOutlined.svg?react";
 import LockSvg from "@/img/Lock.svg?react";
@@ -1143,6 +1144,10 @@ export const ListIcon: FC<IconProps> = (props) => (
 
 export const ListChecksIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ListChecksSvg} />
+);
+
+export const ListTreeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ListTreeSvg} />
 );
 
 export const LocalOfferIcon: FC<IconProps> = (props) => (
