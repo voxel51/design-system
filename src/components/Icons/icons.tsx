@@ -207,6 +207,7 @@ import LayersSvg from "@/img/Layers.svg?react";
 import LibraryAddSvg from "@/img/LibraryAdd.svg?react";
 import LightModeSvg from "@/img/LightMode.svg?react";
 import LightbulbSvg from "@/img/Lightbulb.svg?react";
+import Link2Svg from "@/img/Link2.svg?react";
 import ListSvg from "@/img/List.svg?react";
 import ListChecksSvg from "@/img/ListChecks.svg?react";
 import ListTreeSvg from "@/img/ListTree.svg?react";
@@ -1156,6 +1157,10 @@ export const LightModeIcon: FC<IconProps> = (props) => (
 
 export const LightbulbIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={LightbulbSvg} />
+);
+
+export const Link2Icon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={Link2Svg} />
 );
 
 export const ListIcon: FC<IconProps> = (props) => (
