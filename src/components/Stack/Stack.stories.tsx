@@ -49,6 +49,21 @@ const meta: Meta<typeof Stack> = {
       options: Object.values(Spacing),
       description: "The spacing between child content",
     },
+    padding: {
+      control: "select",
+      options: Object.values(Spacing),
+      description: "The padding on every side of the stack",
+    },
+    paddingX: {
+      control: "select",
+      options: Object.values(Spacing),
+      description: "The padding on the left and right, overriding `padding`",
+    },
+    paddingY: {
+      control: "select",
+      options: Object.values(Spacing),
+      description: "The padding on the top and bottom, overriding `padding`",
+    },
   },
   decorators: [withContainer()],
 };
@@ -87,6 +102,23 @@ export const Horizontal: Story = {
   ...defaultRenderer,
   args: {
     orientation: Orientation.Row,
+  },
+};
+
+export const Padded: Story = {
+  ...defaultRenderer,
+  args: {
+    spacing: Spacing.Sm,
+    padding: Spacing.Lg,
+  },
+};
+
+export const PaddedPerAxis: Story = {
+  ...defaultRenderer,
+  args: {
+    spacing: Spacing.Sm,
+    paddingX: Spacing.Xl,
+    paddingY: Spacing.Xs,
   },
 };
 
