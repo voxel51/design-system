@@ -137,6 +137,7 @@ import ExpandLessSvg from "@/img/ExpandLess.svg?react";
 import ExpandMoreSvg from "@/img/ExpandMore.svg?react";
 import ExtensionSvg from "@/img/Extension.svg?react";
 import ExternalLinkSvg from "@/img/ExternalLink.svg?react";
+import EyeOffSvg from "@/img/EyeOff.svg?react";
 import FactCheckSvg from "@/img/FactCheck.svg?react";
 import FeedbackSvg from "@/img/Feedback.svg?react";
 import FiberManualRecordSvg from "@/img/FiberManualRecord.svg?react";
@@ -204,6 +205,7 @@ import LabelImportantSvg from "@/img/LabelImportant.svg?react";
 import LabelOutlinedSvg from "@/img/LabelOutlined.svg?react";
 import LaunchSvg from "@/img/Launch.svg?react";
 import LayersSvg from "@/img/Layers.svg?react";
+import LayoutPanelTopSvg from "@/img/LayoutPanelTop.svg?react";
 import LibraryAddSvg from "@/img/LibraryAdd.svg?react";
 import LightModeSvg from "@/img/LightMode.svg?react";
 import LightbulbSvg from "@/img/Lightbulb.svg?react";
@@ -220,9 +222,11 @@ import LogoutSvg from "@/img/Logout.svg?react";
 import LogsSvg from "@/img/Logs.svg?react";
 import MailOutlineSvg from "@/img/MailOutline.svg?react";
 import MapSvg from "@/img/Map.svg?react";
+import MaximizeSvg from "@/img/Maximize.svg?react";
 import MenuSvg from "@/img/Menu.svg?react";
 import MenuBookSvg from "@/img/MenuBook.svg?react";
 import MessageSquareSvg from "@/img/MessageSquare.svg?react";
+import MinimizeSvg from "@/img/Minimize.svg?react";
 import MoreHorizSvg from "@/img/MoreHoriz.svg?react";
 import MoreHorizontalSvg from "@/img/MoreHorizontal.svg?react";
 import MoreVertSvg from "@/img/MoreVert.svg?react";
@@ -275,6 +279,7 @@ import RuleFolderSvg from "@/img/RuleFolder.svg?react";
 import SaveSvg from "@/img/Save.svg?react";
 import SaveOutlinedSvg from "@/img/SaveOutlined.svg?react";
 import ScanEyeSvg from "@/img/ScanEye.svg?react";
+import ScanSearchSvg from "@/img/ScanSearch.svg?react";
 import ScatterPlotSvg from "@/img/ScatterPlot.svg?react";
 import SchoolSvg from "@/img/School.svg?react";
 import SearchSvg from "@/img/Search.svg?react";
@@ -282,6 +287,7 @@ import SearchOutlinedSvg from "@/img/SearchOutlined.svg?react";
 import SellSvg from "@/img/Sell.svg?react";
 import ServerSvg from "@/img/Server.svg?react";
 import SettingsSvg from "@/img/Settings.svg?react";
+import Settings2Svg from "@/img/Settings2.svg?react";
 import SettingsBackupRestoreSvg from "@/img/SettingsBackupRestore.svg?react";
 import SettingsInputCompositeRoundedSvg from "@/img/SettingsInputCompositeRounded.svg?react";
 import SettingsOutlinedSvg from "@/img/SettingsOutlined.svg?react";
@@ -881,6 +887,10 @@ export const ExternalLinkIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ExternalLinkSvg} />
 );
 
+export const EyeOffIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={EyeOffSvg} />
+);
+
 export const FactCheckIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={FactCheckSvg} />
 );
@@ -1149,6 +1159,10 @@ export const LayersIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={LayersSvg} />
 );
 
+export const LayoutPanelTopIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={LayoutPanelTopSvg} />
+);
+
 export const LibraryAddIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={LibraryAddSvg} />
 );
@@ -1213,6 +1227,10 @@ export const MapIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={MapSvg} />
 );
 
+export const MaximizeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={MaximizeSvg} />
+);
+
 export const MenuIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={MenuSvg} />
 );
@@ -1223,6 +1241,10 @@ export const MenuBookIcon: FC<IconProps> = (props) => (
 
 export const MessageSquareIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={MessageSquareSvg} />
+);
+
+export const MinimizeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={MinimizeSvg} />
 );
 
 export const MoreHorizIcon: FC<IconProps> = (props) => (
@@ -1433,6 +1455,10 @@ export const ScanEyeIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ScanEyeSvg} />
 );
 
+export const ScanSearchIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ScanSearchSvg} />
+);
+
 export const ScatterPlotIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ScatterPlotSvg} />
 );
@@ -1459,6 +1485,10 @@ export const ServerIcon: FC<IconProps> = (props) => (
 
 export const SettingsIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={SettingsSvg} />
+);
+
+export const Settings2Icon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={Settings2Svg} />
 );
 
 export const SettingsBackupRestoreIcon: FC<IconProps> = (props) => (
