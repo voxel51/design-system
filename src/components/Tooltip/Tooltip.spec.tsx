@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 
-import { Tooltip } from "@/components/Tooltip";
+import { Tooltip, type TooltipProps } from "@/components/Tooltip";
 import { randomString } from "@/util/random";
 
 describe("Tooltip", () => {
@@ -103,13 +103,36 @@ describe("Tooltip", () => {
     expect(tooltipPanel).toHaveClass(aboveModalZIndexClass);
   });
 
-  it("should use fixed positioning with high z-index by default so overflow ancestors cannot clip it", () => {
+  it("should portal to document.body with above-modal z-index by default", () => {
     const content = randomString();
     const children = randomString();
-    const highZIndexClass = "z-[var(--z-high)]";
 
     render(
-      <Tooltip {...defaultProps} content={content}>
+      <div data-testid="clipping-parent" style={{ overflow: "hidden" }}>
+        <Tooltip {...defaultProps} content={content}>
+          {children}
+        </Tooltip>
+      </div>
+    );
+
+    fireEvent.mouseEnter(
+      within(screen.getByTestId(testId)).getByText(children)
+    );
+
+    const tooltipPanel = screen.getByRole("tooltip");
+    expect(tooltipPanel.parentElement).toBe(document.body);
+    expect(screen.getByTestId("clipping-parent").contains(tooltipPanel)).toBe(
+      false
+    );
+    expect(tooltipPanel).toHaveClass("z-[var(--z-above-modal)]");
+  });
+
+  it("should render in place with fixed positioning and high z-index when portal is false", () => {
+    const content = randomString();
+    const children = randomString();
+
+    render(
+      <Tooltip {...defaultProps} content={content} portal={false}>
         {children}
       </Tooltip>
     );
@@ -118,9 +141,120 @@ describe("Tooltip", () => {
       within(screen.getByTestId(testId)).getByText(children)
     );
 
-    const tooltipPanel = screen.getByText(content).parentElement;
-    expect(tooltipPanel).toHaveClass("fixed");
-    expect(tooltipPanel).toHaveClass(highZIndexClass);
-    expect(tooltipPanel).not.toHaveClass("z-[var(--z-above-modal)]");
+    const tooltipPanel = screen.getByRole("tooltip");
+    expect(screen.getByTestId(testId)).toContainElement(tooltipPanel);
+    expect(tooltipPanel.style.position).toBe("fixed");
+    expect(tooltipPanel).toHaveClass("z-[var(--z-high)]");
+  });
+
+  describe("viewport collisions", () => {
+    const VIEWPORT = { width: 1000, height: 800 };
+    const PANEL = { width: 120, height: 24 };
+    let trigger: DOMRect;
+
+    const rect = (x: number, y: number, width: number, height: number) =>
+      ({
+        x,
+        y,
+        left: x,
+        top: y,
+        right: x + width,
+        bottom: y + height,
+        width,
+        height,
+        toJSON: () => ({}),
+      }) as DOMRect;
+
+    const isPanel = (element: Element) =>
+      element.getAttribute("role") === "tooltip";
+
+    beforeEach(() => {
+      jest
+        .spyOn(document.documentElement, "clientWidth", "get")
+        .mockReturnValue(VIEWPORT.width);
+      jest
+        .spyOn(document.documentElement, "clientHeight", "get")
+        .mockReturnValue(VIEWPORT.height);
+      jest
+        .spyOn(HTMLElement.prototype, "offsetWidth", "get")
+        .mockImplementation(function (this: HTMLElement) {
+          return isPanel(this) ? PANEL.width : 0;
+        });
+      jest
+        .spyOn(HTMLElement.prototype, "offsetHeight", "get")
+        .mockImplementation(function (this: HTMLElement) {
+          return isPanel(this) ? PANEL.height : 0;
+        });
+      jest
+        .spyOn(Element.prototype, "getBoundingClientRect")
+        .mockImplementation(function (this: Element) {
+          if (this.getAttribute("data-testid") === testId) return trigger;
+          if (isPanel(this)) return rect(0, 0, PANEL.width, PANEL.height);
+          return rect(0, 0, 0, 0);
+        });
+    });
+
+    afterEach(() => jest.restoreAllMocks());
+
+    const open = async (props: Partial<TooltipProps> = {}) => {
+      render(
+        <Tooltip {...defaultProps} content="Show filters" {...props}>
+          trigger
+        </Tooltip>
+      );
+      fireEvent.mouseEnter(screen.getByTestId(testId));
+      await act(async () => {});
+      const panel = screen.getByRole("tooltip");
+      const match = /translate\((-?[\d.]+)px, (-?[\d.]+)px\)/.exec(
+        panel.style.transform
+      );
+      if (!match) throw new Error(`no translate in "${panel.style.transform}"`);
+      return { panel, x: Number(match[1]), y: Number(match[2]) };
+    };
+
+    it("should shift a panel under a trigger at the left edge back inside the padding", async () => {
+      trigger = rect(0, 100, 28, 28);
+      const { panel, x } = await open({ anchor: "bottom" });
+      expect(x).toBe(8);
+      expect(panel.dataset.side).toBe("bottom");
+      // the arrow stays on the trigger's center (14px) after the shift
+      const arrowElement = panel.lastElementChild as HTMLElement;
+      expect(x + parseFloat(arrowElement.style.left)).toBe(14);
+    });
+
+    it("should shift a panel near the right edge back inside the padding", async () => {
+      trigger = rect(VIEWPORT.width - 28, 100, 28, 28);
+      const { x } = await open({ anchor: "bottom" });
+      expect(x).toBe(VIEWPORT.width - PANEL.width - 8);
+    });
+
+    it("should honor a custom collisionPadding", async () => {
+      trigger = rect(0, 100, 28, 28);
+      const { x } = await open({ anchor: "bottom", collisionPadding: 16 });
+      expect(x).toBe(16);
+    });
+
+    it("should flip a top panel below a trigger with no room above", async () => {
+      trigger = rect(400, 0, 28, 28);
+      const { panel, y } = await open({ anchor: "top" });
+      expect(panel.dataset.side).toBe("bottom");
+      expect(y).toBeGreaterThanOrEqual(28);
+    });
+
+    it("should flip a left panel to the right of a trigger at the left edge", async () => {
+      trigger = rect(0, 300, 28, 28);
+      const { panel } = await open({ anchor: "left" });
+      expect(panel.dataset.side).toBe("right");
+    });
+
+    it("should keep the preferred side and position when avoidCollisions is false", async () => {
+      trigger = rect(0, 100, 28, 28);
+      const { panel, x } = await open({
+        anchor: "bottom",
+        avoidCollisions: false,
+      });
+      expect(panel.dataset.side).toBe("bottom");
+      expect(x).toBe(14 - PANEL.width / 2);
+    });
   });
 });

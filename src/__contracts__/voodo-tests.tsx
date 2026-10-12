@@ -761,6 +761,9 @@ export const Everything = (
         <span>hover</span>
       </Tooltip>
     ))}
+    <Tooltip content="tip" collisionPadding={12} avoidCollisions portal={false}>
+      <span>hover</span>
+    </Tooltip>
     {ANCHORS.map((a) => (
       <Toast key={a} anchor={a} variant="primary" title={a} />
     ))}

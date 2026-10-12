@@ -1,3 +1,12 @@
+import {
+  arrow,
+  autoUpdate,
+  flip,
+  offset,
+  type Placement,
+  shift,
+  useFloating,
+} from "@floating-ui/react";
 import clsx from "clsx";
 import {
   type CSSProperties,
@@ -38,6 +47,8 @@ export interface TooltipProps extends Omit<
   "content"
 > {
   anchor?: TooltipAnchor;
+  avoidCollisions?: boolean;
+  collisionPadding?: number;
   content: ReactNode;
   interactive?: boolean;
   portal?: boolean;
@@ -45,64 +56,27 @@ export interface TooltipProps extends Omit<
   wrapperClassName?: string;
 }
 
-const rotatedSquareStyles: Record<TooltipAnchor, string> = {
-  [Anchor.Top]: "bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2",
-  [Anchor.Right]: "left-0 top-1/2 -translate-x-1/2 -translate-y-1/2",
-  [Anchor.Bottom]: "top-0 left-1/2 -translate-x-1/2 -translate-y-1/2",
-  [Anchor.Left]: "right-0 top-1/2 translate-x-1/2 -translate-y-1/2",
-};
-
 const ANCHOR_GAP = 8;
+const ARROW_SIZE = 8;
+const DEFAULT_COLLISION_PADDING = 8;
 // long enough for the pointer to cross the gap into an interactive panel
 const INTERACTIVE_CLOSE_DELAY = 150;
 
-function getFixedPosition(rect: DOMRect, anchor: TooltipAnchor): CSSProperties {
-  switch (anchor) {
-    case Anchor.Top:
-      return {
-        left: rect.left + rect.width / 2,
-        top: rect.top - ANCHOR_GAP,
-        transform: "translate(-50%, -100%)",
-      };
-    case Anchor.Bottom:
-      return {
-        left: rect.left + rect.width / 2,
-        top: rect.bottom + ANCHOR_GAP,
-        transform: "translateX(-50%)",
-      };
-    case Anchor.Right:
-      return {
-        left: rect.right + ANCHOR_GAP * 2,
-        top: rect.top + rect.height / 2,
-        transform: "translateY(-50%)",
-      };
-    case Anchor.Left:
-      return {
-        left: rect.left - ANCHOR_GAP * 2,
-        top: rect.top + rect.height / 2,
-        transform: "translate(-100%, -50%)",
-      };
-  }
-}
-
-// Borderless like the panel: with Tailwind's preflight any `border-*` side
-// here would paint a currentColor hairline on the arrow.
-const RotatedSquare: FC<{ anchor: TooltipAnchor }> = ({ anchor }) => {
-  return (
-    <div
-      className={clsx(
-        "absolute",
-        "w-2 h-2",
-        "rotate-45",
-        "bg-inherit",
-        rotatedSquareStyles[anchor]
-      )}
-    />
-  );
+const OPPOSITE_SIDE: Record<TooltipAnchor, TooltipAnchor> = {
+  [Anchor.Top]: Anchor.Bottom,
+  [Anchor.Right]: Anchor.Left,
+  [Anchor.Bottom]: Anchor.Top,
+  [Anchor.Left]: Anchor.Right,
 };
 
+const sideOf = (placement: Placement): TooltipAnchor =>
+  placement.split("-")[0] as TooltipAnchor;
+
 /**
- * A tooltip which appears when hovering over the wrapped content.
+ * A tooltip which appears when hovering over the wrapped content. It stays
+ * inside the viewport: it flips to the opposite side when its own side has no
+ * room, slides along that side near an edge with its arrow still on the
+ * content, and follows the content on scroll and resize.
  *
  * @example
  * ```tsx
@@ -111,26 +85,30 @@ const RotatedSquare: FC<{ anchor: TooltipAnchor }> = ({ anchor }) => {
  * </Tooltip>
  * ```
  *
- * @param anchor Position of the tooltip relative to its content: `"top"`, `"right"`, `"bottom"` or `"left"`. Defaults to `"top"`. See {@link TooltipAnchor}.
+ * @param anchor Preferred position of the tooltip relative to its content: `"top"`, `"right"`, `"bottom"` or `"left"`. Defaults to `"top"`. See {@link TooltipAnchor}.
+ * @param avoidCollisions If `true` (the default), the tooltip flips and shifts to stay inside the viewport.
+ * @param collisionPadding Minimum distance, in pixels, kept between the tooltip and the viewport edge. Defaults to `8`.
  * @param content The content of the tooltip.
  * @param children The content which this component wraps; this acts as the element anchor and the hover trigger.
  * @param className `class` overrides to apply to the tooltip panel.
  * @param interactive If `true`, the tooltip stays open while the pointer moves from the content
  * into the panel, so the panel can hold links or buttons.
- * @param portal If `true`, renders the tooltip via a React portal into `document.body` with an
- * above-modal z-index, so it escapes ancestor stacking contexts (e.g. inside modals). The default
- * tooltip already uses fixed positioning, so it is never clipped by overflow-hidden/scroll ancestors.
+ * @param portal If `true` (the default), renders the tooltip via a React portal into `document.body`
+ * with an above-modal z-index, so no ancestor's overflow, transform or stacking context can clip
+ * or bury it. With `false` the panel renders in place with fixed positioning.
  * @param shadow The shadow to apply to the tooltip. See {@link Shadow}.
  * @param wrapperClassName Additional classes to apply to the outer wrapper element.
  * @param props Additional HTML properties to apply to the component.
  */
 export const Tooltip: FC<TooltipProps> = ({
   anchor = Anchor.Top,
+  avoidCollisions = true,
+  collisionPadding = DEFAULT_COLLISION_PADDING,
   content,
   children,
   className,
   interactive = false,
-  portal = false,
+  portal = true,
   // Figma Tooltip: bg/popover, radius 4, 4/10 padding, no edge. Figma also
   // shows no shadow, but in light mode bg/popover and bg/card are both white,
   // so a flat tooltip vanishes over a card; the shadow is kept as the edge.
@@ -139,22 +117,35 @@ export const Tooltip: FC<TooltipProps> = ({
   ...props
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const [positionStyle, setPositionStyle] = useState<CSSProperties>({});
+  const arrowRef = useRef<HTMLDivElement>(null);
   const closeTimer = useRef<number | undefined>(undefined);
+
+  const { refs, floatingStyles, placement, middlewareData } = useFloating({
+    open: isOpen,
+    placement: anchor,
+    strategy: "fixed",
+    middleware: [
+      offset(({ placement }) => {
+        const side = sideOf(placement);
+        return side === Anchor.Left || side === Anchor.Right
+          ? ANCHOR_GAP * 2
+          : ANCHOR_GAP;
+      }),
+      avoidCollisions && flip({ padding: collisionPadding }),
+      avoidCollisions && shift({ padding: collisionPadding }),
+      arrow({ element: arrowRef, padding: ARROW_SIZE / 2 }),
+    ],
+    whileElementsMounted: autoUpdate,
+  });
 
   useEffect(() => () => window.clearTimeout(closeTimer.current), []);
 
-  const handleMouseEnter = useCallback(() => {
+  const open = useCallback(() => {
     window.clearTimeout(closeTimer.current);
-    if (wrapperRef.current) {
-      const rect = wrapperRef.current.getBoundingClientRect();
-      setPositionStyle(getFixedPosition(rect, anchor));
-    }
     setIsOpen(true);
-  }, [anchor]);
+  }, []);
 
-  const handleMouseLeave = useCallback(() => {
+  const close = useCallback(() => {
     if (interactive) {
       closeTimer.current = window.setTimeout(
         () => setIsOpen(false),
@@ -165,55 +156,52 @@ export const Tooltip: FC<TooltipProps> = ({
     setIsOpen(false);
   }, [interactive]);
 
-  // Dismisses the tooltip when scrolling is detected; the fixed position is
-  // measured on open and would otherwise go stale
-  useEffect(() => {
-    if (!isOpen) return;
-    const handleScroll = (): void => setIsOpen(false);
-    window.addEventListener("scroll", handleScroll, {
-      passive: true,
-      capture: true,
-    });
-    return () =>
-      window.removeEventListener("scroll", handleScroll, { capture: true });
-  }, [isOpen]);
+  const side = sideOf(placement);
+  const arrowStyle: CSSProperties = {
+    left: middlewareData.arrow?.x,
+    top: middlewareData.arrow?.y,
+    [OPPOSITE_SIDE[side]]: -ARROW_SIZE / 2,
+  };
 
-  const panelClasses = cn(
-    "w-max",
-    "py-1 px-2.5",
-    TEXT_STYLES[TextVariant.BodySecondary],
-    "!overflow-visible",
-    bgColorClass(BackgroundColor.Popover),
-    textColorClass(TextColor.Primary),
-    radiusStyles(Radius.Sm),
-    shadowStyles(shadow),
-    className
-  );
-
-  // Fixed positioning keeps the tooltip out of ancestor overflow clipping
-  // (e.g. scrollable panel frames) even when rendered inline; portal mode
-  // additionally escapes ancestor stacking contexts
   const tooltipPanel = (
     <div
+      ref={refs.setFloating}
+      role="tooltip"
+      data-side={side}
       className={cn(
-        "fixed",
         zIndexStyles(portal ? ZIndex.AboveModal : ZIndex.High),
-        panelClasses
+        "w-max",
+        "py-1 px-2.5",
+        TEXT_STYLES[TextVariant.BodySecondary],
+        "!overflow-visible",
+        bgColorClass(BackgroundColor.Popover),
+        textColorClass(TextColor.Primary),
+        radiusStyles(Radius.Sm),
+        shadowStyles(shadow),
+        className
       )}
-      style={positionStyle}
+      style={floatingStyles}
+      onMouseEnter={interactive ? open : undefined}
+      onMouseLeave={interactive ? close : undefined}
     >
       <div className="max-w-[500px] break-words">{content}</div>
-      <RotatedSquare anchor={anchor} />
+      {/* Borderless like the panel: with Tailwind's preflight any `border-*`
+          side here would paint a currentColor hairline on the arrow */}
+      <div
+        ref={arrowRef}
+        className={clsx("absolute", "w-2 h-2", "rotate-45", "bg-inherit")}
+        style={arrowStyle}
+      />
     </div>
   );
 
   return (
     <div
       {...props}
-      ref={wrapperRef}
+      ref={refs.setReference}
       className={cn("relative", wrapperClassName)}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onMouseEnter={open}
+      onMouseLeave={close}
     >
       {children}
       {isOpen &&
