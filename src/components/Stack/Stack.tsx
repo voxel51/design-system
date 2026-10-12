@@ -8,6 +8,9 @@ export interface StackProps extends HTMLAttributes<HTMLDivElement> {
   justify?: Justify;
   orientation?: Orientation;
   spacing?: Spacing;
+  padding?: Spacing;
+  paddingX?: Spacing;
+  paddingY?: Spacing;
 }
 
 const alignStyles: Record<Align, string> = {
@@ -33,6 +36,33 @@ const spacingStyles: Record<Spacing, string> = {
   [Spacing.Md]: "gap-md",
   [Spacing.Lg]: "gap-lg",
   [Spacing.Xl]: "gap-xl",
+};
+
+const paddingStyles: Record<Spacing, string> = {
+  [Spacing.None]: "p-0",
+  [Spacing.Xs]: "p-xs",
+  [Spacing.Sm]: "p-sm",
+  [Spacing.Md]: "p-md",
+  [Spacing.Lg]: "p-lg",
+  [Spacing.Xl]: "p-xl",
+};
+
+const paddingXStyles: Record<Spacing, string> = {
+  [Spacing.None]: "px-0",
+  [Spacing.Xs]: "px-xs",
+  [Spacing.Sm]: "px-sm",
+  [Spacing.Md]: "px-md",
+  [Spacing.Lg]: "px-lg",
+  [Spacing.Xl]: "px-xl",
+};
+
+const paddingYStyles: Record<Spacing, string> = {
+  [Spacing.None]: "py-0",
+  [Spacing.Xs]: "py-xs",
+  [Spacing.Sm]: "py-sm",
+  [Spacing.Md]: "py-md",
+  [Spacing.Lg]: "py-lg",
+  [Spacing.Xl]: "py-xl",
 };
 
 /**
@@ -69,6 +99,9 @@ const spacingStyles: Record<Spacing, string> = {
  * @param justify Justification of children along the stack's primary axis. See {@link Justify}.
  * @param orientation Orientation of the stack. See {@link Orientation}.
  * @param spacing Spacing between child components in the stack. See {@link Spacing}.
+ * @param padding Padding on every side of the stack. See {@link Spacing}.
+ * @param paddingX Padding on the stack's left and right, overriding `padding`. See {@link Spacing}.
+ * @param paddingY Padding on the stack's top and bottom, overriding `padding`. See {@link Spacing}.
  * @param children Content which is wrapped by this component.
  * @param className `class` overrides to apply to the component.
  * @param props Additional HTML properties to apply to the component.
@@ -78,6 +111,9 @@ export const Stack: FC<StackProps> = ({
   justify,
   orientation = Orientation.Row,
   spacing = Spacing.None,
+  padding,
+  paddingX,
+  paddingY,
   children,
   className,
   ...props
@@ -90,6 +126,9 @@ export const Stack: FC<StackProps> = ({
         spacingStyles[spacing],
         align && alignStyles[align],
         justify && justifyStyles[justify],
+        padding && paddingStyles[padding],
+        paddingX && paddingXStyles[paddingX],
+        paddingY && paddingYStyles[paddingY],
         className
       )}
       {...props}
