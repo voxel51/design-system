@@ -5,7 +5,7 @@ import type { FC, HTMLAttributes, ReactNode } from "react";
 import { Tooltip } from "@/components/Tooltip";
 import { textStyles } from "@/styles/text";
 import {
-  ActionColor,
+  BackgroundColor,
   bgColorClass,
   BorderColor,
   borderColorClass,
@@ -59,9 +59,10 @@ export interface ToggleSwitchProps extends Omit<
 }
 
 const tabSizeStyles: Record<ToggleSwitchSize, string> = {
-  [Size.Xs]: clsx(textStyles(TextVariant.Xs), "min-w-5 min-h-5"),
-  [Size.Sm]: clsx(textStyles(TextVariant.Sm), "min-w-6 min-h-6"),
-  [Size.Md]: clsx(textStyles(TextVariant.Md), "min-w-7 min-h-7"),
+  // Figma ToggleButton: 12/16, 14/20 and 15/20 labels at Small/Medium/Large.
+  [Size.Xs]: clsx(textStyles(TextVariant.BodyTertiary), "min-w-5 min-h-5"),
+  [Size.Sm]: clsx(textStyles(TextVariant.BodySecondary), "min-w-6 min-h-6"),
+  [Size.Md]: clsx(textStyles(TextVariant.BodyPrimary), "min-w-7 min-h-7"),
 };
 
 const softSizeStyles: Record<ToggleSwitchSize, string> = {
@@ -72,17 +73,18 @@ const softSizeStyles: Record<ToggleSwitchSize, string> = {
 
 const tabPaddingStyles: Record<ToggleSwitchSize, string> = {
   [Size.Xs]: clsx("py-1 px-3"),
-  [Size.Sm]: clsx("py-1.5 px-3.75"),
+  [Size.Sm]: clsx("py-1.5 px-4"),
   [Size.Md]: clsx("py-2 px-4"),
 };
 
 const tabVariantStyles: Record<ToggleSwitchVariant, string> = {
-  // Figma: the selected tab uses a neutral surface (#232526) with white text —
-  // not the brand accent. The selected background is applied in tabClassName
-  // via action-secondary-primary, so variants only handle layout/text.
+  // Figma: the selected tab uses a neutral surface (bg/card-nested, or
+  // bg/card-elevated in the Soft tray) with white text, not the brand accent.
+  // The selected background is applied in tabClassName, so variants only
+  // handle layout/text.
   [ToggleSwitchVariant.Soft]: clsx(
-    "m-1",
-    "py-1 px-1.5",
+    // Figma SoftToggle segment: 10px side padding, radius/sm, in a padded tray
+    "py-0.5 px-2.5",
     "rounded-sm",
     textColorClass(TextColor.Primary, ElementState.Selected)
   ),
@@ -115,9 +117,9 @@ const getTabBorderRadius = (
     variant === ToggleSwitchVariant.Borderless
   )
     return "";
-  if (isFirst && isLast) return "rounded-md";
-  if (isFirst) return "rounded-l-md";
-  if (isLast) return "rounded-r-md";
+  if (isFirst && isLast) return "rounded-sm";
+  if (isFirst) return "rounded-l-sm";
+  if (isLast) return "rounded-r-sm";
   return "";
 };
 
@@ -138,8 +140,9 @@ const getTabStyles = (
 
 const getTabListBorderStyles = (variant: ToggleSwitchVariant): string[] => {
   if (variant === ToggleSwitchVariant.Borderless) return [];
-  if (variant === ToggleSwitchVariant.Soft) return [];
-  return ["border", borderColorClass(BorderColor.CardElevated)];
+  if (variant === ToggleSwitchVariant.Soft)
+    return ["p-1 gap-0.5", bgColorClass(BackgroundColor.CardNested)];
+  return ["border", borderColorClass(BorderColor.Default)];
 };
 
 const getTabTextColorClass = (selected: boolean): string => {
@@ -160,8 +163,8 @@ const getTabTextColorClass = (selected: boolean): string => {
  * ```tsx
  * const MyComponent = () => {
  *   const tabs: Descriptor<ToggleSwitchTab>[] = useMemo(() => [
- *       {id: "1", data: {label: "Tab 1", content: "Tab 1 content"}}
- *       {id: "2", data: {label: "Tab 2", content: "Tab 2 content"}}
+ *       {id: "1", data: {label: "Tab 1", content: "Tab 1 content"}},
+ *       {id: "2", data: {label: "Tab 2", content: "Tab 2 content"}},
  *       {id: "3", data: {label: "Tab 3", content: "Tab 3 content"}}
  *     ],
  *     []
@@ -179,20 +182,21 @@ const getTabTextColorClass = (selected: boolean): string => {
  *
  * @param tabs List of component descriptors which will be used to create {@link ToggleSwitchTab} children.
  *  Each tab supports optional `disabled` and `tooltip` fields. See {@link ToggleSwitchTab}.
- * @param variant Variant of the tabs.
- *  The variants have the following behaviors:
- *    - {@link ToggleSwitchVariant.Default} - tabs are bordered and have visible boundaries;
+ * @param variant Visual style of the tab set:
+ *    - `"default"` - tabs are bordered and have visible boundaries;
  *      the active tab has a distinct background from inactive tabs.
- *    - {@link ToggleSwitchVariant.Soft} - tabs are not bordered;
- *      the active tab has a distinct background and is highlighted in an accent color.
- *    - {@link ToggleSwitchVariant.Full} - similar to {@link ToggleSwitchVariant.Default} and expands to fill
- *      its container.
- *    - {@link ToggleSwitchVariant.Borderless} - tabs are not bordered; the active tab has a bottom border.
+ *    - `"soft"` - tabs sit in a padded, filled tray with no border;
+ *      the active tab gets a raised neutral background and primary text.
+ *    - `"full"` - like `"default"`, with primary text on the active tab.
+ *      Use `fullWidth` to fill the container.
+ *    - `"borderless"` - tabs are not bordered; the active tab has a bottom border.
  *  See {@link ToggleSwitchVariant}.
  * @param defaultIndex The index of the tab which should be considered active when the component first renders (uncontrolled).
+ *  Defaults to `0`.
  * @param index The active tab index for controlled usage; when set it drives the active tab and overrides `defaultIndex`.
  * @param onChange Callback triggered when the active tab changes.
- * @param size Size of the tabs; this controls the text size and padding. See {@link Size}.
+ * @param size Size of the tabs: `"xs"`, `"sm"` or `"md"`; this controls the text size and padding.
+ *  Defaults to `"sm"`. See {@link ToggleSwitchSize}.
  * @param fullWidth If `true`, the tab group will fill the width of their container.
  * @param tabListClassName `class` overrides to apply to the tabs.
  * @param tabPanelClassName `class` overrides to apply to the active content container.
@@ -224,7 +228,7 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
         className={cn(
           "toggle-switch-tab-list",
           "flex flex-nowrap items-center",
-          "rounded-md",
+          "rounded-sm",
           fullWidth ? "w-full" : "w-fit",
           ...getTabListBorderStyles(variant),
           tabListClassName
@@ -239,11 +243,17 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
               "flex-1",
               "flex items-center justify-center",
               "whitespace-nowrap",
-              "font-medium",
               "outline-none",
               "transition-colors",
               "bg-transparent",
-              bgColorClass(ActionColor.SecondaryDefault, ElementState.Selected),
+              // Figma: the active segment fills bg/card-nested in the bordered
+              // set and bg/card-elevated in the soft tray.
+              bgColorClass(
+                variant === ToggleSwitchVariant.Soft
+                  ? BackgroundColor.CardElevated
+                  : BackgroundColor.CardNested,
+                ElementState.Selected
+              ),
               getTabTextColorClass(selected),
               data.disabled && "hover:!text-content-text-secondary",
               "data-[focus]:outline-none",

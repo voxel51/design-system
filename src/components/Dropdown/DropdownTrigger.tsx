@@ -22,12 +22,12 @@ export type DropdownTriggerProps = Omit<
  * @example
  * ```tsx
  * <Dropdown trigger={<DropdownTrigger>Actions</DropdownTrigger>}>
- *   <DropdownTextItem onClick={() => {}}>Edit</DropdownTextItem>
+ *   <MenuTextItem onClick={() => {}}>Edit</MenuTextItem>
  * </Dropdown>
  * ```
  *
  * @param children Button label.
- * @param size Button size. Defaults to {@link Size.Sm}.
+ * @param size Button size. Defaults to `"sm"`.
  * @param props Additional {@link ButtonProps} (excluding `variant` and `trailingIcon`).
  */
 export const DropdownTrigger: FC<DropdownTriggerProps> = ({

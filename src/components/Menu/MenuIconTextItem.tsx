@@ -7,6 +7,7 @@ import radiusStyles from "@/styles/radius";
 import {
   BackgroundColor,
   bgColorClass,
+  InteractiveColor,
   ElementState,
   IconColor,
   IconName,
@@ -35,7 +36,7 @@ export interface MenuIconTextItemProps extends HTMLAttributes<HTMLButtonElement>
   subtext?: string;
   /** If `true`, the item cannot be interacted with and is rendered in a muted style. */
   disabled?: boolean;
-  /** If `true`, renders text and icon in the destructive color palette. */
+  /** If `true`, renders the text and icon in the failure color, and fills the row with the danger color (white content) on hover and focus. */
   destructive?: boolean;
 }
 
@@ -47,7 +48,7 @@ export interface MenuIconTextItemProps extends HTMLAttributes<HTMLButtonElement>
  * ```tsx
  * <Dropdown trigger={<DropdownTrigger>Open</DropdownTrigger>}>
  *   <MenuIconTextItem
- *     icon={<ImageSearchIcon size={Size.Lg} />}
+ *     icon={<ImageSearchIcon size="lg" />}
  *     text="Sort by similarity"
  *     subtext="Find visually similar"
  *     onClick={() => {}}
@@ -55,11 +56,11 @@ export interface MenuIconTextItemProps extends HTMLAttributes<HTMLButtonElement>
  * </Dropdown>
  * ```
  *
- * @param icon A ReactNode (typically an icon component) rendered in the leading slot.
+ * @param icon An icon element (e.g. `<EditIcon />`) rendered in the leading slot; a legacy {@link IconName} is still accepted.
  * @param text The primary label for the item.
  * @param subtext An optional secondary line rendered below the primary text in muted color.
  * @param disabled If `true`, the item cannot be interacted with.
- * @param destructive If `true`, renders text colors in the destructive palette.
+ * @param destructive If `true`, renders the text and icon in the failure color, and fills the row with the danger color (white content) on hover and focus.
  * @param className `class` overrides to apply to the component.
  * @param props Additional HTML properties to apply to the component.
  */
@@ -72,11 +73,9 @@ export const MenuIconTextItem: FC<MenuIconTextItemProps> = ({
   className,
   ...props
 }) => {
-  const textColor = destructive ? TextColor.Destructive : TextColor.Primary;
-  const subtextColor = destructive
-    ? TextColor.Destructive
-    : TextColor.Secondary;
-  const iconColor = destructive ? IconColor.Destructive : IconColor.Default;
+  const textColor = destructive ? TextColor.Failure : TextColor.Primary;
+  const subtextColor = destructive ? TextColor.Failure : TextColor.Secondary;
+  const iconColor = destructive ? IconColor.Failure : IconColor.Default;
   // Legacy IconName strings ride the deprecated map-based Icon; anything
   // else (elements, arbitrary nodes) renders as-is.
   const iconContent =
@@ -93,13 +92,29 @@ export const MenuIconTextItem: FC<MenuIconTextItemProps> = ({
           type="button"
           disabled={disabled}
           className={cn(
-            "flex w-full items-center gap-2.5",
-            "px-3 py-1.5",
-            radiusStyles(Radius.Sm),
+            // Figma Action Menu Row: 8px gap, 6/10 padding, radius 8, 16px icon
+            "flex w-full items-center gap-2",
+            "px-2.5 py-1.5",
+            radiusStyles(Radius.Lg),
             "cursor-pointer text-left",
             "disabled:opacity-50 disabled:cursor-not-allowed",
-            focus && bgColorClass(BackgroundColor.CardElevated),
-            bgColorClass(BackgroundColor.CardElevated, ElementState.Hover),
+            // A disabled button still matches :hover; keep its hover fill off
+            "disabled:hover:bg-transparent",
+            focus &&
+              bgColorClass(
+                destructive
+                  ? InteractiveColor.DangerDefault
+                  : BackgroundColor.CardNested
+              ),
+            bgColorClass(
+              destructive
+                ? InteractiveColor.DangerDefault
+                : BackgroundColor.CardNested,
+              ElementState.Hover
+            ),
+            // White content on the danger fill, on hover and on keyboard focus
+            destructive && "enabled:hover:[&_*]:text-white",
+            destructive && focus && "[&_*]:text-white",
             className
           )}
           {...props}
@@ -115,7 +130,7 @@ export const MenuIconTextItem: FC<MenuIconTextItemProps> = ({
 
           <span className="flex flex-col gap-0.5 min-w-0">
             <Text
-              variant={TextVariant.Sm}
+              variant={TextVariant.BodyPrimary}
               color={textColor}
               className="block truncate"
             >
@@ -123,7 +138,7 @@ export const MenuIconTextItem: FC<MenuIconTextItemProps> = ({
             </Text>
             {subtext && (
               <Text
-                variant={TextVariant.Xs}
+                variant={TextVariant.BodyTertiary}
                 color={subtextColor}
                 className="block truncate"
               >

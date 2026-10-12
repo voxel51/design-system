@@ -36,7 +36,7 @@ const meta: Meta<typeof Progress> = {
         BrandColor.Primary,
         TextColor.Secondary,
         TextColor.Decorative,
-        StatusColor.Failed,
+        StatusColor.FailedBg,
       ],
       description: "Fill color",
     },
@@ -75,7 +75,7 @@ export const OverLimit: Story = {
   name: "At/over limit (100%)",
   args: {
     value: 100,
-    color: StatusColor.Failed,
+    color: StatusColor.FailedBg,
   },
 };
 

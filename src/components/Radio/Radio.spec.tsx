@@ -148,27 +148,19 @@ describe("Radio", () => {
     });
   });
 
-  it("should apply correct classes when size is Small", () => {
-    renderRadioInGroup(<Radio size={Size.Sm} label={radioLabel} />);
-    const radio = screen.getByRole("radio");
-    expect(radio).toHaveClass("w-4", "h-4");
+  it("renders Figma's single 14px control for every size", () => {
+    for (const size of [Size.Sm, Size.Md, Size.Lg]) {
+      const { unmount } = renderRadioInGroup(
+        <Radio size={size} label={radioLabel} />
+      );
+      expect(screen.getByRole("radio")).toHaveClass("size-3.5");
+      expect(screen.getByText(radioLabel)).toHaveClass("text-body-primary");
+      unmount();
+    }
   });
 
-  it("should apply correct classes when size is Medium", () => {
-    renderRadioInGroup(<Radio size={Size.Md} label={radioLabel} />);
-    const radio = screen.getByRole("radio");
-    expect(radio).toHaveClass("w-5", "h-5");
-  });
-
-  it("should apply correct classes when size is Large", () => {
-    renderRadioInGroup(<Radio size={Size.Lg} label={radioLabel} />);
-    const radio = screen.getByRole("radio");
-    expect(radio).toHaveClass("w-6", "h-6");
-  });
-
-  it("should default to Small size", () => {
+  it("renders the 14px control when no size is given", () => {
     renderRadioInGroup(<Radio label={radioLabel} />);
-    const radio = screen.getByRole("radio");
-    expect(radio).toHaveClass("w-4", "h-4");
+    expect(screen.getByRole("radio")).toHaveClass("size-3.5");
   });
 });

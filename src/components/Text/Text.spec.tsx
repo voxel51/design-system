@@ -17,4 +17,17 @@ describe("Text", () => {
       expect(el).not.toHaveClass("text-content-text-primary");
     });
   });
+
+  describe("gradient prop", () => {
+    it("should fill the text with the gradient instead of the color", () => {
+      render(
+        <Text gradient color="text-secondary">
+          fancy
+        </Text>
+      );
+      const el = screen.getByText("fancy");
+      expect(el).toHaveClass("bg-clip-text", "text-transparent");
+      expect(el).not.toHaveClass("text-content-text-secondary");
+    });
+  });
 });

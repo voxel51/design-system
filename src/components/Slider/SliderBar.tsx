@@ -44,7 +44,7 @@ interface SliderBarProps extends Omit<
  *  If `multi` is true, this must be a value of the form [low, high]; otherwise, this is a single numeric value.
  * @param props Additional HTML properties to apply to the component.
  *
- * @internal For use by {@link Slider}.
+ * @internal For use by {@link BaseSlider}.
  */
 export const SliderBar: FC<SliderBarProps> = ({
   max,
@@ -287,7 +287,7 @@ export const SliderBar: FC<SliderBarProps> = ({
       className={clsx(
         "relative",
         "flex items-center",
-        "w-full h-2",
+        "w-full h-1.5",
         "cursor-pointer",
         bgColorClass(BackgroundColor.CardElevated),
         radiusStyles(Radius.Full)
@@ -301,7 +301,7 @@ export const SliderBar: FC<SliderBarProps> = ({
           <div
             className={clsx(
               "absolute",
-              "h-2",
+              "h-1.5",
               bgColorClass(BrandColor.Primary),
               radiusStyles(Radius.Full)
             )}

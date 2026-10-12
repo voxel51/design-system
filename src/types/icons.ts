@@ -66,6 +66,7 @@ export const IconName = {
   KeyRound: "KeyRound",
   KeySquare: "KeySquare",
   Label: "Label",
+  ListChecks: "ListChecks",
   Lock: "Lock",
   Logs: "Logs",
   Menu: "Menu",
@@ -178,6 +179,7 @@ export namespace IconName {
   export type KeyRound = typeof IconName.KeyRound;
   export type KeySquare = typeof IconName.KeySquare;
   export type Label = typeof IconName.Label;
+  export type ListChecks = typeof IconName.ListChecks;
   export type Lock = typeof IconName.Lock;
   export type Logs = typeof IconName.Logs;
   export type Menu = typeof IconName.Menu;

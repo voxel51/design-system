@@ -1,4 +1,9 @@
-import { Combobox, ComboboxInput, ComboboxOptions } from "@headlessui/react";
+import {
+  Combobox,
+  ComboboxButton,
+  ComboboxInput,
+  ComboboxOptions,
+} from "@headlessui/react";
 import clsx from "clsx";
 import {
   FC,
@@ -7,6 +12,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
@@ -97,9 +103,13 @@ function getZIndexClass(zIndex?: ZIndex, portal?: boolean): string | undefined {
  * ```tsx
  * // Single selection
  * const MyComponent = () => {
- *   const [value, setValue] = useState<string | null>(null);
+ *   const [value, setValue] = useState<string>();
  *
- *   const onChange = useCallback((selected: string) => setValue(selected), [setSelected]);
+ *   const onChange = useCallback(
+ *     (next: string | string[] | null) =>
+ *       setValue(typeof next === "string" ? next : undefined),
+ *     []
+ *   );
  *
  *   const options: Descriptor<{label: string, content: ReactNode}>[] = useMemo(() => [
  *       {id: "id-a", data: {label: "A", content: "Option A"}},
@@ -126,7 +136,10 @@ function getZIndexClass(zIndex?: ZIndex, portal?: boolean): string | undefined {
  * const MyComponent = () => {
  *   const [value, setValue] = useState<string[]>(() => []);
  *
- *   const onChange = useCallback((selected: string[]) => setValue(selected), [setSelected]);
+ *   const onChange = useCallback(
+ *     (next: string | string[] | null) => setValue(Array.isArray(next) ? next : []),
+ *     []
+ *   );
  *
  *   const options: Descriptor<{label: string, content: ReactNode}>[] = useMemo(() => [
  *       {id: "id-a", data: {label: "A", content: "Option A"}},
@@ -151,12 +164,15 @@ function getZIndexClass(zIndex?: ZIndex, portal?: boolean): string | undefined {
  * @param disabled If `true`, disables the component.
  * @param exclusive If `true`, allows only a single element to be selected;
  *  otherwise, multiple items can be selected concurrently.
- * @param onChange Callback triggered when selection state changes.
- *  The callback includes a list of selected option values.
+ * @param onChange Callback triggered when selection state changes. Receives the
+ *  selected option `id` (a string, or `null`) when `exclusive`, otherwise an
+ *  array of selected `id`s.
  * @param options List of component descriptors which will be used to create {@link Option} child components.
  * @param zIndex Z-index level for the dropdown.
- * @param portal If `true`, ensures a high z-index for layered components (equivalent to above-modal when zIndex is not set).
- * @param value List of values for selected options; this property allows for controlled selection.
+ * @param portal If `true`, renders the options in a portal that always stacks
+ *  above modals, overriding `zIndex`.
+ * @param value The selected option `id` (when `exclusive`) or `id`s; set it for
+ *  controlled selection.
  * @param props Additional HTML properties to apply to the component.
  */
 export const Select: FC<SelectProps> = ({
@@ -174,6 +190,7 @@ export const Select: FC<SelectProps> = ({
   const [query, setQuery] = useState("");
   const [selectionState, setSelectionState] = useState<string[]>(() => []);
   const { ref: triggerRef, width: triggerWidth } = useElementSize();
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const filteredOptions = useMemo(
     () =>
@@ -235,6 +252,10 @@ export const Select: FC<SelectProps> = ({
             autoComplete="off" // interferes with dropdown menu
             displayValue={getDisplayValue}
             onChange={(e) => setQuery(e.target.value)}
+            onClick={(e) =>
+              e.currentTarget.getAttribute("aria-expanded") !== "true" &&
+              buttonRef.current?.click()
+            }
             // We'd normally prefer to use `as={Input}`,
             // but ref forwarding doesn't work here properly in react 18,
             // which causes the dropdown menu to be anchored in the wrong place.
@@ -245,18 +266,18 @@ export const Select: FC<SelectProps> = ({
               "w-full pr-8 cursor-pointer"
             )}
           />
-          <span
+          <ComboboxButton
+            ref={buttonRef}
             className={clsx(
-              "pointer-events-none absolute right-2.5 flex items-center",
+              "absolute right-2.5 flex items-center cursor-pointer",
               disabled && "opacity-50"
             )}
-            aria-hidden
           >
             <CaretDownIcon
               size={Size.Sm}
               className={textColorClass(TextColor.Secondary)}
             />
-          </span>
+          </ComboboxButton>
         </div>
 
         <ComboboxOptions
@@ -268,7 +289,7 @@ export const Select: FC<SelectProps> = ({
             "p-1",
             "border",
             borderColorClass(BorderColor.Default),
-            bgColorClass(BackgroundColor.Card1),
+            bgColorClass(BackgroundColor.Card),
             getZIndexClass(zIndex, portal),
             radiusStyles(Radius.Lg),
             shadowStyles(Shadow.Lg)

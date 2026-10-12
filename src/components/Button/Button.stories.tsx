@@ -79,6 +79,14 @@ export const Danger: Story = {
   },
 };
 
+export const Expressive: Story = {
+  args: {
+    children: "See plans",
+    variant: Variant.Expressive,
+    size: Size.Sm,
+  },
+};
+
 export const ExtraSmall: Story = {
   args: {
     children: "Click this button",

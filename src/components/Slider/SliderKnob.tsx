@@ -21,7 +21,7 @@ interface SliderKnobProps extends HTMLAttributes<HTMLDivElement> {
  *
  * @param position The relative position of the knob; this must be a value in the range `[0, 1]`.
  * @param onDragStart Callback triggered on the start of a drag event.
- * @param value Value of the knob; this is expected to be `position * (max - min)`.
+ * @param value Value of the knob; this is expected to be `min + position * (max - min)`.
  * @param min Minimum allowed value, exposed as `aria-valuemin`.
  * @param max Maximum allowed value, exposed as `aria-valuemax`.
  * @param props Additional HTML properties to apply to the component.
@@ -40,7 +40,7 @@ export const SliderKnob: FC<SliderKnobProps> = ({
     <div
       className={clsx(
         "absolute",
-        "size-4 -ml-2",
+        "size-[15px] -ml-[7.5px]",
         "cursor-pointer",
         bgColorClass(BrandColor.Primary),
         radiusStyles(Radius.Full),

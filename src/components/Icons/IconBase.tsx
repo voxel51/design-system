@@ -49,6 +49,8 @@ interface IconBaseProps extends IconProps {
  * @param color Color of the icon. See {@link IconProps.color}. By default,
  * the icon inherits the text color of its container.
  * @param style `style` overrides to apply to the icon.
+ *
+ * @internal Shared by the generated per-icon components; use those instead.
  */
 export const IconBase: FC<IconBaseProps> = ({
   svg: Svg,

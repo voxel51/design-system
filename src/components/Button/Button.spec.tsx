@@ -123,4 +123,11 @@ describe("Button", () => {
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Docs" })).toBeDisabled();
   });
+
+  it("should paint the expressive variant with the expressive gradient", () => {
+    render(<Button variant="expressive">{buttonText}</Button>);
+    expect(screen.getByRole("button").className).toContain(
+      "bg-(image:--gradient-action-expressive)"
+    );
+  });
 });

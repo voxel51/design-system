@@ -102,7 +102,7 @@ export const TreeView: FC<TreeViewProps> = (props) => {
       style={{ maxHeight: maxHeight ?? "100%" }}
       className={cn(
         "flex flex-col overflow-hidden",
-        bgColorClass(BackgroundColor.Card1),
+        bgColorClass(BackgroundColor.Card),
         className
       )}
       {...domProps}

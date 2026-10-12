@@ -18,7 +18,7 @@
  * See voodo-enum-compat-tests.tsx for the deprecated enum-style contract.
  */
 import {
-  ActionColor,
+  InteractiveColor,
   ActivityToast,
   AddIcon,
   Align,
@@ -37,25 +37,31 @@ import {
   Drawer,
   DrawerSide,
   Dropdown,
+  Dropzone,
   DropdownAnchor,
   ElementState,
   EmptyState,
   FocusColor,
   FormField,
+  formatBytes,
   FormFieldGroup,
   Heading,
   HeadingLevel,
+  IconAction,
   IconColor,
   IconName,
   Input,
   Justify,
   LinkColor,
   ListItem,
+  Loader,
   LoadingDots,
   MenuSeparator,
+  ModalSize,
   Orientation,
-  OverlayColor,
-  PaletteColor,
+  ScrimColor,
+  VizChartColor,
+  VizOverlayColor,
   Pill,
   Popover,
   PopoverAnchor,
@@ -74,14 +80,18 @@ import {
   SelectionColor,
   SemanticColor,
   Shadow,
+  SheetSide,
   SingleValueSlider,
   Size,
   SkeletonColor,
   Spacing,
   Spinner,
+  StatusDot,
   Stack,
+  StepRail,
   StatusColor,
   Text,
+  TextAction,
   TextArea,
   TextBadge,
   TextColor,
@@ -104,6 +114,7 @@ import {
   transitionPresetValue,
   TreeSelect,
   UnsetHint,
+  UploadList,
   Variant,
   ZIndex,
   zIndexStyles,
@@ -135,6 +146,7 @@ export const exhaustive = {
     danger: true,
     icon: true,
     borderless: true,
+    expressive: true,
   } satisfies Record<Variant, true>,
 
   textVariant: {
@@ -147,6 +159,16 @@ export const exhaustive = {
     xxl: true,
     label: true,
     caption: true,
+    "heading-xl": true,
+    "heading-lg": true,
+    "heading-md": true,
+    "heading-sm": true,
+    "heading-xs": true,
+    "body-primary": true,
+    "body-secondary": true,
+    "body-tertiary": true,
+    "code-primary": true,
+    "code-secondary": true,
   } satisfies Record<TextVariant, true>,
 
   radius: {
@@ -238,18 +260,19 @@ export const exhaustive = {
   } satisfies Record<ElementState, true>,
 
   textColor: {
-    "text-fg": true,
+    "text-foreground": true,
     "text-primary": true,
     "text-secondary": true,
     "text-tertiary": true,
     "text-muted": true,
     "text-placeholder": true,
     "text-success": true,
-    "text-destructive": true,
+    "text-failure": true,
     "text-warning": true,
     "text-info": true,
     "text-accent": true,
     "text-decorative": true,
+    "text-inverse": true,
   } satisfies Record<TextColor, true>,
 
   iconColor: {
@@ -260,9 +283,8 @@ export const exhaustive = {
     "icon-disabled": true,
     "icon-decorative": true,
     "icon-brand": true,
-    "icon-brand-accent": true,
     "icon-success": true,
-    "icon-destructive": true,
+    "icon-failure": true,
     "icon-warning": true,
     "icon-info": true,
     "icon-dark": true,
@@ -374,25 +396,43 @@ export const exhaustive = {
     bottom: true,
   } satisfies Record<DrawerSide, true>,
 
+  // These two were TS string enums, which rejected plain strings
+  modalSize: {
+    sm: true,
+    md: true,
+    lg: true,
+    xl: true,
+  } satisfies Record<ModalSize, true>,
+
+  sheetSide: {
+    left: true,
+    right: true,
+  } satisfies Record<SheetSide, true>,
+
   // PillColor spans three color families; spot-check assignability from each
-  pillColor: ["bg-card-1", "bg-transparent"] satisfies readonly PillColor[],
+  pillColor: ["bg-card", "bg-transparent"] satisfies readonly PillColor[],
 };
 
 /* The remaining color families are large; prove object⇄type agreement
  * without enumerating: every value of the const object inhabits the
  * derived type, plus one literal spot-check each. */
 export const colorFamilies = {
-  action: Object.values(ActionColor) satisfies readonly ActionColor[],
+  interactive: Object.values(
+    InteractiveColor
+  ) satisfies readonly InteractiveColor[],
   background: Object.values(
     BackgroundColor
   ) satisfies readonly BackgroundColor[],
   border: Object.values(BorderColor) satisfies readonly BorderColor[],
   semantic: Object.values(SemanticColor) satisfies readonly SemanticColor[],
   status: Object.values(StatusColor) satisfies readonly StatusColor[],
-  overlay: Object.values(OverlayColor) satisfies readonly OverlayColor[],
+  scrim: Object.values(ScrimColor) satisfies readonly ScrimColor[],
   focus: Object.values(FocusColor) satisfies readonly FocusColor[],
   link: Object.values(LinkColor) satisfies readonly LinkColor[],
-  palette: Object.values(PaletteColor) satisfies readonly PaletteColor[],
+  vizChart: Object.values(VizChartColor) satisfies readonly VizChartColor[],
+  vizOverlay: Object.values(
+    VizOverlayColor
+  ) satisfies readonly VizOverlayColor[],
   skeleton: Object.values(SkeletonColor) satisfies readonly SkeletonColor[],
   tooltip: Object.values(TooltipColor) satisfies readonly TooltipColor[],
   code: Object.values(CodeColor) satisfies readonly CodeColor[],
@@ -430,6 +470,7 @@ const helperResults: string[] = [
   transitionEasing(TransitionEasing.InOut),
   transitionPreset("menu"),
   transitionPresetValue("panel"),
+  formatBytes(2048),
 ];
 
 /* ────────────────────────────────────────────────────────────────────
@@ -538,6 +579,7 @@ export const Everything = (
         <AddIcon key={c} size="sm" color={c} />
       ))}
       <AddIcon size={Size.Xl} color={BrandColor.Accent} />
+      <StatusDot pulse color={BrandColor.Accent} />
     </Stack>
 
     {/* Pills: size × radius × shadow, plus rich buttons */}
@@ -574,6 +616,58 @@ export const Everything = (
         </Card>
       ))
     )}
+
+    {/* Step rail: static and revisitable */}
+    <StepRail
+      steps={[
+        { id: "a", label: "A" },
+        { id: "b", label: "B" },
+      ]}
+      current="b"
+      onSelect={noop}
+    />
+
+    {/* Text and icon actions: every size, string and enum icons */}
+    <Stack orientation="row" spacing="sm">
+      {(["sm", "md"] as const).map((s) => (
+        <TextAction
+          key={s}
+          size={s}
+          leadingIcon="Add"
+          trailingIcon={IconName.ArrowDown}
+          onClick={noop}
+        >
+          {s}
+        </TextAction>
+      ))}
+      {(["sm", "md", "lg"] as const).map((s) => (
+        <IconAction key={s} icon="Add" size={s} aria-label={s} />
+      ))}
+      {/* @ts-expect-error - xl is excluded from TextAction sizes */}
+      <TextAction size="xl">too big</TextAction>
+      {/* @ts-expect-error - aria-label is required */}
+      <IconAction icon="Add" />
+    </Stack>
+
+    {/* Dropzone: every prop */}
+    <Dropzone
+      title="Drop files"
+      description="or browse"
+      accept="image/*"
+      multiple={false}
+      disabled
+      onFiles={noop}
+    />
+    {/* @ts-expect-error - Dropzone owns its drop handler */}
+    <Dropzone title="Drop files" onFiles={noop} onDrop={noop} />
+
+    {/* Upload list: removable rows and a custom summary */}
+    <UploadList
+      items={[{ id: "a", name: "a.jpg", kind: "JPG", size: 2048 }]}
+      summary="1 file"
+      onRemove={noop}
+      onRemoveAll={noop}
+    />
 
     {/* Form controls */}
     <FormFieldGroup orientation="col" spacing="lg">
@@ -650,6 +744,8 @@ export const Everything = (
     <Popover trigger={<Button>anchor</Button>} open onOpenChange={() => {}}>
       controlled
     </Popover>
+    <Loader type="bars" size="xl" aria-label="Generating" />
+    <Text gradient>Generating</Text>
     <LoadingDots text="Searching" variant="sm" color="text-tertiary" />
     {MENU_ANCHORS.map((a) => (
       <Select

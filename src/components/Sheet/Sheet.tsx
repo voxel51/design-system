@@ -6,30 +6,36 @@ import {
 } from "@headlessui/react";
 import type { FC, ReactNode } from "react";
 
-import { Button } from "@/components/Button";
+import { IconAction } from "@/components/IconAction";
 import { CloseIcon } from "@/components/Icons";
-import { textStyles } from "@/styles/text";
+import { TEXT_STYLES } from "@/styles/text";
 import {
   BackgroundColor,
   bgColorClass,
   BorderColor,
   borderColorClass,
+  ScrimColor,
   Size,
   TextColor,
   textColorClass,
   TextVariant,
   TransitionDuration,
   transitionDuration,
-  Variant,
   ZIndex,
   zIndexStyles,
 } from "@/types";
 import { cn } from "@/util/classes";
 
 /** Edge the sheet slides in from. */
-export enum SheetSide {
-  Left = "left",
-  Right = "right",
+export const SheetSide = {
+  Left: "left",
+  Right: "right",
+} as const;
+export type SheetSide = `${(typeof SheetSide)[keyof typeof SheetSide]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace SheetSide {
+  export type Left = typeof SheetSide.Left;
+  export type Right = typeof SheetSide.Right;
 }
 
 const sideStyles: Record<SheetSide, string> = {
@@ -42,7 +48,7 @@ export interface SheetProps {
   open: boolean;
   /** Invoked on the close button, the backdrop, or Escape. */
   onClose: () => void;
-  /** Edge it slides in from. Defaults to {@link SheetSide.Right}. */
+  /** Edge it slides in from. Defaults to `"right"`. */
   side?: SheetSide;
   /** Heading rendered in the sheet's title bar. */
   title?: ReactNode;
@@ -116,7 +122,8 @@ export const Sheet: FC<SheetProps> = ({
     >
       <DialogBackdrop
         className={cn(
-          "fixed inset-0 bg-black/50",
+          "fixed inset-0",
+          bgColorClass(ScrimColor.Default),
           transitionDuration(TransitionDuration.Normal),
           "transition-opacity data-closed:opacity-0"
         )}
@@ -137,13 +144,15 @@ export const Sheet: FC<SheetProps> = ({
         )}
       >
         {(title || withCloseButton) && (
-          <div className="flex flex-none items-center justify-between gap-md px-5 pt-5 pb-3">
+          // Same chrome as Modal: 24px padding, heading-lg title, Large
+          // IconAction close
+          <div className="flex flex-none items-center justify-between gap-md px-6 pt-6 pb-5">
             {title ? (
               <DialogTitle
                 className={cn(
-                  textStyles(TextVariant.Lg),
+                  TEXT_STYLES[TextVariant.HeadingLg],
                   textColorClass(TextColor.Primary),
-                  "text-semibold min-w-0"
+                  "min-w-0"
                 )}
               >
                 {title}
@@ -152,11 +161,10 @@ export const Sheet: FC<SheetProps> = ({
               <span />
             )}
             {withCloseButton && (
-              <Button
-                variant={Variant.Icon}
-                size={Size.Sm}
+              <IconAction
+                size={Size.Lg}
                 aria-label="Close"
-                leadingIcon={CloseIcon}
+                icon={CloseIcon}
                 onClick={onClose}
                 className="shrink-0"
               />
@@ -165,8 +173,8 @@ export const Sheet: FC<SheetProps> = ({
         )}
         <div
           className={cn(
-            "min-h-0 flex-1 overflow-y-auto px-5",
-            title || withCloseButton ? "pb-5" : "py-5",
+            "min-h-0 flex-1 overflow-y-auto px-6",
+            title || withCloseButton ? "pb-6" : "py-6",
             contentClassName
           )}
         >

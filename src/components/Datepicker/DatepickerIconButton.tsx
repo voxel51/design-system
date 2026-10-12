@@ -5,7 +5,11 @@ import { type IconInput, resolveIconInput } from "@/components/Icons";
 import { IconColor, Size, textColorClass } from "@/types";
 import { cn } from "@/util/classes";
 
-import { iconPaddingStyles, iconSizeStyles } from "../Input/styles";
+import {
+  iconPaddingStyles,
+  iconSizeStyles,
+  toInputSize,
+} from "../Input/styles";
 
 export const IconPosition = {
   Leading: "leading",
@@ -66,13 +70,17 @@ export const DatepickerIconButton: FC<DatepickerIconButtonProps> = ({
         "flex items-center justify-center",
         "cursor-pointer",
         "disabled:cursor-not-allowed",
-        position === IconPosition.Leading && iconPaddingStyles[size],
+        position === IconPosition.Leading &&
+          iconPaddingStyles[toInputSize(size)],
         "z-10"
       )}
       aria-label={ariaLabel}
     >
       <IconContent
-        className={cn(iconSizeStyles[size], textColorClass(IconColor.Disabled))}
+        className={cn(
+          iconSizeStyles[toInputSize(size)],
+          textColorClass(IconColor.Disabled)
+        )}
       />
     </Button>
   );

@@ -1,48 +1,23 @@
-import type { FC, HTMLAttributes } from "react";
+import type { FC } from "react";
 
-import { SpinnerIcon } from "@/components/Icons/Spinner";
-import { Size, TextColor, textColorClass } from "@/types";
-import { cn } from "@/util/classes";
+import { Loader, type LoaderProps } from "@/components/Loader";
 
-export interface SpinnerProps extends HTMLAttributes<HTMLDivElement> {
-  size?: Size;
-}
-
-const sizeStyles: Record<Size, string> = {
-  [Size.Xs]: "size-3",
-  [Size.Sm]: "size-4",
-  [Size.Md]: "size-5",
-  [Size.Lg]: "size-6",
-  [Size.Xl]: "size-7",
-};
+export type SpinnerProps = Omit<LoaderProps, "type">;
 
 /**
- * An animated spinner component.
+ * An animated spinner component. Shorthand for `<Loader type="spinner" />`.
  *
  * @example
  * ```tsx
- * <Spinner size={Size.Md} />
+ * <Spinner size="md" />
  * ```
  *
  * @param className `class` overrides to apply to the component.
  * @param size Size of the component. See {@link Size}.
  * @param props Additional HTML properties to apply to the component.
  */
-export const Spinner: FC<SpinnerProps> = ({
-  className,
-  size = Size.Md,
-  ...props
-}) => (
-  <div
-    className={cn(
-      sizeStyles[size],
-      textColorClass(TextColor.Primary),
-      className
-    )}
-    {...props}
-  >
-    <SpinnerIcon className="animate-spin" />
-  </div>
+export const Spinner: FC<SpinnerProps> = (props) => (
+  <Loader {...props} type="spinner" />
 );
 
 Spinner.displayName = "Spinner";

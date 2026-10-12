@@ -43,6 +43,8 @@ const defaultArgs = {
   title: generateWords(4),
   description: generateWords(6),
   action: <Button variant={Variant.Secondary}>{generateWords(2)}</Button>,
+  // The close control only renders when a handler is given.
+  onClose: () => {},
 };
 
 export const Default: Story = {

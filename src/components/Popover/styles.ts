@@ -1,6 +1,13 @@
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
-import { BackgroundColor, bgColorClass, Radius, Shadow } from "@/types";
+import {
+  BackgroundColor,
+  bgColorClass,
+  BorderColor,
+  borderColorClass,
+  Radius,
+  Shadow,
+} from "@/types";
 import { cn } from "@/util/classes";
 
 /**
@@ -12,9 +19,12 @@ import { cn } from "@/util/classes";
 export const popoverPanelStyles = (): string =>
   cn(
     "min-w-[120px]",
+    // Same surface as the Figma ActionMenu panel
     "p-2.5",
-    bgColorClass(BackgroundColor.Popover),
-    radiusStyles(Radius.Lg),
-    shadowStyles(Shadow.Lg),
+    bgColorClass(BackgroundColor.Card),
+    "border",
+    borderColorClass(BorderColor.Default),
+    radiusStyles(Radius.Md),
+    shadowStyles(Shadow.Md),
     "focus:outline-none"
   );

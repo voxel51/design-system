@@ -28,9 +28,9 @@ export interface ImageListProps<
   gap?: number;
   /**
    * Controls the scroll axis.
-   * - `Orientation.Column` (default) — items flow into columns; the list
+   * - `"col"` (default) — items flow into columns; the list
    *   scrolls **vertically**.
-   * - `Orientation.Row` — items flow into rows; the list scrolls
+   * - `"row"` — items flow into rows; the list scrolls
    *   **horizontally**.
    */
   orientation?: Orientation;
@@ -49,9 +49,9 @@ export interface ImageListProps<
    * visible. Use this to fetch and append more items.
    */
   onLoadMore?: () => void;
-  /** Set to `true` while loading additional items. */
+  /** Set to `true` while more items remain to fetch; `onLoadMore` only fires while this is `true`. Defaults to `false`. */
   hasMore?: boolean;
-  /** Displays a {@link Spinner} in the sentinel area while `true`. */
+  /** Displays a {@link Spinner} in the sentinel area while `true`. Defaults to `false`. */
   loading?: boolean;
 }
 

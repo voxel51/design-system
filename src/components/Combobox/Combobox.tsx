@@ -81,7 +81,7 @@ export interface ComboboxProps extends Omit<
   allowFreeText?: boolean;
   /** Shown when the field is empty. */
   placeholder?: string;
-  /** Field size. See {@link Size}. Defaults to {@link Size.Md}. */
+  /** Field size. See {@link Size}. Defaults to `"md"`. */
   size?: Size;
   disabled?: boolean;
   /** Spinner in place of the list while the caller's query is in flight. */
@@ -95,6 +95,8 @@ export interface ComboboxProps extends Omit<
   emptyMessage?: ReactNode | ((props: { close: () => void }) => ReactNode);
   /** Attributes for the field itself — a test id, a name. */
   inputProps?: HTMLAttributes<HTMLInputElement> & DataAttributes;
+  /** Shown above the list's contents whenever the list is open — a notice. */
+  header?: ReactNode;
   /** Attributes for the list — a test id. */
   listProps?: HTMLAttributes<HTMLDivElement> & DataAttributes;
   /** Fires when the list opens or closes. */
@@ -166,7 +168,7 @@ ListPortal.displayName = "ListPortal";
  *
  * Keyboard: ArrowDown / ArrowUp move the highlight (opening the list if
  * closed), Enter picks the highlighted row, Escape closes without picking,
- * and blur commits the text when `allowFreeText` is set.
+ * and blur commits the text when `allowFreeText` is set (unless `commitOnBlur` is `false`).
  *
  * @example
  * ```tsx
@@ -190,7 +192,7 @@ ListPortal.displayName = "ListPortal";
  * @example
  * ```tsx
  * // Open domain: suggestions help, but any string is allowed.
- * <Combobox allowFreeText options={knownTypes} ... />
+ * <Combobox allowFreeText options={knownTypes} value={type} inputValue={text} onInputChange={setText} onChange={setType} />
  * ```
  *
  * @param options Rows to offer, already filtered by the caller.
@@ -213,6 +215,7 @@ ListPortal.displayName = "ListPortal";
  * @param focusOnMount Focus the field on mount.
  * @param autoHighlight Highlight the first row whenever there is text.
  * @param inputProps Attributes for the field itself.
+ * @param header Shown above the list's contents whenever the list is open.
  * @param listProps Attributes for the list.
  * @param onOpenChange Fires when the list opens or closes.
  * @param props Additional HTML properties for the wrapper.
@@ -238,6 +241,7 @@ export const Combobox: FC<ComboboxProps> = ({
   focusOnMount = false,
   autoHighlight = false,
   inputProps,
+  header,
   listProps,
   onOpenChange,
   "aria-label": ariaLabel,
@@ -446,6 +450,7 @@ export const Combobox: FC<ComboboxProps> = ({
               )
             )}
           >
+            {header}
             {loading && (
               <div className="flex justify-center py-2">
                 <Spinner size={Size.Md} />

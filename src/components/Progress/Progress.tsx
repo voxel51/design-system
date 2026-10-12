@@ -18,7 +18,7 @@ export interface ProgressProps extends HTMLAttributes<HTMLDivElement> {
   value: number;
   /** Maximum value the bar represents. */
   max?: number;
-  /** Track thickness. See {@link Size}. */
+  /** Track thickness: `"sm"`, `"md"` or `"lg"`. See {@link ProgressSize}. */
   size?: ProgressSize;
   /** Fill color. See {@link Color}. */
   color?: Color;
@@ -43,10 +43,10 @@ const sizeStyles: Record<ProgressSize, string> = {
  *
  * @param value Current value, clamped to `[0, max]`.
  * @param max Maximum value the bar represents. Defaults to `100`.
- * @param size Track thickness. See {@link Size}. Defaults to {@link Size.Md}.
- * @param color Fill color. See {@link Color}. Defaults to {@link BrandColor.Primary}.
+ * @param size Track thickness: `"sm"`, `"md"` or `"lg"`. Defaults to `"md"`. See {@link ProgressSize}.
+ * @param color Fill color. See {@link Color}. Defaults to `"brand-primary"`.
  * @param trackColor Background color of the unfilled track. See {@link BackgroundColor}.
- *  Defaults to {@link BackgroundColor.CardElevated}.
+ *  Defaults to `"bg-card-elevated"`.
  * @param className `class` overrides to apply to the component.
  * @param props Additional HTML properties to apply to the component.
  */

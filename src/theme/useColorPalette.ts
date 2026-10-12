@@ -1,24 +1,30 @@
 import { useMemo, useSyncExternalStore } from "react";
 
 import { colors } from "./tokens/colors";
-import { palettePool } from "./tokens/palette";
+import { chartPool, overlayPool, type VizHue } from "./tokens/palette";
 
 /** Resolved color mode. Mirrors the `.dark` class contract in `tailwind.css`. */
 export type ColorMode = "dark" | "light";
 
 /**
- * The palette's own token shape — every numbered slot and named alias the
- * tokens define. Derived rather than enumerated, so a palette of N colors
- * types correctly without touching this file.
+ * The chart group's token shape. Keyed by `VizHue` rather than by
+ * `typeof colors.dark…` so both modes satisfy it — the per-mode types are
+ * disjoint unions of hex literals, and only the key set is common to them.
  */
-type PaletteColors = typeof colors.dark.content.palette;
+type ChartColors = Record<VizHue, string>;
 
-export interface ColorPalette extends PaletteColors {
+export interface ColorPalette extends ChartColors {
   /**
-   * The ordered slots as an array — the shape wanted by anything that assigns
-   * colors by index (label coloring, chart series, legends).
+   * Chart hues in pool order — for anything that assigns colors by index and
+   * draws onto the UI (chart series, legends, histograms).
    */
   pool: readonly string[];
+  /**
+   * Overlay hues in pool order — for marks drawn *over media* (looker's boxes,
+   * masks, keypoints). Identical in both modes on purpose: the image behind
+   * them does not change with the theme.
+   */
+  overlay: readonly string[];
 }
 
 const DEFAULT_MODE: ColorMode = "dark";
@@ -64,7 +70,7 @@ export const useColorMode = (): ColorMode =>
 /**
  * Resolved palette colors as literal hex strings for the active color mode.
  *
- * Prefer `cssVar.color.palette.*` for anything that styles the DOM — CSS
+ * Prefer `cssVar.color["viz-chart"].*` for anything that styles the DOM — CSS
  * variables react to the theme without re-rendering React. Reach for this hook
  * only where a literal value is required and a `var(--…)` cannot be used:
  * canvas and WebGL (the looker overlays), charting libraries that parse colors
@@ -73,7 +79,7 @@ export const useColorMode = (): ColorMode =>
  * @example
  * ```tsx
  * const palette = useColorPalette();
- * ctx.strokeStyle = palette.pool[index % palette.pool.length];
+ * ctx.strokeStyle = palette.overlay[index % palette.overlay.length];
  * ctx.fillStyle = palette.teal;
  * ```
  */
@@ -81,7 +87,11 @@ export const useColorPalette = (): ColorPalette => {
   const mode = useColorMode();
 
   return useMemo(
-    () => ({ ...colors[mode].content.palette, pool: palettePool[mode] }),
+    () => ({
+      ...colors[mode].content["viz-chart"],
+      pool: chartPool[mode],
+      overlay: overlayPool,
+    }),
     [mode]
   );
 };

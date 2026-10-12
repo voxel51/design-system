@@ -4,7 +4,7 @@ import { type IconInput, IconWrapper } from "@/components/Icons";
 import { Size, TextColor, textColorClass } from "@/types";
 import { cn } from "@/util/classes";
 
-import { iconPaddingStyles } from "./styles";
+import { iconPaddingStyles, iconSizes, toInputSize } from "./styles";
 
 export interface InputIconProps {
   icon: IconInput;
@@ -17,11 +17,16 @@ export interface InputIconProps {
  *
  * @param icon Icon component specifying the icon to use.
  * @param size The size of the icon. See {@link Size}.
- * @param hasText If `true`, de-emphasizes the icon in favor of the input text.
+ * @param hasText If `true`, shows the icon in the primary text color; otherwise it is muted.
  *
  * @internal For use by {@link Input}.
  */
-export const InputIcon: FC<InputIconProps> = ({ icon, size, hasText }) => {
+export const InputIcon: FC<InputIconProps> = ({
+  icon,
+  size: requestedSize,
+  hasText,
+}) => {
+  const size = toInputSize(requestedSize);
   return (
     <span
       className={cn(
@@ -32,7 +37,7 @@ export const InputIcon: FC<InputIconProps> = ({ icon, size, hasText }) => {
         iconPaddingStyles[size]
       )}
     >
-      <IconWrapper size={size} content={icon} />
+      <IconWrapper size={iconSizes[size]} content={icon} />
     </span>
   );
 };

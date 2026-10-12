@@ -11,6 +11,7 @@ export interface FormFieldProps extends HTMLAttributes<HTMLDivElement> {
   description?: ReactNode;
   disabled?: boolean;
   error?: ReactNode;
+  required?: boolean;
   spacing?: Spacing;
 }
 
@@ -58,9 +59,10 @@ export interface FormFieldProps extends HTMLAttributes<HTMLDivElement> {
  *  description is only rendered when a `label` is also provided.
  * @param disabled If `true`, disables the form field.
  * @param error Optional error message to display for the form field.
- * @param spacing Spacing between elements in the field. Defaults to {@link Spacing.Sm}.
+ * @param required If `true`, displays a destructive-color asterisk after the label.
+ * @param spacing Spacing between elements in the field. Defaults to `"sm"`.
  * @param className `class` overrides to apply to the field container.
- * @param props Additional HTML properties to apply to the field container.
+ * @param props Additional HTML properties, applied to the inner Stack that lays out the label, control and error (`className` goes to the outer field).
  */
 export const FormField: FC<FormFieldProps> = ({
   control,
@@ -68,6 +70,7 @@ export const FormField: FC<FormFieldProps> = ({
   description,
   disabled,
   error,
+  required = false,
   spacing = Spacing.Sm,
   className,
   ...props
@@ -84,7 +87,22 @@ export const FormField: FC<FormFieldProps> = ({
         {label && (
           <Stack orientation={Orientation.Column} spacing={Spacing.Xs}>
             <Label>
-              <Text color={TextColor.Primary}>{label}</Text>
+              <Text
+                color={TextColor.Secondary}
+                variant={TextVariant.BodySecondary}
+              >
+                {label}
+                {required && (
+                  <Text
+                    color={TextColor.Failure}
+                    variant={TextVariant.BodySecondary}
+                    aria-hidden="true"
+                  >
+                    {" "}
+                    *
+                  </Text>
+                )}
+              </Text>
             </Label>
             {description && (
               <Description>
@@ -98,7 +116,11 @@ export const FormField: FC<FormFieldProps> = ({
 
         {control}
 
-        {error && <Text color={TextColor.Destructive}>{error}</Text>}
+        {error && (
+          <Text color={TextColor.Failure} variant={TextVariant.BodyTertiary}>
+            {error}
+          </Text>
+        )}
       </Stack>
     </Field>
   );

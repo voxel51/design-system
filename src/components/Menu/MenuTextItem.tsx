@@ -6,6 +6,7 @@ import radiusStyles from "@/styles/radius";
 import {
   BackgroundColor,
   bgColorClass,
+  InteractiveColor,
   ElementState,
   Radius,
   TextColor,
@@ -19,7 +20,7 @@ import { cn } from "@/util/classes";
 export interface MenuTextItemProps extends HTMLAttributes<HTMLButtonElement> {
   /** If `true`, the item cannot be interacted with and is rendered in a muted style. */
   disabled?: boolean;
-  /** If `true`, renders the label in the destructive text color (e.g. for "Delete"). */
+  /** If `true`, renders the label in the failure color, and fills the row with the danger color (white text) on hover and focus. */
   destructive?: boolean;
 }
 
@@ -29,7 +30,7 @@ export interface MenuTextItemProps extends HTMLAttributes<HTMLButtonElement> {
  * @example
  * ```tsx
  * <Dropdown trigger={<DropdownTrigger>Open</DropdownTrigger>}>
- *   <MenuTextItem onClick={() => console.log("clicked")}>
+ *   <MenuTextItem destructive onClick={() => console.log("clicked")}>
  *     Delete item
  *   </MenuTextItem>
  * </Dropdown>
@@ -37,7 +38,7 @@ export interface MenuTextItemProps extends HTMLAttributes<HTMLButtonElement> {
  *
  * @param children The label text.
  * @param disabled If `true`, the item cannot be interacted with.
- * @param destructive If `true`, renders the label in the destructive text color.
+ * @param destructive If `true`, renders the label in the failure color, and fills the row with the danger color (white text) on hover and focus.
  * @param className `class` overrides to apply to the component.
  * @param props Additional HTML properties to apply to the component.
  */
@@ -56,19 +57,36 @@ export const MenuTextItem: FC<MenuTextItemProps> = ({
           disabled={disabled}
           className={cn(
             "flex w-full items-center",
-            "px-3 py-1.5",
-            radiusStyles(Radius.Sm),
+            // Figma Action Menu Row: 6/10 padding, radius 8 on hover, 15/20
+            // label, bg/card-nested hover; danger rows fill danger-default
+            "px-2.5 py-1.5",
+            radiusStyles(Radius.Lg),
             "cursor-pointer",
             "disabled:opacity-50 disabled:cursor-not-allowed",
-            focus && bgColorClass(BackgroundColor.CardElevated),
-            bgColorClass(BackgroundColor.CardElevated, ElementState.Hover),
+            // A disabled button still matches :hover; keep its hover fill off
+            "disabled:hover:bg-transparent",
+            focus &&
+              bgColorClass(
+                destructive
+                  ? InteractiveColor.DangerDefault
+                  : BackgroundColor.CardNested
+              ),
+            bgColorClass(
+              destructive
+                ? InteractiveColor.DangerDefault
+                : BackgroundColor.CardNested,
+              ElementState.Hover
+            ),
+            // White content on the danger fill, on hover and on keyboard focus
+            destructive && "enabled:hover:[&_*]:text-white",
+            destructive && focus && "[&_*]:text-white",
             className
           )}
           {...props}
         >
           <Text
-            variant={TextVariant.Sm}
-            color={destructive ? TextColor.Destructive : TextColor.Primary}
+            variant={TextVariant.BodyPrimary}
+            color={destructive ? TextColor.Failure : TextColor.Primary}
             className="block min-w-0 truncate"
           >
             {children}

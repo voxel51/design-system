@@ -11,6 +11,7 @@ import {
 
 import { Button } from "@/components/Button";
 import { LockIcon, type IconInput, UnlockIcon } from "@/components/Icons";
+import formControlStyles from "@/styles/form-control.module.css";
 import radiusStyles from "@/styles/radius";
 import {
   BackgroundColor,
@@ -27,7 +28,13 @@ import {
 import { cn } from "@/util/classes";
 
 import { InputIcon } from "./InputIcon";
-import { numberInputStyles, paddingLeftStyles, sizeStyles } from "./styles";
+import {
+  numberInputStyles,
+  paddingLeftStyles,
+  paddingStyles,
+  sizeStyles,
+  toInputSize,
+} from "./styles";
 
 type ModifiedInputProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
@@ -58,7 +65,7 @@ export namespace InputType {
 /**
  * The set of border radii supported by {@link Input}.
  *
- * The fully-rounded ({@link Radius.Full}) option is intentionally excluded: a pill-shaped text input
+ * The fully-rounded (`"full"`) option is intentionally excluded: a pill-shaped text input
  * is not part of the design spec and produces awkward results with longer values and prefix icons.
  */
 export type InputRadius = Exclude<Radius, Radius.Full>;
@@ -75,7 +82,7 @@ export interface InputProps extends ModifiedInputProps {
 }
 
 /**
- * Characters permitted within a telephone ({@link InputType.Tel}) input.
+ * Characters permitted within a telephone (`"tel"`) input.
  *
  * Allows digits plus the common formatting characters: `+`, `-`, `(`, `)`, and spaces.
  */
@@ -106,7 +113,7 @@ export const inputStyle = ({
   error,
   icon,
   radius = Radius.Sm,
-  size = Size.Md,
+  size: requestedSize = Size.Md,
   trailingControl,
 }: {
   borderless?: boolean;
@@ -116,8 +123,9 @@ export const inputStyle = ({
   radius?: InputRadius;
   size?: Size;
   trailingControl?: boolean;
-}): string =>
-  cn(
+}): string => {
+  const size = toInputSize(requestedSize);
+  return cn(
     "w-full",
     // Keep the themed surface color in every state. `bg-transparent` lets the surrounding
     // surface show through; we also pin the autofill background so the browser does not paint a
@@ -126,7 +134,7 @@ export const inputStyle = ({
     "autofill:bg-transparent",
     "[&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s]",
     textColorClass(TextColor.Primary),
-    "placeholder:text-content-text-tertiary",
+    formControlStyles.control,
     "transition-colors",
     "focus:outline-none",
     // A borderless field sits flush in a bar or header: no frame, and no
@@ -135,26 +143,28 @@ export const inputStyle = ({
     !borderless &&
       (error
         ? borderColorClass(BorderColor.Error)
-        : borderColorClass(BorderColor.Default)),
+        : borderColorClass(BorderColor.Input)),
     !borderless &&
       !disabled &&
       !error &&
-      borderColorClass(BorderColor.Hover, ElementState.Hover),
+      borderColorClass(BorderColor.InputHover, ElementState.Hover),
     !borderless &&
       (error
         ? borderColorClass(BorderColor.Error, ElementState.Focus)
-        : borderColorClass(BorderColor.Focus, ElementState.Focus)),
+        : borderColorClass(BorderColor.InputFocus, ElementState.Focus)),
     "disabled:opacity-50",
     "disabled:cursor-not-allowed",
     !borderless &&
       borderColorClass(BorderColor.Disabled, ElementState.Disabled),
     radiusStyles(radius),
     sizeStyles[size],
+    paddingStyles[size],
     // A borderless field has no frame to inset from; its container sets the
     // rhythm, so the text sits close to whatever precedes it
-    icon ? paddingLeftStyles[size] : borderless ? "pl-1.5" : "pl-3",
-    trailingControl ? "pr-10" : borderless ? "pr-1.5" : "pr-3"
+    icon ? paddingLeftStyles[size] : borderless ? "pl-1.5" : undefined,
+    trailingControl ? "pr-10" : borderless ? "pr-1.5" : undefined
   );
+};
 
 /**
  * A basic input component.
@@ -165,14 +175,14 @@ export const inputStyle = ({
  * {@link FormField} (e.g. `<FormField control={<Input ... />} label="..." />`). There is no separate
  * `FormInput` component — `FormField` + `Input` is the intended pairing.
  *
- * This component operates exclusively as a controlled component. See `value` and `onChange` for controlled behavior.
+ * Works controlled (`value` + `onChange`) or uncontrolled; email validation and the icon state track the typed value either way.
  *
  * Several input {@link InputType}s receive additional behavior:
- * - {@link InputType.Tel}: non-numeric characters (other than common phone formatting characters)
+ * - `"tel"`: non-numeric characters (other than common phone formatting characters)
  *   are blocked at entry.
- * - {@link InputType.Email}: the value is validated against a basic email pattern and the input is
+ * - `"email"`: the value is validated against a basic email pattern and the input is
  *   rendered in an error state when it is non-empty and invalid.
- * - {@link InputType.Password}: a show/hide toggle button is rendered which switches the rendered
+ * - `"password"`: a show/hide toggle button is rendered which switches the rendered
  *   value between obscured and plain text.
  *
  * @example
@@ -181,25 +191,20 @@ export const inputStyle = ({
  *   const [value, setValue] = useState<string>("");
  *   const [error, setError] = useState<string | null>(null);
  *
- *   const onChange = useCallback((newValue: string) => {
- *       setValue(newValue);
- *       if (newValue.length < 5) {
- *         setError("Value must be at least 5 characters");
- *       } else {
- *         setError(null);
- *       }
- *     },
- *     [setError, setValue]
- *   );
+ *   const onChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+ *     const next = event.target.value;
+ *     setValue(next);
+ *     setError(next.length < 5 ? "Value must be at least 5 characters" : null);
+ *   }, []);
  *
  *   return (
- *     <Input value={value} onChange={onChange} error={!!error} />
+ *     <Input size="sm" value={value} onChange={onChange} error={!!error} />
  *   );
  * };
  * ```
  *
- * @param size The size of the input. See {@link Size}.
- * @param radius The border radius of the input. The fully-rounded option is not supported. See {@link InputRadius}.
+ * @param size The size of the input. Defaults to `"md"`. See {@link Size}.
+ * @param radius The border radius of the input. The fully-rounded option is not supported. Defaults to `"sm"`. See {@link InputRadius}.
  * @param type The type of the input. This should adhere to the standard HTML `input` types. See {@link InputType}.
  * @param className `class` overrides to apply to the component.
  * @param disabled If `true`, disables the input.

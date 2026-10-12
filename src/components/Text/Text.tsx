@@ -1,14 +1,13 @@
-import clsx from "clsx";
 import type { FC, HTMLAttributes } from "react";
 
 import { textStyles } from "@/styles/text";
 import {
   type ThemeableColor,
   isColorToken,
-  TextColor,
   textColorClass,
   TextVariant,
 } from "@/types";
+import { cn } from "@/util/classes";
 
 export interface TextProps extends HTMLAttributes<HTMLSpanElement> {
   variant?: TextVariant;
@@ -20,7 +19,12 @@ export interface TextProps extends HTMLAttributes<HTMLSpanElement> {
    * case.
    */
   color?: ThemeableColor | (string & {});
+  /** Fills the text with the expressive gradient, overriding `color`. */
+  gradient?: boolean;
 }
+
+const GRADIENT_TEXT =
+  "bg-(image:--gradient-action-expressive) bg-clip-text text-transparent selection:text-[HighlightText]";
 
 /**
  * A basic text component.
@@ -29,35 +33,50 @@ export interface TextProps extends HTMLAttributes<HTMLSpanElement> {
  *
  * @example
  * ```tsx
- * <Text>
- *   Some text
+ * <Text>Plain body text</Text>
+ * <Text variant="heading-md">Section title</Text>
+ * <Text variant="body-secondary" color="text-secondary">
+ *   Supporting detail
  * </Text>
  * ```
  *
- * @param variant The variant of the text; this controls the size and related styling of the text. See {@link Variant}.
+ * @param variant The text's role in the type tier, which sets its size, line
+ *  height and weight together. Defaults to `"body-primary"`. The size-only
+ *  variants (`"xxs"` to `"xxl"`) are deprecated. See {@link TextVariant}.
  * @param color The color of the text. See {@link TextProps.color}.
+ * @param gradient Fills the text with the expressive gradient, overriding `color`.
  * @param children The content wrapped by this component.
  * @param className `class` overrides to apply to the component.
  * @param props Additional HTML properties to apply to the component.
  */
 export const Text: FC<TextProps> = ({
-  variant = TextVariant.Md,
-  color = TextColor.Primary,
+  variant = TextVariant.BodyPrimary,
+  color,
+  gradient,
   children,
   className,
   style,
   ...props
 }) => {
-  const isToken = isColorToken(color);
+  // No default colour: a role that carries its own (Caption is tertiary)
+  // shows it, and everything else inherits the surrounding text colour.
+  const isToken = color !== undefined && isColorToken(color);
 
   return (
     <span
-      className={clsx(
-        isToken && textColorClass(color),
+      // Merged rather than concatenated: the Caption role carries its own
+      // tertiary colour, so an explicit `color` must come after it to win.
+      className={cn(
         textStyles(variant),
+        isToken && !gradient && textColorClass(color),
+        gradient && GRADIENT_TEXT,
         className
       )}
-      style={!isToken ? { color, ...style } : style}
+      style={
+        color !== undefined && !isToken && !gradient
+          ? { color, ...style }
+          : style
+      }
       {...props}
     >
       {children}

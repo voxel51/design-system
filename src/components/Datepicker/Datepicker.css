@@ -12,7 +12,7 @@ passing classes to the popover.
 }
 
 .react-datepicker__header {
-  background-color: var(--color-content-bg-card-1);
+  background-color: var(--color-content-bg-card);
   border-bottom-color: var(--color-content-border-default);
   color: var(--color-content-text-primary);
 }
@@ -132,7 +132,7 @@ passing classes to the popover.
 
 .react-datepicker__month-dropdown,
 .react-datepicker__year-dropdown {
-  background-color: var(--color-content-bg-card-1);
+  background-color: var(--color-content-bg-card);
   border-color: var(--color-content-border-default);
 }
 

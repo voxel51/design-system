@@ -58,6 +58,32 @@ export const Default: Story = {
   render: (args) => <Demo {...args} />,
 };
 
+/**
+ * Rendered open, with no trigger, so the panel itself can be inspected and
+ * screenshotted. Closing does nothing here.
+ */
+export const Open: Story = {
+  render: (args) => (
+    <Modal
+      title="Approve project"
+      {...args}
+      open
+      onClose={() => undefined}
+      footer={
+        <>
+          <Button variant={Variant.Secondary}>Cancel</Button>
+          <Button>Approve</Button>
+        </>
+      }
+    >
+      <Text>
+        Approving this project marks every annotation as reviewed and notifies
+        the dataset owners.
+      </Text>
+    </Modal>
+  ),
+};
+
 export const WithFooter: Story = {
   render: (args) => (
     <Demo

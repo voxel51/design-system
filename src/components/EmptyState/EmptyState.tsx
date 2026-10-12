@@ -26,12 +26,19 @@ export interface EmptyStateProps extends StackProps {
 /**
  * A basic empty state to display to the user.
  *
- * @param icon The icon to display in the empty state.
+ * @example
+ * ```tsx
+ * <EmptyState
+ *   icon={SearchIcon}
+ *   title="No results"
+ *   description="Try a different search term."
+ * />
+ * ```
+ *
+ * @param icon The icon to display in the empty state: a per-icon component.
  * @param title The title to display in the empty state.
  * @param description An optional description to display in the empty state.
- * @param props Additional HTML properties to apply to the component.
- *
- *
+ * @param props Additional {@link Stack} properties to apply to the component.
  */
 export const EmptyState: FC<EmptyStateProps> = ({
   icon,
@@ -49,7 +56,7 @@ export const EmptyState: FC<EmptyStateProps> = ({
       className={cn(
         "text-center p-10",
         radiusStyles(Radius.Md),
-        bgColorClass(BackgroundColor.Card1),
+        bgColorClass(BackgroundColor.Card),
         className
       )}
       {...props}
@@ -65,8 +72,12 @@ export const EmptyState: FC<EmptyStateProps> = ({
           <IconContent size={Size.Lg} color={BrandColor.Accent} />
         </span>
       )}
-      <Text variant={TextVariant.Xl}>{title}</Text>
-      {description && <Text color={TextColor.Muted}>{description}</Text>}
+      <Text variant={TextVariant.HeadingLg}>{title}</Text>
+      {description && (
+        <Text variant={TextVariant.BodySecondary} color={TextColor.Muted}>
+          {description}
+        </Text>
+      )}
     </Stack>
   );
 };

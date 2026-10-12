@@ -24,6 +24,7 @@ export interface RadioGroupProps extends Omit<
   value?: string;
   onChange: (value: string) => void;
   name?: string;
+  /** @deprecated Figma draws one radio size; forwarded to {@link Radio}, which ignores it. */
   size?: RadioGroupSize;
   disabled?: boolean;
   radioProps?: RadioProps;
@@ -32,12 +33,12 @@ export interface RadioGroupProps extends Omit<
 /**
  * A group of radio controls; supports selection via one-of semantics.
  *
- * This component operates exclusively as a controlled component. See `value` and `onChange` for controlled behavior.
+ * Controlled via `value` + `onChange`, or uncontrolled with `defaultValue`.
  *
  * @example
  * ```tsx
  * const MyComponent = () => {
- *   const [value, setValue] = useState<string | null>(null);
+ *   const [value, setValue] = useState<string>("car");
  *
  *   const onChange = useCallback((selectedValue: string) => {
  *       setValue(selectedValue);
@@ -70,8 +71,7 @@ export interface RadioGroupProps extends Omit<
  * @param defaultValue The default value to use when no selection has been made.
  * @param onChange Callback triggered when the selection value changes.
  * @param name Optional name of the radio group.
- * @param size The size of the radio group; this property will be forwarded to the wrapped {@link Radio} components.
- *  See {@link Size}.
+ * @param size Deprecated; Figma draws a single radio size, so the wrapped {@link Radio} components ignore it.
  * @param disabled If `true`, disables the radio group.
  * @param className `class` overrides to apply to the radio group.
  * @param radioProps Additional HTML properties to apply to each of the wrapped {@link Radio} components.

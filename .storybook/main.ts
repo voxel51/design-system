@@ -21,9 +21,6 @@ const config: StorybookConfig = {
       },
     },
   },
-  features: {
-    experimentalComponentsManifest: true,
-  },
 };
 
 export default config;

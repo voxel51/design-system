@@ -35,7 +35,7 @@ const ANCHOR_TO_PLACEMENT: Record<SelectAnchor, Placement> = {
  * A tree-shaped selection control that renders nodes in a
  * searchable dropdown panel styled to match {@link Select}.
  *
- * Supports single-select with full keyboard navigation (ARIA treeview pattern).
+ * Supports single- and multi-select (`multiSelect`) with full keyboard navigation (ARIA treeview pattern).
  *
  * Paths are represented as {@link TreePath} — ordered arrays of raw node
  * names. No encoding is needed, even when names contain `/` or `%`.

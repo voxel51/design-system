@@ -37,8 +37,8 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const bgColorMap: Record<CardBackground, Color> = {
-  [CardBackground.Primary]: BackgroundColor.Card1,
-  [CardBackground.Secondary]: BackgroundColor.Card2,
+  [CardBackground.Primary]: BackgroundColor.Card,
+  [CardBackground.Secondary]: BackgroundColor.CardNested,
   [CardBackground.Elevated]: BackgroundColor.CardElevated,
 };
 
@@ -47,16 +47,16 @@ const bgColorMap: Record<CardBackground, Color> = {
  *
  * @example
  * ```tsx
- * <Card background={CardBackground.Secondary} compact>
+ * <Card background="secondary" compact>
  *   Card content here
  * </Card>
  * ```
  *
- * @param background The background color variant. Defaults to {@link CardBackground.Primary}.
+ * @param background The background color variant. Defaults to `"primary"`.
  * @param border Whether to render a border around the card.
  * @param className Additional CSS class names to apply to the card.
  * @param compact When true, reduces internal padding.
- * @param shadow The shadow depth applied to the card. Defaults to {@link Shadow.Md}.
+ * @param shadow The shadow depth applied to the card. Defaults to `"none"`.
  * @param outlined When true, replaces the shadow with a border outline.
  * @param children The content of the card.
  * @param props Additional HTML properties to apply to the card.
@@ -67,7 +67,8 @@ export const Card: FC<CardProps> = ({
   compact,
   background = CardBackground.Primary,
   outlined,
-  shadow = Shadow.Md,
+  // Figma Card: bg/card, radius 8, 20px padding, no shadow or edge
+  shadow = Shadow.None,
   ...props
 }) => {
   const backgroundColor = bgColorMap[background];

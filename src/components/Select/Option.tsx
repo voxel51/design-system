@@ -13,6 +13,7 @@ import {
   Size,
   BrandColor,
   textColorClass,
+  TextVariant,
 } from "@/types";
 import { cn } from "@/util/classes";
 
@@ -48,13 +49,13 @@ export const Option: FC<OptionProps> = ({
           // Use a single subtle base surface for all rows instead of aggressive
           // alternating backgrounds; selection is conveyed via the dedicated
           // `Selected` surface token plus the accent check icon.
-          bgColorClass(BackgroundColor.Card1),
+          bgColorClass(BackgroundColor.Card),
           selected && bgColorClass(BackgroundColor.Selected)
         ),
         bgColorClass(BackgroundColor.CardElevated, ElementState.Hover)
       )}
     >
-      <Text>{children}</Text>
+      <Text variant={TextVariant.BodySecondary}>{children}</Text>
       <span
         className={clsx(
           "size-5 flex items-center",

@@ -32,7 +32,7 @@ export interface ToolbarGroupProps extends Omit<
  * A divider is automatically rendered after each group; the last group's divider is hidden.
  *
  * @param children `ToolbarAction` items to render within the group.
- * @param props Additional `HTMLDivElement` attributes (e.g. `data-testid`, `aria-label`) forwarded to the root element.
+ * @param props Additional `HTMLDivElement` attributes (e.g. `data-testid`, `aria-label`) forwarded to the inner `role="group"` element, not the outer wrapper.
  *
  * @example
  * ```tsx

@@ -6,17 +6,18 @@ import {
 } from "@headlessui/react";
 import type { FC, ReactNode } from "react";
 
-import { Button } from "@/components/Button";
+import { IconAction } from "@/components/IconAction";
 import { CloseIcon } from "@/components/Icons";
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
-import { textStyles } from "@/styles/text";
+import { TEXT_STYLES } from "@/styles/text";
 import {
   BackgroundColor,
   bgColorClass,
   BorderColor,
   borderColorClass,
   Radius,
+  ScrimColor,
   Shadow,
   Size,
   TextColor,
@@ -24,7 +25,6 @@ import {
   TextVariant,
   TransitionDuration,
   transitionDuration,
-  Variant,
   ZIndex,
   zIndexStyles,
 } from "@/types";
@@ -34,15 +34,23 @@ import { cn } from "@/util/classes";
  * Width of the modal panel. The panel is always full-width up to this cap so
  * it degrades to the viewport on small screens.
  */
-export enum ModalSize {
+export const ModalSize = {
   /** 400px — confirmations and single-field forms. */
-  Sm = "sm",
+  Sm: "sm",
   /** 600px — the default; forms and short reference content. */
-  Md = "md",
+  Md: "md",
   /** 800px — tables, side-by-side content. */
-  Lg = "lg",
+  Lg: "lg",
   /** 1000px — full editors. */
-  Xl = "xl",
+  Xl: "xl",
+} as const;
+export type ModalSize = `${(typeof ModalSize)[keyof typeof ModalSize]}`;
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace ModalSize {
+  export type Sm = typeof ModalSize.Sm;
+  export type Md = typeof ModalSize.Md;
+  export type Lg = typeof ModalSize.Lg;
+  export type Xl = typeof ModalSize.Xl;
 }
 
 const sizeStyles: Record<ModalSize, string> = {
@@ -62,12 +70,13 @@ export interface ModalProps {
   onClose: () => void;
   /** Heading rendered in the modal's title bar. */
   title?: ReactNode;
-  /** Panel width. See {@link ModalSize}. Defaults to {@link ModalSize.Md}. */
+  /** Panel width. See {@link ModalSize}. Defaults to `"md"`. */
   size?: ModalSize;
   /**
    * Whether to render the title bar's close button. Defaults to `true` when
-   * a `title` is given. A modal with no title bar has no close button; give
-   * it a dismiss control of its own.
+   * a `title` is given. Without a `title`, no close button renders unless
+   * `showCloseButton` is `true`; otherwise give the modal a dismiss control
+   * of its own.
    */
   showCloseButton?: boolean;
   /** Pinned below the scrollable body — typically the action buttons. */
@@ -106,7 +115,7 @@ export interface ModalProps {
  *   open={open}
  *   onClose={close}
  *   title="Keyboard reference"
- *   size={ModalSize.Lg}
+ *   size="lg"
  *   footer={<Button onClick={close}>Done</Button>}
  * >
  *   {rows}
@@ -150,7 +159,9 @@ export const Modal: FC<ModalProps> = ({
       )}
       {...props}
     >
-      <DialogBackdrop className="fixed inset-0 bg-black/50" />
+      <DialogBackdrop
+        className={cn("fixed inset-0", bgColorClass(ScrimColor.Default))}
+      />
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <DialogPanel
           data-testid="modal-panel"
@@ -158,7 +169,9 @@ export const Modal: FC<ModalProps> = ({
             "flex w-full flex-col overflow-hidden",
             "max-h-[85vh]",
             sizeStyles[size],
-            bgColorClass(BackgroundColor.CardElevated),
+            // Figma Confirmation Modal: bg/background, border/default, radius 8,
+            // 24px padding, scrim/default backdrop
+            bgColorClass(BackgroundColor.Background),
             // A surface that paints its own background owns its foreground
             // too: without this the panel inherits whatever the host page
             // set, which is black text on the dark card in an app that
@@ -166,7 +179,7 @@ export const Modal: FC<ModalProps> = ({
             textColorClass(TextColor.Primary),
             borderColorClass(BorderColor.Default),
             "border-1",
-            radiusStyles(Radius.Xl),
+            radiusStyles(Radius.Lg),
             shadowStyles(Shadow.Lg),
             className
           )}
@@ -175,15 +188,15 @@ export const Modal: FC<ModalProps> = ({
             <div
               className={cn(
                 "flex flex-none items-center justify-between gap-md",
-                "px-5 pt-5 pb-3"
+                "px-6 pt-6 pb-5"
               )}
             >
               {title ? (
                 <DialogTitle
                   className={cn(
-                    textStyles(TextVariant.Lg),
+                    TEXT_STYLES[TextVariant.HeadingLg],
                     textColorClass(TextColor.Primary),
-                    "text-semibold min-w-0"
+                    "min-w-0"
                   )}
                 >
                   {title}
@@ -192,11 +205,10 @@ export const Modal: FC<ModalProps> = ({
                 <span />
               )}
               {withCloseButton && (
-                <Button
-                  variant={Variant.Icon}
-                  size={Size.Sm}
+                <IconAction
+                  size={Size.Lg}
                   aria-label="Close"
-                  leadingIcon={CloseIcon}
+                  icon={CloseIcon}
                   onClick={onClose}
                   className="shrink-0"
                 />
@@ -205,8 +217,8 @@ export const Modal: FC<ModalProps> = ({
           )}
           <div
             className={cn(
-              "min-h-0 flex-1 overflow-y-auto px-5",
-              title || withCloseButton ? "pb-5" : "py-5",
+              "min-h-0 flex-1 overflow-y-auto px-6",
+              title || withCloseButton ? "pb-6" : "py-6",
               contentClassName
             )}
           >
@@ -215,10 +227,9 @@ export const Modal: FC<ModalProps> = ({
           {footer && (
             <div
               className={cn(
-                "flex flex-none items-center justify-end gap-sm",
-                "border-t-1",
-                borderColorClass(BorderColor.Subtle),
-                "px-5 py-4"
+                // Figma: 16px between actions, 40px above them, no divider
+                "flex flex-none items-center justify-end gap-4",
+                "px-6 pt-4 pb-6"
               )}
             >
               {footer}

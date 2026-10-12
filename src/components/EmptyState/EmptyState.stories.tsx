@@ -5,8 +5,16 @@ import { EmptyState, IconName } from "@voxel51/voodo";
 const meta: Meta<typeof EmptyState> = {
   title: "Components/EmptyState",
   component: EmptyState,
+  // Fills its container; a bounded column keeps the story readable.
+  decorators: [
+    (Story) => (
+      <div className="w-[480px]">
+        <Story />
+      </div>
+    ),
+  ],
   parameters: {
-    layout: "padded",
+    layout: "centered",
   },
   tags: ["autodocs"],
   argTypes: {

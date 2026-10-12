@@ -8,7 +8,7 @@ import type { FC, HTMLAttributes } from "react";
  *
  * @example
  * ```tsx
- * <Clickable onClick={() => deleteEntry()}}>
+ * <Clickable onClick={() => deleteEntry()}>
  *   <DeleteIcon />
  * </Clickable>
  * ```

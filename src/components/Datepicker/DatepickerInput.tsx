@@ -1,6 +1,7 @@
 import { type FC, useCallback, useRef } from "react";
 
 import { CaretDownIcon, DateRangeIcon } from "@/components/Icons";
+import formControlStyles from "@/styles/form-control.module.css";
 import radiusStyles from "@/styles/radius";
 import {
   BackgroundColor,
@@ -15,7 +16,7 @@ import {
 } from "@/types";
 import { cn } from "@/util/classes";
 
-import { paddingLeftStyles, sizeStyles } from "../Input/styles";
+import { paddingLeftStyles, sizeStyles, toInputSize } from "../Input/styles";
 
 import DatepickerIconButton, { IconPosition } from "./DatepickerIconButton";
 
@@ -34,7 +35,7 @@ const datePickerInputStyle = ({
     "w-full",
     bgColorClass(BackgroundColor.Background),
     textColorClass(TextColor.Primary),
-    "placeholder:text-content-text-tertiary",
+    formControlStyles.control,
     "transition-colors",
     "border",
     error
@@ -51,8 +52,8 @@ const datePickerInputStyle = ({
     "disabled:cursor-not-allowed",
     borderColorClass(BorderColor.Disabled, ElementState.Disabled),
     radiusStyles(radius),
-    sizeStyles[size],
-    paddingLeftStyles[size],
+    sizeStyles[toInputSize(size)],
+    paddingLeftStyles[toInputSize(size)],
     "pr-8"
   );
 

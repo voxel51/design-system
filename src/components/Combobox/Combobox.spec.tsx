@@ -49,6 +49,15 @@ describe("Combobox", () => {
     expect(screen.getAllByRole("option")).toHaveLength(3);
   });
 
+  it("renders a header above the options", async () => {
+    render(<Harness header={<div>Indexing new samples</div>} />);
+    await userEvent.click(screen.getByRole("combobox"));
+
+    const listbox = screen.getByRole("listbox");
+    expect(listbox.firstChild).toHaveTextContent("Indexing new samples");
+    expect(screen.getAllByRole("option")).toHaveLength(3);
+  });
+
   it("renders an option's description", async () => {
     render(<Harness />);
     await userEvent.click(screen.getByRole("combobox"));

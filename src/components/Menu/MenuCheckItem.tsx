@@ -65,12 +65,14 @@ export const MenuCheckItem: FC<MenuCheckItemProps> = ({
           disabled={disabled}
           className={cn(
             "flex w-full items-center gap-2",
-            "px-3 py-1.5",
-            radiusStyles(Radius.Sm),
+            "px-2.5 py-1.5",
+            radiusStyles(Radius.Lg),
             "cursor-pointer",
             "disabled:opacity-50 disabled:cursor-not-allowed",
-            focus && bgColorClass(BackgroundColor.CardElevated),
-            bgColorClass(BackgroundColor.CardElevated, ElementState.Hover),
+            // A disabled button still matches :hover; keep its hover fill off
+            "disabled:hover:bg-transparent",
+            focus && bgColorClass(BackgroundColor.CardNested),
+            bgColorClass(BackgroundColor.CardNested, ElementState.Hover),
             className
           )}
           {...props}
@@ -80,7 +82,7 @@ export const MenuCheckItem: FC<MenuCheckItemProps> = ({
             {checked && <CheckIcon size={Size.Sm} color={TextColor.Primary} />}
           </span>
           <Text
-            variant={TextVariant.Sm}
+            variant={TextVariant.BodyPrimary}
             color={TextColor.Primary}
             className="block min-w-0 truncate"
           >

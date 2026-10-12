@@ -5,6 +5,7 @@ export const Variant = {
   Danger: "danger",
   Icon: "icon",
   Borderless: "borderless",
+  Expressive: "expressive",
 } as const;
 export type Variant = `${(typeof Variant)[keyof typeof Variant]}`;
 // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -15,6 +16,7 @@ export namespace Variant {
   export type Danger = typeof Variant.Danger;
   export type Icon = typeof Variant.Icon;
   export type Borderless = typeof Variant.Borderless;
+  export type Expressive = typeof Variant.Expressive;
 }
 
 export default Variant;
