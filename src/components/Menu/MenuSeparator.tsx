@@ -32,7 +32,8 @@ export const MenuSeparator: FC<MenuSeparatorProps> = ({
     <div
       role="separator"
       className={cn(
-        "my-1 -mx-1.5 border-t",
+        // Figma ActionMenu divider: 6px above and below, full panel width
+        "my-1.5 -mx-1.5 border-t",
         borderColorClass(BorderColor.Default),
         className
       )}

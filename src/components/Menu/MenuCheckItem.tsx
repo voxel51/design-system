@@ -1,19 +1,12 @@
-import { MenuItem } from "@headlessui/react";
+import { Menu } from "@base-ui/react/menu";
 import type { FC, HTMLAttributes } from "react";
 
 import { CheckIcon } from "@/components/Icons";
 import { Text } from "@/components/Text";
-import radiusStyles from "@/styles/radius";
-import {
-  BackgroundColor,
-  bgColorClass,
-  ElementState,
-  Radius,
-  Size,
-  TextColor,
-  TextVariant,
-} from "@/types";
+import { Size, TextColor, TextVariant } from "@/types";
 import { cn } from "@/util/classes";
+
+import { menuRowStyles } from "./styles";
 
 /**
  * Props for {@link MenuCheckItem}.
@@ -29,6 +22,7 @@ export interface MenuCheckItemProps extends HTMLAttributes<HTMLButtonElement> {
  * A selectable menu item with a leading checkmark indicator.
  * The checkmark is shown when `checked` is `true`; otherwise the slot is empty
  * but reserved so that text alignment stays consistent across items.
+ * Clicking it runs `onClick` and keeps the menu open.
  *
  * @example
  * ```tsx
@@ -56,41 +50,35 @@ export const MenuCheckItem: FC<MenuCheckItemProps> = ({
   ...props
 }) => {
   return (
-    <MenuItem disabled={disabled}>
-      {({ focus }) => (
+    <Menu.CheckboxItem
+      checked={!!checked}
+      disabled={disabled}
+      // Toggling keeps the menu open so several options can be set in a row
+      closeOnClick={false}
+      nativeButton
+      // Consumer handlers ride the rendered button, outside Base UI's own
+      // disabled gate, so a disabled item drops its click handler here
+      render={
         <button
           type="button"
-          role="menuitemcheckbox"
-          aria-checked={checked}
-          disabled={disabled}
-          className={cn(
-            "flex w-full items-center gap-2",
-            "px-2.5 py-1.5",
-            radiusStyles(Radius.Lg),
-            "cursor-pointer",
-            "disabled:opacity-50 disabled:cursor-not-allowed",
-            // A disabled button still matches :hover; keep its hover fill off
-            "disabled:hover:bg-transparent",
-            focus && bgColorClass(BackgroundColor.CardNested),
-            bgColorClass(BackgroundColor.CardNested, ElementState.Hover),
-            className
-          )}
           {...props}
-        >
-          {/* Reserved slot so text aligns whether checked or not */}
-          <span className="flex size-4 shrink-0 items-center justify-center">
-            {checked && <CheckIcon size={Size.Sm} color={TextColor.Primary} />}
-          </span>
-          <Text
-            variant={TextVariant.BodyPrimary}
-            color={TextColor.Primary}
-            className="block min-w-0 truncate"
-          >
-            {children}
-          </Text>
-        </button>
-      )}
-    </MenuItem>
+          onClick={disabled ? undefined : props.onClick}
+        />
+      }
+      className={(state) => cn(menuRowStyles(state), "gap-2", className)}
+    >
+      {/* Reserved slot so text aligns whether checked or not */}
+      <span className="flex size-4 shrink-0 items-center justify-center">
+        {checked && <CheckIcon size={Size.Sm} color={TextColor.Primary} />}
+      </span>
+      <Text
+        variant={TextVariant.BodyPrimary}
+        color={TextColor.Primary}
+        className="block min-w-0 truncate"
+      >
+        {children}
+      </Text>
+    </Menu.CheckboxItem>
   );
 };
 

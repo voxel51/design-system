@@ -1,20 +1,21 @@
-import { Menu, MenuButton, MenuItems } from "@headlessui/react";
+import { Menu } from "@base-ui/react/menu";
 import {
   isValidElement,
+  useRef,
   type FC,
   type HTMLAttributes,
   type ReactNode,
 } from "react";
 
-import { menuPanelStyles } from "@/components/Menu";
+import { actionMenuPanelStyles } from "@/components/Menu";
 import { ZIndex, zIndexStyles } from "@/types";
 import { cn } from "@/util/classes";
 
 /**
  * Position of the dropdown menu panel relative to its trigger.
- * Values follow the `<edge> <alignment>` convention used by HeadlessUI's
- * floating UI — e.g. `BottomStart` opens the menu below the trigger,
- * left-aligned with it.
+ * Values follow the `<side> <alignment>` convention — e.g. `BottomStart`
+ * opens the menu below the trigger, left-aligned with it. The menu flips to
+ * the other side when it would leave the viewport.
  */
 export const DropdownAnchor = {
   /** Below the trigger, horizontally centered. */
@@ -42,13 +43,30 @@ export namespace DropdownAnchor {
   export type TopEnd = typeof DropdownAnchor.TopEnd;
 }
 
+/** Base UI positioner side and alignment for each anchor. */
+const ANCHOR_PLACEMENT: Record<
+  DropdownAnchor,
+  { side: "top" | "bottom"; align: "start" | "center" | "end" }
+> = {
+  [DropdownAnchor.Bottom]: { side: "bottom", align: "center" },
+  [DropdownAnchor.BottomStart]: { side: "bottom", align: "start" },
+  [DropdownAnchor.BottomEnd]: { side: "bottom", align: "end" },
+  [DropdownAnchor.Top]: { side: "top", align: "center" },
+  [DropdownAnchor.TopStart]: { side: "top", align: "start" },
+  [DropdownAnchor.TopEnd]: { side: "top", align: "end" },
+};
+
+/** The consumer's trigger element, or the first focusable thing in it. */
+const FOCUSABLE =
+  'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
 /**
  * Props for {@link Dropdown}.
  */
 export interface DropdownProps extends HTMLAttributes<HTMLDivElement> {
   /**
    * The element that opens the dropdown when clicked.
-   * Rendered inside a `MenuButton` wrapper — any focusable element works.
+   * Rendered inside the menu's trigger wrapper — any focusable element works.
    */
   trigger: ReactNode;
   /** Menu content. Use the Menu* primitive components as children. */
@@ -76,10 +94,11 @@ export interface DropdownProps extends HTMLAttributes<HTMLDivElement> {
 /**
  * A click-triggered menu component. Composes with the Menu primitives:
  * {@link MenuTextItem}, {@link MenuIconTextItem}, {@link MenuCheckItem},
- * {@link MenuSectionTitle}, and {@link MenuSeparator}.
+ * {@link MenuSubmenuItem}, {@link MenuSectionTitle}, and {@link MenuSeparator}.
  *
- * Built on HeadlessUI's `Menu`, providing full keyboard navigation
- * (arrow keys, Enter, Escape) and ARIA `role="menu"` semantics automatically.
+ * Built on Base UI's `Menu`, providing full keyboard navigation
+ * (arrow keys, Enter, Escape, type-ahead), nested menus through
+ * {@link MenuSubmenuItem}, and ARIA `role="menu"` semantics automatically.
  *
  * @example
  * ```tsx
@@ -134,26 +153,53 @@ export const Dropdown: FC<DropdownProps> = ({
     : false;
   const isDisabled = disabled || triggerDisabled;
 
+  // An unportaled panel renders here, inside the trigger's DOM subtree
+  const inlineContainer = useRef<HTMLSpanElement>(null);
+  // The trigger is the first focusable element in the root
+  const root = useRef<HTMLDivElement>(null);
+  const focusableTrigger = (): HTMLElement | null =>
+    root.current?.querySelector<HTMLElement>(FOCUSABLE) ?? null;
+  const { side, align } = ANCHOR_PLACEMENT[anchor];
+
   return (
-    <div className={cn("relative inline-block", className)} {...props}>
-      <Menu>
-        <MenuButton
-          as="div"
+    <div
+      ref={root}
+      className={cn("relative inline-block", className)}
+      {...props}
+    >
+      <Menu.Root modal={false} disabled={isDisabled}>
+        <Menu.Trigger
           disabled={isDisabled}
+          nativeButton={false}
+          // The wrapper only catches presses; the consumer's own element is
+          // the button keyboard and assistive tech see, so the wrapper drops
+          // the role and tab stop Base UI gives a non-native trigger
+          render={(triggerProps) => (
+            <div {...triggerProps} role={undefined} tabIndex={undefined} />
+          )}
           className={isDisabled ? "cursor-not-allowed" : "cursor-pointer"}
         >
           {trigger}
-        </MenuButton>
+        </Menu.Trigger>
 
-        <MenuItems
-          anchor={{ to: anchor, gap: 4 }}
-          portal={portal}
-          modal={false}
-          className={cn(menuPanelStyles(), panelZIndex)}
-        >
-          {children}
-        </MenuItems>
-      </Menu>
+        <Menu.Portal container={portal ? undefined : inlineContainer}>
+          <Menu.Positioner
+            side={side}
+            align={align}
+            sideOffset={4}
+            className={panelZIndex}
+          >
+            <Menu.Popup
+              className={actionMenuPanelStyles()}
+              // Return focus to the consumer's trigger, not the wrapper
+              finalFocus={focusableTrigger}
+            >
+              {children}
+            </Menu.Popup>
+          </Menu.Positioner>
+        </Menu.Portal>
+      </Menu.Root>
+      {!portal && <span ref={inlineContainer} />}
     </div>
   );
 };

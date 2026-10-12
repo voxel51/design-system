@@ -16,6 +16,7 @@ describe("MenuTextItem", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
     expect(screen.getByText("My item")).toBeInTheDocument();
   });
 
@@ -28,6 +29,7 @@ describe("MenuTextItem", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
     await user.click(screen.getByText("Clickable"));
     expect(onClick).toHaveBeenCalledTimes(1);
   });
@@ -40,8 +42,9 @@ describe("MenuTextItem", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
     const item = screen.getByText("Disabled").closest("button")!;
-    expect(item).toBeDisabled();
+    expect(item).toHaveAttribute("aria-disabled", "true");
   });
 
   it("should not fire onClick when disabled", async () => {
@@ -55,6 +58,7 @@ describe("MenuTextItem", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
     await user.click(screen.getByText("Disabled"));
     expect(onClick).not.toHaveBeenCalled();
   });
@@ -67,6 +71,7 @@ describe("MenuTextItem", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
     const label = screen.getByText("Delete");
     expect(label.className).toMatch(/failure/i);
   });
@@ -79,6 +84,7 @@ describe("MenuTextItem", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
     const item = screen.getByText("Item").closest("button")!;
     expect(item).toHaveClass("custom-item");
   });

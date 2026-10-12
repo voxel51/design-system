@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { Dropdown, DropdownTrigger } from "@/components/Dropdown";
@@ -16,6 +16,7 @@ describe("MenuCheckItem", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
     expect(screen.getByText("Option")).toBeInTheDocument();
   });
 
@@ -27,6 +28,7 @@ describe("MenuCheckItem", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
 
     const item = screen.getByText("Checked option").closest("button")!;
     expect(item).toHaveAttribute("aria-checked", "true");
@@ -41,6 +43,7 @@ describe("MenuCheckItem", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
 
     const item = screen.getByText("Unchecked option").closest("button")!;
     expect(item).toHaveAttribute("aria-checked", "false");
@@ -55,8 +58,24 @@ describe("MenuCheckItem", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
     await user.click(screen.getByText("Option"));
     expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("should keep the menu open after it is clicked", async () => {
+    const user = userEvent.setup();
+    render(
+      <Dropdown trigger={trigger}>
+        <MenuCheckItem>Option</MenuCheckItem>
+      </Dropdown>
+    );
+    await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
+    await user.click(screen.getByText("Option"));
+    // a frame for a close to (wrongly) begin
+    await act(() => new Promise((resolve) => window.setTimeout(resolve, 100)));
+    expect(screen.getByRole("menu")).toBeInTheDocument();
   });
 
   it("should be disabled when disabled is true", async () => {
@@ -67,8 +86,9 @@ describe("MenuCheckItem", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
     const item = screen.getByText("Option").closest("button")!;
-    expect(item).toBeDisabled();
+    expect(item).toHaveAttribute("aria-disabled", "true");
   });
 
   it("should not fire onClick when disabled", async () => {
@@ -82,6 +102,7 @@ describe("MenuCheckItem", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
     await user.click(screen.getByText("Option"));
     expect(onClick).not.toHaveBeenCalled();
   });
@@ -94,6 +115,7 @@ describe("MenuCheckItem", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
     const item = screen.getByText("Option").closest("button")!;
     expect(item).toHaveClass("custom-item");
   });
