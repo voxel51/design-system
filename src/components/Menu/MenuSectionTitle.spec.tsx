@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { Dropdown, DropdownTrigger } from "@/components/Dropdown";
@@ -16,6 +16,7 @@ describe("MenuSectionTitle", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
     expect(screen.getByText("My Section")).toBeInTheDocument();
   });
 
@@ -27,7 +28,10 @@ describe("MenuSectionTitle", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
-    expect(screen.getByRole("presentation")).toBeInTheDocument();
+    await screen.findByRole("menu");
+    expect(
+      within(screen.getByRole("menu")).getByRole("presentation")
+    ).toBeInTheDocument();
   });
 
   it("should pass className through to the root", async () => {
@@ -38,6 +42,9 @@ describe("MenuSectionTitle", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
-    expect(screen.getByRole("presentation")).toHaveClass("custom-title");
+    await screen.findByRole("menu");
+    expect(
+      within(screen.getByRole("menu")).getByRole("presentation")
+    ).toHaveClass("custom-title");
   });
 });

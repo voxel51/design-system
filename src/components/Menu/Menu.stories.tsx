@@ -1,6 +1,6 @@
-import { Menu, MenuItems } from "@headlessui/react";
+import { Menu } from "@base-ui/react/menu";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import type { ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 
 import {
   IconName,
@@ -9,7 +9,7 @@ import {
   MenuSectionTitle,
   MenuSeparator,
   MenuTextItem,
-  menuPanelStyles,
+  actionMenuPanelStyles,
 } from "@voxel51/voodo";
 
 /**
@@ -25,13 +25,34 @@ const meta: Meta = {
 
 type Story = StoryObj;
 
-const Panel = ({ children }: { children: ReactNode }) => (
-  <Menu>
-    <MenuItems static className={menuPanelStyles()}>
-      {children}
-    </MenuItems>
-  </Menu>
-);
+/**
+ * An always-open menu panel. The rows only work inside a Base UI menu, so
+ * this opens one in place: the hidden trigger anchors it, the panel is
+ * rendered into this story rather than portaled to the body, and nothing
+ * can close it.
+ */
+const Panel = ({ children }: { children: ReactNode }) => {
+  const container = useRef<HTMLDivElement>(null);
+  return (
+    <div className="relative min-h-80 min-w-60">
+      <Menu.Root open modal={false} onOpenChange={() => {}}>
+        <Menu.Trigger
+          aria-hidden
+          tabIndex={-1}
+          className="absolute top-0 left-0 size-0 opacity-0"
+        />
+        <Menu.Portal container={container}>
+          <Menu.Positioner side="bottom" align="start">
+            <Menu.Popup className={actionMenuPanelStyles()}>
+              {children}
+            </Menu.Popup>
+          </Menu.Positioner>
+        </Menu.Portal>
+      </Menu.Root>
+      <div ref={container} />
+    </div>
+  );
+};
 
 export const Items: Story = {
   render: () => (
@@ -53,14 +74,34 @@ export const Items: Story = {
   ),
 };
 
-export const CheckItems: Story = {
-  render: () => (
+const ColumnToggles = () => {
+  const [shown, setShown] = useState(new Set(["Name", "Created"]));
+  const toggle = (column: string) =>
+    setShown((current) => {
+      const next = new Set(current);
+      if (next.has(column)) next.delete(column);
+      else next.add(column);
+      return next;
+    });
+  return (
     <Panel>
-      <MenuSectionTitle>Sort</MenuSectionTitle>
-      <MenuCheckItem checked>Ascending</MenuCheckItem>
-      <MenuCheckItem>Descending</MenuCheckItem>
+      <MenuSectionTitle>Columns</MenuSectionTitle>
+      {["Name", "Created", "Modified", "Size"].map((column) => (
+        <MenuCheckItem
+          key={column}
+          checked={shown.has(column)}
+          onClick={() => toggle(column)}
+        >
+          {column}
+        </MenuCheckItem>
+      ))}
     </Panel>
-  ),
+  );
+};
+
+/** Check items toggle in place: the menu stays open between clicks. */
+export const CheckItems: Story = {
+  render: () => <ColumnToggles />,
 };
 
 export default meta;

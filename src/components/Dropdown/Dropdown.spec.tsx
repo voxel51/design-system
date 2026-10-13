@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { MenuTextItem } from "@/components/Menu";
@@ -32,6 +32,7 @@ describe("Dropdown", () => {
     );
 
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
     expect(screen.getByText("Visible item")).toBeInTheDocument();
   });
 
@@ -45,10 +46,13 @@ describe("Dropdown", () => {
     );
 
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
     await user.click(screen.getByText("Click me"));
 
     expect(onClick).toHaveBeenCalledTimes(1);
-    expect(screen.queryByText("Click me")).not.toBeInTheDocument();
+    await waitFor(() =>
+      expect(screen.queryByText("Click me")).not.toBeInTheDocument()
+    );
   });
 
   it("should close when Escape is pressed", async () => {
@@ -60,10 +64,13 @@ describe("Dropdown", () => {
     );
 
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
     expect(screen.getByText("Item")).toBeInTheDocument();
 
     await user.keyboard("{Escape}");
-    expect(screen.queryByText("Item")).not.toBeInTheDocument();
+    await waitFor(() =>
+      expect(screen.queryByText("Item")).not.toBeInTheDocument()
+    );
   });
 
   it("should not scroll-lock the document while open", async () => {
@@ -75,6 +82,7 @@ describe("Dropdown", () => {
     );
 
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
     expect(screen.getByText("Item")).toBeInTheDocument();
 
     expect(document.documentElement.style.overflow).not.toBe("hidden");
@@ -89,6 +97,7 @@ describe("Dropdown", () => {
       </Dropdown>
     );
     await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
     expect(screen.getByRole("menu")).toBeInTheDocument();
   });
 
