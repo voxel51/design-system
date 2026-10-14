@@ -45,7 +45,6 @@ const sizeStyles: Record<PillSize, string> = {
   [Size.Md]: "px-3 py-1.5",
 };
 
-// The status dot is a 5px ellipse at Small and 6px at Medium.
 // The remove glyph follows the caption, a step smaller than the pill's text
 const removeIconSizes: Record<PillSize, number> = {
   [Size.Xs]: 10,
@@ -53,6 +52,7 @@ const removeIconSizes: Record<PillSize, number> = {
   [Size.Md]: 12,
 };
 
+// The status dot is a 5px ellipse at Small and 6px at Medium.
 const dotSizes: Record<PillSize, number> = {
   [Size.Xs]: 5,
   [Size.Sm]: 5,
@@ -77,7 +77,7 @@ const dotSizes: Record<PillSize, number> = {
  * @param backgroundColor Background color of the pill. Defaults to `"bg-card-elevated"`. See {@link PillColor}.
  * @param isStatus If `true`, prefixes the content with a bullet-like icon.
  * @param onRemove Callback triggered when the remove control is clicked. Providing this makes the pill
- *  removable: a trailing icon {@link Button} is rendered which calls `onRemove` when clicked. Omit it
+ *  removable: a trailing remove button, sized to the pill and in its text color, calls `onRemove`. Omit it
  *  for a non-removable pill.
  * @param className `class` overrides to apply to the component.
  * @param children Content of the pill.

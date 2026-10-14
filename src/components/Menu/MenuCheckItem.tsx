@@ -69,7 +69,10 @@ export const MenuCheckItem: FC<MenuCheckItemProps> = ({
         cn(
           menuRowStyles(state),
           "gap-2",
-          checked && "bg-brand-primary/10 hover:bg-brand-primary/15",
+          checked &&
+            (state.highlighted && !disabled
+              ? "bg-brand-primary/15"
+              : "bg-brand-primary/10"),
           className
         )
       }

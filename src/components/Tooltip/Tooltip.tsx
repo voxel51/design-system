@@ -146,6 +146,9 @@ export const Tooltip: FC<TooltipProps> = ({
   }, []);
 
   const close = useCallback(() => {
+    // The portaled panel is a React child of the wrapper, so leaving it fires
+    // both mouseleaves; a second timer must not orphan the first
+    window.clearTimeout(closeTimer.current);
     if (interactive) {
       closeTimer.current = window.setTimeout(
         () => setIsOpen(false),

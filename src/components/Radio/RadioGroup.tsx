@@ -2,6 +2,7 @@ import { RadioGroup as HeadlessRadioGroup } from "@headlessui/react";
 import { FC, HTMLAttributes, useMemo } from "react";
 
 import { Size } from "@/types";
+import { cn } from "@/util/classes";
 import { randomString } from "@/util/random";
 
 import { Radio, RadioProps } from "./Radio";
@@ -114,7 +115,14 @@ export const RadioGroup: FC<RadioGroupProps> = ({
           size={size}
           disabled={disabled || option.disabled}
           {...radioProps}
-          fieldProps={option.fieldProps}
+          fieldProps={{
+            ...radioProps?.fieldProps,
+            ...option.fieldProps,
+            className: cn(
+              radioProps?.fieldProps?.className,
+              option.fieldProps?.className
+            ),
+          }}
         />
       ))}
     </HeadlessRadioGroup>

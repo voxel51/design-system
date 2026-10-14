@@ -7,6 +7,8 @@ import { cn } from "@/util/classes";
 
 import { RadioDotIcon } from "../Icons/RadioDot";
 
+type DataAttributes = { [key: `data-${string}`]: string | undefined };
+
 type ModifiedRadioProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
   "size" | "onChange" | "checked" | "disabled" | "className" | "type"
@@ -24,7 +26,7 @@ export interface RadioProps extends ModifiedRadioProps {
   className?: string;
   labelClassName?: string;
   /** Additional HTML properties for the row holding the radio and its label */
-  fieldProps?: HTMLAttributes<HTMLDivElement>;
+  fieldProps?: HTMLAttributes<HTMLDivElement> & DataAttributes;
 }
 
 // Figma RadioButton is a single control: 14px circle, 5px dot, 15/20 label.
@@ -72,7 +74,10 @@ export const Radio: FC<RadioProps> = ({
   ...props
 }) => {
   return (
-    <Field className="group flex items-center gap-3" {...fieldProps}>
+    <Field
+      {...fieldProps}
+      className={cn("group flex items-center gap-3", fieldProps?.className)}
+    >
       <HeadlessRadio
         value={value}
         disabled={disabled}

@@ -55,32 +55,60 @@ describe("Tooltip", () => {
     expect(screen.queryByText(content)).not.toBeInTheDocument();
   });
 
-  it("should stay open while the pointer crosses into an interactive panel", () => {
-    jest.useFakeTimers();
-    const content = randomString();
-    const children = randomString();
+  describe("interactive", () => {
+    beforeEach(() => jest.useFakeTimers());
+    afterEach(() => jest.useRealTimers());
 
-    render(
-      <Tooltip {...defaultProps} content={content} interactive>
-        {children}
-      </Tooltip>
-    );
+    it("should stay open while the pointer crosses into the panel", () => {
+      const content = randomString();
+      const children = randomString();
 
-    const element = screen.getByTestId(testId);
-    fireEvent.mouseEnter(within(element).getByText(children));
-    fireEvent.mouseLeave(within(element).getByText(children));
-    act(() => jest.advanceTimersByTime(50));
-    // the pointer reaches the panel, inside the wrapper, before the delay ends
-    fireEvent.mouseEnter(screen.getByText(content));
-    act(() => jest.advanceTimersByTime(500));
+      render(
+        <Tooltip {...defaultProps} content={content} interactive>
+          {children}
+        </Tooltip>
+      );
 
-    expect(screen.getByText(content)).toBeInTheDocument();
+      const element = screen.getByTestId(testId);
+      fireEvent.mouseEnter(within(element).getByText(children));
+      fireEvent.mouseLeave(within(element).getByText(children));
+      act(() => jest.advanceTimersByTime(50));
+      // the pointer reaches the panel before the close delay ends
+      fireEvent.mouseEnter(screen.getByText(content));
+      act(() => jest.advanceTimersByTime(500));
 
-    fireEvent.mouseLeave(element);
-    act(() => jest.advanceTimersByTime(500));
+      expect(screen.getByText(content)).toBeInTheDocument();
 
-    expect(screen.queryByText(content)).not.toBeInTheDocument();
-    jest.useRealTimers();
+      fireEvent.mouseLeave(element);
+      act(() => jest.advanceTimersByTime(500));
+
+      expect(screen.queryByText(content)).not.toBeInTheDocument();
+    });
+
+    it("should stay open when the pointer returns from the panel to the trigger", () => {
+      const content = randomString();
+      const children = randomString();
+
+      render(
+        <Tooltip {...defaultProps} content={content} interactive>
+          {children}
+        </Tooltip>
+      );
+
+      const trigger = within(screen.getByTestId(testId)).getByText(children);
+      fireEvent.mouseEnter(trigger);
+      fireEvent.mouseLeave(trigger);
+      act(() => jest.advanceTimersByTime(50));
+      fireEvent.mouseEnter(screen.getByText(content));
+
+      // leave the panel and come straight back to the trigger
+      fireEvent.mouseLeave(screen.getByText(content));
+      act(() => jest.advanceTimersByTime(50));
+      fireEvent.mouseEnter(trigger);
+      act(() => jest.advanceTimersByTime(500));
+
+      expect(screen.getByText(content)).toBeInTheDocument();
+    });
   });
 
   it("should apply above-modal z-index to tooltip panel when portal is true", () => {
