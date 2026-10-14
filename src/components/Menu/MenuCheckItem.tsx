@@ -3,7 +3,7 @@ import type { FC, HTMLAttributes } from "react";
 
 import { CheckIcon } from "@/components/Icons";
 import { Text } from "@/components/Text";
-import { Size, TextColor, TextVariant } from "@/types";
+import { BrandColor, Size, TextColor, TextVariant } from "@/types";
 import { cn } from "@/util/classes";
 
 import { menuRowStyles } from "./styles";
@@ -65,16 +65,26 @@ export const MenuCheckItem: FC<MenuCheckItemProps> = ({
           onClick={disabled ? undefined : props.onClick}
         />
       }
-      className={(state) => cn(menuRowStyles(state), "gap-2", className)}
+      className={(state) =>
+        cn(
+          menuRowStyles(state),
+          "gap-2",
+          checked &&
+            (state.highlighted && !disabled
+              ? "bg-brand-primary/15"
+              : "bg-brand-primary/10"),
+          className
+        )
+      }
     >
       {/* Reserved slot so text aligns whether checked or not */}
       <span className="flex size-4 shrink-0 items-center justify-center">
-        {checked && <CheckIcon size={Size.Sm} color={TextColor.Primary} />}
+        {checked && <CheckIcon size={Size.Sm} color={BrandColor.Primary} />}
       </span>
       <Text
         variant={TextVariant.BodyPrimary}
         color={TextColor.Primary}
-        className="block min-w-0 truncate"
+        className={cn("block min-w-0 truncate", checked && "font-medium")}
       >
         {children}
       </Text>

@@ -23,15 +23,18 @@ import ArrowCircleDownSvg from "@/img/ArrowCircleDown.svg?react";
 import ArrowCircleLeftOutlinedSvg from "@/img/ArrowCircleLeftOutlined.svg?react";
 import ArrowDownSvg from "@/img/ArrowDown.svg?react";
 import ArrowDownRightSvg from "@/img/ArrowDownRight.svg?react";
+import ArrowDownWideNarrowSvg from "@/img/ArrowDownWideNarrow.svg?react";
 import ArrowDownwardSvg from "@/img/ArrowDownward.svg?react";
 import ArrowDropDownSvg from "@/img/ArrowDropDown.svg?react";
 import ArrowDropUpSvg from "@/img/ArrowDropUp.svg?react";
 import ArrowForwardIosSvg from "@/img/ArrowForwardIos.svg?react";
 import ArrowForwardIosSharpSvg from "@/img/ArrowForwardIosSharp.svg?react";
 import ArrowLeftSvg from "@/img/ArrowLeft.svg?react";
+import ArrowLeftStrokeSvg from "@/img/ArrowLeftStroke.svg?react";
 import ArrowOutwardSvg from "@/img/ArrowOutward.svg?react";
 import ArrowRightSvg from "@/img/ArrowRight.svg?react";
 import ArrowUpSvg from "@/img/ArrowUp.svg?react";
+import ArrowUpNarrowWideSvg from "@/img/ArrowUpNarrowWide.svg?react";
 import ArrowUpRightSvg from "@/img/ArrowUpRight.svg?react";
 import ArrowUpwardSvg from "@/img/ArrowUpward.svg?react";
 import ArticleOutlinedSvg from "@/img/ArticleOutlined.svg?react";
@@ -46,6 +49,7 @@ import BarChartSvg from "@/img/BarChart.svg?react";
 import BlocksSvg from "@/img/Blocks.svg?react";
 import BoltSvg from "@/img/Bolt.svg?react";
 import BookmarkSvg from "@/img/Bookmark.svg?react";
+import BookmarkStrokeSvg from "@/img/BookmarkStroke.svg?react";
 import BoxesSvg from "@/img/Boxes.svg?react";
 import BrushSvg from "@/img/Brush.svg?react";
 import BubbleChartSvg from "@/img/BubbleChart.svg?react";
@@ -70,7 +74,9 @@ import ChecklistSvg from "@/img/Checklist.svg?react";
 import CheckmarkSvg from "@/img/Checkmark.svg?react";
 import ChevronBottomSvg from "@/img/ChevronBottom.svg?react";
 import ChevronLeftSvg from "@/img/ChevronLeft.svg?react";
+import ChevronLeftStrokeSvg from "@/img/ChevronLeftStroke.svg?react";
 import ChevronRightSvg from "@/img/ChevronRight.svg?react";
+import ChevronRightStrokeSvg from "@/img/ChevronRightStroke.svg?react";
 import ChevronTopSvg from "@/img/ChevronTop.svg?react";
 import CircleSvg from "@/img/Circle.svg?react";
 import CircleOutlinedSvg from "@/img/CircleOutlined.svg?react";
@@ -135,6 +141,7 @@ import ExpandLessSvg from "@/img/ExpandLess.svg?react";
 import ExpandMoreSvg from "@/img/ExpandMore.svg?react";
 import ExtensionSvg from "@/img/Extension.svg?react";
 import ExternalLinkSvg from "@/img/ExternalLink.svg?react";
+import EyeOffSvg from "@/img/EyeOff.svg?react";
 import FactCheckSvg from "@/img/FactCheck.svg?react";
 import FeedbackSvg from "@/img/Feedback.svg?react";
 import FiberManualRecordSvg from "@/img/FiberManualRecord.svg?react";
@@ -202,11 +209,14 @@ import LabelImportantSvg from "@/img/LabelImportant.svg?react";
 import LabelOutlinedSvg from "@/img/LabelOutlined.svg?react";
 import LaunchSvg from "@/img/Launch.svg?react";
 import LayersSvg from "@/img/Layers.svg?react";
+import LayoutPanelTopSvg from "@/img/LayoutPanelTop.svg?react";
 import LibraryAddSvg from "@/img/LibraryAdd.svg?react";
 import LightModeSvg from "@/img/LightMode.svg?react";
 import LightbulbSvg from "@/img/Lightbulb.svg?react";
+import Link2Svg from "@/img/Link2.svg?react";
 import ListSvg from "@/img/List.svg?react";
 import ListChecksSvg from "@/img/ListChecks.svg?react";
+import ListTreeSvg from "@/img/ListTree.svg?react";
 import LocalOfferSvg from "@/img/LocalOffer.svg?react";
 import LocalOfferOutlinedSvg from "@/img/LocalOfferOutlined.svg?react";
 import LockSvg from "@/img/Lock.svg?react";
@@ -216,9 +226,13 @@ import LogoutSvg from "@/img/Logout.svg?react";
 import LogsSvg from "@/img/Logs.svg?react";
 import MailOutlineSvg from "@/img/MailOutline.svg?react";
 import MapSvg from "@/img/Map.svg?react";
+import MaximizeSvg from "@/img/Maximize.svg?react";
+import Maximize2Svg from "@/img/Maximize2.svg?react";
 import MenuSvg from "@/img/Menu.svg?react";
 import MenuBookSvg from "@/img/MenuBook.svg?react";
 import MessageSquareSvg from "@/img/MessageSquare.svg?react";
+import MinimizeSvg from "@/img/Minimize.svg?react";
+import Minimize2Svg from "@/img/Minimize2.svg?react";
 import MoreHorizSvg from "@/img/MoreHoriz.svg?react";
 import MoreHorizontalSvg from "@/img/MoreHorizontal.svg?react";
 import MoreVertSvg from "@/img/MoreVert.svg?react";
@@ -230,9 +244,16 @@ import NotificationsActiveSvg from "@/img/NotificationsActive.svg?react";
 import OpenInNewSvg from "@/img/OpenInNew.svg?react";
 import OpenWithSvg from "@/img/OpenWith.svg?react";
 import OrchestratorSvg from "@/img/Orchestrator.svg?react";
+import PackageSvg from "@/img/Package.svg?react";
 import PaletteSvg from "@/img/Palette.svg?react";
+import PaletteStrokeSvg from "@/img/PaletteStroke.svg?react";
+import PanelLeftCloseSvg from "@/img/PanelLeftClose.svg?react";
+import PanelLeftOpenSvg from "@/img/PanelLeftOpen.svg?react";
+import PanelRightCloseSvg from "@/img/PanelRightClose.svg?react";
+import PanelRightOpenSvg from "@/img/PanelRightOpen.svg?react";
 import PauseSvg from "@/img/Pause.svg?react";
 import PauseCircleOutlineSvg from "@/img/PauseCircleOutline.svg?react";
+import PenLineSvg from "@/img/PenLine.svg?react";
 import PencilSvg from "@/img/Pencil.svg?react";
 import PercentSvg from "@/img/Percent.svg?react";
 import PersonAddAltSvg from "@/img/PersonAddAlt.svg?react";
@@ -254,6 +275,7 @@ import RemoveSvg from "@/img/Remove.svg?react";
 import RemoveCircleOutlineSvg from "@/img/RemoveCircleOutline.svg?react";
 import ReplaySvg from "@/img/Replay.svg?react";
 import ReportProblemSvg from "@/img/ReportProblem.svg?react";
+import ResizeSvg from "@/img/Resize.svg?react";
 import RestartAltSvg from "@/img/RestartAlt.svg?react";
 import RestartAltOutlinedSvg from "@/img/RestartAltOutlined.svg?react";
 import ReviewSvg from "@/img/Review.svg?react";
@@ -263,13 +285,17 @@ import RuleSvg from "@/img/Rule.svg?react";
 import RuleFolderSvg from "@/img/RuleFolder.svg?react";
 import SaveSvg from "@/img/Save.svg?react";
 import SaveOutlinedSvg from "@/img/SaveOutlined.svg?react";
+import ScanEyeSvg from "@/img/ScanEye.svg?react";
+import ScanSearchSvg from "@/img/ScanSearch.svg?react";
 import ScatterPlotSvg from "@/img/ScatterPlot.svg?react";
 import SchoolSvg from "@/img/School.svg?react";
 import SearchSvg from "@/img/Search.svg?react";
 import SearchOutlinedSvg from "@/img/SearchOutlined.svg?react";
+import SearchStrokeSvg from "@/img/SearchStroke.svg?react";
 import SellSvg from "@/img/Sell.svg?react";
 import ServerSvg from "@/img/Server.svg?react";
 import SettingsSvg from "@/img/Settings.svg?react";
+import Settings2Svg from "@/img/Settings2.svg?react";
 import SettingsBackupRestoreSvg from "@/img/SettingsBackupRestore.svg?react";
 import SettingsInputCompositeRoundedSvg from "@/img/SettingsInputCompositeRounded.svg?react";
 import SettingsOutlinedSvg from "@/img/SettingsOutlined.svg?react";
@@ -280,6 +306,7 @@ import ShuffleSvg from "@/img/Shuffle.svg?react";
 import SkipNextSvg from "@/img/SkipNext.svg?react";
 import SliderSvg from "@/img/Slider.svg?react";
 import SlidersSvg from "@/img/Sliders.svg?react";
+import SlidersHorizontalSvg from "@/img/SlidersHorizontal.svg?react";
 import SmartToySvg from "@/img/SmartToy.svg?react";
 import SparklesSvg from "@/img/Sparkles.svg?react";
 import SpeedSvg from "@/img/Speed.svg?react";
@@ -294,6 +321,7 @@ import SwapHorizSvg from "@/img/SwapHoriz.svg?react";
 import SyncSvg from "@/img/Sync.svg?react";
 import TableChartOutlinedSvg from "@/img/TableChartOutlined.svg?react";
 import TagSvg from "@/img/Tag.svg?react";
+import TagStrokeSvg from "@/img/TagStroke.svg?react";
 import TextSvg from "@/img/Text.svg?react";
 import TextureSvg from "@/img/Texture.svg?react";
 import ThreeSixtySvg from "@/img/ThreeSixty.svg?react";
@@ -334,6 +362,9 @@ import WestSvg from "@/img/West.svg?react";
 import WorkflowSvg from "@/img/Workflow.svg?react";
 import WorkspacesSvg from "@/img/Workspaces.svg?react";
 import ZapSvg from "@/img/Zap.svg?react";
+import ZoomSvg from "@/img/Zoom.svg?react";
+import ZoomInSvg from "@/img/ZoomIn.svg?react";
+import ZoomOutSvg from "@/img/ZoomOut.svg?react";
 
 import { IconBase, type IconProps } from "./IconBase";
 
@@ -409,6 +440,10 @@ export const ArrowDownRightIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ArrowDownRightSvg} />
 );
 
+export const ArrowDownWideNarrowIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ArrowDownWideNarrowSvg} />
+);
+
 export const ArrowDownwardIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ArrowDownwardSvg} />
 );
@@ -433,6 +468,10 @@ export const ArrowLeftIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ArrowLeftSvg} />
 );
 
+export const ArrowLeftStrokeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ArrowLeftStrokeSvg} />
+);
+
 export const ArrowOutwardIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ArrowOutwardSvg} />
 );
@@ -443,6 +482,10 @@ export const ArrowRightIcon: FC<IconProps> = (props) => (
 
 export const ArrowUpIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ArrowUpSvg} />
+);
+
+export const ArrowUpNarrowWideIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ArrowUpNarrowWideSvg} />
 );
 
 export const ArrowUpRightIcon: FC<IconProps> = (props) => (
@@ -499,6 +542,10 @@ export const BoltIcon: FC<IconProps> = (props) => (
 
 export const BookmarkIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={BookmarkSvg} />
+);
+
+export const BookmarkStrokeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={BookmarkStrokeSvg} />
 );
 
 export const BoxesIcon: FC<IconProps> = (props) => (
@@ -597,8 +644,16 @@ export const ChevronLeftIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ChevronLeftSvg} />
 );
 
+export const ChevronLeftStrokeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ChevronLeftStrokeSvg} />
+);
+
 export const ChevronRightIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ChevronRightSvg} />
+);
+
+export const ChevronRightStrokeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ChevronRightStrokeSvg} />
 );
 
 export const ChevronTopIcon: FC<IconProps> = (props) => (
@@ -855,6 +910,10 @@ export const ExtensionIcon: FC<IconProps> = (props) => (
 
 export const ExternalLinkIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ExternalLinkSvg} />
+);
+
+export const EyeOffIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={EyeOffSvg} />
 );
 
 export const FactCheckIcon: FC<IconProps> = (props) => (
@@ -1125,6 +1184,10 @@ export const LayersIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={LayersSvg} />
 );
 
+export const LayoutPanelTopIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={LayoutPanelTopSvg} />
+);
+
 export const LibraryAddIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={LibraryAddSvg} />
 );
@@ -1137,12 +1200,20 @@ export const LightbulbIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={LightbulbSvg} />
 );
 
+export const Link2Icon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={Link2Svg} />
+);
+
 export const ListIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ListSvg} />
 );
 
 export const ListChecksIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ListChecksSvg} />
+);
+
+export const ListTreeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ListTreeSvg} />
 );
 
 export const LocalOfferIcon: FC<IconProps> = (props) => (
@@ -1181,6 +1252,14 @@ export const MapIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={MapSvg} />
 );
 
+export const MaximizeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={MaximizeSvg} />
+);
+
+export const Maximize2Icon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={Maximize2Svg} />
+);
+
 export const MenuIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={MenuSvg} />
 );
@@ -1191,6 +1270,14 @@ export const MenuBookIcon: FC<IconProps> = (props) => (
 
 export const MessageSquareIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={MessageSquareSvg} />
+);
+
+export const MinimizeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={MinimizeSvg} />
+);
+
+export const Minimize2Icon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={Minimize2Svg} />
 );
 
 export const MoreHorizIcon: FC<IconProps> = (props) => (
@@ -1237,8 +1324,32 @@ export const OrchestratorIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={OrchestratorSvg} />
 );
 
+export const PackageIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={PackageSvg} />
+);
+
 export const PaletteIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={PaletteSvg} />
+);
+
+export const PaletteStrokeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={PaletteStrokeSvg} />
+);
+
+export const PanelLeftCloseIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={PanelLeftCloseSvg} />
+);
+
+export const PanelLeftOpenIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={PanelLeftOpenSvg} />
+);
+
+export const PanelRightCloseIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={PanelRightCloseSvg} />
+);
+
+export const PanelRightOpenIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={PanelRightOpenSvg} />
 );
 
 export const PauseIcon: FC<IconProps> = (props) => (
@@ -1247,6 +1358,10 @@ export const PauseIcon: FC<IconProps> = (props) => (
 
 export const PauseCircleOutlineIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={PauseCircleOutlineSvg} />
+);
+
+export const PenLineIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={PenLineSvg} />
 );
 
 export const PencilIcon: FC<IconProps> = (props) => (
@@ -1333,6 +1448,10 @@ export const ReportProblemIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ReportProblemSvg} />
 );
 
+export const ResizeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ResizeSvg} />
+);
+
 export const RestartAltIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={RestartAltSvg} />
 );
@@ -1369,6 +1488,14 @@ export const SaveOutlinedIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={SaveOutlinedSvg} />
 );
 
+export const ScanEyeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ScanEyeSvg} />
+);
+
+export const ScanSearchIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ScanSearchSvg} />
+);
+
 export const ScatterPlotIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ScatterPlotSvg} />
 );
@@ -1385,6 +1512,10 @@ export const SearchOutlinedIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={SearchOutlinedSvg} />
 );
 
+export const SearchStrokeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={SearchStrokeSvg} />
+);
+
 export const SellIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={SellSvg} />
 );
@@ -1395,6 +1526,10 @@ export const ServerIcon: FC<IconProps> = (props) => (
 
 export const SettingsIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={SettingsSvg} />
+);
+
+export const Settings2Icon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={Settings2Svg} />
 );
 
 export const SettingsBackupRestoreIcon: FC<IconProps> = (props) => (
@@ -1435,6 +1570,10 @@ export const SliderIcon: FC<IconProps> = (props) => (
 
 export const SlidersIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={SlidersSvg} />
+);
+
+export const SlidersHorizontalIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={SlidersHorizontalSvg} />
 );
 
 export const SmartToyIcon: FC<IconProps> = (props) => (
@@ -1491,6 +1630,10 @@ export const TableChartOutlinedIcon: FC<IconProps> = (props) => (
 
 export const TagIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={TagSvg} />
+);
+
+export const TagStrokeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={TagStrokeSvg} />
 );
 
 export const TextIcon: FC<IconProps> = (props) => (
@@ -1651,4 +1794,16 @@ export const WorkspacesIcon: FC<IconProps> = (props) => (
 
 export const ZapIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ZapSvg} />
+);
+
+export const ZoomIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ZoomSvg} />
+);
+
+export const ZoomInIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ZoomInSvg} />
+);
+
+export const ZoomOutIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ZoomOutSvg} />
 );

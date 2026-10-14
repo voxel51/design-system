@@ -1,7 +1,6 @@
 import clsx from "clsx";
 import type { FC, HTMLAttributes } from "react";
 
-import { Button } from "@/components/Button";
 import {
   CircleIcon,
   CloseIcon,
@@ -14,13 +13,13 @@ import shadowStyles from "@/styles/shadow";
 import { CAPTION_SIZE } from "@/styles/text";
 import {
   BackgroundColor,
+  ElementState,
   Radius,
   SemanticColor,
   Shadow,
   Size,
   StatusColor,
   TextColor,
-  Variant,
 } from "@/types";
 import { bgColorClass, textColorClass } from "@/types/color";
 
@@ -44,6 +43,13 @@ const sizeStyles: Record<PillSize, string> = {
   [Size.Xs]: "px-2 py-0.5",
   [Size.Sm]: "px-2.5 py-1",
   [Size.Md]: "px-3 py-1.5",
+};
+
+// The remove glyph follows the caption, a step smaller than the pill's text
+const removeIconSizes: Record<PillSize, number> = {
+  [Size.Xs]: 10,
+  [Size.Sm]: 10,
+  [Size.Md]: 12,
 };
 
 // The status dot is a 5px ellipse at Small and 6px at Medium.
@@ -71,7 +77,7 @@ const dotSizes: Record<PillSize, number> = {
  * @param backgroundColor Background color of the pill. Defaults to `"bg-card-elevated"`. See {@link PillColor}.
  * @param isStatus If `true`, prefixes the content with a bullet-like icon.
  * @param onRemove Callback triggered when the remove control is clicked. Providing this makes the pill
- *  removable: a trailing icon {@link Button} is rendered which calls `onRemove` when clicked. Omit it
+ *  removable: a trailing remove button, sized to the pill and in its text color, calls `onRemove`. Omit it
  *  for a non-removable pill.
  * @param className `class` overrides to apply to the component.
  * @param children Content of the pill.
@@ -122,19 +128,22 @@ export const Pill: FC<PillProps> = ({
       )}
       <div>{children}</div>
       {onRemove && (
-        <Button
+        <button
           type="button"
-          variant={Variant.Icon}
-          size={Size.Xs}
           aria-label="Remove"
-          leadingIcon={CloseIcon}
           onClick={(e) => {
             e.stopPropagation();
             onRemove();
           }}
-          // Round corners so the hover affordance is a small circle, matching the pill shape.
-          className="shrink-0 rounded-full p-0 size-4"
-        />
+          // Round, so the hover affordance is a small circle matching the pill shape.
+          className={clsx(
+            "inline-flex size-4 shrink-0 cursor-pointer items-center justify-center rounded-full",
+            "opacity-70 hover:opacity-100",
+            bgColorClass(BackgroundColor.CardNested, ElementState.Hover)
+          )}
+        >
+          <CloseIcon size={removeIconSizes[size]} color={color} />
+        </button>
       )}
     </Stack>
   );

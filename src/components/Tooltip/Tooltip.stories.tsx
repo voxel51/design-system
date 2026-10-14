@@ -71,4 +71,29 @@ export const LongTooltip: Story = {
   },
 };
 
+/** A trigger at the viewport's left edge: the panel slides right to stay on screen, with its arrow still on the trigger. */
+export const AtViewportEdge: Story = {
+  parameters: { layout: "fullscreen" },
+  args: {
+    ...commonArgs,
+    anchor: Anchor.Bottom,
+    content: <Text>Show filters</Text>,
+    children: <Text>Filters</Text>,
+  },
+};
+
+/** The panel stays open while the pointer crosses into it, so its link can be clicked. */
+export const Interactive: Story = {
+  args: {
+    ...commonArgs,
+    anchor: Anchor.Bottom,
+    interactive: true,
+    content: (
+      <Text>
+        {generateSentences(1)} <a href="https://docs.voxel51.com">Read more</a>
+      </Text>
+    ),
+  },
+};
+
 export default meta;

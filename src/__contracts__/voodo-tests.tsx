@@ -692,9 +692,16 @@ export const Everything = (
         options={[
           { value: "a", label: "A" },
           { value: "b", label: "B", disabled: true },
+          { value: "d", label: "D", fieldProps: { "data-testid": "d" } },
         ]}
+        radioProps={{ fieldProps: { className: "row" } }}
       />
-      <Radio value="c" label="standalone" size="sm" />
+      <Radio
+        value="c"
+        label="standalone"
+        size="sm"
+        fieldProps={{ title: "row", "data-testid": "c" }}
+      />
       {(["sm", "md"] as const).map((s) => (
         <Toggle key={s} size={s} checked onChange={noop} />
       ))}
@@ -714,6 +721,12 @@ export const Everything = (
       {/* @ts-expect-error - lg is excluded from ToggleSwitchSize */}
       <ToggleSwitch size="lg" tabs={[]} />
       <SingleValueSlider min={0} max={10} value={5} onChange={noop} />
+      <SingleValueSlider
+        min={0}
+        max={10}
+        value={5}
+        formatLabel={(v: number) => <span>{v}%</span>}
+      />
       {SIZES.map((s) => (
         <DatePicker key={s} size={s} radius="lg" onChange={noop} />
       ))}
@@ -761,6 +774,12 @@ export const Everything = (
         <span>hover</span>
       </Tooltip>
     ))}
+    <Tooltip content="tip" collisionPadding={12} avoidCollisions portal={false}>
+      <span>hover</span>
+    </Tooltip>
+    <Tooltip content={<a href="/docs">docs</a>} interactive>
+      <span>hover</span>
+    </Tooltip>
     {ANCHORS.map((a) => (
       <Toast key={a} anchor={a} variant="primary" title={a} />
     ))}

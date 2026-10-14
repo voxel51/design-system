@@ -42,6 +42,47 @@ describe("RadioGroup", () => {
       expect(group).toHaveAttribute("id", "custom-group-id");
       expect(group).toHaveAttribute("data-testid", "radio-group");
     });
+
+    it("should pass an option's own props to its row alone", () => {
+      render(
+        <RadioGroup
+          options={[
+            {
+              ...defaultOptions[0],
+              fieldProps: { "data-testid": "first" },
+            },
+            defaultOptions[1],
+          ]}
+          value="option1"
+          onChange={jest.fn()}
+        />
+      );
+
+      const row = screen.getByTestId("first");
+      expect(row).toContainElement(screen.getByLabelText("Option 1"));
+      expect(row).not.toContainElement(screen.getByLabelText("Option 2"));
+    });
+
+    it("should merge group-wide row props with an option's own", () => {
+      render(
+        <RadioGroup
+          options={[
+            {
+              ...defaultOptions[0],
+              fieldProps: { "data-testid": "first", className: "option-row" },
+            },
+            defaultOptions[1],
+          ]}
+          radioProps={{ fieldProps: { title: "row", className: "group-row" } }}
+          value="option1"
+          onChange={jest.fn()}
+        />
+      );
+
+      const row = screen.getByTestId("first");
+      expect(row).toHaveAttribute("title", "row");
+      expect(row).toHaveClass("flex", "group-row", "option-row");
+    });
   });
 
   describe("Value selection", () => {
