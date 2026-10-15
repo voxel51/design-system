@@ -684,7 +684,9 @@ export const Everything = (
 
     {/* Upload list: removable rows and a custom summary */}
     <UploadList
-      items={[{ id: "a", name: "a.jpg", kind: "JPG", size: 2048 }]}
+      items={[
+        { id: "a", name: "a.jpg", kind: "JPG", size: 2048, status: "done" },
+      ]}
       summary="1 file"
       onRemove={noop}
       onRemoveAll={noop}

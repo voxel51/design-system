@@ -22,4 +22,15 @@ export const Default: Story = {
   },
 };
 
+export const WithStatus: Story = {
+  args: {
+    items: [
+      { id: "a", name: "a.jpg", kind: "JPG", size: 20480, status: "done" },
+      { id: "b", name: "b.jpg", kind: "JPG", size: 18432, status: "uploading" },
+      { id: "c", name: "c.jpg", kind: "JPG", size: 4096, status: "failed" },
+    ],
+    onRemove: () => undefined,
+  },
+};
+
 export default meta;
