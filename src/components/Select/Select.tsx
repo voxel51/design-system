@@ -36,6 +36,7 @@ import {
   zIndexStyles,
 } from "@/types";
 import { useElementSize } from "@/util/useElementSize";
+import { cn } from "@/util/classes";
 
 import { Option } from "./Option";
 
@@ -238,7 +239,7 @@ export const Select: FC<SelectProps> = ({
   );
 
   return (
-    <div className={clsx(className, "w-full")} {...props}>
+    <div className={cn("w-full", className)} {...props}>
       <Combobox
         disabled={disabled}
         value={value}

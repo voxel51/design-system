@@ -23,6 +23,8 @@ export const IconName = {
   Checkbox: "Checkbox",
   Checklist: "Checklist",
   ChevronBottom: "ChevronBottom",
+  ChevronDoubleLeft: "ChevronDoubleLeft",
+  ChevronDoubleRight: "ChevronDoubleRight",
   ChevronLeft: "ChevronLeft",
   ChevronRight: "ChevronRight",
   ChevronTop: "ChevronTop",

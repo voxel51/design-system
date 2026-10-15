@@ -20,6 +20,8 @@ import CheckboxIcon from "@/img/Checkbox.svg?react";
 import ChecklistIcon from "@/img/Checklist.svg?react";
 import CheckmarkIcon from "@/img/Checkmark.svg?react";
 import ChevronBottomIcon from "@/img/ChevronBottom.svg?react";
+import ChevronDoubleLeftIcon from "@/img/ChevronDoubleLeft.svg?react";
+import ChevronDoubleRightIcon from "@/img/ChevronDoubleRight.svg?react";
 import ChevronLeftIcon from "@/img/ChevronLeft.svg?react";
 import ChevronRightIcon from "@/img/ChevronRight.svg?react";
 import ChevronTopIcon from "@/img/ChevronTop.svg?react";
@@ -146,6 +148,8 @@ export const iconMap: Record<
   [IconName.Checkbox]: CheckboxIcon,
   [IconName.Checklist]: ChecklistIcon,
   [IconName.ChevronBottom]: ChevronBottomIcon,
+  [IconName.ChevronDoubleLeft]: ChevronDoubleLeftIcon,
+  [IconName.ChevronDoubleRight]: ChevronDoubleRightIcon,
   [IconName.ChevronLeft]: ChevronLeftIcon,
   [IconName.ChevronRight]: ChevronRightIcon,
   [IconName.ChevronTop]: ChevronTopIcon,
