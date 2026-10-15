@@ -33,6 +33,8 @@ export interface DrawerProps extends UseDisclosureOptions {
   mode?: "push" | "float";
   header?: (state: DrawerHeaderState) => React.ReactNode;
   onSizeChange?: (size: number) => void;
+  /** Controlled content-area size in pixels, up to `maxSize`. */
+  size?: number;
   children?: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
@@ -71,6 +73,9 @@ export interface DrawerProps extends UseDisclosureOptions {
  * @param open Controlled open state.
  * @param onOpenChange Called when the open state changes.
  * @param onSizeChange Called with the new content size in pixels.
+ * @param size Controlled content size in pixels. Drags report the new size
+ *  through `onSizeChange` instead of resizing the drawer themselves; dragging
+ *  it shut closes it through `onOpenChange` and reports no size.
  * @param children The drawer content.
  * @param className Additional CSS class names to apply to the drawer.
  * @param style Inline styles to apply to the drawer.
@@ -83,6 +88,7 @@ const Drawer: React.FC<DrawerProps> = ({
   open: controlledOpen,
   onOpenChange,
   onSizeChange,
+  size: controlledSize,
   header,
   children,
   className,
@@ -108,6 +114,7 @@ const Drawer: React.FC<DrawerProps> = ({
     onOpenChange,
     maxSize,
     onSizeChange,
+    size: controlledSize,
   });
 
   const contentWrapperSizeStyle = isVertical
@@ -128,7 +135,10 @@ const Drawer: React.FC<DrawerProps> = ({
       )}
       <div
         className={styles.contentWrapper}
-        onTransitionEnd={onTransitionEnd}
+        onTransitionEnd={(event) => {
+          // a child's own transition, such as a hover color, bubbles here too
+          if (event.target === event.currentTarget) onTransitionEnd();
+        }}
         style={{
           ...contentWrapperSizeStyle,
           // Animate the open/close toggle only. Drags track the pointer 1:1 and

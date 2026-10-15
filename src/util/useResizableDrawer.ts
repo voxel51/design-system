@@ -23,6 +23,13 @@ export interface UseResizableDrawerOptions extends UseDisclosureOptions {
   invert?: boolean;
   /** Invoked with the new content-area size on every drag-induced resize. */
   onSizeChange?: (size: number) => void;
+  /**
+   * Controlled content-area size in pixels. When set, the open drawer is this
+   * size rather than its content's, and drags report sizes up to `maxSize`
+   * through `onSizeChange` for the caller to apply. Dragging it shut closes
+   * it through `onOpenChange` and reports no size.
+   */
+  size?: number;
 }
 
 export interface UseResizableDrawerReturn extends UseDisclosureReturn {
@@ -59,6 +66,7 @@ export function useResizableDrawer({
   maxSize,
   invert = false,
   onSizeChange,
+  size: controlledSize,
   ...disclosureOptions
 }: UseResizableDrawerOptions): UseResizableDrawerReturn {
   const { open, setOpen } = useDisclosure(disclosureOptions);
@@ -87,14 +95,21 @@ export function useResizableDrawer({
   // - openSize: a manual drag can only shrink *below* autoSize; otherwise follow content.
   // - size: collapses to 0 when closed.
   const autoSize = Math.min(contentHeight, maxSize);
-  const openSize = userSize != null ? Math.min(userSize, autoSize) : autoSize;
+  let openSize = autoSize;
+  if (controlledSize != null) {
+    openSize = Math.min(controlledSize, maxSize);
+  } else if (userSize != null) {
+    openSize = Math.min(userSize, autoSize);
+  }
   const size = open ? openSize : 0;
 
   const openRef = useLatest(open);
+  const openSizeRef = useLatest(openSize);
   const sizeRef = useLatest(size);
   const invertRef = useLatest(invert);
   const maxSizeRef = useLatest(maxSize);
   const onSizeChangeRef = useLatest(onSizeChange);
+  const controlledRef = useLatest(controlledSize != null);
 
   const dragStartSizeRef = useRef(0);
   const isDraggingRef = useRef(false);
@@ -127,6 +142,11 @@ export function useResizableDrawer({
         }
         return;
       }
+      if (controlledRef.current) {
+        if (!openRef.current) setOpen(true);
+        onSizeChangeRef.current?.(Math.min(raw, maxSizeRef.current));
+        return;
+      }
       const auto = Math.min(
         contentElRef.current?.offsetHeight ?? 0,
         maxSizeRef.current
@@ -137,7 +157,7 @@ export function useResizableDrawer({
       if (!openRef.current) setOpen(true);
       onSizeChangeRef.current?.(clamped);
     },
-    [invertRef, maxSizeRef, onSizeChangeRef, openRef, setOpen]
+    [controlledRef, invertRef, maxSizeRef, onSizeChangeRef, openRef, setOpen]
   );
 
   const onDragEnd = useCallback(() => {
@@ -152,12 +172,20 @@ export function useResizableDrawer({
   });
 
   const toggle = useCallback(() => {
-    setAnimating(true);
+    // Animate only a toggle that moves the edge: with nothing to ease (a zero
+    // size, or reduced motion) no transition fires to clear `animating`.
+    const target = openRef.current ? 0 : openSizeRef.current;
+    setAnimating(target !== sizeRef.current && !prefersReducedMotion());
     // Both directions clear the manual override: reopening always auto-sizes
     // (no memory of the last dragged size) and closing renders size 0.
     setUserSize(null);
     setOpen(!openRef.current);
-  }, [openRef, setOpen]);
+  }, [openRef, openSizeRef, setOpen, sizeRef]);
+
+  // A size the caller sets follows at once, never on a toggle's easing.
+  useLayoutEffect(() => {
+    setAnimating(false);
+  }, [controlledSize]);
 
   // Clear `animating` once the open/close transition finishes.
   const onTransitionEnd = useCallback(() => {
@@ -176,3 +204,7 @@ export function useResizableDrawer({
     contentRef,
   };
 }
+
+const prefersReducedMotion = (): boolean =>
+  typeof window !== "undefined" &&
+  window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true;
