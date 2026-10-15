@@ -70,6 +70,7 @@ export interface SelectProps extends Omit<
   options?: Descriptor<{ label: string; content?: ReactNode }>[];
   zIndex?: ZIndex;
   portal?: boolean;
+  size?: Size;
   value?: string | string[];
 }
 
@@ -171,6 +172,7 @@ function getZIndexClass(zIndex?: ZIndex, portal?: boolean): string | undefined {
  * @param zIndex Z-index level for the dropdown.
  * @param portal If `true`, renders the options in a portal that always stacks
  *  above modals, overriding `zIndex`.
+ * @param size Height of the field, matching {@link Input}. Defaults to `"md"`.
  * @param value The selected option `id` (when `exclusive`) or `id`s; set it for
  *  controlled selection.
  * @param props Additional HTML properties to apply to the component.
@@ -184,6 +186,7 @@ export const Select: FC<SelectProps> = ({
   onChange,
   options,
   portal,
+  size,
   value,
   ...props
 }) => {
@@ -262,7 +265,7 @@ export const Select: FC<SelectProps> = ({
             // Until we switch to react 19,
             // we'll just style this component using the same classes as the `Input` component.
             className={clsx(
-              inputStyle({ disabled }),
+              inputStyle({ disabled, size }),
               "w-full pr-8 cursor-pointer"
             )}
           />
