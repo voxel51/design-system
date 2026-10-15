@@ -45,6 +45,7 @@ import AutoAwesomeMosaicOutlinedSvg from "@/img/AutoAwesomeMosaicOutlined.svg?re
 import AutoLabelSvg from "@/img/AutoLabel.svg?react";
 import AutoLabelGradientSvg from "@/img/AutoLabelGradient.svg?react";
 import AutorenewSvg from "@/img/Autorenew.svg?react";
+import BadgeCheckSvg from "@/img/BadgeCheck.svg?react";
 import BarChartSvg from "@/img/BarChart.svg?react";
 import BlocksSvg from "@/img/Blocks.svg?react";
 import BoltSvg from "@/img/Bolt.svg?react";
@@ -526,6 +527,10 @@ export const AutoLabelGradientIcon: FC<IconProps> = (props) => (
 
 export const AutorenewIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={AutorenewSvg} />
+);
+
+export const BadgeCheckIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={BadgeCheckSvg} />
 );
 
 export const BarChartIcon: FC<IconProps> = (props) => (
