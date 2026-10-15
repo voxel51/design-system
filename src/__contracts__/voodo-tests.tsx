@@ -845,6 +845,9 @@ export const Everything = (
         drawer {side}
       </Drawer>
     ))}
+    <Drawer maxSize={400} size={240} onSizeChange={(size: number) => size}>
+      drawer with a controlled size
+    </Drawer>
     <TreeSelect
       root={{ name: "root", values: [{ name: "leaf", can_select: true }] }}
       onChange={noop}
