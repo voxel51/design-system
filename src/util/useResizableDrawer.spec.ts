@@ -392,4 +392,47 @@ describe("useResizableDrawer", () => {
       expect(result.current.size).toBe(0);
     });
   });
+
+  describe("controlled size", () => {
+    it("opens at the given size whatever its content", () => {
+      const { result } = renderHook(() =>
+        useResizableDrawer({ ...defaultOptions, size: 250 })
+      );
+      attachContent(result, 100);
+      expect(result.current.size).toBe(250);
+    });
+
+    it("caps the given size at maxSize", () => {
+      const { result } = renderHook(() =>
+        useResizableDrawer({ ...defaultOptions, size: 900 })
+      );
+      expect(result.current.size).toBe(400);
+    });
+
+    it("reports drags beyond its content, up to maxSize", () => {
+      const onSizeChange = jest.fn();
+      const { result } = renderHook(() =>
+        useResizableDrawer({ ...defaultOptions, size: 200, onSizeChange })
+      );
+      attachContent(result, 100);
+      pointerDown(result.current.dragHandleProps, 500);
+      pointerMove(result.current.dragHandleProps, 400);
+      expect(onSizeChange).toHaveBeenLastCalledWith(300);
+      pointerMove(result.current.dragHandleProps, 0);
+      expect(onSizeChange).toHaveBeenLastCalledWith(400);
+      pointerUp(result.current.dragHandleProps);
+      expect(result.current.size).toBe(200);
+    });
+
+    it("closes when dragged shut", () => {
+      const onSizeChange = jest.fn();
+      const { result } = renderHook(() =>
+        useResizableDrawer({ ...defaultOptions, size: 200, onSizeChange })
+      );
+      pointerDown(result.current.dragHandleProps, 500);
+      pointerMove(result.current.dragHandleProps, 800);
+      expect(result.current.open).toBe(false);
+      expect(onSizeChange).not.toHaveBeenCalled();
+    });
+  });
 });
