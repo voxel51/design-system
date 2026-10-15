@@ -23,6 +23,12 @@ export interface UseResizableDrawerOptions extends UseDisclosureOptions {
   invert?: boolean;
   /** Invoked with the new content-area size on every drag-induced resize. */
   onSizeChange?: (size: number) => void;
+  /**
+   * Controlled content-area size in pixels. When set, the open drawer is this
+   * size rather than its content's, and drags report sizes up to `maxSize`
+   * through `onSizeChange` for the caller to apply.
+   */
+  size?: number;
 }
 
 export interface UseResizableDrawerReturn extends UseDisclosureReturn {
@@ -59,6 +65,7 @@ export function useResizableDrawer({
   maxSize,
   invert = false,
   onSizeChange,
+  size: controlledSize,
   ...disclosureOptions
 }: UseResizableDrawerOptions): UseResizableDrawerReturn {
   const { open, setOpen } = useDisclosure(disclosureOptions);
@@ -87,7 +94,12 @@ export function useResizableDrawer({
   // - openSize: a manual drag can only shrink *below* autoSize; otherwise follow content.
   // - size: collapses to 0 when closed.
   const autoSize = Math.min(contentHeight, maxSize);
-  const openSize = userSize != null ? Math.min(userSize, autoSize) : autoSize;
+  const openSize =
+    controlledSize != null
+      ? Math.min(controlledSize, maxSize)
+      : userSize != null
+        ? Math.min(userSize, autoSize)
+        : autoSize;
   const size = open ? openSize : 0;
 
   const openRef = useLatest(open);
@@ -95,6 +107,7 @@ export function useResizableDrawer({
   const invertRef = useLatest(invert);
   const maxSizeRef = useLatest(maxSize);
   const onSizeChangeRef = useLatest(onSizeChange);
+  const controlledRef = useLatest(controlledSize != null);
 
   const dragStartSizeRef = useRef(0);
   const isDraggingRef = useRef(false);
@@ -127,6 +140,11 @@ export function useResizableDrawer({
         }
         return;
       }
+      if (controlledRef.current) {
+        if (!openRef.current) setOpen(true);
+        onSizeChangeRef.current?.(Math.min(raw, maxSizeRef.current));
+        return;
+      }
       const auto = Math.min(
         contentElRef.current?.offsetHeight ?? 0,
         maxSizeRef.current
@@ -137,7 +155,7 @@ export function useResizableDrawer({
       if (!openRef.current) setOpen(true);
       onSizeChangeRef.current?.(clamped);
     },
-    [invertRef, maxSizeRef, onSizeChangeRef, openRef, setOpen]
+    [controlledRef, invertRef, maxSizeRef, onSizeChangeRef, openRef, setOpen]
   );
 
   const onDragEnd = useCallback(() => {
