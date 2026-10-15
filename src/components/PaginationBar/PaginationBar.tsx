@@ -25,8 +25,10 @@ import {
 } from "@/types";
 import { cn } from "@/util/classes";
 
-export interface PaginationBarProps
-  extends Omit<HTMLAttributes<HTMLElement>, "onChange"> {
+export interface PaginationBarProps extends Omit<
+  HTMLAttributes<HTMLElement>,
+  "onChange"
+> {
   /** Zero-based index of the current page. */
   page: number;
   /** Number of items per page. */
@@ -99,14 +101,14 @@ const pageButtonRange = (
     ...(siblingsStart > BOUNDARY_COUNT + 2
       ? [ELLIPSIS as typeof ELLIPSIS]
       : BOUNDARY_COUNT + 1 < count - BOUNDARY_COUNT
-      ? [BOUNDARY_COUNT + 1]
-      : []),
+        ? [BOUNDARY_COUNT + 1]
+        : []),
     ...range(siblingsStart, siblingsEnd),
     ...(siblingsEnd < count - BOUNDARY_COUNT - 1
       ? [ELLIPSIS as typeof ELLIPSIS]
       : count - BOUNDARY_COUNT > BOUNDARY_COUNT
-      ? [count - BOUNDARY_COUNT]
-      : []),
+        ? [count - BOUNDARY_COUNT]
+        : []),
     ...endPages,
   ];
 };
@@ -225,7 +227,7 @@ export const PaginationBar: FC<PaginationBarProps> = ({
           value={String(safePageSize)}
           onChange={(value) => {
             const parsed = Number.parseInt(
-              Array.isArray(value) ? value[0] : value ?? "",
+              Array.isArray(value) ? value[0] : (value ?? ""),
               10
             );
             if (Number.isFinite(parsed) && parsed !== safePageSize) {

@@ -119,7 +119,9 @@ describe("PaginationBar", () => {
     });
 
     it("should render pages near the start, current page, and end", () => {
-      render(<PaginationBar page={24} pageSize={20} total={1000} pageButtons />);
+      render(
+        <PaginationBar page={24} pageSize={20} total={1000} pageButtons />
+      );
 
       for (const page of [1, 2, 24, 25, 26, 49, 50]) {
         expect(
@@ -127,14 +129,18 @@ describe("PaginationBar", () => {
         ).toBeInTheDocument();
       }
       expect(screen.getAllByText("…")).toHaveLength(2);
-      expect(screen.queryByRole("button", { name: "3" })).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: "3" })
+      ).not.toBeInTheDocument();
       expect(
         screen.queryByRole("button", { name: "48" })
       ).not.toBeInTheDocument();
     });
 
     it("should mark the current page", () => {
-      render(<PaginationBar page={24} pageSize={20} total={1000} pageButtons />);
+      render(
+        <PaginationBar page={24} pageSize={20} total={1000} pageButtons />
+      );
       expect(screen.getByRole("button", { name: "25" })).toHaveAttribute(
         "aria-current",
         "page"
