@@ -58,6 +58,7 @@ import {
   LoadingDots,
   MenuSeparator,
   ModalSize,
+  Pagination,
   Orientation,
   ScrimColor,
   VizChartColor,
@@ -649,6 +650,26 @@ export const Everything = (
       <IconAction icon="Add" />
     </Stack>
 
+    {/* Pagination: every prop */}
+    <Pagination
+      page={1}
+      pageCount={10}
+      onPageChange={noop}
+      pageSize={25}
+      pageSizes={[25, 50]}
+      onPageSizeChange={noop}
+      total={250}
+      disabled
+      siblingCount={1}
+      boundaryCount={1}
+      align="center"
+      jump="both"
+      hide={["summary", "page-size", "jump", "edges", "pages"]}
+      className="x"
+    />
+    {/* @ts-expect-error - page, pageCount and onPageChange are required */}
+    <Pagination />
+
     {/* Dropzone: every prop */}
     <Dropzone
       title="Drop files"
@@ -765,6 +786,7 @@ export const Everything = (
         key={a}
         anchor={a}
         zIndex="high"
+        size="sm"
         options={[{ id: "x", data: { label: "X" } }]}
         onChange={noop}
       />
