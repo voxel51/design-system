@@ -39,6 +39,8 @@ const ROLES = [
   TextVariant.Caption,
   TextVariant.CodePrimary,
   TextVariant.CodeSecondary,
+  TextVariant.MetricLg,
+  TextVariant.MetricSm,
 ] as const;
 
 /** Every Figma `type/*` role, in the order the Foundations page lists them. */
@@ -144,6 +146,14 @@ export const CodeSecondary: Story = {
     children: generateSentences(1),
     variant: TextVariant.CodeSecondary,
   },
+};
+
+export const MetricLg: Story = {
+  args: { children: "59.7K", variant: TextVariant.MetricLg },
+};
+
+export const MetricSm: Story = {
+  args: { children: "1,284", variant: TextVariant.MetricSm },
 };
 
 /** @deprecated size-only scale; kept so the visual stays checkable. */

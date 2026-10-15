@@ -15,14 +15,18 @@ export const TextVariant = {
   BodySecondary: "body-secondary",
   /** 12/16 regular — tertiary body text. */
   BodyTertiary: "body-tertiary",
-  /** 12/16 semibold, uppercase — label text and alternate section headers. */
+  /** 12/16 semibold, uppercase, 0.04em tracking — label text and alternate section headers. */
   Label: "label",
-  /** 11/16 regular, tertiary colour — captions. */
+  /** 12/16 regular, tertiary colour — captions. */
   Caption: "caption",
   /** 12/16 mono — primary code. */
   CodePrimary: "code-primary",
   /** 11/16 mono — secondary code. */
   CodeSecondary: "code-secondary",
+  /** 26/32 semibold, tabular digits — large numbers on dashboards. */
+  MetricLg: "metric-lg",
+  /** 18/24 semibold, tabular digits — smaller numbers on dashboards. */
+  MetricSm: "metric-sm",
 
   /** @deprecated Size-only scale with no Figma role; use a role above. */
   Xxs: "xxs",
@@ -54,6 +58,8 @@ export namespace TextVariant {
   export type Caption = typeof TextVariant.Caption;
   export type CodePrimary = typeof TextVariant.CodePrimary;
   export type CodeSecondary = typeof TextVariant.CodeSecondary;
+  export type MetricLg = typeof TextVariant.MetricLg;
+  export type MetricSm = typeof TextVariant.MetricSm;
   export type Xxs = typeof TextVariant.Xxs;
   export type Xs = typeof TextVariant.Xs;
   export type Sm = typeof TextVariant.Sm;

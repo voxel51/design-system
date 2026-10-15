@@ -37,7 +37,7 @@ export interface PillProps extends HTMLAttributes<HTMLSpanElement> {
   onRemove?: () => void;
 }
 
-// Figma pills all set type/caption (11/16). Xs is the Tag Pill (2/8 padding,
+// Figma pills all set type/caption (12/16). Xs is the Tag Pill (2/8 padding,
 // 20px tall), Sm and Md the two StatusPill sizes (4/10 → 24px, 6/12 → 28px).
 const sizeStyles: Record<PillSize, string> = {
   [Size.Xs]: "px-2 py-0.5",

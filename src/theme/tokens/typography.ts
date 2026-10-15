@@ -18,6 +18,7 @@ export const fontSize = {
   16: "16px",
   18: "18px",
   23: "23px",
+  26: "26px",
 } as const;
 
 /** The Figma `line-height/*` scale. Keys are pixel values. */
@@ -27,6 +28,7 @@ export const lineHeight = {
   20: "20px",
   24: "24px",
   28: "28px",
+  32: "32px",
   36: "36px",
   44: "44px",
   52: "52px",
@@ -37,7 +39,8 @@ export const lineHeight = {
  * design file binds to. Each role pairs a size with its leading and weight,
  * which is the thing the size-only scale below could never express.
  *
- * Read live from the design file on 2026-09-30. `code-secondary` is 11px
+ * Read live from the design file on 2026-09-30; `caption` 12px, `label` tracking
+ * and the `metric-*` pair follow the proposed system of 2026-10-15. `code-secondary` is 11px
  * there, not the 12px an earlier hand-off table recorded.
  */
 export const textRole = {
@@ -85,9 +88,10 @@ export const textRole = {
     fontSize: fontSize[12],
     lineHeight: lineHeight[16],
     fontWeight: 600,
+    letterSpacing: "0.04em",
   },
   caption: {
-    fontSize: fontSize[11],
+    fontSize: fontSize[12],
     lineHeight: lineHeight[16],
     fontWeight: 400,
   },
@@ -100,6 +104,17 @@ export const textRole = {
     fontSize: fontSize[11],
     lineHeight: lineHeight[16],
     fontWeight: 400,
+  },
+  "metric-lg": {
+    fontSize: fontSize[26],
+    lineHeight: lineHeight[32],
+    fontWeight: 600,
+    letterSpacing: "-0.01em",
+  },
+  "metric-sm": {
+    fontSize: fontSize[18],
+    lineHeight: lineHeight[24],
+    fontWeight: 600,
   },
 } as const;
 
