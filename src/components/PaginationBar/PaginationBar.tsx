@@ -47,6 +47,11 @@ export interface PaginationBarProps extends Omit<
   onPageSizeChange?: (pageSize: number) => void;
   /** Anchor for the page size select dropdown. See {@link SelectAnchor}. */
   pageSizeAnchor?: SelectAnchor;
+  /**
+   * Draw the bar on its own popover surface. Turn it off where the bar sits
+   * in a toolbar or footer that already has one.
+   */
+  surface?: boolean;
 }
 
 const ELLIPSIS = "…";
@@ -151,6 +156,7 @@ const pageButtonRange = (
  *  `onPageSizeChange` is also provided. The current `pageSize` is always included.
  * @param onPageSizeChange Called with the requested page size.
  * @param pageSizeAnchor Anchor for the page size select dropdown. See {@link SelectAnchor}.
+ * @param surface Draw the bar on its own popover surface. Defaults to `true`.
  * @param className `class` overrides to apply to the component.
  * @param props Additional HTML properties to apply to the component.
  */
@@ -166,6 +172,7 @@ export const PaginationBar: FC<PaginationBarProps> = ({
   pageSizeOptions,
   onPageSizeChange,
   pageSizeAnchor,
+  surface = true,
   className,
   ...props
 }) => {
@@ -206,9 +213,10 @@ export const PaginationBar: FC<PaginationBarProps> = ({
     <nav
       aria-label="pagination"
       className={cn(
-        "inline-flex items-center gap-x-md px-2.5 py-1.5",
-        bgColorClass(BackgroundColor.Popover),
-        radiusStyles(Radius.Md),
+        "inline-flex items-center gap-x-md",
+        surface && "px-2.5 py-1.5",
+        surface && bgColorClass(BackgroundColor.Popover),
+        surface && radiusStyles(Radius.Md),
         className
       )}
       {...props}

@@ -306,4 +306,16 @@ describe("PaginationBar", () => {
       expect(screen.getByText("25")).toBeInTheDocument();
     });
   });
+
+  it("draws no surface of its own when surface is off", () => {
+    render(<PaginationBar page={0} pageSize={10} total={30} surface={false} />);
+    const bar = screen.getByRole("navigation", { name: "pagination" });
+    expect(bar.className).not.toMatch(/bg-popover/);
+  });
+
+  it("draws its popover surface by default", () => {
+    render(<PaginationBar page={0} pageSize={10} total={30} />);
+    const bar = screen.getByRole("navigation", { name: "pagination" });
+    expect(bar.className).toMatch(/bg-popover/);
+  });
 });
