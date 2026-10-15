@@ -22,6 +22,8 @@ export const TEXT_STYLES: Record<TextVariant, string> = {
   [TextVariant.Caption]: `${CAPTION_SIZE} text-content-text-tertiary`,
   [TextVariant.CodePrimary]: "text-code-primary font-mono",
   [TextVariant.CodeSecondary]: "text-code-secondary font-mono",
+  [TextVariant.MetricLg]: "text-metric-lg tabular-nums",
+  [TextVariant.MetricSm]: "text-metric-sm tabular-nums",
 
   // The deprecated size-only scale keeps its exact classes so nothing moves
   // for a consumer that has not migrated.

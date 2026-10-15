@@ -170,6 +170,8 @@ export const exhaustive = {
     "body-tertiary": true,
     "code-primary": true,
     "code-secondary": true,
+    "metric-lg": true,
+    "metric-sm": true,
   } satisfies Record<TextVariant, true>,
 
   radius: {
