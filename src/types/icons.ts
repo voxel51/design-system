@@ -14,6 +14,7 @@ export const IconName = {
   ArrowRight: "ArrowRight",
   ArrowUp: "ArrowUp",
   ArrowUpRight: "ArrowUpRight",
+  BadgeCheck: "BadgeCheck",
   Blocks: "Blocks",
   Boxes: "Boxes",
   CalendarClock: "CalendarClock",
@@ -128,6 +129,7 @@ export namespace IconName {
   export type ArrowRight = typeof IconName.ArrowRight;
   export type ArrowUp = typeof IconName.ArrowUp;
   export type ArrowUpRight = typeof IconName.ArrowUpRight;
+  export type BadgeCheck = typeof IconName.BadgeCheck;
   export type Blocks = typeof IconName.Blocks;
   export type Boxes = typeof IconName.Boxes;
   export type CalendarClock = typeof IconName.CalendarClock;

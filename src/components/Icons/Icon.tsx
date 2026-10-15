@@ -11,6 +11,7 @@ import ArrowLeftIcon from "@/img/ArrowLeft.svg?react";
 import ArrowRightIcon from "@/img/ArrowRight.svg?react";
 import ArrowUpIcon from "@/img/ArrowUp.svg?react";
 import ArrowUpRightIcon from "@/img/ArrowUpRight.svg?react";
+import BadgeCheckIcon from "@/img/BadgeCheck.svg?react";
 import BlocksIcon from "@/img/Blocks.svg?react";
 import BoxesIcon from "@/img/Boxes.svg?react";
 import CalendarClockIcon from "@/img/CalendarClock.svg?react";
@@ -137,6 +138,7 @@ export const iconMap: Record<
   [IconName.ArrowRight]: ArrowRightIcon,
   [IconName.ArrowUp]: ArrowUpIcon,
   [IconName.ArrowUpRight]: ArrowUpRightIcon,
+  [IconName.BadgeCheck]: BadgeCheckIcon,
   [IconName.Blocks]: BlocksIcon,
   [IconName.Boxes]: BoxesIcon,
   [IconName.CalendarClock]: CalendarClockIcon,
