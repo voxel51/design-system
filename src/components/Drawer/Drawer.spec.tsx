@@ -392,4 +392,15 @@ describe("Drawer", () => {
       expect(wrapper.style.transition).toBe("none");
     });
   });
+
+  describe("controlled size", () => {
+    it("draws the content area at the given size", () => {
+      const { container } = render(
+        <Drawer maxSize={400} size={240}>
+          <div>content</div>
+        </Drawer>
+      );
+      expect(getContentWrapper(container).style.height).toBe("240px");
+    });
+  });
 });

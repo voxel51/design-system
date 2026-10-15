@@ -74,7 +74,8 @@ export interface DrawerProps extends UseDisclosureOptions {
  * @param onOpenChange Called when the open state changes.
  * @param onSizeChange Called with the new content size in pixels.
  * @param size Controlled content size in pixels. Drags report the new size
- *  through `onSizeChange` instead of resizing the drawer themselves.
+ *  through `onSizeChange` instead of resizing the drawer themselves; dragging
+ *  it shut closes it through `onOpenChange` and reports no size.
  * @param children The drawer content.
  * @param className Additional CSS class names to apply to the drawer.
  * @param style Inline styles to apply to the drawer.

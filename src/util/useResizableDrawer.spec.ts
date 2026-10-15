@@ -179,6 +179,7 @@ describe("useResizableDrawer", () => {
 
     it("sets animating=true on toggle", () => {
       const { result } = renderHook(() => useResizableDrawer(defaultOptions));
+      attachContent(result, 300);
       act(() => result.current.toggle());
       expect(result.current.animating).toBe(true);
     });
@@ -203,6 +204,7 @@ describe("useResizableDrawer", () => {
   describe("onTransitionEnd", () => {
     it("clears animating once the transition ends", () => {
       const { result } = renderHook(() => useResizableDrawer(defaultOptions));
+      attachContent(result, 300);
       act(() => result.current.toggle());
       expect(result.current.animating).toBe(true);
 
@@ -433,6 +435,67 @@ describe("useResizableDrawer", () => {
       pointerMove(result.current.dragHandleProps, 800);
       expect(result.current.open).toBe(false);
       expect(onSizeChange).not.toHaveBeenCalled();
+    });
+
+    it("reopens at the controlled size after a toggle closes it", () => {
+      const { result } = renderHook(() =>
+        useResizableDrawer({ ...defaultOptions, size: 200 })
+      );
+      act(() => result.current.toggle());
+      expect(result.current.size).toBe(0);
+      act(() => result.current.toggle());
+      expect(result.current.size).toBe(200);
+    });
+
+    it("follows size switching between controlled and auto", () => {
+      const { result, rerender } = renderHook(
+        ({ size }: { size?: number }) =>
+          useResizableDrawer({ ...defaultOptions, size }),
+        { initialProps: { size: 250 } as { size?: number } }
+      );
+      attachContent(result, 100);
+      expect(result.current.size).toBe(250);
+      rerender({ size: undefined });
+      expect(result.current.size).toBe(100);
+      rerender({ size: 300 });
+      expect(result.current.size).toBe(300);
+    });
+
+    it("opens a closed drawer from a drag and reports the size", () => {
+      const onSizeChange = jest.fn();
+      const { result } = renderHook(() =>
+        useResizableDrawer({
+          ...defaultOptions,
+          size: 200,
+          defaultOpen: false,
+          onSizeChange,
+        })
+      );
+      pointerDown(result.current.dragHandleProps, 500);
+      pointerMove(result.current.dragHandleProps, 380);
+      expect(result.current.open).toBe(true);
+      expect(onSizeChange).toHaveBeenLastCalledWith(120);
+    });
+
+    it("snaps to a new controlled size rather than easing", () => {
+      const { result, rerender } = renderHook(
+        ({ size }: { size: number }) =>
+          useResizableDrawer({ ...defaultOptions, size }),
+        { initialProps: { size: 200 } }
+      );
+      act(() => result.current.toggle());
+      act(() => result.current.toggle());
+      expect(result.current.animating).toBe(true);
+      rerender({ size: 260 });
+      expect(result.current.animating).toBe(false);
+    });
+
+    it("does not animate a toggle with nothing to ease", () => {
+      const { result } = renderHook(() =>
+        useResizableDrawer({ ...defaultOptions, size: 0 })
+      );
+      act(() => result.current.toggle());
+      expect(result.current.animating).toBe(false);
     });
   });
 });
