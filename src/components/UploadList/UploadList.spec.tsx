@@ -30,4 +30,20 @@ describe("UploadList", () => {
     expect(screen.getByText("1,200 files")).toBeInTheDocument();
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
   });
+
+  it("shows each row's upload status", () => {
+    render(
+      <UploadList
+        items={[
+          { ...items[0], status: "uploading" },
+          { ...items[1], status: "done" },
+          { id: "c", name: "c.jpg", size: 1, status: "failed" },
+        ]}
+      />
+    );
+
+    expect(
+      screen.getAllByRole("img").map((el) => el.getAttribute("aria-label"))
+    ).toEqual(["uploading", "done", "failed"]);
+  });
 });
