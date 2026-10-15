@@ -25,4 +25,8 @@ export const Large: Story = {
   args: { ...Default.args, size: Size.Lg },
 };
 
+export const Danger: Story = {
+  args: { children: "Stop import", tone: "danger" },
+};
+
 export default meta;

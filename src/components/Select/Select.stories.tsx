@@ -100,4 +100,22 @@ export const Unset: Story = {
   },
 };
 
+export const Placeholder: Story = {
+  args: {
+    ...defaultArgs,
+    exclusive: true,
+    placeholder: "Select a model",
+  },
+};
+
+export const Borderless: Story = {
+  args: {
+    ...defaultArgs,
+    exclusive: true,
+    size: "sm",
+    variant: "borderless",
+    placeholder: "Status",
+  },
+};
+
 export default meta;

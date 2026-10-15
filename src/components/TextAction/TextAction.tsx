@@ -18,8 +18,11 @@ import {
 
 type TextActionSize = `${Size.Sm | Size.Md | Size.Lg}`;
 
+export type TextActionTone = "default" | "danger";
+
 export interface TextActionProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: TextActionSize;
+  tone?: TextActionTone;
   leadingIcon?: IconInput;
   trailingIcon?: IconInput;
 }
@@ -50,6 +53,7 @@ const iconSizes: Record<TextActionSize, number> = {
  * ```
  *
  * @param size `"sm"`, `"md"` or `"lg"`. Defaults to `"md"`.
+ * @param tone `"danger"` colors the label as a destructive action. Defaults to `"default"`.
  * @param leadingIcon Optional icon before the label: a per-icon component.
  * @param trailingIcon Optional icon after the label: a per-icon component.
  * @param className Additional CSS class names to apply to the button.
@@ -58,6 +62,7 @@ const iconSizes: Record<TextActionSize, number> = {
  */
 export const TextAction: FC<TextActionProps> = ({
   size = Size.Md,
+  tone = "default",
   leadingIcon,
   trailingIcon,
   className,
@@ -70,8 +75,13 @@ export const TextAction: FC<TextActionProps> = ({
       "hover:cursor-pointer disabled:pointer-events-none disabled:opacity-50",
       radiusStyles(Radius.Full),
       sizeStyles[size],
-      textColorClass(TextColor.Secondary),
-      textColorClass(TextColor.Primary, ElementState.Hover),
+      textColorClass(
+        tone === "danger" ? TextColor.Failure : TextColor.Secondary
+      ),
+      textColorClass(
+        tone === "danger" ? TextColor.Failure : TextColor.Primary,
+        ElementState.Hover
+      ),
       bgColorClass(InteractiveColor.SecondaryHover, ElementState.Hover),
       bgColorClass(InteractiveColor.SecondaryPressed, ElementState.Active),
       className

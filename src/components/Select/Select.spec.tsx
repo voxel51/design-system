@@ -124,6 +124,18 @@ describe("Select", () => {
     expect(await screen.findByRole("listbox")).toBeInTheDocument();
   });
 
+  it("shows a placeholder while nothing is selected", () => {
+    render(
+      <Select
+        exclusive
+        placeholder="Select a model"
+        options={[{ id: "a", data: { label: "Alpha" } }]}
+      />
+    );
+
+    expect(screen.getByPlaceholderText("Select a model")).toBeInTheDocument();
+  });
+
   it("should keep the list open after a pick when multiple are allowed", async () => {
     const user = userEvent.setup();
     render(

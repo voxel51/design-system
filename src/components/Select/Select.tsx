@@ -35,6 +35,7 @@ import {
   ZIndex,
   zIndexStyles,
 } from "@/types";
+import { cn } from "@/util/classes";
 import { useElementSize } from "@/util/useElementSize";
 
 import { Option } from "./Option";
@@ -59,6 +60,8 @@ export namespace SelectAnchor {
   export type TopEnd = typeof SelectAnchor.TopEnd;
 }
 
+export type SelectVariant = "default" | "borderless";
+
 export interface SelectProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   "onChange"
@@ -72,6 +75,8 @@ export interface SelectProps extends Omit<
   portal?: boolean;
   size?: Size;
   value?: string | string[];
+  placeholder?: string;
+  variant?: SelectVariant;
 }
 
 /**
@@ -173,6 +178,9 @@ function getZIndexClass(zIndex?: ZIndex, portal?: boolean): string | undefined {
  * @param portal If `true`, renders the options in a portal that always stacks
  *  above modals, overriding `zIndex`.
  * @param size Height of the field, matching {@link Input}. Defaults to `"md"`.
+ * @param placeholder Hint shown while nothing is selected.
+ * @param variant `"borderless"` drops the frame and rounds the field fully, for
+ *  filters in a toolbar. Defaults to `"default"`.
  * @param value The selected option `id` (when `exclusive`) or `id`s; set it for
  *  controlled selection.
  * @param props Additional HTML properties to apply to the component.
@@ -188,6 +196,8 @@ export const Select: FC<SelectProps> = ({
   portal,
   size,
   value,
+  placeholder,
+  variant = "default",
   ...props
 }) => {
   const [query, setQuery] = useState("");
@@ -264,8 +274,14 @@ export const Select: FC<SelectProps> = ({
             // which causes the dropdown menu to be anchored in the wrong place.
             // Until we switch to react 19,
             // we'll just style this component using the same classes as the `Input` component.
-            className={clsx(
-              inputStyle({ disabled, size }),
+            placeholder={placeholder}
+            className={cn(
+              inputStyle({
+                disabled,
+                size,
+                borderless: variant === "borderless",
+              }),
+              variant === "borderless" && "rounded-full",
               "w-full pr-8 cursor-pointer"
             )}
           />

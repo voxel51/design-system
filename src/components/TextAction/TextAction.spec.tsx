@@ -19,6 +19,12 @@ describe("TextAction", () => {
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 
+  it("colors a danger tone as a failure", () => {
+    render(<TextAction tone="danger">Stop import</TextAction>);
+
+    expect(screen.getByRole("button")).toHaveClass("text-content-text-failure");
+  });
+
   it("sizes by token", () => {
     render(<TextAction size={Size.Sm}>Upgrade</TextAction>);
 
