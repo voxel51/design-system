@@ -18,6 +18,7 @@
  * See voodo-enum-compat-tests.tsx for the deprecated enum-style contract.
  */
 import {
+  Avatar,
   InteractiveColor,
   ActivityToast,
   AddIcon,
@@ -583,6 +584,9 @@ export const Everything = (
       ))}
       <AddIcon size={Size.Xl} color={BrandColor.Accent} />
       <StatusDot pulse color={BrandColor.Accent} />
+      {(["sm", "md", "lg"] as const).map((s) => (
+        <Avatar key={s} name="Ada Lovelace" size={s} />
+      ))}
     </Stack>
 
     {/* Pills: size × radius × shadow, plus rich buttons */}
@@ -646,6 +650,9 @@ export const Everything = (
       {(["sm", "md", "lg"] as const).map((s) => (
         <IconAction key={s} icon="Add" size={s} aria-label={s} />
       ))}
+      <TextAction tone="danger" onClick={noop}>
+        Stop import
+      </TextAction>
       {/* @ts-expect-error - xl is excluded from TextAction sizes */}
       <TextAction size="xl">too big</TextAction>
       {/* @ts-expect-error - aria-label is required */}
@@ -791,6 +798,8 @@ export const Everything = (
         anchor={a}
         zIndex="high"
         size="sm"
+        variant="borderless"
+        placeholder="Pick"
         options={[{ id: "x", data: { label: "X" } }]}
         onChange={noop}
       />
