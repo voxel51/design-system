@@ -134,7 +134,10 @@ const Drawer: React.FC<DrawerProps> = ({
       )}
       <div
         className={styles.contentWrapper}
-        onTransitionEnd={onTransitionEnd}
+        onTransitionEnd={(event) => {
+          // a child's own transition, such as a hover color, bubbles here too
+          if (event.target === event.currentTarget) onTransitionEnd();
+        }}
         style={{
           ...contentWrapperSizeStyle,
           // Animate the open/close toggle only. Drags track the pointer 1:1 and

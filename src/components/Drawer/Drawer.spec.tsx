@@ -369,4 +369,27 @@ describe("Drawer", () => {
       expect(onSizeChange).toHaveBeenCalledWith(150);
     });
   });
+
+  describe("open animation", () => {
+    it("keeps easing when a child's transition ends", async () => {
+      const { container } = render(
+        <Drawer
+          maxSize={400}
+          defaultOpen={false}
+          header={(state) => <button onClick={state.toggle}>toggle</button>}
+        >
+          <div data-testid="child">content</div>
+        </Drawer>
+      );
+      await userEvent.click(screen.getByText("toggle"));
+      const wrapper = getContentWrapper(container);
+      expect(wrapper.style.transition).not.toBe("none");
+
+      fireEvent.transitionEnd(screen.getByTestId("child"));
+      expect(wrapper.style.transition).not.toBe("none");
+
+      fireEvent.transitionEnd(wrapper);
+      expect(wrapper.style.transition).toBe("none");
+    });
+  });
 });
