@@ -48,8 +48,13 @@ export const menuPanelStyles = (): string =>
  * @internal
  */
 export const actionMenuPanelStyles = (): string =>
-  // Figma ActionMenu: 226px wide (214px rows inside 6px panel padding)
-  cn(menuPanelStyles(), "min-w-[226px]");
+  // Figma ActionMenu: 226px wide (214px rows inside 6px panel padding).
+  // Base UI's positioner reports the room left in the viewport; a longer
+  // list scrolls instead of running off screen.
+  cn(
+    menuPanelStyles(),
+    "min-w-[226px] max-h-[var(--available-height)] overflow-y-auto"
+  );
 
 /**
  * State the menu row styles depend on. Base UI reports `highlighted` for

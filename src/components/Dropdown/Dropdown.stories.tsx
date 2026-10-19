@@ -60,4 +60,15 @@ export const CheckItems: Story = {
   render: () => <SortMenu />,
 };
 
+/** A list taller than the viewport scrolls inside the panel. */
+export const LongList: Story = {
+  render: () => (
+    <Dropdown trigger={<DropdownTrigger>Fields</DropdownTrigger>}>
+      {Array.from({ length: 60 }, (_, i) => (
+        <MenuTextItem key={i}>{`field_${i + 1}`}</MenuTextItem>
+      ))}
+    </Dropdown>
+  ),
+};
+
 export default meta;
