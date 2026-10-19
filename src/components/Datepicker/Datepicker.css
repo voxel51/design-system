@@ -11,6 +11,26 @@ passing classes to the popover.
   color: var(--color-content-text-primary);
 }
 
+.react-datepicker-popper .react-datepicker__triangle {
+  stroke: var(--color-content-border-default);
+}
+
+.react-datepicker-popper[data-placement^="bottom"] .react-datepicker__triangle,
+.react-datepicker-popper--header-bottom[data-placement^="top"]
+  .react-datepicker__triangle {
+  fill: var(--color-content-bg-card);
+  color: var(--color-content-bg-card);
+}
+
+.react-datepicker-popper[data-placement^="top"] .react-datepicker__triangle,
+.react-datepicker-popper--header-middle[data-placement^="bottom"]
+  .react-datepicker__triangle,
+.react-datepicker-popper--header-bottom[data-placement^="bottom"]
+  .react-datepicker__triangle {
+  fill: var(--color-content-bg-popover);
+  color: var(--color-content-bg-popover);
+}
+
 .react-datepicker__header {
   background-color: var(--color-content-bg-card);
   border-bottom-color: var(--color-content-border-default);
@@ -31,21 +51,31 @@ passing classes to the popover.
   color: var(--color-content-text-primary);
 }
 
-.react-datepicker__day:hover {
-  background-color: var(--color-content-border-hover);
+.react-datepicker__day:not([aria-disabled="true"]):hover,
+.react-datepicker__month-text:not([aria-disabled="true"]):hover,
+.react-datepicker__quarter-text:not([aria-disabled="true"]):hover,
+.react-datepicker__year-text:not([aria-disabled="true"]):hover {
+  background-color: var(--color-content-interactive-secondary-hover);
+  color: var(--color-content-text-primary);
+}
+
+.react-datepicker__day--keyboard-selected {
+  background-color: var(--color-content-bg-selected);
   color: var(--color-content-text-primary);
 }
 
 .react-datepicker__day--selected,
-.react-datepicker__day--keyboard-selected {
+.react-datepicker__day--in-selecting-range,
+.react-datepicker__day--in-range {
   background-color: var(--color-content-border-active);
-  color: var(--color-content-text-primary);
+  color: #fff;
 }
 
-.react-datepicker__day--selected:hover,
-.react-datepicker__day--keyboard-selected:hover {
+.react-datepicker__day--selected:not([aria-disabled="true"]):hover,
+.react-datepicker__day--in-selecting-range:not([aria-disabled="true"]):hover,
+.react-datepicker__day--in-range:not([aria-disabled="true"]):hover {
   background-color: var(--color-brand-accent);
-  color: var(--color-content-text-primary);
+  color: #fff;
 }
 
 .react-datepicker__day--today {
@@ -55,10 +85,9 @@ passing classes to the popover.
   border-color: transparent;
 }
 
-.react-datepicker__day--today.react-datepicker__day--selected,
-.react-datepicker__day--today.react-datepicker__day--keyboard-selected {
+.react-datepicker__day--today.react-datepicker__day--selected {
   background-color: var(--color-content-border-active);
-  color: var(--color-content-text-primary);
+  color: #fff;
 }
 
 .react-datepicker__day--disabled {
@@ -78,18 +107,13 @@ passing classes to the popover.
   border-color: var(--color-content-border-default);
 }
 
-.react-datepicker__navigation:hover * {
-  border-color: var(--color-content-text-secondary);
+.react-datepicker__navigation:hover *,
+.react-datepicker__navigation:hover *::before {
+  border-color: var(--color-content-text-primary);
 }
 
 .react-datepicker__navigation-icon::before {
   border-color: var(--color-content-text-secondary);
-}
-
-.dark
-  .react-datepicker__navigation:hover
-  .react-datepicker__navigation-icon::before {
-  border-color: var(--color-content-text-primary);
 }
 
 .react-datepicker__time-container {
@@ -111,19 +135,28 @@ passing classes to the popover.
   color: var(--color-content-text-primary);
 }
 
-.react-datepicker__time-list-item:hover {
-  background-color: var(--color-content-border-hover);
-  color: var(--color-content-text-secondary);
+.react-datepicker__time-container
+  .react-datepicker__time
+  .react-datepicker__time-box
+  ul.react-datepicker__time-list
+  li.react-datepicker__time-list-item:hover {
+  background-color: var(--color-content-interactive-secondary-hover);
+  color: var(--color-content-text-primary);
 }
 
 .react-datepicker__time-list-item--selected {
   background-color: var(--color-content-border-active);
-  color: var(--color-content-text-primary);
+  color: #fff;
   font-weight: bold;
 }
 
-.react-datepicker__time-list-item--selected:hover {
+.react-datepicker__time-container
+  .react-datepicker__time
+  .react-datepicker__time-box
+  ul.react-datepicker__time-list
+  li.react-datepicker__time-list-item--selected:hover {
   background-color: var(--color-brand-accent);
+  color: #fff;
 }
 
 .react-datepicker__time-list-item--disabled {
@@ -143,13 +176,13 @@ passing classes to the popover.
 
 .react-datepicker__month-option:hover,
 .react-datepicker__year-option:hover {
-  background-color: var(--color-content-border-hover);
+  background-color: var(--color-content-interactive-secondary-hover);
 }
 
 .react-datepicker__month-option--selected,
 .react-datepicker__year-option--selected {
   background-color: var(--color-content-border-active);
-  color: var(--color-content-text-primary);
+  color: #fff;
 }
 
 .react-datepicker__quarter-text,
@@ -159,12 +192,12 @@ passing classes to the popover.
 
 .react-datepicker__quarter-text:hover,
 .react-datepicker__week-number:hover {
-  background-color: var(--color-content-border-hover);
+  background-color: var(--color-content-interactive-secondary-hover);
   color: var(--color-content-text-primary);
 }
 
 .react-datepicker__quarter-text--selected,
 .react-datepicker__week-number--selected {
   background-color: var(--color-content-border-active);
-  color: var(--color-content-text-primary);
+  color: #fff;
 }
