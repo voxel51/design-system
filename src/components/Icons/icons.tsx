@@ -52,6 +52,7 @@ import BoltSvg from "@/img/Bolt.svg?react";
 import BookmarkSvg from "@/img/Bookmark.svg?react";
 import BookmarkStrokeSvg from "@/img/BookmarkStroke.svg?react";
 import BoxesSvg from "@/img/Boxes.svg?react";
+import BracesSvg from "@/img/Braces.svg?react";
 import BrushSvg from "@/img/Brush.svg?react";
 import BubbleChartSvg from "@/img/BubbleChart.svg?react";
 import CachedOutlinedSvg from "@/img/CachedOutlined.svg?react";
@@ -101,6 +102,7 @@ import ColorLensSvg from "@/img/ColorLens.svg?react";
 import ContactSvg from "@/img/Contact.svg?react";
 import ContentCopySvg from "@/img/ContentCopy.svg?react";
 import ContentCopyOutlinedSvg from "@/img/ContentCopyOutlined.svg?react";
+import CopySvg from "@/img/Copy.svg?react";
 import CopyAllOutlinedSvg from "@/img/CopyAllOutlined.svg?react";
 import CorporateFareSvg from "@/img/CorporateFare.svg?react";
 import CpuSvg from "@/img/Cpu.svg?react";
@@ -272,6 +274,7 @@ import RadioSvg from "@/img/Radio.svg?react";
 import RectangleSvg from "@/img/Rectangle.svg?react";
 import RedoSvg from "@/img/Redo.svg?react";
 import RefreshSvg from "@/img/Refresh.svg?react";
+import RefreshCwSvg from "@/img/RefreshCw.svg?react";
 import RemoveSvg from "@/img/Remove.svg?react";
 import RemoveCircleOutlineSvg from "@/img/RemoveCircleOutline.svg?react";
 import ReplaySvg from "@/img/Replay.svg?react";
@@ -541,6 +544,10 @@ export const BlocksIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={BlocksSvg} />
 );
 
+export const BracesIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={BracesSvg} />
+);
+
 export const BoltIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={BoltSvg} />
 );
@@ -751,6 +758,10 @@ export const ContentCopyIcon: FC<IconProps> = (props) => (
 
 export const ContentCopyOutlinedIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ContentCopyOutlinedSvg} />
+);
+
+export const CopyIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={CopySvg} />
 );
 
 export const CopyAllOutlinedIcon: FC<IconProps> = (props) => (
@@ -1435,6 +1446,10 @@ export const RedoIcon: FC<IconProps> = (props) => (
 
 export const RefreshIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={RefreshSvg} />
+);
+
+export const RefreshCwIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={RefreshCwSvg} />
 );
 
 export const RemoveIcon: FC<IconProps> = (props) => (

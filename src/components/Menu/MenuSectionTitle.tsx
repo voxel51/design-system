@@ -10,6 +10,16 @@ import { cn } from "@/util/classes";
 export interface MenuSectionTitleProps extends HTMLAttributes<HTMLDivElement> {
   /** The section title text. Rendered as an uppercase muted label. */
   children: string;
+  /**
+   * Type style of the title.
+   * @default {@link TextVariant.Label}
+   */
+  textVariant?: TextVariant;
+  /**
+   * Color of the title.
+   * @default {@link TextColor.Secondary}
+   */
+  textColor?: TextColor;
 }
 
 /**
@@ -25,11 +35,15 @@ export interface MenuSectionTitleProps extends HTMLAttributes<HTMLDivElement> {
  * ```
  *
  * @param children The section title text.
+ * @param textVariant Type style of the title; the default is an uppercase label.
+ * @param textColor Color of the title.
  * @param className `class` overrides to apply to the component.
  * @param props Additional HTML properties to apply to the component.
  */
 export const MenuSectionTitle: FC<MenuSectionTitleProps> = ({
   children,
+  textVariant = TextVariant.Label,
+  textColor = TextColor.Secondary,
   className,
   ...props
 }) => {
@@ -43,11 +57,7 @@ export const MenuSectionTitle: FC<MenuSectionTitleProps> = ({
     >
       {/* Block, so the label keeps its own 16px line instead of the
           parent's taller line box */}
-      <Text
-        variant={TextVariant.Label}
-        color={TextColor.Secondary}
-        className="block"
-      >
+      <Text variant={textVariant} color={textColor} className="block">
         {children}
       </Text>
     </div>
