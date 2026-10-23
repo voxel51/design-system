@@ -21,7 +21,8 @@ import {
 import { cn } from "@/util/classes";
 
 /**
- * A styled data table.
+ * A styled data table. It scrolls sideways inside its own box when the
+ * columns are wider than the space it has.
  *
  * Compose it from {@link TableHeader}, {@link TableBody}, {@link TableRow},
  * {@link TableHead} and {@link TableCell}. Each renders its native table
@@ -55,17 +56,19 @@ export const Table: FC<HTMLAttributes<HTMLTableElement>> = ({
   ...props
 }) => {
   return (
-    <table
-      className={cn(
-        "w-full border-collapse",
-        bgColorClass(BackgroundColor.Card),
-        radiusStyles(Radius.Md),
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </table>
+    <div className="w-full overflow-x-auto">
+      <table
+        className={cn(
+          "w-full border-collapse",
+          bgColorClass(BackgroundColor.Card),
+          radiusStyles(Radius.Md),
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </table>
+    </div>
   );
 };
 
@@ -171,7 +174,7 @@ export const TableCell: FC<TdHTMLAttributes<HTMLTableCellElement>> = ({
   return (
     <td
       className={cn(
-        "px-6 py-3 text-left font-normal",
+        "px-3 py-3 text-left font-normal sm:px-6",
         textColorClass(TextColor.Primary),
         textStyles(TextVariant.BodySecondary),
         className
@@ -199,7 +202,7 @@ export const TableHead: FC<ThHTMLAttributes<HTMLTableCellElement>> = ({
   return (
     <th
       className={cn(
-        "px-6 py-3 text-left font-normal",
+        "px-3 py-3 text-left font-normal sm:px-6",
         textColorClass(TextColor.Secondary),
         textStyles(TextVariant.BodySecondary),
         className
