@@ -25,6 +25,7 @@ export * from "./Loader";
 export * from "./LoadingDots";
 export * from "./Menu";
 export * from "./Modal";
+export * from "./OverflowRow";
 export * from "./Pagination";
 export * from "./Pill";
 export * from "./Popover";

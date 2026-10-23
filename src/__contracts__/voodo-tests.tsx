@@ -59,6 +59,7 @@ import {
   LoadingDots,
   MenuSeparator,
   ModalSize,
+  OverflowRow,
   Pagination,
   Orientation,
   ScrimColor,
@@ -658,6 +659,13 @@ export const Everything = (
       {/* @ts-expect-error - aria-label is required */}
       <IconAction icon="Add" />
     </Stack>
+
+    {/* OverflowRow: every prop */}
+    <OverflowRow label="More actions" className="x">
+      <button>a</button>
+    </OverflowRow>
+    {/* @ts-expect-error - children are required */}
+    <OverflowRow />
 
     {/* Pagination: every prop */}
     <Pagination
