@@ -16,7 +16,7 @@ import {
   getNodeByInternalPath,
   toInternalPath,
 } from "./tree";
-import type { TreeNode, TreePath } from "./types";
+import type { TreeNode, TreePath, TreeQueryMatcher } from "./types";
 import { type UseTreeReturn, useTree } from "./useTree";
 
 export interface UseTreeViewStateOptions {
@@ -25,6 +25,7 @@ export interface UseTreeViewStateOptions {
   leavesOnly?: boolean;
   defaultExpanded?: readonly TreePath[] | boolean;
   loadChildren?: (path: TreePath) => Promise<TreeNode[]>;
+  matchesQuery?: TreeQueryMatcher;
   value?: TreePath | readonly TreePath[];
   onChange?: ((p: TreePath | null) => void) | ((p: TreePath[]) => void);
   onEscape?: () => void;
@@ -84,6 +85,7 @@ export function useTreeViewState(
     leavesOnly = false,
     defaultExpanded,
     loadChildren,
+    matchesQuery,
     value,
     onChange,
     onEscape,
@@ -149,8 +151,10 @@ export function useTreeViewState(
 
   const filtered = useMemo(
     () =>
-      debouncedQuery ? filterTreeForQuery(resolved, debouncedQuery) : null,
-    [resolved, debouncedQuery]
+      debouncedQuery
+        ? filterTreeForQuery(resolved, debouncedQuery, matchesQuery)
+        : null,
+    [resolved, debouncedQuery, matchesQuery]
   );
 
   // --- Selection ---

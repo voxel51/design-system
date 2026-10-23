@@ -1,6 +1,7 @@
 import {
   buildResolvedTree,
   collectBranchPaths,
+  defaultTreeQueryMatcher,
   filterTreeForQuery,
   flattenVisible,
   formatBreadcrumb,
@@ -262,7 +263,76 @@ describe("buildResolvedTree", () => {
   });
 });
 
+describe("defaultTreeQueryMatcher", () => {
+  it("matches a case-insensitive substring of the name", () => {
+    expect(defaultTreeQueryMatcher({ name: "golf_cart" }, "GOLF")).toBe(true);
+    expect(defaultTreeQueryMatcher({ name: "golf_cart" }, "golf cart")).toBe(
+      false
+    );
+  });
+
+  it("ignores the description", () => {
+    expect(
+      defaultTreeQueryMatcher(
+        { name: "Honda", description: "Honda Motor Co." },
+        "Motor Co"
+      )
+    ).toBe(false);
+  });
+});
+
 describe("filterTreeForQuery", () => {
+  describe("with a custom matcher", () => {
+    // Treats "_" as a space, the case the default can't serve.
+    const spaced = (node: TreeNode, query: string) =>
+      node.name.replace(/_/g, " ").includes(query);
+
+    it("matches what the default would miss", () => {
+      const resolved = buildResolvedTree(vehicleTree);
+      expect(filterTreeForQuery(resolved, "golf cart")).toBeNull();
+
+      const result = filterTreeForQuery(resolved, "golf cart", spaced)!;
+      expect(collectNames(result.tree)).toContain("golf_cart");
+    });
+
+    it("keeps and force-opens the ancestors of a match", () => {
+      const resolved = buildResolvedTree(vehicleTree);
+      const result = filterTreeForQuery(resolved, "golf cart", spaced)!;
+      const names = collectNames(result.tree);
+
+      expect(names).toContain("other");
+      expect(names).not.toContain("car");
+      expect(result.forceOpenPaths.size).toBeGreaterThan(0);
+    });
+
+    it("receives every node and the query exactly as typed", () => {
+      const resolved = buildResolvedTree(vehicleTree);
+      const seen: string[] = [];
+      filterTreeForQuery(resolved, "MiXeD", (node, query) => {
+        expect(query).toBe("MiXeD");
+        seen.push(node.name);
+        return false;
+      });
+      expect(seen).toEqual(expect.arrayContaining(["car", "Civic", "atv"]));
+    });
+
+    it("can match on fields other than the name", () => {
+      const resolved = buildResolvedTree(vehicleTree);
+      const result = filterTreeForQuery(
+        resolved,
+        "two-wheeled",
+        (node, query) =>
+          node.description?.toLowerCase().includes(query) ?? false
+      )!;
+      expect(collectNames(result.tree)).toContain("motorcycle");
+    });
+
+    it("returns null when the matcher accepts nothing", () => {
+      const resolved = buildResolvedTree(vehicleTree);
+      expect(filterTreeForQuery(resolved, "car", () => false)).toBeNull();
+    });
+  });
+
   it("returns null when nothing matches", () => {
     const resolved = buildResolvedTree(vehicleTree);
     expect(filterTreeForQuery(resolved, "zzz_no_match")).toBeNull();

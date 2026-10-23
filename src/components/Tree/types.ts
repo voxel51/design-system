@@ -99,7 +99,27 @@ export interface TreeDataProps extends Omit<
    * - `false` / `undefined` — expand nothing (default).
    */
   defaultExpanded?: readonly TreePath[] | boolean;
+  /**
+   * Decides whether a node matches the search query. Defaults to a
+   * case-insensitive substring match on `node.name`. Supply one when the
+   * names users type differ from the stored ones, e.g. treating `_` and `/`
+   * as spaces so "los angeles" finds `America/Los_Angeles`.
+   *
+   * Receives the raw query as typed (not lower-cased). Ancestors, siblings
+   * and children of a match are kept exactly as with the default. The
+   * search highlight still marks a literal substring of the name, so a
+   * match the default wouldn't make renders unhighlighted.
+   *
+   * Keep it stable (module scope or `useCallback`): a new function each
+   * render re-filters the tree each render.
+   */
+  matchesQuery?: TreeQueryMatcher;
 }
+
+/**
+ * Search predicate for tree consumers. See {@link TreeDataProps.matchesQuery}.
+ */
+export type TreeQueryMatcher = (node: TreeNode, query: string) => boolean;
 
 /**
  * UI props specific to TreeSelect (trigger + floating panel).
