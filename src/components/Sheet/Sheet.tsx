@@ -19,8 +19,6 @@ import {
   TextColor,
   textColorClass,
   TextVariant,
-  TransitionDuration,
-  transitionDuration,
   ZIndex,
   zIndexStyles,
 } from "@/types";
@@ -62,6 +60,11 @@ export interface SheetProps {
    * a `title` is given.
    */
   showCloseButton?: boolean;
+  /**
+   * A tighter title bar with a medium close button, for navigation sheets
+   * rather than detail views. Defaults to `false`.
+   */
+  compact?: boolean;
   /** `class` overrides for the panel. */
   className?: string;
   /** `class` overrides for the scrollable body. */
@@ -93,6 +96,7 @@ export interface SheetProps {
  * @param side Edge the sheet slides in from. See {@link SheetSide}.
  * @param title Heading for the title bar.
  * @param width Panel width in pixels; full-width below it.
+ * @param compact Tighter title bar with a medium close button.
  * @param showCloseButton Whether the title bar renders a close button.
  * @param className `class` overrides for the panel.
  * @param contentClassName `class` overrides for the scrollable body.
@@ -105,6 +109,7 @@ export const Sheet: FC<SheetProps> = ({
   title,
   width = 460,
   showCloseButton,
+  compact = false,
   className,
   contentClassName,
   children,
@@ -121,14 +126,15 @@ export const Sheet: FC<SheetProps> = ({
       {...props}
     >
       <DialogBackdrop
+        transition
         className={cn(
           "fixed inset-0",
           bgColorClass(ScrimColor.Default),
-          transitionDuration(TransitionDuration.Normal),
-          "transition-opacity data-closed:opacity-0"
+          "duration-[var(--transition-duration-normal)] transition-opacity data-closed:opacity-0"
         )}
       />
       <DialogPanel
+        transition
         data-testid="sheet-panel"
         style={{ maxWidth: width }}
         className={cn(
@@ -138,15 +144,19 @@ export const Sheet: FC<SheetProps> = ({
           // A surface that paints its own background owns its foreground too.
           textColorClass(TextColor.Primary),
           borderColorClass(BorderColor.Default),
-          transitionDuration(TransitionDuration.Moderate),
-          "transition-transform",
+          "duration-[var(--transition-duration-moderate)] transition-transform",
           className
         )}
       >
         {(title || withCloseButton) && (
           // Same chrome as Modal: 24px padding, heading-lg title, Large
           // IconAction close
-          <div className="flex flex-none items-center justify-between gap-md px-6 pt-6 pb-5">
+          <div
+            className={cn(
+              "flex flex-none items-center justify-between gap-md",
+              compact ? "px-3 pt-3 pb-2" : "px-6 pt-6 pb-5"
+            )}
+          >
             {title ? (
               <DialogTitle
                 className={cn(
@@ -162,7 +172,7 @@ export const Sheet: FC<SheetProps> = ({
             )}
             {withCloseButton && (
               <IconAction
-                size={Size.Lg}
+                size={compact ? Size.Md : Size.Lg}
                 aria-label="Close"
                 icon={CloseIcon}
                 onClick={onClose}
