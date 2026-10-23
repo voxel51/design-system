@@ -59,7 +59,6 @@ import {
   LoadingDots,
   MenuSeparator,
   ModalSize,
-  FilterMenu,
   OverflowRow,
   Pagination,
   Orientation,
@@ -663,20 +662,6 @@ export const Everything = (
       {/* @ts-expect-error - aria-label is required */}
       <IconAction icon="Add" />
     </Stack>
-
-    {/* FilterMenu: every prop */}
-    <FilterMenu
-      activeCount={1}
-      label="Filters"
-      onClear={noop}
-      iconOnly
-      anchor="bottom-start"
-      className="x"
-    >
-      <span>controls</span>
-    </FilterMenu>
-    {/* @ts-expect-error - children are required */}
-    <FilterMenu />
 
     {/* OverflowRow: every prop */}
     <OverflowRow label="More actions" className="x">
