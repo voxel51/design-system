@@ -175,6 +175,18 @@ describe("TreeView", () => {
       renderTreeView({ query: "motor", onQueryChange });
       expect(screen.getByText("motorcycle")).toBeInTheDocument();
     });
+
+    it("filters a controlled query with a custom matchesQuery", async () => {
+      const onQueryChange = jest.fn();
+      renderTreeView({
+        query: "golf cart",
+        onQueryChange,
+        matchesQuery: (node: TreeNode, query: string) =>
+          node.name.replace(/_/g, " ").includes(query),
+      });
+      expect(await screen.findByText("golf_cart")).toBeInTheDocument();
+      expect(screen.queryByText("car")).not.toBeInTheDocument();
+    });
   });
 
   describe("maxHeight", () => {

@@ -782,6 +782,73 @@ describe("TreeSelect", () => {
       expect(screen.getByText("other")).toBeInTheDocument();
     });
 
+    describe("matchesQuery", () => {
+      // Treats "_" as a space, so the typed "golf cart" finds "golf_cart".
+      const spaced = (node: TreeNode, query: string) =>
+        node.name.replace(/_/g, " ").includes(query.toLowerCase());
+
+      it("filters with the default substring match when omitted", async () => {
+        const user = userEvent.setup();
+        renderTreeSelect();
+
+        await user.click(getInput());
+        await user.type(getSearchInput(), "golf cart");
+
+        expect(await screen.findByText("No matches found")).toBeInTheDocument();
+      });
+
+      it("filters with the supplied matcher", async () => {
+        const user = userEvent.setup();
+        renderTreeSelect({ matchesQuery: spaced });
+
+        await user.click(getInput());
+        await user.type(getSearchInput(), "golf cart");
+
+        expect(await screen.findByText("golf_cart")).toBeInTheDocument();
+        expect(screen.getByText("other")).toBeInTheDocument();
+        expect(screen.queryByText("car")).not.toBeInTheDocument();
+        expect(screen.queryByText("motorcycle")).not.toBeInTheDocument();
+      });
+
+      it("re-filters the open query when the matcher changes", async () => {
+        const user = userEvent.setup();
+        const { rerender } = renderTreeSelect();
+
+        await user.click(getInput());
+        await user.type(getSearchInput(), "golf cart");
+        expect(await screen.findByText("No matches found")).toBeInTheDocument();
+
+        rerender(
+          <TreeSelect
+            root={vehicleTree}
+            data-testid="tree-select"
+            matchesQuery={spaced}
+          />
+        );
+
+        expect(await screen.findByText("golf_cart")).toBeInTheDocument();
+        expect(screen.queryByText("No matches found")).not.toBeInTheDocument();
+        // The typed query survives the swap; only the rule changed.
+        expect(getSearchInput()).toHaveValue("golf cart");
+      });
+
+      it("selects a node found by the matcher", async () => {
+        const user = userEvent.setup();
+        const onChange = jest.fn();
+        renderTreeSelect({ matchesQuery: spaced, onChange });
+
+        await user.click(getInput());
+        await user.type(getSearchInput(), "golf cart");
+        await user.click(await screen.findByText("golf_cart"));
+
+        expect(onChange).toHaveBeenCalledWith([
+          "vehicle_type",
+          "other",
+          "golf_cart",
+        ]);
+      });
+    });
+
     it("clears the query when the selection clear button fires", async () => {
       const user = userEvent.setup();
       const onChange = jest.fn();

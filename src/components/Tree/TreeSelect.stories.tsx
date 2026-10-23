@@ -12,6 +12,7 @@ import {
   TreeSelect,
   type TreeNode,
   type TreePath,
+  type TreeQueryMatcher,
   type TreeSelectProps,
 } from "@voxel51/voodo";
 
@@ -598,6 +599,66 @@ export const AsyncLoadingWithErrors: Story = {
     placeholder: "Select vehicles…",
     loadChildren: loadChildrenFlaky,
     displayValue: (path: TreePath) => path.at(-1) ?? "",
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Custom search matcher — story helpers
+// ---------------------------------------------------------------------------
+
+const timeZoneTree: TreeNode = {
+  name: "timezones",
+  values: [
+    "America/Los_Angeles",
+    "America/New_York",
+    "America/Port_of_Spain",
+    "Asia/Ho_Chi_Minh",
+    "Europe/Isle_of_Man",
+    "UTC",
+  ].map((name) => ({ name })),
+};
+
+/** Ignores case and treats `_` and `/` as spaces, so names read as typed. */
+function normalize(value: string): string {
+  return value.toLowerCase().replace(/[_/]+/g, " ").trim();
+}
+
+const spacedNameMatcher: TreeQueryMatcher = (node, query) =>
+  normalize(node.name).includes(normalize(query));
+
+/**
+ * `matchesQuery` replaces the search's default case-insensitive substring
+ * match on `name`. Here it treats `_` and `/` as spaces, so typing
+ * **los angeles** or **america new** finds the IANA zone names. The default
+ * on the left finds nothing for either.
+ *
+ * Keep the matcher stable — define it at module scope or wrap it in
+ * `useCallback` — or the tree re-filters on every render.
+ */
+export const CustomSearchMatcher: Story = {
+  render: () => (
+    <div className="flex gap-6">
+      <div className="flex flex-1 flex-col gap-2">
+        <Text variant={TextVariant.Caption} color={TextColor.Secondary}>
+          Default matcher
+        </Text>
+        <ControlledTreeSelect root={timeZoneTree} placeholder="UTC" />
+      </div>
+      <div className="flex flex-1 flex-col gap-2">
+        <Text variant={TextVariant.Caption} color={TextColor.Secondary}>
+          <code>matchesQuery</code> treating <code>_</code> and <code>/</code>{" "}
+          as spaces
+        </Text>
+        <ControlledTreeSelect
+          root={timeZoneTree}
+          placeholder="UTC"
+          matchesQuery={spacedNameMatcher}
+        />
+      </div>
+    </div>
+  ),
+  parameters: {
+    controls: { disable: true },
   },
 };
 

@@ -1,4 +1,9 @@
-import type { ResolvedNode, TreeNode, TreePath } from "./types";
+import type {
+  ResolvedNode,
+  TreeNode,
+  TreePath,
+  TreeQueryMatcher,
+} from "./types";
 
 const PATH_SEPARATOR = "/";
 
@@ -128,10 +133,15 @@ export function buildResolvedTree(
   return walk(root, "", 0, 0, 1);
 }
 
+/** Case-insensitive substring match on the node's name. */
+export const defaultTreeQueryMatcher: TreeQueryMatcher = (node, query) =>
+  node.name.toLowerCase().includes(query.toLowerCase());
+
 /**
  * Filters a resolved tree for a search query, returning a pruned copy of the
  * tree that contains only:
- * - Matched nodes (case-insensitive name substring match, any node)
+ * - Matched nodes (any node `matchesQuery` accepts; by default a
+ *   case-insensitive name substring match)
  * - Every ancestor of a match (force-expanded so the match is visible)
  * - Siblings of each match (rendered but subtrees pruned)
  * - Direct children of each match (rendered collapsed)
@@ -140,14 +150,13 @@ export function buildResolvedTree(
  */
 export function filterTreeForQuery(
   resolved: ResolvedNode,
-  query: string
+  query: string,
+  matchesQuery: TreeQueryMatcher = defaultTreeQueryMatcher
 ): { tree: ResolvedNode; forceOpenPaths: Set<string> } | null {
-  const lowerQuery = query.toLowerCase();
-
   const matchedPaths = new Set<string>();
 
   function collectMatches(node: ResolvedNode): void {
-    if (node.node.name.toLowerCase().includes(lowerQuery)) {
+    if (matchesQuery(node.node, query)) {
       matchedPaths.add(node.path);
     }
     for (const child of node.children) {

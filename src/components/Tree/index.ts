@@ -4,7 +4,12 @@ export type {
   RenderTreeLabel,
   TreeNode,
   TreePath,
+  TreeQueryMatcher,
   TreeSelectProps,
   TreeViewProps,
 } from "./types";
-export { formatBreadcrumb, getNodeByPath } from "./tree";
+export {
+  defaultTreeQueryMatcher,
+  formatBreadcrumb,
+  getNodeByPath,
+} from "./tree";

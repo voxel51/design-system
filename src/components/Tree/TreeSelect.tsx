@@ -75,6 +75,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
   displayValue: displayValueProp,
   defaultExpanded,
   loadChildren,
+  matchesQuery,
   className,
   ...props
 }) => {
@@ -98,6 +99,7 @@ export const TreeSelect: FC<TreeSelectProps> = ({
     leavesOnly,
     defaultExpanded,
     loadChildren,
+    matchesQuery,
     onEscape: handleEscape,
     onAfterSelect: handleAfterSelect,
     scrollActiveIntoView: false,
