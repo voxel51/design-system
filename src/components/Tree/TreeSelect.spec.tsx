@@ -810,6 +810,28 @@ describe("TreeSelect", () => {
         expect(screen.queryByText("motorcycle")).not.toBeInTheDocument();
       });
 
+      it("re-filters the open query when the matcher changes", async () => {
+        const user = userEvent.setup();
+        const { rerender } = renderTreeSelect();
+
+        await user.click(getInput());
+        await user.type(getSearchInput(), "golf cart");
+        expect(await screen.findByText("No matches found")).toBeInTheDocument();
+
+        rerender(
+          <TreeSelect
+            root={vehicleTree}
+            data-testid="tree-select"
+            matchesQuery={spaced}
+          />
+        );
+
+        expect(await screen.findByText("golf_cart")).toBeInTheDocument();
+        expect(screen.queryByText("No matches found")).not.toBeInTheDocument();
+        // The typed query survives the swap; only the rule changed.
+        expect(getSearchInput()).toHaveValue("golf cart");
+      });
+
       it("selects a node found by the matcher", async () => {
         const user = userEvent.setup();
         const onChange = jest.fn();

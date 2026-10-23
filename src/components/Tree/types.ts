@@ -111,7 +111,12 @@ export interface TreeDataProps extends Omit<
    * match the default wouldn't make renders unhighlighted.
    *
    * Keep it stable (module scope or `useCallback`): a new function each
-   * render re-filters the tree each render.
+   * render re-filters the tree each render. Swapping in a different
+   * matcher re-filters the current query with it.
+   *
+   * It must not throw. It runs during render, so an exception propagates
+   * to the nearest error boundary and unmounts the tree; guard anything
+   * that can fail (e.g. a `RegExp` built from the query) inside it.
    */
   matchesQuery?: TreeQueryMatcher;
 }
