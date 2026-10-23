@@ -82,6 +82,7 @@ import ChevronRightStrokeSvg from "@/img/ChevronRightStroke.svg?react";
 import ChevronTopSvg from "@/img/ChevronTop.svg?react";
 import CircleSvg from "@/img/Circle.svg?react";
 import CircleOutlinedSvg from "@/img/CircleOutlined.svg?react";
+import CirclePlaySvg from "@/img/CirclePlay.svg?react";
 import CircleUserSvg from "@/img/CircleUser.svg?react";
 import ClearSvg from "@/img/Clear.svg?react";
 import ClearAllSvg from "@/img/ClearAll.svg?react";
@@ -678,6 +679,10 @@ export const CircleIcon: FC<IconProps> = (props) => (
 
 export const CircleOutlinedIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={CircleOutlinedSvg} />
+);
+
+export const CirclePlayIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={CirclePlaySvg} />
 );
 
 export const CircleUserIcon: FC<IconProps> = (props) => (
