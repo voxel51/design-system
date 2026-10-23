@@ -72,3 +72,15 @@ export const LongList: Story = {
 };
 
 export default meta;
+
+/** No outline; a rounded fill appears on hover. For toolbars and filter rows. */
+export const BorderlessTrigger: Story = {
+  render: () => (
+    <Dropdown
+      trigger={<DropdownTrigger borderless>Sort by: Newest</DropdownTrigger>}
+    >
+      <MenuTextItem>Newest</MenuTextItem>
+      <MenuTextItem>Oldest</MenuTextItem>
+    </Dropdown>
+  ),
+};

@@ -26,6 +26,15 @@ describe("DropdownTrigger", () => {
     expect(container.querySelector("svg")).toBeInTheDocument();
   });
 
+  it("should drop the outline and round the button when borderless", () => {
+    render(
+      <Dropdown trigger={<DropdownTrigger borderless>Menu</DropdownTrigger>}>
+        {null}
+      </Dropdown>
+    );
+    expect(screen.getByRole("button")).toHaveClass("border-0", "rounded-full");
+  });
+
   it("should be disabled when disabled prop is set", () => {
     render(
       <Dropdown trigger={<DropdownTrigger disabled>Menu</DropdownTrigger>}>

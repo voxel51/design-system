@@ -16,8 +16,9 @@ export type DropdownTriggerProps = Omit<
 
 /**
  * The standard trigger button for a {@link Dropdown}.
- * Always renders as a secondary button with a trailing caret-down icon
- * so users know the element opens a menu.
+ * Renders as a secondary button with a trailing caret-down icon so users
+ * know the element opens a menu. `borderless` drops the outline for a
+ * rounded pill that fills only on hover, for toolbars and filter rows.
  *
  * @example
  * ```tsx
@@ -28,15 +29,18 @@ export type DropdownTriggerProps = Omit<
  *
  * @param children Button label.
  * @param size Button size. Defaults to `"sm"`.
+ * @param borderless No outline; a rounded fill appears on hover.
  * @param props Additional {@link ButtonProps} (excluding `variant` and `trailingIcon`).
  */
 export const DropdownTrigger: FC<DropdownTriggerProps> = ({
   children,
   size = Size.Sm,
+  borderless,
   ...props
 }) => (
   <Button
-    variant={Variant.Secondary}
+    variant={borderless ? Variant.Icon : Variant.Secondary}
+    borderless={borderless}
     size={size}
     trailingIcon={CaretDownIcon}
     {...props}
