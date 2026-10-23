@@ -25,6 +25,8 @@ export interface TextActionProps extends ButtonHTMLAttributes<HTMLButtonElement>
   tone?: TextActionTone;
   leadingIcon?: IconInput;
   trailingIcon?: IconInput;
+  /** Hides the label below 1024px, leaving the icons. Give it an `aria-label`. */
+  collapse?: boolean;
 }
 
 // Figma BorderlessButton, label styles: Small is 28px tall with 12px side
@@ -56,6 +58,7 @@ const iconSizes: Record<TextActionSize, number> = {
  * @param tone `"danger"` colors the label as a destructive action. Defaults to `"default"`.
  * @param leadingIcon Optional icon before the label: a per-icon component.
  * @param trailingIcon Optional icon after the label: a per-icon component.
+ * @param collapse Hides the label below 1024px, leaving the icons: pass an `aria-label`, since the label no longer names the button.
  * @param className Additional CSS class names to apply to the button.
  * @param children The label.
  * @param props Additional HTML button properties, such as `onClick`.
@@ -65,6 +68,7 @@ export const TextAction: FC<TextActionProps> = ({
   tone = "default",
   leadingIcon,
   trailingIcon,
+  collapse,
   className,
   children,
   ...props
@@ -93,7 +97,7 @@ export const TextAction: FC<TextActionProps> = ({
       size={iconSizes[size]}
       className="flex items-center"
     />
-    {children}
+    {collapse ? <span className="hidden lg:inline">{children}</span> : children}
     <IconWrapper
       content={trailingIcon}
       size={iconSizes[size]}

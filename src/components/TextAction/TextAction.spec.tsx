@@ -25,6 +25,17 @@ describe("TextAction", () => {
     expect(screen.getByRole("button")).toHaveClass("text-content-text-failure");
   });
 
+  it("hides the label below 1024px when it collapses", () => {
+    render(
+      <TextAction collapse leadingIcon={IconName.Add} aria-label="Share">
+        Share
+      </TextAction>
+    );
+
+    expect(screen.getByText("Share")).toHaveClass("hidden", "lg:inline");
+    expect(screen.getByRole("button", { name: "Share" })).toBeInTheDocument();
+  });
+
   it("sizes by token", () => {
     render(<TextAction size={Size.Sm}>Upgrade</TextAction>);
 
