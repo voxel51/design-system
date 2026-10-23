@@ -2,6 +2,7 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { Dropdown, DropdownTrigger } from "@/components/Dropdown";
+import { TextColor, TextVariant } from "@/types";
 
 import { MenuSectionTitle } from "./MenuSectionTitle";
 
@@ -46,5 +47,25 @@ describe("MenuSectionTitle", () => {
     expect(
       within(screen.getByRole("menu")).getByRole("presentation")
     ).toHaveClass("custom-title");
+  });
+
+  it("should apply textVariant and textColor to the title", async () => {
+    const user = userEvent.setup();
+    render(
+      <Dropdown trigger={trigger}>
+        <MenuSectionTitle
+          textVariant={TextVariant.BodyTertiary}
+          textColor={TextColor.Primary}
+        >
+          Section
+        </MenuSectionTitle>
+      </Dropdown>
+    );
+    await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
+    const title = screen.getByText("Section");
+    expect(title).toHaveClass("text-body-tertiary");
+    expect(title).toHaveClass("text-content-text-primary");
+    expect(title).not.toHaveClass("uppercase");
   });
 });

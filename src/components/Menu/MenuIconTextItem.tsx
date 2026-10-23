@@ -34,6 +34,17 @@ export interface MenuIconTextItemProps extends HTMLAttributes<HTMLButtonElement>
   disabled?: boolean;
   /** If `true`, renders the text and icon in the failure color, and fills the row with the danger color (white content) on hover and focus. */
   destructive?: boolean;
+  /**
+   * Type style of the primary text.
+   * @default {@link TextVariant.BodyPrimary}
+   */
+  textVariant?: TextVariant;
+  /**
+   * Color of the primary text at rest; it returns to primary on hover and
+   * focus. Ignored when `destructive`.
+   * @default {@link TextColor.Primary}
+   */
+  textColor?: TextColor;
 }
 
 /**
@@ -57,6 +68,8 @@ export interface MenuIconTextItemProps extends HTMLAttributes<HTMLButtonElement>
  * @param subtext An optional secondary line rendered below the primary text in muted color.
  * @param disabled If `true`, the item cannot be interacted with.
  * @param destructive If `true`, renders the text and icon in the failure color, and fills the row with the danger color (white content) on hover and focus.
+ * @param textVariant Type style of the primary text.
+ * @param textColor Color of the primary text at rest, primary on hover and focus; ignored when `destructive`.
  * @param className `class` overrides to apply to the component.
  * @param props Additional HTML properties to apply to the component.
  */
@@ -66,10 +79,12 @@ export const MenuIconTextItem: FC<MenuIconTextItemProps> = ({
   subtext,
   disabled,
   destructive,
+  textVariant = TextVariant.BodyPrimary,
+  textColor: textColorProp = TextColor.Primary,
   className,
   ...props
 }) => {
-  const textColor = destructive ? TextColor.Failure : TextColor.Primary;
+  const textColor = destructive ? TextColor.Failure : textColorProp;
   const subtextColor = destructive ? TextColor.Failure : TextColor.Secondary;
   const iconColor = destructive ? IconColor.Failure : IconColor.Default;
   // Legacy IconName strings ride the deprecated map-based Icon; anything
@@ -96,7 +111,7 @@ export const MenuIconTextItem: FC<MenuIconTextItemProps> = ({
       }
       className={(state) =>
         // Figma Action Menu Row: 8px gap, 16px icon
-        cn(menuRowStyles(state, destructive), "gap-2", className)
+        cn(menuRowStyles(state, destructive), "group gap-2", className)
       }
     >
       <span
@@ -110,9 +125,14 @@ export const MenuIconTextItem: FC<MenuIconTextItemProps> = ({
 
       <span className="flex flex-col gap-0.5 min-w-0">
         <Text
-          variant={TextVariant.BodyPrimary}
+          variant={textVariant}
           color={textColor}
-          className="block truncate"
+          className={cn(
+            "block truncate",
+            textColor !== TextColor.Primary &&
+              !destructive &&
+              "group-data-[highlighted]:text-content-text-primary"
+          )}
         >
           {text}
         </Text>
