@@ -12,6 +12,7 @@ export * from "./Divider";
 export * from "./Drawer";
 export * from "./Dropdown";
 export * from "./Dropzone";
+export * from "./FilterMenu";
 export * from "./EmptyState";
 export * from "./FormField";
 export * from "./FormFieldGroup";
