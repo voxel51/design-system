@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 
 import { Dropdown, DropdownTrigger } from "@/components/Dropdown";
 import { EditIcon, DeleteIcon } from "@/components/Icons";
-import { IconName } from "@/types";
+import { IconName, TextColor, TextVariant } from "@/types";
 
 import { MenuIconTextItem } from "./MenuIconTextItem";
 
@@ -148,5 +148,27 @@ describe("MenuIconTextItem", () => {
     await screen.findByRole("menu");
     const item = screen.getByText("Edit").closest("button")!;
     expect(item).toHaveClass("custom-item");
+  });
+
+  it("should apply textVariant and textColor to the primary text", async () => {
+    const user = userEvent.setup();
+    render(
+      <Dropdown trigger={trigger}>
+        <MenuIconTextItem
+          icon={<EditIcon />}
+          text="Edit item"
+          textVariant={TextVariant.BodySecondary}
+          textColor={TextColor.Secondary}
+        />
+      </Dropdown>
+    );
+    await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
+    const text = screen.getByText("Edit item");
+    expect(text).toHaveClass("text-body-secondary");
+    expect(text).toHaveClass("text-content-text-secondary");
+    expect(text).toHaveClass(
+      "group-data-[highlighted]:text-content-text-primary"
+    );
   });
 });
