@@ -65,4 +65,31 @@ describe("DropdownTrigger", () => {
     );
     expect(screen.getByRole("button")).toBeInTheDocument();
   });
+
+  describe("prefix", () => {
+    it("should name the value with its prefix", () => {
+      render(<DropdownTrigger prefix="Sort by">Newest</DropdownTrigger>);
+      const button = screen.getByRole("button", { name: "Sort by: Newest" });
+      expect(button).toHaveTextContent("Sort by:Newest");
+      expect(screen.getByText("Sort by:")).toHaveClass("hidden", "sm:inline");
+    });
+
+    it("should name prefix and value in a tooltip while the prefix is hidden", async () => {
+      render(<DropdownTrigger prefix="Sort by">Newest</DropdownTrigger>);
+      await userEvent.hover(screen.getByRole("button"));
+      const tooltip = screen.getByRole("tooltip");
+      expect(tooltip).toHaveTextContent("Sort by");
+      expect(tooltip).toHaveTextContent("Newest");
+    });
+
+    it("should show no tooltip while the prefix shows", async () => {
+      jest
+        .spyOn(HTMLElement.prototype, "getClientRects")
+        .mockReturnValue([new DOMRect()] as unknown as DOMRectList);
+      render(<DropdownTrigger prefix="Sort by">Newest</DropdownTrigger>);
+      await userEvent.hover(screen.getByRole("button"));
+      expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+      jest.restoreAllMocks();
+    });
+  });
 });

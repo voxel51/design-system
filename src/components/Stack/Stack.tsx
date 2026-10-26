@@ -10,6 +10,8 @@ export interface StackProps extends HTMLAttributes<HTMLDivElement> {
   spacing?: Spacing;
   /** Lets children flow onto further lines when they do not fit on one. */
   wrap?: boolean;
+  /** Keeps children on one line that scrolls sideways, with no scrollbar; children keep their width. */
+  scroll?: boolean;
 }
 
 const alignStyles: Record<Align, string> = {
@@ -60,6 +62,13 @@ const spacingStyles: Record<Spacing, string> = {
  *
  * @example
  * ```tsx
+ * <Stack orientation="row" spacing="sm" scroll>
+ *   <DropdownTrigger borderless>Status</DropdownTrigger>
+ *   <DropdownTrigger borderless>Sort</DropdownTrigger>
+ * </Stack>
+ * ```
+ * @example
+ * ```tsx
  * <Stack orientation="row" align="center" justify="between">
  *   <Text>Left</Text>
  *   <Text>Middle</Text>
@@ -72,6 +81,7 @@ const spacingStyles: Record<Spacing, string> = {
  * @param orientation Orientation of the stack. See {@link Orientation}.
  * @param spacing Spacing between child components in the stack. See {@link Spacing}.
  * @param wrap If `true`, children flow onto further lines when they do not fit on one.
+ * @param scroll If `true`, children stay on one line that scrolls sideways with a hidden scrollbar, each at its own width (filter pill rows on a phone).
  * @param children Content which is wrapped by this component.
  * @param className `class` overrides to apply to the component.
  * @param props Additional HTML properties to apply to the component.
@@ -84,6 +94,7 @@ export const Stack = forwardRef<HTMLDivElement, StackProps>(
       orientation = Orientation.Row,
       spacing = Spacing.None,
       wrap = false,
+      scroll = false,
       children,
       className,
       ...props
@@ -98,6 +109,8 @@ export const Stack = forwardRef<HTMLDivElement, StackProps>(
           orientation === Orientation.Column && "flex-col",
           spacingStyles[spacing],
           wrap && "flex-wrap",
+          scroll &&
+            "overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&>*]:shrink-0",
           align && alignStyles[align],
           justify && justifyStyles[justify],
           className

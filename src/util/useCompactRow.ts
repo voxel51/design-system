@@ -56,7 +56,7 @@ export function useCompactRow({
   const needed = useRef({ width: 0, labels: [] as number[] });
 
   useLayoutEffect(() => {
-    if (!row) return;
+    if (!row || typeof ResizeObserver === "undefined") return;
     const update = (next: OverflowRowFit): void => {
       const prev = current.current;
       if (prev.compact === next.compact && prev.labelMax === next.labelMax) {

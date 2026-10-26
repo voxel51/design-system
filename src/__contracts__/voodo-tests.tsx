@@ -38,6 +38,7 @@ import {
   Drawer,
   DrawerSide,
   Dropdown,
+  DropdownTrigger,
   Dropzone,
   DropdownAnchor,
   ElementState,
@@ -823,6 +824,10 @@ export const Everything = (
     </Popover>
     <Loader type="bars" size="xl" aria-label="Generating" />
     <Text gradient>Generating</Text>
+    <Text truncate>A long title</Text>
+    <Stack scroll>
+      <DropdownTrigger prefix="Sort by">Newest</DropdownTrigger>
+    </Stack>
     <LoadingDots text="Searching" variant="sm" color="text-tertiary" />
     {MENU_ANCHORS.map((a) => (
       <Select

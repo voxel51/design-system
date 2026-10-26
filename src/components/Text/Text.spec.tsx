@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 
 import { Text } from "./Text";
 
@@ -28,6 +28,36 @@ describe("Text", () => {
       const el = screen.getByText("fancy");
       expect(el).toHaveClass("bg-clip-text", "text-transparent");
       expect(el).not.toHaveClass("text-content-text-secondary");
+    });
+  });
+
+  describe("truncate prop", () => {
+    const widths = (el: HTMLElement, scroll: number, client: number) => {
+      Object.defineProperty(el, "scrollWidth", { value: scroll });
+      Object.defineProperty(el, "clientWidth", { value: client });
+    };
+
+    it("should cut the text to one line", () => {
+      render(<Text truncate>long title</Text>);
+      expect(screen.getByText("long title")).toHaveClass("truncate", "block");
+    });
+
+    it("should show the full text in a tooltip only when cut", () => {
+      render(<Text truncate>long title</Text>);
+      const el = screen.getByText("long title");
+      widths(el, 300, 100);
+      fireEvent.mouseOver(el);
+      fireEvent.mouseEnter(el.parentElement!);
+      expect(screen.getByRole("tooltip")).toHaveTextContent("long title");
+    });
+
+    it("should show no tooltip when the text fits", () => {
+      render(<Text truncate>short</Text>);
+      const el = screen.getByText("short");
+      widths(el, 100, 100);
+      fireEvent.mouseOver(el);
+      fireEvent.mouseEnter(el.parentElement!);
+      expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
     });
   });
 });
