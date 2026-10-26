@@ -40,7 +40,10 @@ describe("Button", () => {
       </Button>
     );
 
-    expect(screen.getByText("Ask agent")).toHaveClass("hidden", "sm:flex");
+    expect(screen.getByText("Ask agent")).toHaveClass(
+      "hidden",
+      "sm:inline-block"
+    );
     expect(screen.getByRole("button")).toHaveClass("px-3", "sm:px-4");
     expect(
       screen.getByRole("button", { name: "Ask agent" }).querySelector("svg")

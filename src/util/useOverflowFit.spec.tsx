@@ -59,4 +59,51 @@ describe("useOverflowFit", () => {
     render(<Row width={100} reserve={0} />);
     expect(screen.getByRole("status")).toHaveTextContent("2");
   });
+
+  describe("compactable", () => {
+    // each item: 30px of icon and padding plus its label
+    const LABELS: Record<string, number> = { a: 100, b: 60, c: 40 };
+
+    function Labelled({ width }: { width: number }) {
+      const keys = Object.keys(LABELS);
+      const fit = useOverflowFit(keys, { gap: 0, compactable: true });
+      return (
+        <div ref={fit.ref} data-width={width}>
+          {keys.slice(0, fit.fit).map((key) => (
+            <span key={key} ref={fit.itemRef(key)} data-key={key}>
+              <span data-collapse-label="" data-label={LABELS[key]} />
+            </span>
+          ))}
+          <output>{fit.compact ? "compact" : String(fit.labelMax)}</output>
+        </div>
+      );
+    }
+
+    beforeEach(() => {
+      Object.defineProperty(HTMLElement.prototype, "offsetWidth", {
+        configurable: true,
+        get(this: HTMLElement) {
+          if (this.dataset.key) return 30 + LABELS[this.dataset.key];
+          return Number(this.dataset.width ?? 0);
+        },
+      });
+      Object.defineProperty(HTMLElement.prototype, "scrollWidth", {
+        configurable: true,
+        get(this: HTMLElement) {
+          return Number(this.dataset.label ?? 0);
+        },
+      });
+    });
+
+    it("cuts the widest label first while that is enough", () => {
+      // full: 3 * 30 + 200 = 290; 270 wide is 20 short
+      render(<Labelled width={270} />);
+      expect(screen.getByRole("status")).toHaveTextContent("80");
+    });
+
+    it("goes compact once labels would fall below the minimum", () => {
+      render(<Labelled width={120} />);
+      expect(screen.getByRole("status")).toHaveTextContent("compact");
+    });
+  });
 });

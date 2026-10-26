@@ -680,7 +680,12 @@ export const Everything = (
     <TooltipLabel />
 
     {/* OverflowRow: every prop */}
-    <OverflowRow label="More actions" compactable className="x">
+    <OverflowRow
+      label="More actions"
+      compactable
+      onFitChange={(fit) => fit.compact && fit.folded}
+      className="x"
+    >
       <button>a</button>
     </OverflowRow>
     {/* @ts-expect-error - children are required */}

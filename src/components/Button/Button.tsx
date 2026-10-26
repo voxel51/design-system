@@ -32,7 +32,7 @@ import {
   Variant,
 } from "@/types";
 import { cn } from "@/util/classes";
-import { useOverflowRowCompact } from "@/util/compact";
+import { COLLAPSE_LABEL_ATTR, useOverflowRowFit } from "@/util/compact";
 
 // Template-literal wrap defeats TS alias preservation so hovers and type
 // errors list the accepted strings instead of the alias name.
@@ -247,7 +247,10 @@ export const Button: FC<ButtonProps> = ({
   // A borderless button is a circle unless it carries a text label, in which
   // case it is a pill and aspect-square would inflate it to its width. Only
   // text nodes count as a label: an icon passed as a child keeps the circle.
-  const collapse = resolveCollapse(collapseProp, useOverflowRowCompact());
+  const fit = useOverflowRowFit();
+  const collapse = resolveCollapse(collapseProp, fit.compact);
+  // a row short of room cuts an "auto" label before it drops it
+  const labelMax = collapseProp === "auto" ? fit.labelMax : null;
   const childArray = Children.toArray(children);
   const hasLabel = childArray.some(
     (child) =>
@@ -295,10 +298,16 @@ export const Button: FC<ButtonProps> = ({
         className="flex shrink-0 items-center justify-center"
       />
 
-      {collapse
+      {collapseProp
         ? Children.map(children, (child) =>
             typeof child === "string" || typeof child === "number" ? (
-              <span className={collapseStyles(collapse)}>{child}</span>
+              <span
+                {...{ [COLLAPSE_LABEL_ATTR]: "" }}
+                className={collapseStyles(collapse || undefined)}
+                style={labelMax === null ? undefined : { maxWidth: labelMax }}
+              >
+                {child}
+              </span>
             ) : (
               child
             )
@@ -316,6 +325,7 @@ export const Button: FC<ButtonProps> = ({
   const withTooltip = (element: ReactElement): ReactElement => (
     <ActionTooltip
       collapsed={collapse === "always"}
+      truncatable={collapseProp === "auto"}
       label={props["aria-label"] ?? (hasLabel ? children : undefined)}
       hint={hint}
     >

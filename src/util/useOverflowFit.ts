@@ -1,5 +1,11 @@
-import { useCallback, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 
+import {
+  capLabels,
+  COLLAPSE_LABEL_ATTR,
+  FULL_FIT,
+  type OverflowRowFit,
+} from "@/util/compact";
 import { useElementSize } from "@/util/useElementSize";
 
 /** Options for {@link useOverflowFit}. */
@@ -12,10 +18,14 @@ export interface UseOverflowFitOptions {
    */
   reserve?: number;
   /**
-   * Lets the items go compact (icon-only, say) before any leave: when they do
-   * not all fit, `compact` turns on and they are measured again. Default `false`.
+   * Lets the items shrink before any leave: their labels (marked
+   * `data-collapse-label`, as `collapse="auto"` actions mark theirs) are cut,
+   * widest first, down to `minLabel`; past that the items go compact
+   * (icon-only). Default `false`.
    */
   compactable?: boolean;
+  /** The narrowest a label is cut to before items go compact, in pixels. Default `40`. */
+  minLabel?: number;
 }
 
 /** Return value of {@link useOverflowFit}. */
@@ -28,6 +38,10 @@ export interface UseOverflowFitReturn {
   fit: number;
   /** Whether the items should render compact; only with `compactable`. */
   compact: boolean;
+  /** The width labels are cut to, or `null`; only with `compactable`. */
+  labelMax: number | null;
+  /** `compact` and `labelMax` together, for `OverflowRowCompactContext`. */
+  context: OverflowRowFit;
 }
 
 /**
@@ -52,70 +66,97 @@ export interface UseOverflowFitReturn {
  */
 export function useOverflowFit(
   keys: string[],
-  { gap = 4, reserve = 28, compactable = false }: UseOverflowFitOptions = {}
+  {
+    gap = 4,
+    reserve = 28,
+    compactable = false,
+    minLabel = 40,
+  }: UseOverflowFitOptions = {}
 ): UseOverflowFitReturn {
   const signature = keys.join("|");
   const { ref, width } = useElementSize();
   const slots = useRef(new Map<string, HTMLElement>());
+  // items at full size, their labels' own widths, and items compact
   const full = useRef(new Map<string, number>());
+  const labels = useRef(new Map<string, number>());
   const small = useRef(new Map<string, number>());
-  const [fit, setFit] = useState(keys.length);
-  const [compact, setCompact] = useState(false);
+  const [state, setState] = useState({
+    fit: keys.length,
+    ...FULL_FIT,
+  });
 
   useLayoutEffect(() => {
-    const widths = compact ? small : full;
-    slots.current.forEach((el, key) => widths.current.set(key, el.offsetWidth));
-    [full, small].forEach((map) =>
+    slots.current.forEach((el, key) => {
+      if (state.compact) {
+        small.current.set(key, el.offsetWidth);
+      } else if (state.labelMax === null) {
+        full.current.set(key, el.offsetWidth);
+        const label = el.querySelector(`[${COLLAPSE_LABEL_ATTR}]`);
+        labels.current.set(key, label?.scrollWidth ?? 0);
+      }
+    });
+    [full, labels, small].forEach((map) =>
       map.current.forEach((_, key) => {
         if (!keys.includes(key)) map.current.delete(key);
       })
     );
     if (!width) return;
 
-    // An item never rendered has no width yet: render them all once
-    if (keys.some((key) => !widths.current.has(key))) {
-      setFit(keys.length);
-      return;
-    }
-
+    const all = keys.length;
+    const set = (next: typeof state): void =>
+      setState((prev) =>
+        prev.fit === next.fit &&
+        prev.compact === next.compact &&
+        prev.labelMax === next.labelMax
+          ? prev
+          : next
+      );
     const totalOf = (map: Map<string, number>): number =>
       keys.reduce((sum, key) => sum + (map.get(key) ?? 0) + gap, -gap);
-    const total = totalOf(widths.current);
 
-    // Compact before folding, and back to full once full fits again
-    if (compactable && !compact && total > width) {
-      setCompact(true);
-      setFit(keys.length);
+    // An item never rendered at full size has no width yet: render them all
+    if (keys.some((key) => !full.current.has(key))) {
+      set({ fit: all, ...FULL_FIT });
       return;
     }
-    if (
-      compact &&
-      (!compactable ||
-        (keys.every((key) => full.current.has(key)) &&
-          totalOf(full.current) <= width))
-    ) {
-      setCompact(false);
-      setFit(keys.length);
+    const fullTotal = totalOf(full.current);
+    if (fullTotal <= width) {
+      set({ fit: all, ...FULL_FIT });
       return;
     }
 
-    let next = keys.length;
-    if (total > width) {
+    if (compactable) {
+      // Cut the widest labels first, then go icon-only
+      const labelMax = capLabels(
+        keys.map((key) => labels.current.get(key) ?? 0),
+        fullTotal - width,
+        minLabel
+      );
+      if (labelMax !== null) {
+        set({ fit: all, compact: false, labelMax });
+        return;
+      }
+      if (keys.some((key) => !small.current.has(key))) {
+        set({ fit: all, compact: true, labelMax: null });
+        return;
+      }
+    }
+
+    const widths = compactable ? small.current : full.current;
+    let next = all;
+    if (totalOf(widths) > width) {
       const room = width - reserve - (reserve ? gap : 0);
       let used = 0;
       next = 0;
-      while (
-        next < keys.length &&
-        used + (widths.current.get(keys[next]) ?? 0) <= room
-      ) {
-        used += (widths.current.get(keys[next]) ?? 0) + gap;
+      while (next < all && used + (widths.get(keys[next]) ?? 0) <= room) {
+        used += (widths.get(keys[next]) ?? 0) + gap;
         next += 1;
       }
     }
-    setFit(next);
+    set({ fit: next, compact: compactable, labelMax: null });
     // `keys` follows `signature`
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [signature, width, fit, compact, compactable, gap, reserve]);
+  }, [signature, width, state, compactable, gap, reserve, minLabel]);
 
   const itemRef = useCallback(
     (key: string) => (el: HTMLElement | null) => {
@@ -125,5 +166,14 @@ export function useOverflowFit(
     []
   );
 
-  return { ref, itemRef, fit: Math.min(fit, keys.length), compact };
+  const { compact, labelMax } = state;
+  const context = useMemo(() => ({ compact, labelMax }), [compact, labelMax]);
+  return {
+    ref,
+    itemRef,
+    fit: Math.min(state.fit, keys.length),
+    compact,
+    labelMax,
+    context,
+  };
 }

@@ -5,18 +5,23 @@
  */
 export type Collapse = boolean | "sm" | "lg" | "always" | "auto";
 
-// Shown, the label is a flex item of its button: a row with the button's own
-// gap, so an icon among its children stays on the label's line
+// Shown, a label is one line of text that its row may cut short with an
+// ellipsis; icons belong in the button's icon props, not in the label
+const LABEL = "min-w-0 max-w-full truncate";
 const COLLAPSE_STYLES = {
-  sm: "hidden sm:flex items-center gap-[inherit]",
-  lg: "hidden lg:flex items-center gap-[inherit]",
+  sm: `hidden sm:inline-block ${LABEL}`,
+  lg: `hidden lg:inline-block ${LABEL}`,
   always: "hidden",
+  shown: `inline-block ${LABEL}`,
 } as const;
 
+/** Classes for a collapsible label; `undefined` is a label always shown. */
 export default function collapseStyles(
-  collapse: true | "sm" | "lg" | "always"
+  collapse: true | "sm" | "lg" | "always" | undefined
 ): string {
-  return COLLAPSE_STYLES[collapse === true ? "lg" : collapse];
+  return COLLAPSE_STYLES[
+    collapse === undefined ? "shown" : collapse === true ? "lg" : collapse
+  ];
 }
 
 /** A collapse with `"auto"` settled by whether its row is compact. */

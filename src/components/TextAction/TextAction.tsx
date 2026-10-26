@@ -20,7 +20,7 @@ import {
   textColorClass,
   TextVariant,
 } from "@/types";
-import { useOverflowRowCompact } from "@/util/compact";
+import { COLLAPSE_LABEL_ATTR, useOverflowRowFit } from "@/util/compact";
 
 type TextActionSize = `${Size.Sm | Size.Md | Size.Lg}`;
 
@@ -110,10 +110,14 @@ export const TextAction: FC<TextActionProps> = ({
   children,
   ...props
 }) => {
-  const resolved = resolveCollapse(collapse, useOverflowRowCompact());
+  const fit = useOverflowRowFit();
+  const resolved = resolveCollapse(collapse, fit.compact);
+  // a row short of room cuts an "auto" label before it drops it
+  const labelMax = collapse === "auto" ? fit.labelMax : null;
   return (
     <ActionTooltip
       collapsed={resolved === "always"}
+      truncatable={collapse === "auto"}
       label={props["aria-label"] ?? children}
       hint={hint}
     >
@@ -144,8 +148,14 @@ export const TextAction: FC<TextActionProps> = ({
           size={iconSizes[size]}
           className="flex items-center"
         />
-        {resolved ? (
-          <span className={collapseStyles(resolved)}>{children}</span>
+        {collapse ? (
+          <span
+            {...{ [COLLAPSE_LABEL_ATTR]: "" }}
+            className={collapseStyles(resolved || undefined)}
+            style={labelMax === null ? undefined : { maxWidth: labelMax }}
+          >
+            {children}
+          </span>
         ) : (
           children
         )}

@@ -17,7 +17,10 @@ export {
 export { useClippedItems } from "./util/useClippedItems";
 export type { UseClippedItemsOptions } from "./util/useClippedItems";
 export { useCompactRow } from "./util/useCompactRow";
-export type { UseCompactRowReturn } from "./util/useCompactRow";
+export type {
+  UseCompactRowOptions,
+  UseCompactRowReturn,
+} from "./util/useCompactRow";
 export { useOverflowFit } from "./util/useOverflowFit";
 export type {
   UseOverflowFitOptions,

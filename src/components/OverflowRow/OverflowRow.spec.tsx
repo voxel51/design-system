@@ -71,6 +71,22 @@ describe("OverflowRow", () => {
       buttons.forEach((b) => expect(b).toHaveAttribute("data-compact", "true"));
     });
 
+    it("reports how it fits, so neighbours can shrink alongside", () => {
+      withCompactWidth(100);
+      const onFitChange = jest.fn();
+      render(
+        <OverflowRow data-testid="row" compactable onFitChange={onFitChange}>
+          {compactItems}
+        </OverflowRow>
+      );
+
+      expect(onFitChange).toHaveBeenLastCalledWith({
+        compact: true,
+        labelMax: null,
+        folded: false,
+      });
+    });
+
     it("stays full when every item fits", () => {
       withCompactWidth(400);
       render(

@@ -33,7 +33,7 @@ describe("TextAction", () => {
       </TextAction>
     );
 
-    expect(screen.getByText("Share")).toHaveClass("hidden", "lg:flex");
+    expect(screen.getByText("Share")).toHaveClass("hidden", "lg:inline-block");
     expect(screen.getByRole("button", { name: "Share" })).toBeInTheDocument();
   });
 
@@ -44,7 +44,7 @@ describe("TextAction", () => {
       </TextAction>
     );
 
-    expect(screen.getByText("Share")).toHaveClass("hidden", "sm:flex");
+    expect(screen.getByText("Share")).toHaveClass("hidden", "sm:inline-block");
     expect(screen.getByRole("button")).toHaveClass("px-2", "sm:px-4");
   });
 
@@ -60,14 +60,16 @@ describe("TextAction", () => {
     );
 
     expect(screen.getByText("Share")).toHaveClass("hidden");
-    expect(screen.getByText("Share")).not.toHaveClass("sm:flex");
+    expect(screen.getByText("Share")).not.toHaveClass("sm:inline-block");
     expect(screen.getByRole("button")).toHaveClass("px-2");
     expect(screen.getByRole("button")).not.toHaveClass("sm:px-4");
   });
 
   it("collapses with its row when auto, and names itself in a tooltip", () => {
     const { rerender } = render(
-      <OverflowRowCompactContext.Provider value={false}>
+      <OverflowRowCompactContext.Provider
+        value={{ compact: false, labelMax: null }}
+      >
         <TextAction
           collapse="auto"
           leadingIcon={IconName.Add}
@@ -81,7 +83,9 @@ describe("TextAction", () => {
     expect(screen.getByText("Share")).not.toHaveClass("hidden");
 
     rerender(
-      <OverflowRowCompactContext.Provider value={true}>
+      <OverflowRowCompactContext.Provider
+        value={{ compact: true, labelMax: null }}
+      >
         <TextAction
           collapse="auto"
           leadingIcon={IconName.Add}
@@ -95,6 +99,48 @@ describe("TextAction", () => {
     expect(screen.getByText("Share")).toHaveClass("hidden");
     fireEvent.mouseEnter(screen.getByRole("button").parentElement as Element);
     expect(screen.getByRole("tooltip")).toHaveTextContent("ShareLocked");
+  });
+
+  it("cuts its label to the row's width before collapsing", () => {
+    render(
+      <OverflowRowCompactContext.Provider
+        value={{ compact: false, labelMax: 48 }}
+      >
+        <TextAction
+          collapse="auto"
+          leadingIcon={IconName.Add}
+          aria-label="Share"
+        >
+          Share with the team
+        </TextAction>
+      </OverflowRowCompactContext.Provider>
+    );
+    const label = screen.getByText("Share with the team");
+    expect(label).not.toHaveClass("hidden");
+    expect(label).toHaveClass("truncate");
+    expect(label).toHaveStyle({ maxWidth: "48px" });
+  });
+
+  it("names a cut label in its tooltip", () => {
+    render(
+      <OverflowRowCompactContext.Provider
+        value={{ compact: false, labelMax: 48 }}
+      >
+        <TextAction
+          collapse="auto"
+          leadingIcon={IconName.Add}
+          aria-label="Share"
+        >
+          Share with the team
+        </TextAction>
+      </OverflowRowCompactContext.Provider>
+    );
+    const label = screen.getByText("Share with the team");
+    Object.defineProperty(label, "scrollWidth", { value: 120 });
+    Object.defineProperty(label, "clientWidth", { value: 48 });
+    fireEvent.mouseOver(screen.getByRole("button"));
+    fireEvent.mouseEnter(screen.getByRole("button").parentElement as Element);
+    expect(screen.getByRole("tooltip")).toHaveTextContent("Share");
   });
 
   it("sizes by token", () => {

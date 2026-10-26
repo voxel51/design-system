@@ -3,6 +3,8 @@
 import {
   Children,
   isValidElement,
+  useEffect,
+  useRef,
   type FC,
   type HTMLAttributes,
   type ReactNode,
@@ -14,7 +16,9 @@ import { MoreHorizontalIcon } from "@/components/Icons";
 import { cn } from "@/util/classes";
 import {
   OverflowRowCompactContext,
+  type OverflowRowFit,
   useOverflowRowCompact,
+  useOverflowRowFit,
 } from "@/util/compact";
 import { useOverflowFit } from "@/util/useOverflowFit";
 
@@ -33,13 +37,20 @@ export interface OverflowRowProps extends Omit<
   /** Accessible label of the overflow button. Default `"More"`. */
   label?: string;
   /**
-   * Lets the items go compact before any move into the menu: items read
-   * {@link useOverflowRowCompact} and drop to icon-only. Default `false`.
+   * Lets the items shrink before any move into the menu: their labels are cut,
+   * widest first, then they drop to icon-only (`collapse="auto"` actions do
+   * both; see {@link useOverflowRowFit}). Default `false`.
    */
   compactable?: boolean;
+  /**
+   * Called when the row shortens or restores its items: whether they are cut,
+   * compact or partly in the menu, so neighbours can shrink alongside.
+   */
+  onFitChange?: (fit: OverflowRowFit & { folded: boolean }) => void;
 }
 
-export { OverflowRowCompactContext, useOverflowRowCompact };
+export { OverflowRowCompactContext, useOverflowRowCompact, useOverflowRowFit };
+export type { OverflowRowFit };
 
 const keyOf = (child: ReactNode, index: number): string =>
   isValidElement(child) && child.key !== null ? String(child.key) : `#${index}`;
@@ -54,7 +65,8 @@ const keyOf = (child: ReactNode, index: number): string =>
  *
  * @param children The items, in priority order: the last ones move into the menu first.
  * @param label Accessible label of the overflow button. Default `"More"`.
- * @param compactable Lets the items go compact (see {@link useOverflowRowCompact}) before any move into the menu. Default `false`.
+ * @param onFitChange Called when the row shortens or restores its items, so neighbours can shrink alongside.
+ * @param compactable Lets the items shrink before any move into the menu: labels cut widest first, then icon-only (see {@link useOverflowRowFit}). Default `false`.
  * @param className `class` overrides for the root.
  * @param props Additional HTML properties for the root.
  *
@@ -71,6 +83,7 @@ export const OverflowRow: FC<OverflowRowProps> = ({
   children,
   label = "More",
   compactable = false,
+  onFitChange,
   className,
   ...props
 }) => {
@@ -80,23 +93,30 @@ export const OverflowRow: FC<OverflowRowProps> = ({
     ref,
     itemRef,
     fit: shown,
-    compact,
+    context,
   } = useOverflowFit(keys, {
     gap: GAP,
     reserve: MORE_WIDTH,
     compactable,
   });
+  const folded = shown < items.length;
+  const report = useRef(onFitChange);
+  report.current = onFitChange;
+  useEffect(() => {
+    report.current?.({ ...context, folded });
+  }, [context, folded]);
 
   return (
     <div
       ref={ref}
       className={cn(
-        "flex min-w-0 flex-1 items-center gap-1 overflow-hidden",
+        // never narrower than its menu button, so every item stays reachable
+        "flex min-w-9 flex-1 items-center gap-1 overflow-hidden",
         className
       )}
       {...props}
     >
-      <OverflowRowCompactContext.Provider value={compact}>
+      <OverflowRowCompactContext.Provider value={context}>
         {items.slice(0, shown).map((item, index) => (
           <div
             key={keys[index]}
