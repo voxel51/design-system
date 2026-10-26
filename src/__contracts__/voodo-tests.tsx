@@ -707,6 +707,7 @@ export const Everything = (
           cells: { name: "Alpha", state: "On", size: 1, menu: null },
           onClick: noop,
           props: { className: "x" },
+          detail: "Details",
         },
       ]}
       empty="None"

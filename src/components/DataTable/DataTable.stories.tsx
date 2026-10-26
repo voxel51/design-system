@@ -63,4 +63,16 @@ export const Default: Story = {
   ),
 };
 
+export const WithDetail: Story = {
+  args: {
+    ...Default.args,
+    rows: rows.map((row, index) =>
+      index === 0
+        ? { ...row, detail: <div className="p-3">Expanded details</div> }
+        : row
+    ),
+  },
+  render: Default.render,
+};
+
 export default meta;

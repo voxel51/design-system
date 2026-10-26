@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import type {
   FC,
   HTMLAttributes,
@@ -61,6 +62,12 @@ export type DataTableRow = {
   onClick?: (event: SyntheticEvent) => void;
   /** Spread onto the row (`tr`, or the card in card mode), e.g. `data-cy`. */
   props?: HTMLAttributes<HTMLTableRowElement>;
+  /**
+   * Content shown under the row, full width (e.g. an expanded row's
+   * details); in card mode at the end of the card. Clicks in it do not
+   * reach `onClick`.
+   */
+  detail?: ReactNode;
 };
 
 export interface DataTableProps {
@@ -135,20 +142,29 @@ const WideTable: FC<Omit<DataTableProps, "cardBelow">> = ({
           </TableRow>
         ) : (
           rows.map((row) => (
-            <TableRow key={row.id} {...row.props} {...clickableProps(row)}>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.key}
-                  className={cn("wrap-anywhere", cellClass(column))}
-                  {...(column.role === "actions" && {
-                    onClick: stop,
-                    onKeyDown: stop,
-                  })}
-                >
-                  {row.cells[column.key]}
-                </TableCell>
-              ))}
-            </TableRow>
+            <Fragment key={row.id}>
+              <TableRow {...row.props} {...clickableProps(row)}>
+                {columns.map((column) => (
+                  <TableCell
+                    key={column.key}
+                    className={cn("wrap-anywhere", cellClass(column))}
+                    {...(column.role === "actions" && {
+                      onClick: stop,
+                      onKeyDown: stop,
+                    })}
+                  >
+                    {row.cells[column.key]}
+                  </TableCell>
+                ))}
+              </TableRow>
+              {hasValue(row.detail) && (
+                <TableRow>
+                  <TableCell colSpan={columns.length} className="p-0">
+                    {row.detail}
+                  </TableCell>
+                </TableRow>
+              )}
+            </Fragment>
           ))
         )}
       </TableBody>
@@ -249,6 +265,11 @@ const Card: FC<{ columns: DataTableColumn[]; row: DataTableRow }> = ({
           ))}
         </div>
       )}
+      {hasValue(row.detail) && (
+        <div role="presentation" onClick={stop} onKeyDown={stop}>
+          {row.detail}
+        </div>
+      )}
     </div>
   );
 };
@@ -259,8 +280,10 @@ const Card: FC<{ columns: DataTableColumn[]; row: DataTableRow }> = ({
  * changes), each row shows as a card: the `primary` cell as title with
  * `status` beside it and `actions` (icon-only) at the end, then the `meta`
  * cells as wrapping `Label: value` items. Empty meta values are skipped.
+ * A row's `detail` (e.g. expanded details) shows full width under it.
  *
- * Clicks and Enter in an `actions` cell do not reach the row's `onClick`.
+ * Clicks and Enter in an `actions` cell or a `detail` do not reach the
+ * row's `onClick`.
  *
  * @example
  * ```tsx

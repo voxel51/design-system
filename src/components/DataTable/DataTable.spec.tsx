@@ -102,6 +102,23 @@ describe("DataTable", () => {
     }
   );
 
+  it.each([1000, 390])(
+    "shows a row's detail without the row's onClick at %ipx",
+    async (width) => {
+      withWidth(width);
+      const onClick = jest.fn();
+      const user = userEvent.setup();
+      render(
+        <DataTable
+          columns={columns}
+          rows={[{ ...rows[0], onClick, detail: "More about Alpha" }]}
+        />
+      );
+      await user.click(screen.getByText("More about Alpha"));
+      expect(onClick).not.toHaveBeenCalled();
+    }
+  );
+
   it.each([1000, 390])("renders empty at %ipx", (width) => {
     withWidth(width);
     render(<DataTable columns={columns} rows={[]} empty="Nothing yet" />);
