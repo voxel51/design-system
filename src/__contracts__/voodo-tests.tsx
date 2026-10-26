@@ -34,6 +34,7 @@ import {
   CodeColor,
   Collapsible,
   DatePicker,
+  DataTable,
   Divider,
   Drawer,
   DrawerSide,
@@ -691,6 +692,31 @@ export const Everything = (
     </OverflowRow>
     {/* @ts-expect-error - children are required */}
     <OverflowRow />
+
+    {/* DataTable: every prop */}
+    <DataTable
+      columns={[
+        { key: "name", label: "Name", role: "primary", width: "16rem" },
+        { key: "state", label: "State", role: "status" },
+        { key: "size", label: "Size", role: "meta", hideBelow: "md" },
+        { key: "menu", label: "", role: "actions", align: "end" },
+      ]}
+      rows={[
+        {
+          id: "a",
+          cells: { name: "Alpha", state: "On", size: 1, menu: null },
+          onClick: noop,
+          props: { className: "x" },
+        },
+      ]}
+      empty="None"
+      cardBelow="md"
+      className="x"
+    />
+    {/* @ts-expect-error - rows are required */}
+    <DataTable columns={[]} />
+    {/* @ts-expect-error - role is a fixed set */}
+    <DataTable columns={[{ key: "a", label: "A", role: "title" }]} rows={[]} />
 
     {/* Pagination: every prop */}
     <Pagination

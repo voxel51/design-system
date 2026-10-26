@@ -7,6 +7,7 @@ export * from "./Clickable";
 export * from "./Collapsible";
 export * from "./Combobox";
 export * from "./ContextMenu";
+export * from "./DataTable";
 export * from "./Datepicker";
 export * from "./Divider";
 export * from "./Drawer";
