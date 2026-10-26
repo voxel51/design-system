@@ -20,6 +20,15 @@ describe("TextAction", () => {
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 
+  it("keeps its fill while pressed", () => {
+    render(<TextAction aria-pressed>Wrap</TextAction>);
+
+    expect(screen.getByRole("button", { name: "Wrap" })).toHaveClass(
+      "aria-pressed:bg-content-interactive-secondary-hover",
+      "aria-pressed:text-content-text-primary"
+    );
+  });
+
   it("colors a danger tone as a failure", () => {
     render(<TextAction tone="danger">Stop import</TextAction>);
 

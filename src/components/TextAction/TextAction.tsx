@@ -82,6 +82,9 @@ const iconSizes: Record<TextActionSize, number> = {
 /**
  * A borderless pill for secondary actions: secondary text that fills on hover.
  *
+ * As a toggle, pass `aria-pressed`: while it is `true` the pill keeps its
+ * hover fill and primary text.
+ *
  * @example
  * ```tsx
  * <TextAction size="sm" trailingIcon={ArrowUpRightIcon} onClick={upgrade}>
@@ -139,6 +142,9 @@ export const TextAction: FC<TextActionProps> = ({
           ),
           bgColorClass(InteractiveColor.SecondaryHover, ElementState.Hover),
           bgColorClass(InteractiveColor.SecondaryPressed, ElementState.Active),
+          // a toggle that is on (`aria-pressed`) keeps its hover look
+          tone !== "danger" && "aria-pressed:text-content-text-primary",
+          "aria-pressed:bg-content-interactive-secondary-hover",
           className
         )}
         {...props}
