@@ -3,9 +3,6 @@
 import {
   Children,
   isValidElement,
-  useLayoutEffect,
-  useRef,
-  useState,
   type FC,
   type HTMLAttributes,
   type ReactNode,
@@ -15,7 +12,11 @@ import { Dropdown, DropdownAnchor } from "@/components/Dropdown";
 import { IconAction } from "@/components/IconAction";
 import { MoreHorizontalIcon } from "@/components/Icons";
 import { cn } from "@/util/classes";
-import { useElementSize } from "@/util/useElementSize";
+import {
+  OverflowRowCompactContext,
+  useOverflowRowCompact,
+} from "@/util/compact";
+import { useOverflowFit } from "@/util/useOverflowFit";
 
 /** Space between items, in pixels: Tailwind's `gap-1`. */
 const GAP = 4;
@@ -31,7 +32,14 @@ export interface OverflowRowProps extends Omit<
   children: ReactNode;
   /** Accessible label of the overflow button. Default `"More"`. */
   label?: string;
+  /**
+   * Lets the items go compact before any move into the menu: items read
+   * {@link useOverflowRowCompact} and drop to icon-only. Default `false`.
+   */
+  compactable?: boolean;
 }
+
+export { OverflowRowCompactContext, useOverflowRowCompact };
 
 const keyOf = (child: ReactNode, index: number): string =>
   isValidElement(child) && child.key !== null ? String(child.key) : `#${index}`;
@@ -46,6 +54,7 @@ const keyOf = (child: ReactNode, index: number): string =>
  *
  * @param children The items, in priority order: the last ones move into the menu first.
  * @param label Accessible label of the overflow button. Default `"More"`.
+ * @param compactable Lets the items go compact (see {@link useOverflowRowCompact}) before any move into the menu. Default `false`.
  * @param className `class` overrides for the root.
  * @param props Additional HTML properties for the root.
  *
@@ -61,53 +70,22 @@ const keyOf = (child: ReactNode, index: number): string =>
 export const OverflowRow: FC<OverflowRowProps> = ({
   children,
   label = "More",
+  compactable = false,
   className,
   ...props
 }) => {
   const items = Children.toArray(children);
   const keys = items.map(keyOf);
-  const signature = keys.join("|");
-  const { ref, width } = useElementSize();
-  const slots = useRef(new Map<string, HTMLElement>());
-  const widths = useRef(new Map<string, number>());
-  const [fit, setFit] = useState(items.length);
-
-  useLayoutEffect(() => {
-    slots.current.forEach((el, key) => widths.current.set(key, el.offsetWidth));
-    widths.current.forEach((_, key) => {
-      if (!keys.includes(key)) widths.current.delete(key);
-    });
-    if (!width) return;
-
-    // An item never rendered in the row has no width yet: render them all once
-    if (keys.some((key) => !widths.current.has(key))) {
-      setFit(items.length);
-      return;
-    }
-
-    const total = keys.reduce(
-      (sum, key) => sum + (widths.current.get(key) ?? 0) + GAP,
-      -GAP
-    );
-    let next = items.length;
-    if (total > width) {
-      const room = width - MORE_WIDTH - GAP;
-      let used = 0;
-      next = 0;
-      while (
-        next < items.length &&
-        used + (widths.current.get(keys[next]) ?? 0) <= room
-      ) {
-        used += (widths.current.get(keys[next]) ?? 0) + GAP;
-        next += 1;
-      }
-    }
-    setFit(next);
-    // `keys` and `items` follow `signature`
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [signature, width, fit]);
-
-  const shown = Math.min(fit, items.length);
+  const {
+    ref,
+    itemRef,
+    fit: shown,
+    compact,
+  } = useOverflowFit(keys, {
+    gap: GAP,
+    reserve: MORE_WIDTH,
+    compactable,
+  });
 
   return (
     <div
@@ -118,18 +96,17 @@ export const OverflowRow: FC<OverflowRowProps> = ({
       )}
       {...props}
     >
-      {items.slice(0, shown).map((item, index) => (
-        <div
-          key={keys[index]}
-          ref={(el) => {
-            if (el) slots.current.set(keys[index], el);
-            else slots.current.delete(keys[index]);
-          }}
-          className="shrink-0"
-        >
-          {item}
-        </div>
-      ))}
+      <OverflowRowCompactContext.Provider value={compact}>
+        {items.slice(0, shown).map((item, index) => (
+          <div
+            key={keys[index]}
+            ref={itemRef(keys[index])}
+            className="shrink-0"
+          >
+            {item}
+          </div>
+        ))}
+      </OverflowRowCompactContext.Provider>
       {shown < items.length && (
         <Dropdown
           anchor={DropdownAnchor.BottomEnd}

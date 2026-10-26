@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 
-import { OverflowRow } from "./OverflowRow";
+import { OverflowRow, useOverflowRowCompact } from "./OverflowRow";
 
 const ITEM_WIDTH = 50;
 
@@ -38,5 +38,64 @@ describe("OverflowRow", () => {
     expect(
       screen.getByRole("button", { name: "More actions" })
     ).toBeInTheDocument();
+  });
+
+  describe("compactable", () => {
+    const Item = ({ id }: { id: string }) => {
+      const compact = useOverflowRowCompact();
+      return <button data-compact={compact}>{compact ? "" : id}</button>;
+    };
+    const compactItems = ["a", "b", "c", "d"].map((id) => (
+      <Item key={id} id={id} />
+    ));
+
+    const withCompactWidth = (container: number) => {
+      jest
+        .spyOn(HTMLElement.prototype, "offsetWidth", "get")
+        .mockImplementation(function (this: HTMLElement) {
+          if (this.dataset.testid === "row") return container;
+          return this.querySelector('[data-compact="true"]') ? 20 : ITEM_WIDTH;
+        });
+    };
+
+    it("goes compact before moving any item into the menu", () => {
+      withCompactWidth(100);
+      render(
+        <OverflowRow data-testid="row" label="More actions" compactable>
+          {compactItems}
+        </OverflowRow>
+      );
+
+      const buttons = screen.getAllByRole("button");
+      expect(buttons).toHaveLength(4);
+      buttons.forEach((b) => expect(b).toHaveAttribute("data-compact", "true"));
+    });
+
+    it("stays full when every item fits", () => {
+      withCompactWidth(400);
+      render(
+        <OverflowRow data-testid="row" compactable>
+          {compactItems}
+        </OverflowRow>
+      );
+
+      screen
+        .getAllByRole("button")
+        .forEach((b) => expect(b).toHaveAttribute("data-compact", "false"));
+    });
+
+    it("folds the rest once compact items no longer fit", () => {
+      withCompactWidth(60);
+      render(
+        <OverflowRow data-testid="row" label="More actions" compactable>
+          {compactItems}
+        </OverflowRow>
+      );
+
+      expect(
+        screen.getByRole("button", { name: "More actions" })
+      ).toBeInTheDocument();
+      expect(screen.getAllByRole("button")).toHaveLength(2);
+    });
   });
 });

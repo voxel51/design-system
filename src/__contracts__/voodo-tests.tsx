@@ -108,6 +108,7 @@ import {
   Tooltip,
   TooltipAnchor,
   TooltipColor,
+  TooltipLabel,
   transitionDuration,
   TransitionDuration,
   transitionEasing,
@@ -654,6 +655,12 @@ export const Everything = (
       <TextAction collapse leadingIcon="Add" aria-label="Share" onClick={noop}>
         Share
       </TextAction>
+      <TextAction collapse="always" leadingIcon="Add" aria-label="Share">
+        Share
+      </TextAction>
+      <TextAction collapse="auto" hint="Locked" aria-label="Share">
+        Share
+      </TextAction>
       <TextAction tone="danger" onClick={noop}>
         Stop import
       </TextAction>
@@ -663,8 +670,17 @@ export const Everything = (
       <IconAction icon="Add" />
     </Stack>
 
+    {/* TooltipLabel: every prop */}
+    <TooltipLabel
+      label="Show only selected"
+      detail="No members in this scope"
+    />
+    <TooltipLabel label="Tag" />
+    {/* @ts-expect-error - label is required */}
+    <TooltipLabel />
+
     {/* OverflowRow: every prop */}
-    <OverflowRow label="More actions" className="x">
+    <OverflowRow label="More actions" compactable className="x">
       <button>a</button>
     </OverflowRow>
     {/* @ts-expect-error - children are required */}

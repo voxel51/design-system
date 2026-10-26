@@ -32,6 +32,21 @@ describe("Button", () => {
     expect(screen.getByText(buttonText)).toBeInTheDocument();
   });
 
+  it("hides only the text label below 640px when it collapses at sm", () => {
+    render(
+      <Button collapse="sm" aria-label="Ask agent">
+        <DummyIcon />
+        Ask agent
+      </Button>
+    );
+
+    expect(screen.getByText("Ask agent")).toHaveClass("hidden", "sm:flex");
+    expect(screen.getByRole("button")).toHaveClass("px-3", "sm:px-4");
+    expect(
+      screen.getByRole("button", { name: "Ask agent" }).querySelector("svg")
+    ).toBeVisible();
+  });
+
   it("should render with an FC leading icon", () => {
     render(<Button leadingIcon={DummyIcon}>{buttonText}</Button>);
 

@@ -1,4 +1,4 @@
-import { FC, HTMLAttributes } from "react";
+import { forwardRef, HTMLAttributes } from "react";
 
 import { Align, Justify, Orientation, Spacing } from "@/types";
 import { cn } from "@/util/classes";
@@ -8,6 +8,8 @@ export interface StackProps extends HTMLAttributes<HTMLDivElement> {
   justify?: Justify;
   orientation?: Orientation;
   spacing?: Spacing;
+  /** Lets children flow onto further lines when they do not fit on one. */
+  wrap?: boolean;
 }
 
 const alignStyles: Record<Align, string> = {
@@ -69,34 +71,43 @@ const spacingStyles: Record<Spacing, string> = {
  * @param justify Justification of children along the stack's primary axis. See {@link Justify}.
  * @param orientation Orientation of the stack. See {@link Orientation}.
  * @param spacing Spacing between child components in the stack. See {@link Spacing}.
+ * @param wrap If `true`, children flow onto further lines when they do not fit on one.
  * @param children Content which is wrapped by this component.
  * @param className `class` overrides to apply to the component.
  * @param props Additional HTML properties to apply to the component.
  */
-export const Stack: FC<StackProps> = ({
-  align,
-  justify,
-  orientation = Orientation.Row,
-  spacing = Spacing.None,
-  children,
-  className,
-  ...props
-}) => {
-  return (
-    <div
-      className={cn(
-        "flex",
-        orientation === Orientation.Column && "flex-col",
-        spacingStyles[spacing],
-        align && alignStyles[align],
-        justify && justifyStyles[justify],
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </div>
-  );
-};
+export const Stack = forwardRef<HTMLDivElement, StackProps>(
+  (
+    {
+      align,
+      justify,
+      orientation = Orientation.Row,
+      spacing = Spacing.None,
+      wrap = false,
+      children,
+      className,
+      ...props
+    },
+    ref
+  ) => {
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          "flex",
+          orientation === Orientation.Column && "flex-col",
+          spacingStyles[spacing],
+          wrap && "flex-wrap",
+          align && alignStyles[align],
+          justify && justifyStyles[justify],
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </div>
+    );
+  }
+);
 
 Stack.displayName = "Stack";

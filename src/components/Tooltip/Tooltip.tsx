@@ -61,6 +61,8 @@ const ARROW_SIZE = 8;
 const DEFAULT_COLLISION_PADDING = 8;
 // long enough for the pointer to cross the gap into an interactive panel
 const INTERACTIVE_CLOSE_DELAY = 150;
+// how long a tap shows the tooltip where there is no hover
+const TAP_SHOW_DURATION = 1500;
 
 const OPPOSITE_SIDE: Record<TooltipAnchor, TooltipAnchor> = {
   [Anchor.Top]: Anchor.Bottom,
@@ -73,7 +75,8 @@ const sideOf = (placement: Placement): TooltipAnchor =>
   placement.split("-")[0] as TooltipAnchor;
 
 /**
- * A tooltip which appears when hovering over the wrapped content. It stays
+ * A tooltip which appears when hovering over the wrapped content, or for a
+ * moment after a tap on a touch screen. It stays
  * inside the viewport: it flips to the opposite side when its own side has no
  * room, slides along that side near an edge with its arrow still on the
  * content, and follows the content on scroll and resize.
@@ -88,7 +91,7 @@ const sideOf = (placement: Placement): TooltipAnchor =>
  * @param anchor Preferred position of the tooltip relative to its content: `"top"`, `"right"`, `"bottom"` or `"left"`. Defaults to `"top"`. See {@link TooltipAnchor}.
  * @param avoidCollisions If `true` (the default), the tooltip flips and shifts to stay inside the viewport.
  * @param collisionPadding Minimum distance, in pixels, kept between the tooltip and the viewport edge. Defaults to `8`.
- * @param content The content of the tooltip.
+ * @param content The content of the tooltip. `null` shows none, leaving only the wrapped content.
  * @param children The content which this component wraps; this acts as the element anchor and the hover trigger.
  * @param className `class` overrides to apply to the tooltip panel.
  * @param interactive If `true`, the tooltip stays open while the pointer moves from the content
@@ -205,9 +208,20 @@ export const Tooltip: FC<TooltipProps> = ({
       className={cn("relative", wrapperClassName)}
       onMouseEnter={open}
       onMouseLeave={close}
+      onPointerDown={(event) => {
+        props.onPointerDown?.(event);
+        // A touch screen has no hover: a tap shows the tooltip for a moment
+        if (event.pointerType !== "touch") return;
+        open();
+        closeTimer.current = window.setTimeout(
+          () => setIsOpen(false),
+          TAP_SHOW_DURATION
+        );
+      }}
     >
       {children}
       {isOpen &&
+        content != null &&
         (portal ? createPortal(tooltipPanel, document.body) : tooltipPanel)}
     </div>
   );
