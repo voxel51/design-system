@@ -77,6 +77,20 @@ describe("useOverflowFit", () => {
     expect(screen.getByRole("status")).toHaveTextContent("2");
   });
 
+  it("keeps items added after the first render while unmeasured", () => {
+    function Late({ keys }: { keys: string[] }) {
+      const { ref, fit } = useOverflowFit(keys);
+      return (
+        <div ref={ref}>
+          <output>{fit}</output>
+        </div>
+      );
+    }
+    const { rerender } = render(<Late keys={[]} />);
+    rerender(<Late keys={["a", "b"]} />);
+    expect(screen.getByRole("status")).toHaveTextContent("2");
+  });
+
   describe("compactable", () => {
     // each item: 30px of icon and padding plus its label
     const LABELS: Record<string, number> = { a: 100, b: 60, c: 40 };

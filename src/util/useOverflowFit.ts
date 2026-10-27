@@ -130,8 +130,6 @@ export function useOverflowFit(
         if (!keys.includes(key)) map.current.delete(key);
       })
     );
-    if (!width) return;
-
     const all = keys.length;
     const set = (next: typeof state): void =>
       setState((prev) =>
@@ -141,6 +139,12 @@ export function useOverflowFit(
           ? prev
           : next
       );
+    // Unmeasured (hidden, or jsdom): show every item, including ones added
+    // after the first render
+    if (!width) {
+      set({ fit: all, ...FULL_FIT });
+      return;
+    }
     const totalOf = (map: Map<string, number>): number =>
       keys.reduce((sum, key) => sum + (map.get(key) ?? 0) + gap, -gap);
 
