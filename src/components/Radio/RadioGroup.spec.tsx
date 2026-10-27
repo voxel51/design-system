@@ -263,4 +263,30 @@ describe("RadioGroup", () => {
       expect(handleChange).not.toHaveBeenCalled();
     });
   });
+
+  describe("Descriptions", () => {
+    it("should draw an option's description under its label", () => {
+      const handleChange = jest.fn();
+      render(
+        <RadioGroup
+          options={[
+            {
+              value: "dataset",
+              label: "Whole dataset",
+              description: "All 35 samples",
+            },
+            { value: "subset", label: "Subset" },
+          ]}
+          value="dataset"
+          onChange={handleChange}
+        />
+      );
+      expect(
+        screen.getByRole("radio", { name: "Whole dataset" })
+      ).toHaveAccessibleDescription("All 35 samples");
+      expect(
+        screen.getByRole("radio", { name: "Subset" })
+      ).not.toHaveAccessibleDescription();
+    });
+  });
 });

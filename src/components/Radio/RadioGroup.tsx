@@ -10,6 +10,8 @@ import { Radio, RadioProps } from "./Radio";
 export interface RadioOption {
   value: string;
   label: string;
+  /** A secondary line under the label: what picking this option means. */
+  description?: string;
   disabled?: boolean;
   /** Additional HTML properties for this option's row alone */
   fieldProps?: RadioProps["fieldProps"];
@@ -69,7 +71,8 @@ export interface RadioGroupProps extends Omit<
  * };
  * ```
  *
- * @param options List of {@link RadioOption}s to display. Each option will correspond to a {@link Radio} component.
+ * @param options List of {@link RadioOption}s to display. Each option will correspond to a {@link Radio} component;
+ *  an option's `description` draws a secondary line under its label.
  * @param value The value of the group.
  * @param defaultValue The default value to use when no selection has been made.
  * @param onChange Callback triggered when the selection value changes.
@@ -112,6 +115,7 @@ export const RadioGroup: FC<RadioGroupProps> = ({
           key={option.value}
           value={option.value}
           label={option.label}
+          description={option.description}
           size={size}
           disabled={disabled || option.disabled}
           {...radioProps}
