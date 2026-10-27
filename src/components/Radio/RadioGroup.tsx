@@ -1,7 +1,7 @@
 import { RadioGroup as HeadlessRadioGroup } from "@headlessui/react";
 import { FC, HTMLAttributes, useMemo } from "react";
 
-import { Size } from "@/types";
+import { Size, Spacing } from "@/types";
 import { cn } from "@/util/classes";
 import { randomString } from "@/util/random";
 
@@ -33,7 +33,21 @@ export interface RadioGroupProps extends Omit<
   size?: RadioGroupSize;
   disabled?: boolean;
   radioProps?: RadioProps;
+  /**
+   * Vertical gap between the options, a {@link Spacing} token. Defaults to
+   * `"sm"` when any option has a description, else `"none"`.
+   */
+  spacing?: Spacing;
 }
+
+const spacingStyles: Record<Spacing, string> = {
+  [Spacing.None]: "",
+  [Spacing.Xs]: "flex flex-col gap-xs",
+  [Spacing.Sm]: "flex flex-col gap-sm",
+  [Spacing.Md]: "flex flex-col gap-md",
+  [Spacing.Lg]: "flex flex-col gap-lg",
+  [Spacing.Xl]: "flex flex-col gap-xl",
+};
 
 /**
  * A group of radio controls; supports selection via one-of semantics.
@@ -81,6 +95,8 @@ export interface RadioGroupProps extends Omit<
  * @param disabled If `true`, disables the radio group.
  * @param className `class` overrides to apply to the radio group.
  * @param radioProps Additional HTML properties to apply to each of the wrapped {@link Radio} components.
+ * @param spacing Vertical gap between the options. See {@link Spacing}. Defaults to `"sm"` when an
+ *  option has a description, else `"none"`.
  * @param props Additional HTML properties to apply to the component.
  */
 export const RadioGroup: FC<RadioGroupProps> = ({
@@ -93,8 +109,11 @@ export const RadioGroup: FC<RadioGroupProps> = ({
   disabled = false,
   className,
   radioProps,
+  spacing,
   ...props
 }) => {
+  const gap =
+    spacing ?? (options.some((o) => o.description) ? Spacing.Sm : Spacing.None);
   const groupName = useMemo(
     () => name || `radio-group-${randomString()}`,
     [name]
@@ -107,7 +126,7 @@ export const RadioGroup: FC<RadioGroupProps> = ({
       onChange={onChange}
       name={groupName}
       disabled={disabled}
-      className={className}
+      className={cn(spacingStyles[gap], className)}
       {...props}
     >
       {options.map((option) => (

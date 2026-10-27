@@ -179,7 +179,10 @@ export const Radio: FC<RadioProps> = ({
             {label}
           </Label>
           <Description
+            // a span: a <p> would bring the browser's margins with it
+            as="span"
             className={cn(
+              "block",
               textColorClass(
                 disabled ? TextColor.Tertiary : TextColor.Secondary
               ),

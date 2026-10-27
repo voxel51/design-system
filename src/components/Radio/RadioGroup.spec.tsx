@@ -288,5 +288,46 @@ describe("RadioGroup", () => {
         screen.getByRole("radio", { name: "Subset" })
       ).not.toHaveAccessibleDescription();
     });
+
+    it("spaces two-line options by the small token unless told otherwise", () => {
+      const handleChange = jest.fn();
+      const options = [
+        { value: "a", label: "A", description: "first" },
+        { value: "b", label: "B" },
+      ];
+      const { rerender } = render(
+        <RadioGroup
+          data-testid="group"
+          options={options}
+          value="a"
+          onChange={handleChange}
+        />
+      );
+      expect(screen.getByTestId("group")).toHaveClass("gap-sm");
+      expect(screen.getByText("first").tagName).toBe("SPAN");
+      rerender(
+        <RadioGroup
+          data-testid="group"
+          options={options}
+          value="a"
+          spacing="md"
+          onChange={handleChange}
+        />
+      );
+      expect(screen.getByTestId("group")).toHaveClass("gap-md");
+    });
+
+    it("keeps one-line options unspaced by default", () => {
+      const handleChange = jest.fn();
+      render(
+        <RadioGroup
+          data-testid="group"
+          options={[{ value: "a", label: "A" }]}
+          value="a"
+          onChange={handleChange}
+        />
+      );
+      expect(screen.getByTestId("group")).not.toHaveClass("gap-sm");
+    });
   });
 });
