@@ -37,6 +37,7 @@ import {
   DataTable,
   Divider,
   Drawer,
+  DrawerLength,
   DrawerSide,
   Dropdown,
   DropdownTrigger,
@@ -403,6 +404,8 @@ export const exhaustive = {
     top: true,
     bottom: true,
   } satisfies Record<DrawerSide, true>,
+
+  drawerLength: [240, "62%"] satisfies DrawerLength[],
 
   // These two were TS string enums, which rejected plain strings
   modalSize: {
@@ -911,6 +914,16 @@ export const Everything = (
     ))}
     <Drawer maxSize={400} size={240} onSizeChange={(size: number) => size}>
       drawer with a controlled size
+    </Drawer>
+    <Drawer
+      side="bottom"
+      mode="float"
+      scrim
+      resizable={false}
+      size="62%"
+      maxSize="90%"
+    >
+      floating drawer sized by the viewport
     </Drawer>
     <TreeSelect
       root={{ name: "root", values: [{ name: "leaf", can_select: true }] }}
