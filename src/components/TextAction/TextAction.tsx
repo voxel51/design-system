@@ -7,6 +7,7 @@ import { ActionTooltip } from "@/components/Tooltip/ActionTooltip";
 import collapseStyles, {
   type Collapse,
   resolveCollapse,
+  useLabelHidden,
 } from "@/styles/collapse";
 import radiusStyles from "@/styles/radius";
 import { TEXT_STYLES } from "@/styles/text";
@@ -115,11 +116,12 @@ export const TextAction: FC<TextActionProps> = ({
 }) => {
   const fit = useOverflowRowFit();
   const resolved = resolveCollapse(collapse, fit.compact);
+  const labelHidden = useLabelHidden(resolved);
   // a row short of room cuts an "auto" label before it drops it
   const labelMax = collapse === "auto" ? fit.labelMax : null;
   return (
     <ActionTooltip
-      collapsed={resolved === "always"}
+      collapsed={labelHidden}
       truncatable={collapse === "auto"}
       label={props["aria-label"] ?? children}
       hint={hint}

@@ -110,6 +110,28 @@ describe("TextAction", () => {
     expect(screen.getByRole("tooltip")).toHaveTextContent("ShareLocked");
   });
 
+  it("names itself in its tooltip below its collapse breakpoint", () => {
+    const matchMedia = window.matchMedia;
+    window.matchMedia = ((query: string) => ({
+      matches: query === "(max-width: 639.98px)",
+      addEventListener: () => {},
+      removeEventListener: () => {},
+    })) as unknown as typeof window.matchMedia;
+    render(
+      <TextAction
+        collapse="sm"
+        leadingIcon={IconName.Add}
+        aria-label="Share"
+        hint="Locked"
+      >
+        Share
+      </TextAction>
+    );
+    fireEvent.mouseEnter(screen.getByRole("button").parentElement as Element);
+    expect(screen.getByRole("tooltip")).toHaveTextContent("ShareLocked");
+    window.matchMedia = matchMedia;
+  });
+
   it("cuts its label to the row's width before collapsing", () => {
     render(
       <OverflowRowCompactContext.Provider

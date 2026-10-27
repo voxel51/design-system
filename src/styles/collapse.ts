@@ -1,3 +1,5 @@
+import { useBelowBreakpoint } from "@/util/breakpoints";
+
 /**
  * Hides a control's label below a breakpoint: `true` or `"lg"` below 1024px,
  * `"sm"` below 640px, `"always"` at every width, `"auto"` while the enclosing
@@ -30,4 +32,12 @@ export function resolveCollapse(
   compact: boolean
 ): Exclude<Collapse, "auto"> | undefined {
   return collapse === "auto" ? (compact ? "always" : undefined) : collapse;
+}
+
+/** Whether a settled collapse hides its label at the current window width. */
+export function useLabelHidden(
+  collapse: Exclude<Collapse, "auto"> | undefined
+): boolean {
+  const below = useBelowBreakpoint(collapse === "sm" ? "sm" : "lg");
+  return collapse === "always" || (!!collapse && below);
 }

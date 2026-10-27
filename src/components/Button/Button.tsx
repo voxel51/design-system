@@ -15,6 +15,7 @@ import { ActionTooltip } from "@/components/Tooltip/ActionTooltip";
 import collapseStyles, {
   type Collapse,
   resolveCollapse,
+  useLabelHidden,
 } from "@/styles/collapse";
 import radiusStyles from "@/styles/radius";
 import { CAPTION_SIZE, TEXT_STYLES } from "@/styles/text";
@@ -249,6 +250,7 @@ export const Button: FC<ButtonProps> = ({
   // text nodes count as a label: an icon passed as a child keeps the circle.
   const fit = useOverflowRowFit();
   const collapse = resolveCollapse(collapseProp, fit.compact);
+  const labelHidden = useLabelHidden(collapse);
   // a row short of room cuts an "auto" label before it drops it
   const labelMax = collapseProp === "auto" ? fit.labelMax : null;
   const childArray = Children.toArray(children);
@@ -324,7 +326,7 @@ export const Button: FC<ButtonProps> = ({
 
   const withTooltip = (element: ReactElement): ReactElement => (
     <ActionTooltip
-      collapsed={collapse === "always"}
+      collapsed={labelHidden}
       truncatable={collapseProp === "auto"}
       label={props["aria-label"] ?? (hasLabel ? children : undefined)}
       hint={hint}
