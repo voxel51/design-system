@@ -1,4 +1,11 @@
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import {
   capLabels,
@@ -84,6 +91,29 @@ export function useOverflowFit(
     fit: keys.length,
     ...FULL_FIT,
   });
+  // An item that changes size on its own (content arriving late) refits the
+  // row. Each element is observed once: observing it again reports it again.
+  const [resized, setResized] = useState(0);
+  const observer = useRef<{
+    resize: ResizeObserver;
+    seen: WeakSet<HTMLElement>;
+  } | null>(null);
+  const watch = useCallback((el: HTMLElement): void => {
+    const current = observer.current;
+    if (!current || current.seen.has(el)) return;
+    current.seen.add(el);
+    current.resize.observe(el);
+  }, []);
+  useEffect(() => {
+    if (typeof ResizeObserver === "undefined") return undefined;
+    const resize = new ResizeObserver(() => setResized((n) => n + 1));
+    observer.current = { resize, seen: new WeakSet() };
+    slots.current.forEach(watch);
+    return () => {
+      resize.disconnect();
+      observer.current = null;
+    };
+  }, [watch]);
 
   useLayoutEffect(() => {
     slots.current.forEach((el, key) => {
@@ -156,14 +186,16 @@ export function useOverflowFit(
     set({ fit: next, compact: compactable, labelMax: null });
     // `keys` follows `signature`
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [signature, width, state, compactable, gap, reserve, minLabel]);
+  }, [signature, width, state, resized, compactable, gap, reserve, minLabel]);
 
   const itemRef = useCallback(
     (key: string) => (el: HTMLElement | null) => {
-      if (el) slots.current.set(key, el);
-      else slots.current.delete(key);
+      if (el) {
+        slots.current.set(key, el);
+        watch(el);
+      } else slots.current.delete(key);
     },
-    []
+    [watch]
   );
 
   const { compact, labelMax } = state;

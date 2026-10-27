@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 
 import { useOverflowFit } from "./useOverflowFit";
 
@@ -57,6 +57,23 @@ describe("useOverflowFit", () => {
 
   it("uses the whole width when the overflow control sits elsewhere", () => {
     render(<Row width={100} reserve={0} />);
+    expect(screen.getByRole("status")).toHaveTextContent("2");
+  });
+
+  it("refits when an item grows after it was measured", () => {
+    const callbacks: (() => void)[] = [];
+    globalThis.ResizeObserver = jest
+      .fn()
+      .mockImplementation((cb: () => void) => {
+        callbacks.push(cb);
+        return { observe: jest.fn(), disconnect: jest.fn() };
+      });
+    render(<Row width={130} reserve={0} />);
+    expect(screen.getByRole("status")).toHaveTextContent("3");
+
+    const late = screen.getByText("c");
+    Object.defineProperty(late, "offsetWidth", { value: 80 });
+    act(() => callbacks.forEach((cb) => cb()));
     expect(screen.getByRole("status")).toHaveTextContent("2");
   });
 
