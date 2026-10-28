@@ -1,9 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { useState } from "react";
 
 import { useOverflowRowCompact } from "@/util/compact";
 
-import { DataTable, type DataTableColumn } from "./DataTable";
+import { DataTable, type DataTableColumn, DataTableRowItem } from "./DataTable";
 
 const withWidth = (width: number) => {
   jest
@@ -129,5 +130,57 @@ describe("DataTable", () => {
     withWidth(1000);
     render(<DataTable columns={[{ key: "name", label: "" }]} rows={rows} />);
     expect(screen.queryByRole("columnheader")).not.toBeInTheDocument();
+  });
+
+  it("hugs a fit column and lets a fill column take the free space", () => {
+    withWidth(1000);
+    render(
+      <DataTable
+        columns={[
+          { key: "name", label: "Name", role: "primary", width: "fill" },
+          { key: "version", label: "Version", width: "fit" },
+        ]}
+        rows={[{ id: "a", cells: { name: "Alpha", version: "1.0" } }]}
+      />
+    );
+    expect(screen.getByText("Name").className).toContain("w-full");
+    expect(screen.getByText("Version").className).toContain(
+      "whitespace-nowrap"
+    );
+    expect(screen.getByText("1.0").className).toContain("whitespace-nowrap");
+  });
+
+  it("renders child rows with their own state, as a row and as a card", () => {
+    const Own = () => {
+      const [n] = useState(7);
+      return <DataTableRowItem cells={{ name: `own ${n}` }} />;
+    };
+    withWidth(1000);
+    const { unmount } = render(
+      <DataTable
+        columns={[{ key: "name", label: "Name", role: "primary" }]}
+        rows={[]}
+      >
+        <Own />
+      </DataTable>
+    );
+    expect(screen.getByText("own 7").closest("tr")).not.toBeNull();
+    unmount();
+    withWidth(400);
+    render(
+      <DataTable
+        columns={[{ key: "name", label: "Name", role: "primary" }]}
+        rows={[]}
+      >
+        <Own />
+      </DataTable>
+    );
+    expect(screen.getByText("own 7").closest("tr")).toBeNull();
+  });
+
+  it("names the table", () => {
+    withWidth(1000);
+    render(<DataTable aria-label="Runs" columns={columns} rows={rows} />);
+    expect(screen.getByRole("table", { name: "Runs" })).toBeInTheDocument();
   });
 });

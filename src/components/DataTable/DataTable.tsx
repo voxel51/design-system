@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { createContext, Fragment, useContext } from "react";
 import type {
   FC,
   HTMLAttributes,
@@ -49,7 +49,12 @@ export type DataTableColumn = {
   /** Hides the column (header and cells) on windows narrower than this. Wide mode only. */
   hideBelow?: Breakpoint;
   align?: "start" | "end";
-  /** Column width in wide mode, e.g. `"16rem"`. */
+  /**
+   * Column width in wide mode: a length such as `"16rem"`; `"fit"` hugs the
+   * content without wrapping; `"fill"` takes the free space and truncates
+   * first. Give the `primary` column `"fill"` and the others `"fit"` for a
+   * row of one flexible card then compact cells.
+   */
   width?: string;
 };
 
@@ -78,6 +83,13 @@ export interface DataTableProps {
   /** The table shows cards while it is narrower than this. Defaults to `"sm"`. */
   cardBelow?: Breakpoint;
   className?: string;
+  /** Names the table for assistive technology. */
+  "aria-label"?: string;
+  /**
+   * More rows, as {@link DataTableRowItem} elements: for a row which needs
+   * hooks or state of its own. They follow `rows`.
+   */
+  children?: ReactNode;
 }
 
 const hideBelowStyles: Record<Breakpoint, string> = {
@@ -88,6 +100,21 @@ const hideBelowStyles: Record<Breakpoint, string> = {
 };
 
 const COMPACT = { compact: true, labelMax: null };
+
+const widthClass = (width?: string): string | undefined =>
+  width === "fit"
+    ? "w-px whitespace-nowrap"
+    : width === "fill"
+      ? "w-full max-w-0"
+      : undefined;
+
+const widthStyle = (width?: string): { width: string } | undefined =>
+  width && width !== "fit" && width !== "fill" ? { width } : undefined;
+
+const DataTableContext = createContext<{
+  columns: DataTableColumn[];
+  card: boolean;
+} | null>(null);
 
 const stop = (e: SyntheticEvent): void => e.stopPropagation();
 
@@ -106,19 +133,55 @@ const clickableProps = (row: DataTableRow): HTMLAttributes<HTMLElement> =>
     ? { onClick: row.onClick, onKeyDown: rowKeyDown(row), tabIndex: 0 }
     : {};
 
+const cellClass = (column: DataTableColumn): string =>
+  cn(
+    widthClass(column.width),
+    column.hideBelow && hideBelowStyles[column.hideBelow],
+    column.align === "end" && "text-right"
+  );
+
+const WideRow: FC<{ columns: DataTableColumn[]; row: DataTableRow }> = ({
+  columns,
+  row,
+}) => (
+  <Fragment>
+    <TableRow {...row.props} {...clickableProps(row)}>
+      {columns.map((column) => (
+        <TableCell
+          key={column.key}
+          className={cn(
+            column.width !== "fit" && "wrap-anywhere",
+            cellClass(column)
+          )}
+          {...(column.role === "actions" && {
+            onClick: stop,
+            onKeyDown: stop,
+          })}
+        >
+          {row.cells[column.key]}
+        </TableCell>
+      ))}
+    </TableRow>
+    {hasValue(row.detail) && (
+      <TableRow>
+        <TableCell colSpan={columns.length} className="p-0">
+          {row.detail}
+        </TableCell>
+      </TableRow>
+    )}
+  </Fragment>
+);
+
 const WideTable: FC<Omit<DataTableProps, "cardBelow">> = ({
   columns,
   rows,
   empty,
   className,
+  children,
+  "aria-label": ariaLabel,
 }) => {
-  const cellClass = (column: DataTableColumn): string =>
-    cn(
-      column.hideBelow && hideBelowStyles[column.hideBelow],
-      column.align === "end" && "text-right"
-    );
   return (
-    <Table className={className}>
+    <Table className={className} aria-label={ariaLabel}>
       {columns.some((column) => hasValue(column.label)) && (
         <TableHeader>
           <TableRow>
@@ -127,7 +190,7 @@ const WideTable: FC<Omit<DataTableProps, "cardBelow">> = ({
                 key={column.key}
                 scope="col"
                 className={cellClass(column)}
-                style={column.width ? { width: column.width } : undefined}
+                style={widthStyle(column.width)}
               >
                 {column.label}
               </TableHead>
@@ -142,31 +205,10 @@ const WideTable: FC<Omit<DataTableProps, "cardBelow">> = ({
           </TableRow>
         ) : (
           rows.map((row) => (
-            <Fragment key={row.id}>
-              <TableRow {...row.props} {...clickableProps(row)}>
-                {columns.map((column) => (
-                  <TableCell
-                    key={column.key}
-                    className={cn("wrap-anywhere", cellClass(column))}
-                    {...(column.role === "actions" && {
-                      onClick: stop,
-                      onKeyDown: stop,
-                    })}
-                  >
-                    {row.cells[column.key]}
-                  </TableCell>
-                ))}
-              </TableRow>
-              {hasValue(row.detail) && (
-                <TableRow>
-                  <TableCell colSpan={columns.length} className="p-0">
-                    {row.detail}
-                  </TableCell>
-                </TableRow>
-              )}
-            </Fragment>
+            <WideRow key={row.id} columns={columns} row={row} />
           ))
         )}
+        {children}
       </TableBody>
     </Table>
   );
@@ -309,6 +351,8 @@ const Card: FC<{ columns: DataTableColumn[]; row: DataTableRow }> = ({
  * @param empty Shown in place of the rows when there are none.
  * @param cardBelow Breakpoint under which the table shows cards. Defaults to `"sm"` (640px).
  * @param className Additional CSS class names for the table, or the box holding the cards.
+ * @param aria-label Names the table for assistive technology.
+ * @param children More rows as {@link DataTableRowItem} elements, for rows with hooks or state.
  */
 export const DataTable: FC<DataTableProps> = ({
   columns,
@@ -316,35 +360,75 @@ export const DataTable: FC<DataTableProps> = ({
   empty,
   cardBelow = "sm",
   className,
+  children,
+  "aria-label": ariaLabel,
 }) => {
   const { ref, width } = useElementSize();
   const card = width > 0 && width < BREAKPOINT_WIDTHS[cardBelow];
   return (
-    <div ref={ref} className="w-full">
-      {card ? (
-        <div
-          className={cn(
-            bgColorClass(BackgroundColor.Card),
-            radiusStyles(Radius.Md),
-            className
-          )}
-        >
-          {rows.length === 0 && empty !== undefined ? (
-            <div className="p-3">{empty}</div>
-          ) : (
-            rows.map((row) => <Card key={row.id} columns={columns} row={row} />)
-          )}
-        </div>
-      ) : (
-        <WideTable
-          columns={columns}
-          rows={rows}
-          empty={empty}
-          className={className}
-        />
-      )}
-    </div>
+    <DataTableContext.Provider value={{ columns, card }}>
+      <div ref={ref} className="w-full">
+        {card ? (
+          <div
+            role={ariaLabel ? "group" : undefined}
+            aria-label={ariaLabel}
+            className={cn(
+              bgColorClass(BackgroundColor.Card),
+              radiusStyles(Radius.Md),
+              className
+            )}
+          >
+            {rows.length === 0 && empty !== undefined ? (
+              <div className="p-3">{empty}</div>
+            ) : (
+              rows.map((row) => (
+                <Card key={row.id} columns={columns} row={row} />
+              ))
+            )}
+            {children}
+          </div>
+        ) : (
+          <WideTable
+            columns={columns}
+            rows={rows}
+            empty={empty}
+            className={className}
+            aria-label={ariaLabel}
+          >
+            {children}
+          </WideTable>
+        )}
+      </div>
+    </DataTableContext.Provider>
   );
 };
+
+/**
+ * A row of a {@link DataTable}, rendered as a table row or a card to match
+ * the table. Use it as a child of `DataTable` when a row needs hooks or state
+ * of its own; its props are those of a {@link DataTableRow}, without `id`.
+ *
+ * @example
+ * ```tsx
+ * const RunRow = ({ run }: { run: Run }) => {
+ *   const [open, setOpen] = useState(false);
+ *   return <DataTableRowItem cells={{ name: run.name, menu: <Menu open={open} /> }} />;
+ * };
+ *
+ * <DataTable columns={columns} rows={[]}>
+ *   {runs.map((run) => <RunRow key={run.id} run={run} />)}
+ * </DataTable>
+ * ```
+ */
+export const DataTableRowItem: FC<Omit<DataTableRow, "id">> = (row) => {
+  const context = useContext(DataTableContext);
+  if (!context) throw new Error("DataTableRowItem must be inside a DataTable");
+  return context.card ? (
+    <Card columns={context.columns} row={{ id: "", ...row }} />
+  ) : (
+    <WideRow columns={context.columns} row={{ id: "", ...row }} />
+  );
+};
+DataTableRowItem.displayName = "DataTableRowItem";
 
 DataTable.displayName = "DataTable";
