@@ -1,7 +1,8 @@
-import { forwardRef, HTMLAttributes } from "react";
+import { forwardRef, HTMLAttributes, useCallback } from "react";
 
 import { Align, Justify, Orientation, Spacing } from "@/types";
 import { cn } from "@/util/classes";
+import { useScrollEdges } from "@/util/useScrollEdges";
 
 export interface StackProps extends HTMLAttributes<HTMLDivElement> {
   align?: Align;
@@ -81,7 +82,7 @@ const spacingStyles: Record<Spacing, string> = {
  * @param orientation Orientation of the stack. See {@link Orientation}.
  * @param spacing Spacing between child components in the stack. See {@link Spacing}.
  * @param wrap If `true`, children flow onto further lines when they do not fit on one.
- * @param scroll If `true`, children stay on one line that scrolls sideways with a hidden scrollbar, each at its own width (filter pill rows on a phone).
+ * @param scroll If `true`, children stay on one line that scrolls sideways with a hidden scrollbar, each at its own width (filter pill rows on a phone). The edge with more content beyond it fades.
  * @param children Content which is wrapped by this component.
  * @param className `class` overrides to apply to the component.
  * @param props Additional HTML properties to apply to the component.
@@ -97,13 +98,24 @@ export const Stack = forwardRef<HTMLDivElement, StackProps>(
       scroll = false,
       children,
       className,
+      style,
       ...props
     },
-    ref
+    forwardedRef
   ) => {
+    const { ref: edgesRef, style: edgesStyle } = useScrollEdges();
+    const ref = useCallback(
+      (el: HTMLDivElement | null) => {
+        if (scroll) edgesRef(el);
+        if (typeof forwardedRef === "function") forwardedRef(el);
+        else if (forwardedRef) forwardedRef.current = el;
+      },
+      [scroll, edgesRef, forwardedRef]
+    );
     return (
       <div
         ref={ref}
+        style={scroll ? { ...edgesStyle, ...style } : style}
         className={cn(
           "flex",
           orientation === Orientation.Column && "flex-col",
