@@ -61,8 +61,12 @@ const ARROW_SIZE = 8;
 const DEFAULT_COLLISION_PADDING = 8;
 // long enough for the pointer to cross the gap into an interactive panel
 const INTERACTIVE_CLOSE_DELAY = 150;
-// how long a tap shows the tooltip where there is no hover
-const TAP_SHOW_DURATION = 1500;
+// how long a press must be held to show the tooltip where there is no hover
+const LONG_PRESS_DURATION = 500;
+// how long the tooltip then stays
+const TOUCH_SHOW_DURATION = 1500;
+// a touch is followed by emulated mouse events, which are not a hover
+const EMULATED_MOUSE_WINDOW = 800;
 
 const OPPOSITE_SIDE: Record<TooltipAnchor, TooltipAnchor> = {
   [Anchor.Top]: Anchor.Bottom,
@@ -76,7 +80,7 @@ const sideOf = (placement: Placement): TooltipAnchor =>
 
 /**
  * A tooltip which appears when hovering over the wrapped content, or for a
- * moment after a tap on a touch screen. It stays
+ * moment after a long press on a touch screen (a tap does not show it). It stays
  * inside the viewport: it flips to the opposite side when its own side has no
  * room, slides along that side near an edge with its arrow still on the
  * content, and follows the content on scroll and resize.
@@ -122,6 +126,8 @@ export const Tooltip: FC<TooltipProps> = ({
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const arrowRef = useRef<HTMLDivElement>(null);
   const closeTimer = useRef<number | undefined>(undefined);
+  const pressTimer = useRef<number | undefined>(undefined);
+  const lastTouch = useRef(0);
 
   const { refs, floatingStyles, placement, middlewareData } = useFloating({
     open: isOpen,
@@ -141,7 +147,13 @@ export const Tooltip: FC<TooltipProps> = ({
     whileElementsMounted: autoUpdate,
   });
 
-  useEffect(() => () => window.clearTimeout(closeTimer.current), []);
+  useEffect(
+    () => () => {
+      window.clearTimeout(closeTimer.current);
+      window.clearTimeout(pressTimer.current);
+    },
+    []
+  );
 
   const open = useCallback(() => {
     window.clearTimeout(closeTimer.current);
@@ -206,17 +218,33 @@ export const Tooltip: FC<TooltipProps> = ({
       {...props}
       ref={refs.setReference}
       className={cn("relative", wrapperClassName)}
-      onMouseEnter={open}
+      onMouseEnter={() => {
+        if (Date.now() - lastTouch.current > EMULATED_MOUSE_WINDOW) open();
+      }}
       onMouseLeave={close}
       onPointerDown={(event) => {
         props.onPointerDown?.(event);
-        // A touch screen has no hover: a tap shows the tooltip for a moment
+        // A touch screen has no hover: a long press shows the tooltip for a
+        // moment, so a tap or a swipe never covers the content
         if (event.pointerType !== "touch") return;
-        open();
-        closeTimer.current = window.setTimeout(
-          () => setIsOpen(false),
-          TAP_SHOW_DURATION
-        );
+        lastTouch.current = Date.now();
+        window.clearTimeout(pressTimer.current);
+        pressTimer.current = window.setTimeout(() => {
+          open();
+          closeTimer.current = window.setTimeout(
+            () => setIsOpen(false),
+            TOUCH_SHOW_DURATION
+          );
+        }, LONG_PRESS_DURATION);
+      }}
+      onPointerUp={(event) => {
+        props.onPointerUp?.(event);
+        lastTouch.current = Date.now();
+        window.clearTimeout(pressTimer.current);
+      }}
+      onPointerCancel={(event) => {
+        props.onPointerCancel?.(event);
+        window.clearTimeout(pressTimer.current);
       }}
     >
       {children}

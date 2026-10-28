@@ -79,7 +79,7 @@ describe("Tooltip", () => {
     beforeEach(() => jest.useFakeTimers());
     afterEach(() => jest.useRealTimers());
 
-    it("shows the tooltip for a moment after a tap", () => {
+    it("shows the tooltip for a moment after a long press, not a tap", () => {
       const content = randomString();
       render(
         <Tooltip {...defaultProps} content={content}>
@@ -88,9 +88,30 @@ describe("Tooltip", () => {
       );
 
       pointerDown(screen.getByTestId(testId), "touch");
+      act(() => jest.advanceTimersByTime(200));
+      fireEvent.pointerUp(screen.getByTestId(testId));
+      act(() => jest.advanceTimersByTime(1000));
+      expect(screen.queryByText(content)).not.toBeInTheDocument();
+
+      pointerDown(screen.getByTestId(testId), "touch");
+      act(() => jest.advanceTimersByTime(500));
       expect(screen.getByText(content)).toBeInTheDocument();
 
       act(() => jest.advanceTimersByTime(1500));
+      expect(screen.queryByText(content)).not.toBeInTheDocument();
+    });
+
+    it("ignores the mouse events a touch emulates", () => {
+      const content = randomString();
+      render(
+        <Tooltip {...defaultProps} content={content}>
+          tab
+        </Tooltip>
+      );
+
+      pointerDown(screen.getByTestId(testId), "touch");
+      fireEvent.pointerUp(screen.getByTestId(testId));
+      fireEvent.mouseEnter(screen.getByTestId(testId));
       expect(screen.queryByText(content)).not.toBeInTheDocument();
     });
 
