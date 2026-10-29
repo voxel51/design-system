@@ -4,6 +4,8 @@ import {
   type FC,
   type KeyboardEvent,
   InputHTMLAttributes,
+  type MutableRefObject,
+  type Ref,
   useEffect,
   useRef,
   useState,
@@ -79,6 +81,8 @@ export interface InputProps extends ModifiedInputProps {
   icon?: IconInput;
   /** No frame: for a field that sits flush in a bar or header. */
   borderless?: boolean;
+  /** Ref to the native input element, for a parent that must focus or measure it. */
+  inputRef?: Ref<HTMLInputElement>;
 }
 
 /**
@@ -212,6 +216,8 @@ export const inputStyle = ({
  * @param onChange Callback triggered when the input value changes.
  * @param error If `true`, formats the input to appear in an error state.
  * @param icon Optional icon component to prefix the input's value.
+ * @param borderless If `true`, drops the frame so the field sits flush in a bar or header.
+ * @param inputRef Ref to the native input element.
  * @param props Additional HTML properties to apply to the component.
  */
 export const Input: FC<InputProps> = ({
@@ -226,6 +232,7 @@ export const Input: FC<InputProps> = ({
   error,
   icon,
   borderless,
+  inputRef: forwardedRef,
   ...props
 }) => {
   // Password fields toggle their rendered type between "password" and "text".
@@ -250,7 +257,13 @@ export const Input: FC<InputProps> = ({
 
   // Headless UI's <Input> does not forward `aria-invalid`, so set it directly
   // on the DOM node to keep the error state announced to assistive tech.
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const setRefs = (el: HTMLInputElement | null): void => {
+    inputRef.current = el;
+    if (typeof forwardedRef === "function") forwardedRef(el);
+    else if (forwardedRef)
+      (forwardedRef as MutableRefObject<HTMLInputElement | null>).current = el;
+  };
   useEffect(() => {
     const el = inputRef.current;
     if (!el) return;
@@ -315,7 +328,7 @@ export const Input: FC<InputProps> = ({
       <div className={cn("relative", icon && "flex items-center")}>
         {icon && <InputIcon icon={icon} size={size} hasText={hasText} />}
         <HeadlessInput
-          ref={inputRef}
+          ref={setRefs}
           className={inputClasses}
           disabled={disabled}
           type={renderedType}
