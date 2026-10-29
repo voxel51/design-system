@@ -39,6 +39,8 @@ export function useElementSize(): UseElementSizeReturn {
     const measure = (): void =>
       setSize({ width: el.offsetWidth, height: el.offsetHeight });
     measure();
+    // Without ResizeObserver (jsdom) the first measurement stands.
+    if (typeof ResizeObserver === "undefined") return;
     roRef.current = new ResizeObserver(measure);
     roRef.current.observe(el);
   }, []);

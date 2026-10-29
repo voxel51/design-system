@@ -25,6 +25,15 @@ export const Large: Story = {
   args: { ...Default.args, size: Size.Lg },
 };
 
+export const Collapsed: Story = {
+  args: {
+    collapse: true,
+    leadingIcon: "Add",
+    "aria-label": "Share",
+    children: "Share",
+  },
+};
+
 export const Danger: Story = {
   args: { children: "Stop import", tone: "danger" },
 };
