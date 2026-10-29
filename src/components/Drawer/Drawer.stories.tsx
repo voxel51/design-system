@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { useState } from "react";
 
 import {
+  Button,
   Drawer,
   IconAction,
   IconName,
@@ -59,6 +61,37 @@ export const Bottom: Story = {
 
 export const Right: Story = {
   args: { ...Bottom.args, side: "right", maxSize: 320 },
+};
+
+/**
+ * A floating sheet over the content: sized as a share of the viewport, with a
+ * scrim that closes it. The content stays mounted while closed.
+ */
+export const FloatingSheet: Story = {
+  render: () => {
+    const [open, setOpen] = useState(true);
+    return (
+      <>
+        <div className="p-4">
+          <Button variant="secondary" size="sm" onClick={() => setOpen(true)}>
+            Open details
+          </Button>
+        </div>
+        <Drawer
+          side="bottom"
+          mode="float"
+          scrim
+          resizable={false}
+          size="40%"
+          maxSize="90%"
+          open={open}
+          onOpenChange={setOpen}
+        >
+          {content}
+        </Drawer>
+      </>
+    );
+  },
 };
 
 export default meta;
