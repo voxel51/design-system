@@ -22,6 +22,7 @@ const meta: Meta<typeof Sheet> = {
   parameters: { layout: "centered" },
   argTypes: {
     side: { control: "radio", options: Object.values(SheetSide) },
+    compact: { control: "boolean" },
   },
 };
 
