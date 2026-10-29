@@ -34,10 +34,13 @@ import {
   CodeColor,
   Collapsible,
   DatePicker,
+  DataTable,
   Divider,
   Drawer,
+  DrawerLength,
   DrawerSide,
   Dropdown,
+  DropdownTrigger,
   Dropzone,
   DropdownAnchor,
   ElementState,
@@ -59,6 +62,7 @@ import {
   LoadingDots,
   MenuSeparator,
   ModalSize,
+  OverflowRow,
   Pagination,
   Orientation,
   ScrimColor,
@@ -107,6 +111,7 @@ import {
   Tooltip,
   TooltipAnchor,
   TooltipColor,
+  TooltipLabel,
   transitionDuration,
   TransitionDuration,
   transitionEasing,
@@ -400,6 +405,8 @@ export const exhaustive = {
     bottom: true,
   } satisfies Record<DrawerSide, true>,
 
+  drawerLength: [240, "62%"] satisfies DrawerLength[],
+
   // These two were TS string enums, which rejected plain strings
   modalSize: {
     sm: true,
@@ -650,6 +657,15 @@ export const Everything = (
       {(["sm", "md", "lg"] as const).map((s) => (
         <IconAction key={s} icon="Add" size={s} aria-label={s} />
       ))}
+      <TextAction collapse leadingIcon="Add" aria-label="Share" onClick={noop}>
+        Share
+      </TextAction>
+      <TextAction collapse="always" leadingIcon="Add" aria-label="Share">
+        Share
+      </TextAction>
+      <TextAction collapse="auto" hint="Locked" aria-label="Share">
+        Share
+      </TextAction>
       <TextAction tone="danger" onClick={noop}>
         Stop import
       </TextAction>
@@ -658,6 +674,53 @@ export const Everything = (
       {/* @ts-expect-error - aria-label is required */}
       <IconAction icon="Add" />
     </Stack>
+
+    {/* TooltipLabel: every prop */}
+    <TooltipLabel
+      label="Show only selected"
+      detail="No members in this scope"
+    />
+    <TooltipLabel label="Tag" />
+    {/* @ts-expect-error - label is required */}
+    <TooltipLabel />
+
+    {/* OverflowRow: every prop */}
+    <OverflowRow
+      label="More actions"
+      compactable
+      onFitChange={(fit) => fit.compact && fit.folded}
+      className="x"
+    >
+      <button>a</button>
+    </OverflowRow>
+    {/* @ts-expect-error - children are required */}
+    <OverflowRow />
+
+    {/* DataTable: every prop */}
+    <DataTable
+      columns={[
+        { key: "name", label: "Name", role: "primary", width: "16rem" },
+        { key: "state", label: "State", role: "status" },
+        { key: "size", label: "Size", role: "meta", hideBelow: "md" },
+        { key: "menu", label: "", role: "actions", align: "end" },
+      ]}
+      rows={[
+        {
+          id: "a",
+          cells: { name: "Alpha", state: "On", size: 1, menu: null },
+          onClick: noop,
+          props: { className: "x" },
+          detail: "Details",
+        },
+      ]}
+      empty="None"
+      cardBelow="md"
+      className="x"
+    />
+    {/* @ts-expect-error - rows are required */}
+    <DataTable columns={[]} />
+    {/* @ts-expect-error - role is a fixed set */}
+    <DataTable columns={[{ key: "a", label: "A", role: "title" }]} rows={[]} />
 
     {/* Pagination: every prop */}
     <Pagination
@@ -791,6 +854,10 @@ export const Everything = (
     </Popover>
     <Loader type="bars" size="xl" aria-label="Generating" />
     <Text gradient>Generating</Text>
+    <Text truncate>A long title</Text>
+    <Stack scroll>
+      <DropdownTrigger prefix="Sort by">Newest</DropdownTrigger>
+    </Stack>
     <LoadingDots text="Searching" variant="sm" color="text-tertiary" />
     {MENU_ANCHORS.map((a) => (
       <Select
@@ -847,6 +914,16 @@ export const Everything = (
     ))}
     <Drawer maxSize={400} size={240} onSizeChange={(size: number) => size}>
       drawer with a controlled size
+    </Drawer>
+    <Drawer
+      side="bottom"
+      mode="float"
+      scrim
+      resizable={false}
+      size="62%"
+      maxSize="90%"
+    >
+      floating drawer sized by the viewport
     </Drawer>
     <TreeSelect
       root={{ name: "root", values: [{ name: "leaf", can_select: true }] }}
