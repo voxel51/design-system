@@ -129,6 +129,12 @@ export interface PopoverProps extends Omit<
   /** `class` overrides for the panel (e.g. an explicit width). */
   panelClassName?: string;
   /**
+   * Caps the panel at the height left on screen beside the trigger and
+   * scrolls the rest — for long lists that can open near a window edge.
+   * @default false
+   */
+  fitViewport?: boolean;
+  /**
    * Moves focus into the panel when it opens and back to the trigger when
    * it closes. Defaults to `true`; turn it off for a panel that must not take
    * the keyboard, such as one that opens on its own.
@@ -177,6 +183,7 @@ export interface PopoverProps extends Omit<
  * @param closeOnEscape Close on Escape (default `true`).
  * @param disabled If `true`, the panel cannot be opened from the trigger.
  * @param panelClassName `class` overrides for the panel.
+ * @param fitViewport Cap the panel at the height left on screen and scroll the rest.
  * @param focusOnOpen Move focus into the panel on open.
  * @param className `class` overrides for the root wrapper.
  * @param props Additional HTML properties for the root wrapper.
@@ -193,6 +200,7 @@ export const Popover: FC<PopoverProps> = ({
   closeOnEscape = true,
   disabled,
   panelClassName,
+  fitViewport = false,
   focusOnOpen = true,
   className,
   ...props
@@ -218,7 +226,14 @@ export const Popover: FC<PopoverProps> = ({
       flip(),
       shift({ padding: 8 }),
       size({
-        apply({ rects, elements }) {
+        padding: 8,
+        apply({ rects, elements, availableHeight }) {
+          if (fitViewport) {
+            Object.assign(elements.floating.style, {
+              maxHeight: `${Math.max(0, availableHeight)}px`,
+              overflowY: "auto",
+            });
+          }
           if (matchTriggerWidth) {
             Object.assign(elements.floating.style, {
               width: `${rects.reference.width}px`,

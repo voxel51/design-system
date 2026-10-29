@@ -4,6 +4,20 @@ import userEvent from "@testing-library/user-event";
 import { Sheet, SheetSide } from "./Sheet";
 
 describe("Sheet", () => {
+  it("renders a smaller close button when compact", () => {
+    render(<Sheet open onClose={() => undefined} showCloseButton compact />);
+
+    expect(screen.getByRole("button", { name: "Close" })).toHaveClass("size-9");
+  });
+
+  it("uses literal duration classes so the stylesheet carries them", () => {
+    render(<Sheet open onClose={() => undefined} aria-label="Panel" />);
+
+    expect(screen.getByTestId("sheet-panel")).toHaveClass(
+      "duration-[var(--transition-duration-moderate)]"
+    );
+  });
+
   it("renders nothing when closed", () => {
     render(
       <Sheet open={false} onClose={jest.fn()} title="Run">

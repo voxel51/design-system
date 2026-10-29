@@ -10,8 +10,6 @@ import { textStyles } from "@/styles/text";
 import {
   BackgroundColor,
   bgColorClass,
-  BorderColor,
-  borderColorClass,
   ElementState,
   Radius,
   TextColor,
@@ -21,7 +19,8 @@ import {
 import { cn } from "@/util/classes";
 
 /**
- * A styled data table.
+ * A styled data table. It scrolls sideways inside its own box when the
+ * columns are wider than the space it has.
  *
  * Compose it from {@link TableHeader}, {@link TableBody}, {@link TableRow},
  * {@link TableHead} and {@link TableCell}. Each renders its native table
@@ -46,26 +45,27 @@ import { cn } from "@/util/classes";
  * ```
  *
  * @param className Additional CSS class names to apply to the table.
+ * @param wrapperClassName Additional CSS class names to apply to the scroll box around the table.
  * @param children The table sections.
  * @param props Additional HTML properties to apply to the table.
  */
-export const Table: FC<HTMLAttributes<HTMLTableElement>> = ({
-  children,
-  className,
-  ...props
-}) => {
+export const Table: FC<
+  HTMLAttributes<HTMLTableElement> & { wrapperClassName?: string }
+> = ({ children, className, wrapperClassName, ...props }) => {
   return (
-    <table
-      className={cn(
-        "w-full border-collapse",
-        bgColorClass(BackgroundColor.Card),
-        radiusStyles(Radius.Md),
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </table>
+    <div className={cn("w-full overflow-x-auto", wrapperClassName)}>
+      <table
+        className={cn(
+          "w-full border-collapse",
+          bgColorClass(BackgroundColor.Card),
+          radiusStyles(Radius.Md),
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </table>
+    </div>
   );
 };
 
@@ -90,7 +90,7 @@ export const TableRow: FC<HTMLAttributes<HTMLTableRowElement>> = ({
     <tr
       className={cn(
         "border-b last:border-0",
-        borderColorClass(BorderColor.CardElevated),
+        "border-content-border-default/30",
         isClickable && "hover:cursor-pointer",
         isClickable &&
           bgColorClass(BackgroundColor.CardNested, ElementState.Hover),
@@ -122,11 +122,7 @@ export const TableHeader: FC<HTMLAttributes<HTMLTableSectionElement>> = ({
 }) => {
   return (
     <thead
-      className={cn(
-        "border-b",
-        borderColorClass(BorderColor.CardElevated),
-        className
-      )}
+      className={cn("border-b", "border-content-border-default/30", className)}
       {...props}
     >
       {children}
@@ -171,7 +167,7 @@ export const TableCell: FC<TdHTMLAttributes<HTMLTableCellElement>> = ({
   return (
     <td
       className={cn(
-        "px-6 py-3 text-left font-normal",
+        "px-3 py-3 text-left font-normal sm:px-6",
         textColorClass(TextColor.Primary),
         textStyles(TextVariant.BodySecondary),
         className
@@ -199,7 +195,7 @@ export const TableHead: FC<ThHTMLAttributes<HTMLTableCellElement>> = ({
   return (
     <th
       className={cn(
-        "px-6 py-3 text-left font-normal",
+        "px-3 py-3 text-left font-normal sm:px-6",
         textColorClass(TextColor.Secondary),
         textStyles(TextVariant.BodySecondary),
         className

@@ -27,6 +27,32 @@ describe("Popover", () => {
     expect(screen.getByText("Visible content")).toBeInTheDocument();
   });
 
+  it("scrolls a panel taller than the room left on screen when it fits the viewport", async () => {
+    const user = userEvent.setup();
+    render(
+      <Popover trigger={trigger} fitViewport>
+        <div data-testid="content">Long list</div>
+      </Popover>
+    );
+
+    await user.click(screen.getByText("Open settings"));
+    const panel = screen.getByTestId("content").closest('[role="dialog"]');
+    expect(panel).toHaveStyle({ overflowY: "auto" });
+  });
+
+  it("leaves the panel's height alone by default", async () => {
+    const user = userEvent.setup();
+    render(
+      <Popover trigger={trigger}>
+        <div data-testid="content">Short</div>
+      </Popover>
+    );
+
+    await user.click(screen.getByText("Open settings"));
+    const panel = screen.getByTestId("content").closest('[role="dialog"]');
+    expect(panel).not.toHaveStyle({ overflowY: "auto" });
+  });
+
   it("should stay open when content inside the panel is clicked", async () => {
     const user = userEvent.setup();
     const onClick = jest.fn();
