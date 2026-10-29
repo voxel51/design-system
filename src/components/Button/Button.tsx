@@ -6,9 +6,17 @@ import {
   Children,
   FC,
   isValidElement,
+  ReactElement,
+  ReactNode,
 } from "react";
 
 import { type IconInput, IconWrapper } from "@/components/Icons";
+import { ActionTooltip } from "@/components/Tooltip/ActionTooltip";
+import collapseStyles, {
+  type Collapse,
+  resolveCollapse,
+  useLabelHidden,
+} from "@/styles/collapse";
 import radiusStyles from "@/styles/radius";
 import { CAPTION_SIZE, TEXT_STYLES } from "@/styles/text";
 import {
@@ -25,6 +33,7 @@ import {
   Variant,
 } from "@/types";
 import { cn } from "@/util/classes";
+import { COLLAPSE_LABEL_ATTR, useOverflowRowFit } from "@/util/compact";
 
 // Template-literal wrap defeats TS alias preservation so hovers and type
 // errors list the accepted strings instead of the alias name.
@@ -45,6 +54,17 @@ export interface ButtonProps
   leadingIcon?: IconInput;
   trailingIcon?: IconInput;
   borderless?: boolean;
+  /**
+   * Hides the text label below a breakpoint, leaving the icons: `true` or
+   * `"lg"` below 1024px, `"sm"` below 640px, `"always"` at every width,
+   * `"auto"` while the enclosing row is compact. Give it an `aria-label`.
+   */
+  collapse?: Collapse;
+  /**
+   * More about the action, such as why it is disabled: its tooltip, under its
+   * name while the label is collapsed.
+   */
+  hint?: ReactNode;
 }
 
 const variantStyles: Record<Variant, string> = {
@@ -146,6 +166,24 @@ const iconOnlySizeStyles: Record<ButtonSize, string> = {
   [Size.Md]: "px-3 py-2.5",
 };
 
+// A collapsed button is sized as icon-only while its label is hidden.
+const collapsedSizeStyles: Record<
+  "sm" | "lg" | "always",
+  Record<ButtonSize, string>
+> = {
+  sm: {
+    [Size.Xs]: "px-2 py-1.5 sm:px-2.5 sm:py-1",
+    [Size.Sm]: "px-2.5 py-2 sm:px-3 sm:py-1.5",
+    [Size.Md]: "px-3 py-2.5 sm:px-4 sm:py-2",
+  },
+  lg: {
+    [Size.Xs]: "px-2 py-1.5 lg:px-2.5 lg:py-1",
+    [Size.Sm]: "px-2.5 py-2 lg:px-3 lg:py-1.5",
+    [Size.Md]: "px-3 py-2.5 lg:px-4 lg:py-2",
+  },
+  always: iconOnlySizeStyles,
+};
+
 // Filled buttons carry a medium label (type/heading-sm, heading-xs); the
 // outlined secondary carries a regular one (type/body-secondary, -tertiary).
 // X-small is type/caption for both.
@@ -186,6 +224,8 @@ const iconSizes: Record<ButtonSize, number> = {
  *  rounding the corners.
  * @param leadingIcon Optional icon component which prefixes the button's content.
  * @param trailingIcon Optional icon component which postfixes the button's content.
+ * @param collapse Hides the text label below a breakpoint, leaving the icons (including icons passed as children): `true` or `"lg"` below 1024px, `"sm"` below 640px, `"always"` at every width, `"auto"` while the enclosing row is compact (then its tooltip names it). Pass an `aria-label`.
+ * @param hint More about the action, such as why it is disabled: its tooltip, under its name while the label is collapsed.
  * @param className `class` overrides to apply to the component.
  * @param children Button content.
  * @param props Additional HTML properties to apply to the component.
@@ -196,6 +236,8 @@ export const Button: FC<ButtonProps> = ({
   borderless = false,
   leadingIcon,
   trailingIcon,
+  collapse: collapseProp,
+  hint,
   className,
   children,
   href,
@@ -206,6 +248,11 @@ export const Button: FC<ButtonProps> = ({
   // A borderless button is a circle unless it carries a text label, in which
   // case it is a pill and aspect-square would inflate it to its width. Only
   // text nodes count as a label: an icon passed as a child keeps the circle.
+  const fit = useOverflowRowFit();
+  const collapse = resolveCollapse(collapseProp, fit.compact);
+  const labelHidden = useLabelHidden(collapse);
+  // a row short of room cuts an "auto" label before it drops it
+  const labelMax = collapseProp === "auto" ? fit.labelMax : null;
   const childArray = Children.toArray(children);
   const hasLabel = childArray.some(
     (child) =>
@@ -234,7 +281,11 @@ export const Button: FC<ButtonProps> = ({
       : "transition-colors",
     "hover:cursor-pointer",
     "disabled:cursor-not-allowed disabled:pointer-events-none",
-    isIconOnly ? iconOnlySizeStyles[size] : sizeStyles[size],
+    isIconOnly
+      ? iconOnlySizeStyles[size]
+      : collapse
+        ? collapsedSizeStyles[collapse === true ? "lg" : collapse][size]
+        : sizeStyles[size],
     variantStyles[variant],
     variantTextStyles[variant],
     borderless && "border-0",
@@ -249,7 +300,21 @@ export const Button: FC<ButtonProps> = ({
         className="flex shrink-0 items-center justify-center"
       />
 
-      {children}
+      {collapseProp
+        ? Children.map(children, (child) =>
+            typeof child === "string" || typeof child === "number" ? (
+              <span
+                {...{ [COLLAPSE_LABEL_ATTR]: "" }}
+                className={collapseStyles(collapse || undefined)}
+                style={labelMax === null ? undefined : { maxWidth: labelMax }}
+              >
+                {child}
+              </span>
+            ) : (
+              child
+            )
+          )
+        : children}
 
       <IconWrapper
         content={trailingIcon}
@@ -259,11 +324,22 @@ export const Button: FC<ButtonProps> = ({
     </div>
   );
 
+  const withTooltip = (element: ReactElement): ReactElement => (
+    <ActionTooltip
+      collapsed={labelHidden}
+      truncatable={collapseProp === "auto"}
+      label={props["aria-label"] ?? (hasLabel ? children : undefined)}
+      hint={hint}
+    >
+      {element}
+    </ActionTooltip>
+  );
+
   // A disabled link is a disabled button: an anchor has no `disabled` state,
   // so it would still navigate and never wear the disabled styles
   if (href && !props.disabled) {
     const { type: _type, ...anchorProps } = props;
-    return (
+    return withTooltip(
       <a
         className={classes}
         href={href}
@@ -276,7 +352,7 @@ export const Button: FC<ButtonProps> = ({
     );
   }
 
-  return (
+  return withTooltip(
     <HeadlessButton className={classes} {...props}>
       {content}
     </HeadlessButton>

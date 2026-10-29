@@ -25,6 +25,7 @@ import ChevronLeftIcon from "@/img/ChevronLeft.svg?react";
 import ChevronRightIcon from "@/img/ChevronRight.svg?react";
 import ChevronTopIcon from "@/img/ChevronTop.svg?react";
 import CircleIcon from "@/img/Circle.svg?react";
+import CirclePlayIcon from "@/img/CirclePlay.svg?react";
 import CircleUserIcon from "@/img/CircleUser.svg?react";
 import CloseIcon from "@/img/Close.svg?react";
 import CloudIcon from "@/img/Cloud.svg?react";
@@ -152,6 +153,7 @@ export const iconMap: Record<
   [IconName.ChevronRight]: ChevronRightIcon,
   [IconName.ChevronTop]: ChevronTopIcon,
   [IconName.Circle]: CircleIcon,
+  [IconName.CirclePlay]: CirclePlayIcon,
   [IconName.CircleUser]: CircleUserIcon,
   [IconName.Close]: CloseIcon,
   [IconName.Cloud]: CloudIcon,

@@ -163,4 +163,14 @@ describe("useElementSize", () => {
       expect(result.current.height).toBe(120);
     });
   });
+
+  it("measures once without ResizeObserver (jsdom)", () => {
+    const original = globalThis.ResizeObserver;
+    // @ts-expect-error - simulate an environment without ResizeObserver
+    delete globalThis.ResizeObserver;
+    const { result } = renderHook(() => useElementSize());
+    act(() => result.current.ref(makeElement(120, 40)));
+    expect(result.current.width).toBe(120);
+    globalThis.ResizeObserver = original;
+  });
 });

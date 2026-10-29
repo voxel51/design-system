@@ -3,6 +3,15 @@ import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { Tooltip, type TooltipProps } from "@/components/Tooltip";
 import { randomString } from "@/util/random";
 
+// jsdom drops `pointerType` from synthetic pointer events
+const pointerDown = (element: Element, pointerType: string) =>
+  fireEvent(
+    element,
+    Object.assign(new Event("pointerdown", { bubbles: true }), {
+      pointerType,
+    })
+  );
+
 describe("Tooltip", () => {
   let testId: string;
   let defaultProps: { "data-testid": string };
@@ -33,6 +42,17 @@ describe("Tooltip", () => {
     expect(element).toContainHTML(children);
   });
 
+  it("shows no panel when the content is null", () => {
+    render(
+      <Tooltip {...defaultProps} content={null}>
+        child
+      </Tooltip>
+    );
+
+    fireEvent.mouseEnter(screen.getByTestId(testId));
+    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+  });
+
   it("should render tooltip on hover", () => {
     const content = randomString();
     const children = randomString();
@@ -53,6 +73,80 @@ describe("Tooltip", () => {
     fireEvent.mouseLeave(within(element).getByText(children));
 
     expect(screen.queryByText(content)).not.toBeInTheDocument();
+  });
+
+  describe("touch", () => {
+    beforeEach(() => jest.useFakeTimers());
+    afterEach(() => jest.useRealTimers());
+
+    it("shows the tooltip for a moment after a long press, not a tap", () => {
+      const content = randomString();
+      render(
+        <Tooltip {...defaultProps} content={content}>
+          tab
+        </Tooltip>
+      );
+
+      pointerDown(screen.getByTestId(testId), "touch");
+      act(() => jest.advanceTimersByTime(200));
+      fireEvent.pointerUp(screen.getByTestId(testId));
+      act(() => jest.advanceTimersByTime(1000));
+      expect(screen.queryByText(content)).not.toBeInTheDocument();
+
+      pointerDown(screen.getByTestId(testId), "touch");
+      act(() => jest.advanceTimersByTime(500));
+      expect(screen.getByText(content)).toBeInTheDocument();
+
+      act(() => jest.advanceTimersByTime(1500));
+      expect(screen.queryByText(content)).not.toBeInTheDocument();
+    });
+
+    it("swallows the click that ends a long press, not a later tap", () => {
+      const onClick = jest.fn();
+      render(
+        <Tooltip {...defaultProps} content={randomString()}>
+          <button onClick={onClick}>act</button>
+        </Tooltip>
+      );
+      const button = screen.getByText("act");
+
+      pointerDown(button, "touch");
+      act(() => jest.advanceTimersByTime(500));
+      fireEvent.pointerUp(button);
+      fireEvent.click(button);
+      expect(onClick).not.toHaveBeenCalled();
+
+      pointerDown(button, "touch");
+      fireEvent.pointerUp(button);
+      fireEvent.click(button);
+      expect(onClick).toHaveBeenCalledTimes(1);
+    });
+
+    it("ignores the mouse events a touch emulates", () => {
+      const content = randomString();
+      render(
+        <Tooltip {...defaultProps} content={content}>
+          tab
+        </Tooltip>
+      );
+
+      pointerDown(screen.getByTestId(testId), "touch");
+      fireEvent.pointerUp(screen.getByTestId(testId));
+      fireEvent.mouseEnter(screen.getByTestId(testId));
+      expect(screen.queryByText(content)).not.toBeInTheDocument();
+    });
+
+    it("ignores a mouse press", () => {
+      const content = randomString();
+      render(
+        <Tooltip {...defaultProps} content={content}>
+          tab
+        </Tooltip>
+      );
+
+      pointerDown(screen.getByTestId(testId), "mouse");
+      expect(screen.queryByText(content)).not.toBeInTheDocument();
+    });
   });
 
   describe("interactive", () => {

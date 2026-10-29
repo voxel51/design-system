@@ -61,6 +61,12 @@ const ARROW_SIZE = 8;
 const DEFAULT_COLLISION_PADDING = 8;
 // long enough for the pointer to cross the gap into an interactive panel
 const INTERACTIVE_CLOSE_DELAY = 150;
+// how long a press must be held to show the tooltip where there is no hover
+const LONG_PRESS_DURATION = 500;
+// how long the tooltip then stays
+const TOUCH_SHOW_DURATION = 1500;
+// a touch is followed by emulated mouse events, which are not a hover
+const EMULATED_MOUSE_WINDOW = 800;
 
 const OPPOSITE_SIDE: Record<TooltipAnchor, TooltipAnchor> = {
   [Anchor.Top]: Anchor.Bottom,
@@ -73,7 +79,8 @@ const sideOf = (placement: Placement): TooltipAnchor =>
   placement.split("-")[0] as TooltipAnchor;
 
 /**
- * A tooltip which appears when hovering over the wrapped content. It stays
+ * A tooltip which appears when hovering over the wrapped content, or for a
+ * moment after a long press on a touch screen (a tap does not show it). It stays
  * inside the viewport: it flips to the opposite side when its own side has no
  * room, slides along that side near an edge with its arrow still on the
  * content, and follows the content on scroll and resize.
@@ -88,7 +95,7 @@ const sideOf = (placement: Placement): TooltipAnchor =>
  * @param anchor Preferred position of the tooltip relative to its content: `"top"`, `"right"`, `"bottom"` or `"left"`. Defaults to `"top"`. See {@link TooltipAnchor}.
  * @param avoidCollisions If `true` (the default), the tooltip flips and shifts to stay inside the viewport.
  * @param collisionPadding Minimum distance, in pixels, kept between the tooltip and the viewport edge. Defaults to `8`.
- * @param content The content of the tooltip.
+ * @param content The content of the tooltip. `null` shows none, leaving only the wrapped content.
  * @param children The content which this component wraps; this acts as the element anchor and the hover trigger.
  * @param className `class` overrides to apply to the tooltip panel.
  * @param interactive If `true`, the tooltip stays open while the pointer moves from the content
@@ -119,6 +126,9 @@ export const Tooltip: FC<TooltipProps> = ({
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const arrowRef = useRef<HTMLDivElement>(null);
   const closeTimer = useRef<number | undefined>(undefined);
+  const pressTimer = useRef<number | undefined>(undefined);
+  const lastTouch = useRef(0);
+  const longPressed = useRef(false);
 
   const { refs, floatingStyles, placement, middlewareData } = useFloating({
     open: isOpen,
@@ -138,7 +148,13 @@ export const Tooltip: FC<TooltipProps> = ({
     whileElementsMounted: autoUpdate,
   });
 
-  useEffect(() => () => window.clearTimeout(closeTimer.current), []);
+  useEffect(
+    () => () => {
+      window.clearTimeout(closeTimer.current);
+      window.clearTimeout(pressTimer.current);
+    },
+    []
+  );
 
   const open = useCallback(() => {
     window.clearTimeout(closeTimer.current);
@@ -203,11 +219,52 @@ export const Tooltip: FC<TooltipProps> = ({
       {...props}
       ref={refs.setReference}
       className={cn("relative", wrapperClassName)}
-      onMouseEnter={open}
+      onMouseEnter={() => {
+        if (Date.now() - lastTouch.current > EMULATED_MOUSE_WINDOW) open();
+      }}
       onMouseLeave={close}
+      onPointerDown={(event) => {
+        props.onPointerDown?.(event);
+        longPressed.current = false;
+        // A touch screen has no hover: a long press shows the tooltip for a
+        // moment, so a tap or a swipe never covers the content
+        if (event.pointerType !== "touch") return;
+        lastTouch.current = Date.now();
+        window.clearTimeout(pressTimer.current);
+        pressTimer.current = window.setTimeout(() => {
+          longPressed.current = true;
+          open();
+          closeTimer.current = window.setTimeout(
+            () => setIsOpen(false),
+            TOUCH_SHOW_DURATION
+          );
+        }, LONG_PRESS_DURATION);
+      }}
+      onPointerUp={(event) => {
+        props.onPointerUp?.(event);
+        if (event.pointerType === "touch") lastTouch.current = Date.now();
+        window.clearTimeout(pressTimer.current);
+      }}
+      onClickCapture={(event) => {
+        props.onClickCapture?.(event);
+        // the release of a long press only revealed the tooltip: it is no click
+        if (!longPressed.current) return;
+        longPressed.current = false;
+        event.preventDefault();
+        event.stopPropagation();
+      }}
+      onContextMenu={(event) => {
+        props.onContextMenu?.(event);
+        if (longPressed.current) event.preventDefault();
+      }}
+      onPointerCancel={(event) => {
+        props.onPointerCancel?.(event);
+        window.clearTimeout(pressTimer.current);
+      }}
     >
       {children}
       {isOpen &&
+        content != null &&
         (portal ? createPortal(tooltipPanel, document.body) : tooltipPanel)}
     </div>
   );
