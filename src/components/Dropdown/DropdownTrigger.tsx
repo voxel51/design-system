@@ -3,7 +3,9 @@ import { type FC, type ReactNode, type SyntheticEvent, useState } from "react";
 import { Button, type ButtonProps } from "@/components/Button";
 import { CaretDownIcon } from "@/components/Icons";
 import { Tooltip, TooltipLabel } from "@/components/Tooltip";
-import { Size, Variant } from "@/types";
+import { TEXT_STYLES } from "@/styles/text";
+import { Size, TextColor, textColorClass, TextVariant, Variant } from "@/types";
+import { cn } from "@/util/classes";
 
 /**
  * Props for {@link DropdownTrigger}. Accepts {@link ButtonProps} except
@@ -59,6 +61,7 @@ export const DropdownTrigger: FC<DropdownTriggerProps> = ({
   size = Size.Sm,
   borderless,
   prefix,
+  className,
   ...props
 }) => {
   const [prefixHidden, setPrefixHidden] = useState(false);
@@ -70,10 +73,27 @@ export const DropdownTrigger: FC<DropdownTriggerProps> = ({
       size={size}
       trailingIcon={CaretDownIcon}
       aria-label={named ? `${prefix}: ${children}` : undefined}
+      className={cn(
+        // the Icon variant's label is medium; a menu trigger reads as regular body text
+        borderless &&
+          TEXT_STYLES[
+            size === Size.Md
+              ? TextVariant.BodySecondary
+              : TextVariant.BodyTertiary
+          ],
+        prefix != null && textColorClass(TextColor.Primary),
+        className
+      )}
       {...props}
     >
       {prefix != null && (
-        <span {...{ [PREFIX_ATTR]: "" }} className="hidden sm:mr-1 sm:inline">
+        <span
+          {...{ [PREFIX_ATTR]: "" }}
+          className={cn(
+            "hidden sm:mr-1 sm:inline",
+            textColorClass(TextColor.Secondary)
+          )}
+        >
           {prefix}:
         </span>
       )}
