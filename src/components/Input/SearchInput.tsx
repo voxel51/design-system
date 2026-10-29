@@ -109,6 +109,8 @@ export const SearchInput: FC<SearchInputProps> = ({
           trigger={
             <DropdownTrigger
               borderless
+              size={Size.Md}
+              className="py-1"
               disabled={disabled}
               aria-label="Search scope"
             >
