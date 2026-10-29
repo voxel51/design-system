@@ -1,4 +1,9 @@
-import { Field, Radio as HeadlessRadio, Label } from "@headlessui/react";
+import {
+  Description,
+  Field,
+  Radio as HeadlessRadio,
+  Label,
+} from "@headlessui/react";
 import { type FC, type HTMLAttributes, InputHTMLAttributes } from "react";
 
 import { textStyles } from "@/styles/text.ts";
@@ -17,6 +22,8 @@ type ModifiedRadioProps = Omit<
 export interface RadioProps extends ModifiedRadioProps {
   value?: string;
   label?: string;
+  /** A secondary line under the label: what picking this option means. */
+  description?: string;
   disabled?: boolean;
   /**
    * @deprecated Figma draws one radio size, so this no longer changes the
@@ -35,6 +42,7 @@ export interface RadioProps extends ModifiedRadioProps {
 const controlStyles = "size-3.5";
 const dotStyles = "before:size-[5px]";
 const labelTextStyles = textStyles(TextVariant.BodyPrimary);
+const descriptionTextStyles = textStyles(TextVariant.BodySecondary);
 
 /**
  * A single radio option. Render radios through {@link RadioGroup} and its
@@ -57,6 +65,9 @@ const labelTextStyles = textStyles(TextVariant.BodyPrimary);
  * @param className `class` overrides to apply to the radio.
  * @param labelClassName `class` overrides to apply to the radio's label.
  * @param label Label to display for the radio element.
+ * @param description A secondary line under the label (14px, secondary
+ *  color) saying what picking the option means; the radio aligns with the
+ *  label's first line.
  * @param disabled If `true`, disables the radio element.
  * @param fieldProps Additional HTML properties to apply to the row holding the radio and its label.
  * @param props Additional HTML properties to apply to the radio.
@@ -66,6 +77,7 @@ export const Radio: FC<RadioProps> = ({
   className,
   labelClassName,
   label,
+  description,
   disabled,
   fieldProps,
   // Deprecated and intentionally unused; kept out of `...props` so it never
@@ -76,7 +88,12 @@ export const Radio: FC<RadioProps> = ({
   return (
     <Field
       {...fieldProps}
-      className={cn("group flex items-center gap-3", fieldProps?.className)}
+      className={cn(
+        "group flex gap-3",
+        // With a description the control sits on the label's first line
+        description ? "items-start" : "items-center",
+        fieldProps?.className
+      )}
     >
       <HeadlessRadio
         value={value}
@@ -90,6 +107,8 @@ export const Radio: FC<RadioProps> = ({
           disabled && "opacity-50",
           "rounded-full",
           controlStyles,
+          // 20px label line, 14px control: 3px keeps them centered
+          description && "mt-[3px]",
           // on focus - unchecked
           !disabled && "focus:outline-none",
           !disabled && "focus:ring-2",
@@ -134,7 +153,7 @@ export const Radio: FC<RadioProps> = ({
           <RadioDotIcon />
         </div>
       </HeadlessRadio>
-      {label && (
+      {label && !description && (
         <Label
           className={cn(
             // Figma: label is white when enabled, tertiary when disabled
@@ -146,6 +165,33 @@ export const Radio: FC<RadioProps> = ({
         >
           {label}
         </Label>
+      )}
+      {label && description && (
+        <div className="flex min-w-0 flex-col">
+          <Label
+            className={cn(
+              textColorClass(disabled ? TextColor.Tertiary : TextColor.Primary),
+              labelTextStyles,
+              !disabled && "cursor-pointer",
+              labelClassName
+            )}
+          >
+            {label}
+          </Label>
+          <Description
+            // a span: a <p> would bring the browser's margins with it
+            as="span"
+            className={cn(
+              "block",
+              textColorClass(
+                disabled ? TextColor.Tertiary : TextColor.Secondary
+              ),
+              descriptionTextStyles
+            )}
+          >
+            {description}
+          </Description>
+        </div>
       )}
     </Field>
   );

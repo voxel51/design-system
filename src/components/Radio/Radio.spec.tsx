@@ -163,4 +163,19 @@ describe("Radio", () => {
     renderRadioInGroup(<Radio label={radioLabel} />);
     expect(screen.getByRole("radio")).toHaveClass("size-3.5");
   });
+
+  describe("Description", () => {
+    it("should render the description under the label and describe the radio", () => {
+      renderRadioInGroup(
+        <Radio
+          value="dataset"
+          label="Whole dataset"
+          description="All 35 samples"
+        />
+      );
+      const radio = screen.getByRole("radio", { name: "Whole dataset" });
+      expect(screen.getByText("All 35 samples")).toBeInTheDocument();
+      expect(radio).toHaveAccessibleDescription("All 35 samples");
+    });
+  });
 });
