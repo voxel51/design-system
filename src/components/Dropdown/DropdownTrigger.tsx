@@ -1,11 +1,19 @@
 import { type FC, type ReactNode, type SyntheticEvent, useState } from "react";
 
 import { Button, type ButtonProps } from "@/components/Button";
-import { CaretDownIcon } from "@/components/Icons";
+import {
+  CaretDownIcon,
+  ChevronDownStrokeIcon,
+  type IconProps,
+} from "@/components/Icons";
 import { Tooltip, TooltipLabel } from "@/components/Tooltip";
 import { TEXT_STYLES } from "@/styles/text";
 import { Size, TextColor, textColorClass, TextVariant, Variant } from "@/types";
 import { cn } from "@/util/classes";
+
+const BorderlessCaret: FC<IconProps> = (props) => (
+  <ChevronDownStrokeIcon {...props} size={12} className="opacity-70" />
+);
 
 /**
  * Props for {@link DropdownTrigger}. Accepts {@link ButtonProps} except
@@ -71,7 +79,7 @@ export const DropdownTrigger: FC<DropdownTriggerProps> = ({
       variant={borderless ? Variant.Icon : Variant.Secondary}
       borderless={borderless}
       size={size}
-      trailingIcon={CaretDownIcon}
+      trailingIcon={borderless ? BorderlessCaret : CaretDownIcon}
       aria-label={named ? `${prefix}: ${children}` : undefined}
       className={cn(
         // the Icon variant's label is medium; a menu trigger reads as regular body text
