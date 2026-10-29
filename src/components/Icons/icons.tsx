@@ -76,6 +76,7 @@ import CheckboxSvg from "@/img/Checkbox.svg?react";
 import ChecklistSvg from "@/img/Checklist.svg?react";
 import CheckmarkSvg from "@/img/Checkmark.svg?react";
 import ChevronBottomSvg from "@/img/ChevronBottom.svg?react";
+import ChevronDownStrokeSvg from "@/img/ChevronDownStroke.svg?react";
 import ChevronLeftSvg from "@/img/ChevronLeft.svg?react";
 import ChevronLeftStrokeSvg from "@/img/ChevronLeftStroke.svg?react";
 import ChevronRightSvg from "@/img/ChevronRight.svg?react";
@@ -658,6 +659,10 @@ export const CheckmarkIcon: FC<IconProps> = (props) => (
 
 export const ChevronBottomIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ChevronBottomSvg} />
+);
+
+export const ChevronDownStrokeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ChevronDownStrokeSvg} />
 );
 
 export const ChevronLeftIcon: FC<IconProps> = (props) => (

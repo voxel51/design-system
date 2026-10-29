@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 
 import { MenuTextItem } from "@/components/Menu";
 import { Size } from "@/types";
+import { OverflowRowCompactContext } from "@/util/compact";
 
 import { Dropdown } from "./Dropdown";
 import { DropdownTrigger } from "./DropdownTrigger";
@@ -80,6 +81,20 @@ describe("DropdownTrigger", () => {
       const tooltip = screen.getByRole("tooltip");
       expect(tooltip).toHaveTextContent("Sort by");
       expect(tooltip).toHaveTextContent("Newest");
+    });
+
+    it("should hide the prefix in a row out of room", () => {
+      render(
+        <OverflowRowCompactContext.Provider
+          value={{ compact: true, labelMax: null }}
+        >
+          <DropdownTrigger prefix="Sort by">Newest</DropdownTrigger>
+        </OverflowRowCompactContext.Provider>
+      );
+      expect(screen.getByText("Sort by:")).not.toHaveClass("sm:inline");
+      expect(
+        screen.getByRole("button", { name: "Sort by: Newest" })
+      ).toBeInTheDocument();
     });
 
     it("should show no tooltip while the prefix shows", async () => {
