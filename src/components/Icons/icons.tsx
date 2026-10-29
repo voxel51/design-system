@@ -34,6 +34,7 @@ import ArrowLeftStrokeSvg from "@/img/ArrowLeftStroke.svg?react";
 import ArrowOutwardSvg from "@/img/ArrowOutward.svg?react";
 import ArrowRightSvg from "@/img/ArrowRight.svg?react";
 import ArrowUpSvg from "@/img/ArrowUp.svg?react";
+import ArrowUpDownSvg from "@/img/ArrowUpDown.svg?react";
 import ArrowUpNarrowWideSvg from "@/img/ArrowUpNarrowWide.svg?react";
 import ArrowUpRightSvg from "@/img/ArrowUpRight.svg?react";
 import ArrowUpwardSvg from "@/img/ArrowUpward.svg?react";
@@ -265,6 +266,7 @@ import PersonAddOutlinedSvg from "@/img/PersonAddOutlined.svg?react";
 import PhotoCameraSvg from "@/img/PhotoCamera.svg?react";
 import PieChartOutlinedSvg from "@/img/PieChartOutlined.svg?react";
 import PinSvg from "@/img/Pin.svg?react";
+import PinStrokeSvg from "@/img/PinStroke.svg?react";
 import PlaySvg from "@/img/Play.svg?react";
 import PlayArrowSvg from "@/img/PlayArrow.svg?react";
 import PolylineSvg from "@/img/Polyline.svg?react";
@@ -345,6 +347,7 @@ import UnsupportedSvg from "@/img/Unsupported.svg?react";
 import UpgradeOutlinedSvg from "@/img/UpgradeOutlined.svg?react";
 import UploadSvg from "@/img/Upload.svg?react";
 import UserSvg from "@/img/User.svg?react";
+import UserRoundSvg from "@/img/UserRound.svg?react";
 import UsersSvg from "@/img/Users.svg?react";
 import UsersRoundSvg from "@/img/UsersRound.svg?react";
 import VALSvg from "@/img/VAL.svg?react";
@@ -489,6 +492,10 @@ export const ArrowUpIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ArrowUpSvg} />
 );
 
+export const ArrowUpDownIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ArrowUpDownSvg} />
+);
+
 export const ArrowUpNarrowWideIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ArrowUpNarrowWideSvg} />
 );
@@ -545,10 +552,6 @@ export const BlocksIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={BlocksSvg} />
 );
 
-export const BracesIcon: FC<IconProps> = (props) => (
-  <IconBase {...props} svg={BracesSvg} />
-);
-
 export const BoltIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={BoltSvg} />
 );
@@ -563,6 +566,10 @@ export const BookmarkStrokeIcon: FC<IconProps> = (props) => (
 
 export const BoxesIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={BoxesSvg} />
+);
+
+export const BracesIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={BracesSvg} />
 );
 
 export const BrushIcon: FC<IconProps> = (props) => (
@@ -1413,6 +1420,10 @@ export const PinIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={PinSvg} />
 );
 
+export const PinStrokeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={PinStrokeSvg} />
+);
+
 export const PlayIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={PlaySvg} />
 );
@@ -1731,6 +1742,10 @@ export const UploadIcon: FC<IconProps> = (props) => (
 
 export const UserIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={UserSvg} />
+);
+
+export const UserRoundIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={UserRoundSvg} />
 );
 
 export const UsersIcon: FC<IconProps> = (props) => (
