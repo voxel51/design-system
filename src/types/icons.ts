@@ -28,6 +28,7 @@ export const IconName = {
   ChevronRight: "ChevronRight",
   ChevronTop: "ChevronTop",
   Circle: "Circle",
+  CirclePlay: "CirclePlay",
   CircleUser: "CircleUser",
   Close: "Close",
   Cloud: "Cloud",
@@ -143,6 +144,7 @@ export namespace IconName {
   export type ChevronRight = typeof IconName.ChevronRight;
   export type ChevronTop = typeof IconName.ChevronTop;
   export type Circle = typeof IconName.Circle;
+  export type CirclePlay = typeof IconName.CirclePlay;
   export type CircleUser = typeof IconName.CircleUser;
   export type Close = typeof IconName.Close;
   export type Cloud = typeof IconName.Cloud;
