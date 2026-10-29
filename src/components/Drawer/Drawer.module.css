@@ -27,9 +27,51 @@
 
 .float {
   position: absolute;
+}
+
+/* A floating drawer never outgrows its container; its content area gives way */
+.float.top,
+.float.bottom {
+  max-height: 100%;
+}
+
+.float.left,
+.float.right {
+  max-width: 100%;
+}
+
+.float .contentWrapper {
+  flex-shrink: 1;
+}
+
+.float.bottom {
   bottom: 0;
   left: 0;
   right: 0;
+}
+
+.float.top {
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.float.left {
+  top: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.float.right {
+  top: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--color-content-scrim-default);
 }
 
 /* Drag handle */
@@ -118,4 +160,11 @@
 .top .content,
 .bottom .content {
   flex: none;
+}
+
+/* A set size: the content fills it instead of sizing the drawer, and still
+   scrolls the wrapper when taller */
+.sized.top .content,
+.sized.bottom .content {
+  flex: 1 0 auto;
 }

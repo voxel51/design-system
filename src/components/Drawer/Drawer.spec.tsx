@@ -1,4 +1,10 @@
-import { createEvent, fireEvent, render, screen } from "@testing-library/react";
+import {
+  act,
+  createEvent,
+  fireEvent,
+  render,
+  screen,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import Drawer from "./Drawer";
@@ -401,6 +407,122 @@ describe("Drawer", () => {
         </Drawer>
       );
       expect(getContentWrapper(container).style.height).toBe("240px");
+    });
+  });
+
+  describe("viewport-relative sizes", () => {
+    beforeEach(() => {
+      Object.defineProperty(window, "innerHeight", {
+        configurable: true,
+        value: 1000,
+      });
+      Object.defineProperty(window, "innerWidth", {
+        configurable: true,
+        value: 500,
+      });
+    });
+
+    it("resolves a percentage size against the viewport height", () => {
+      const { container } = render(
+        <Drawer maxSize="90%" size="62%">
+          <div>content</div>
+        </Drawer>
+      );
+      expect(getContentWrapper(container).style.height).toBe("620px");
+    });
+
+    it("resolves a horizontal percentage against the viewport width", () => {
+      const { container } = render(
+        <Drawer side="left" maxSize="100%" size="80%">
+          <div>content</div>
+        </Drawer>
+      );
+      expect(getContentWrapper(container).style.width).toBe("400px");
+    });
+
+    it("caps a percentage size at maxSize", () => {
+      const { container } = render(
+        <Drawer maxSize={300} size="62%">
+          <div>content</div>
+        </Drawer>
+      );
+      expect(getContentWrapper(container).style.height).toBe("300px");
+    });
+
+    it("follows a viewport resize", () => {
+      const { container } = render(
+        <Drawer maxSize="100%" size="50%">
+          <div>content</div>
+        </Drawer>
+      );
+      act(() => {
+        Object.defineProperty(window, "innerHeight", {
+          configurable: true,
+          value: 600,
+        });
+        window.dispatchEvent(new Event("resize"));
+      });
+      expect(getContentWrapper(container).style.height).toBe("300px");
+    });
+  });
+
+  describe("float and scrim", () => {
+    it("keeps content mounted while closed", () => {
+      render(
+        <Drawer {...defaultProps} mode="float" open={false}>
+          <span>kept</span>
+        </Drawer>
+      );
+      expect(screen.getByText("kept")).toBeInTheDocument();
+    });
+
+    it("shows a scrim only while a floating drawer is open", () => {
+      const { container, rerender } = render(
+        <Drawer {...defaultProps} mode="float" scrim open={true} />
+      );
+      expect(container.querySelector(".scrim")).toBeInTheDocument();
+      rerender(<Drawer {...defaultProps} mode="float" scrim open={false} />);
+      expect(container.querySelector(".scrim")).not.toBeInTheDocument();
+    });
+
+    it("never shows a scrim in push mode", () => {
+      const { container } = render(<Drawer {...defaultProps} scrim />);
+      expect(container.querySelector(".scrim")).not.toBeInTheDocument();
+    });
+
+    it("closes when the scrim is clicked", async () => {
+      const onOpenChange = jest.fn();
+      const { container } = render(
+        <Drawer
+          {...defaultProps}
+          mode="float"
+          scrim
+          open={true}
+          onOpenChange={onOpenChange}
+        />
+      );
+      await userEvent.click(container.querySelector(".scrim")!);
+      expect(onOpenChange).toHaveBeenCalledWith(false);
+    });
+
+    it("leaves the handle out when not resizable", () => {
+      const { container } = render(
+        <Drawer {...defaultProps} resizable={false} />
+      );
+      expect(container.querySelector(".handle")).not.toBeInTheDocument();
+    });
+
+    it("gives the scrim the drawer's z-index", () => {
+      const { container } = render(
+        <Drawer
+          {...defaultProps}
+          mode="float"
+          scrim
+          open={true}
+          style={{ zIndex: 7 }}
+        />
+      );
+      expect(container.querySelector(".scrim")).toHaveStyle({ zIndex: 7 });
     });
   });
 });
