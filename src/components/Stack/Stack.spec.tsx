@@ -15,4 +15,20 @@ describe("Stack", () => {
 
     expect(screen.getByTestId(testId)).toBeInTheDocument();
   });
+
+  it("wraps its children only when asked", () => {
+    const { rerender } = render(<Stack data-testid={testId} />);
+    expect(screen.getByTestId(testId)).not.toHaveClass("flex-wrap");
+
+    rerender(<Stack data-testid={testId} wrap />);
+    expect(screen.getByTestId(testId)).toHaveClass("flex-wrap");
+  });
+
+  it("scrolls sideways only when asked", () => {
+    const { rerender } = render(<Stack data-testid={testId} />);
+    expect(screen.getByTestId(testId)).not.toHaveClass("overflow-x-auto");
+
+    rerender(<Stack data-testid={testId} scroll />);
+    expect(screen.getByTestId(testId)).toHaveClass("overflow-x-auto");
+  });
 });

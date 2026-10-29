@@ -41,10 +41,22 @@ export function useScrollEdges(): {
         ? undefined
         : new ResizeObserver(measure);
     observer?.observe(el);
-    Array.from(el.children).forEach((child) => observer?.observe(child));
+    const watchChildren = (): void =>
+      Array.from(el.children).forEach((child) => observer?.observe(child));
+    watchChildren();
+    // children added or removed later change the overflow without resizing the row
+    const mutations =
+      typeof MutationObserver === "undefined"
+        ? undefined
+        : new MutationObserver(() => {
+            watchChildren();
+            measure();
+          });
+    mutations?.observe(el, { childList: true });
     cleanup.current = () => {
       el.removeEventListener("scroll", measure);
       observer?.disconnect();
+      mutations?.disconnect();
     };
   }, []);
 
