@@ -31,7 +31,10 @@ export interface PillProps extends HTMLAttributes<HTMLSpanElement> {
   radius?: Radius;
   shadow?: Shadow;
   color?: TextColor;
+  /** Prefixes the content with a status dot. */
   isStatus?: boolean;
+  /** Color of the status dot, when it differs from the text. Defaults to `color`. See {@link TextColor}. */
+  dotColor?: TextColor;
   backgroundColor?: PillColor;
   icon?: IconInput;
   onRemove?: () => void;
@@ -76,6 +79,7 @@ const dotSizes: Record<PillSize, number> = {
  * @param color Text color of the pill. See {@link TextColor}.
  * @param backgroundColor Background color of the pill. Defaults to `"bg-card-elevated"`. See {@link PillColor}.
  * @param isStatus If `true`, prefixes the content with a bullet-like icon.
+ * @param dotColor Color of the status dot, when it differs from the text. Defaults to `color`. See {@link TextColor}.
  * @param onRemove Callback triggered when the remove control is clicked. Providing this makes the pill
  *  removable: a trailing remove button, sized to the pill and in its text color, calls `onRemove`. Omit it
  *  for a non-removable pill.
@@ -91,6 +95,7 @@ export const Pill: FC<PillProps> = ({
   backgroundColor = BackgroundColor.CardElevated,
   icon,
   isStatus = false,
+  dotColor = color,
   onRemove,
   className,
   children,
@@ -116,7 +121,7 @@ export const Pill: FC<PillProps> = ({
         <div>
           <CircleIcon
             size={dotSizes[size]}
-            color={color}
+            color={dotColor}
             className="shrink-0"
           />
         </div>
