@@ -58,6 +58,7 @@ import BrushSvg from "@/img/Brush.svg?react";
 import BubbleChartSvg from "@/img/BubbleChart.svg?react";
 import CachedOutlinedSvg from "@/img/CachedOutlined.svg?react";
 import CalendarClockSvg from "@/img/CalendarClock.svg?react";
+import CalendarDaysSvg from "@/img/CalendarDays.svg?react";
 import CallMergeSvg from "@/img/CallMerge.svg?react";
 import CallSplitSvg from "@/img/CallSplit.svg?react";
 import CallSplitOutlinedSvg from "@/img/CallSplitOutlined.svg?react";
@@ -66,6 +67,7 @@ import CancelOutlinedSvg from "@/img/CancelOutlined.svg?react";
 import CaretDownSvg from "@/img/CaretDown.svg?react";
 import CasinoSvg from "@/img/Casino.svg?react";
 import CenterFocusWeakSvg from "@/img/CenterFocusWeak.svg?react";
+import ChartNoAxesColumnSvg from "@/img/ChartNoAxesColumn.svg?react";
 import ChatBubbleOutlineRoundedSvg from "@/img/ChatBubbleOutlineRounded.svg?react";
 import CheckSvg from "@/img/Check.svg?react";
 import CheckBoxOutlineBlankSvg from "@/img/CheckBoxOutlineBlank.svg?react";
@@ -89,6 +91,8 @@ import CircleUserSvg from "@/img/CircleUser.svg?react";
 import ClearSvg from "@/img/Clear.svg?react";
 import ClearAllSvg from "@/img/ClearAll.svg?react";
 import ClearOutlinedSvg from "@/img/ClearOutlined.svg?react";
+import ClipboardCheckSvg from "@/img/ClipboardCheck.svg?react";
+import ClipboardListSvg from "@/img/ClipboardList.svg?react";
 import ClockSvg from "@/img/Clock.svg?react";
 import CloseSvg from "@/img/Close.svg?react";
 import CloseOutlinedSvg from "@/img/CloseOutlined.svg?react";
@@ -96,12 +100,14 @@ import CloseRoundedSvg from "@/img/CloseRounded.svg?react";
 import CloseTwoToneSvg from "@/img/CloseTwoTone.svg?react";
 import CloudSvg from "@/img/Cloud.svg?react";
 import CloudCogSvg from "@/img/CloudCog.svg?react";
+import CloudDownloadSvg from "@/img/CloudDownload.svg?react";
 import CloudOutlinedSvg from "@/img/CloudOutlined.svg?react";
 import CloudUploadSvg from "@/img/CloudUpload.svg?react";
 import CodeSvg from "@/img/Code.svg?react";
 import CodeOutlinedSvg from "@/img/CodeOutlined.svg?react";
 import CogSvg from "@/img/Cog.svg?react";
 import ColorLensSvg from "@/img/ColorLens.svg?react";
+import Columns2Svg from "@/img/Columns2.svg?react";
 import ContactSvg from "@/img/Contact.svg?react";
 import ContentCopySvg from "@/img/ContentCopy.svg?react";
 import ContentCopyOutlinedSvg from "@/img/ContentCopyOutlined.svg?react";
@@ -116,6 +122,7 @@ import CropSquareSvg from "@/img/CropSquare.svg?react";
 import DarkModeSvg from "@/img/DarkMode.svg?react";
 import DataObjectSvg from "@/img/DataObject.svg?react";
 import DatabaseSvg from "@/img/Database.svg?react";
+import DatasetSvg from "@/img/Dataset.svg?react";
 import DateRangeSvg from "@/img/DateRange.svg?react";
 import DeleteSvg from "@/img/Delete.svg?react";
 import DeleteOutlineSvg from "@/img/DeleteOutline.svg?react";
@@ -137,6 +144,7 @@ import EastRoundedSvg from "@/img/EastRounded.svg?react";
 import EditSvg from "@/img/Edit.svg?react";
 import EditNoteSvg from "@/img/EditNote.svg?react";
 import EditOutlinedSvg from "@/img/EditOutlined.svg?react";
+import EllipsisVerticalSvg from "@/img/EllipsisVertical.svg?react";
 import EmailOutlinedSvg from "@/img/EmailOutlined.svg?react";
 import EmbeddingsSvg from "@/img/Embeddings.svg?react";
 import EnterSvg from "@/img/Enter.svg?react";
@@ -165,6 +173,7 @@ import FingerprintSvg from "@/img/Fingerprint.svg?react";
 import FitScreenSvg from "@/img/FitScreen.svg?react";
 import FlipToBackSvg from "@/img/FlipToBack.svg?react";
 import FolderSvg from "@/img/Folder.svg?react";
+import FolderKanbanSvg from "@/img/FolderKanban.svg?react";
 import FolderOffSvg from "@/img/FolderOff.svg?react";
 import FolderOpenSvg from "@/img/FolderOpen.svg?react";
 import FullscreenSvg from "@/img/Fullscreen.svg?react";
@@ -216,16 +225,20 @@ import LabelImportantSvg from "@/img/LabelImportant.svg?react";
 import LabelOutlinedSvg from "@/img/LabelOutlined.svg?react";
 import LaunchSvg from "@/img/Launch.svg?react";
 import LayersSvg from "@/img/Layers.svg?react";
+import LayersOutlineSvg from "@/img/LayersOutline.svg?react";
 import LayoutPanelTopSvg from "@/img/LayoutPanelTop.svg?react";
 import LibraryAddSvg from "@/img/LibraryAdd.svg?react";
 import LightModeSvg from "@/img/LightMode.svg?react";
 import LightbulbSvg from "@/img/Lightbulb.svg?react";
+import GlobeSvg from "@/img/Globe.svg?react";
+import LinkSvg from "@/img/Link.svg?react";
 import Link2Svg from "@/img/Link2.svg?react";
 import ListSvg from "@/img/List.svg?react";
 import ListChecksSvg from "@/img/ListChecks.svg?react";
 import ListTreeSvg from "@/img/ListTree.svg?react";
 import LocalOfferSvg from "@/img/LocalOffer.svg?react";
 import LocalOfferOutlinedSvg from "@/img/LocalOfferOutlined.svg?react";
+import LocateSvg from "@/img/Locate.svg?react";
 import LockSvg from "@/img/Lock.svg?react";
 import LockOpenOutlinedSvg from "@/img/LockOpenOutlined.svg?react";
 import LockOutlinedSvg from "@/img/LockOutlined.svg?react";
@@ -240,10 +253,12 @@ import MenuBookSvg from "@/img/MenuBook.svg?react";
 import MessageSquareSvg from "@/img/MessageSquare.svg?react";
 import MinimizeSvg from "@/img/Minimize.svg?react";
 import Minimize2Svg from "@/img/Minimize2.svg?react";
+import MinusSvg from "@/img/Minus.svg?react";
 import MoreHorizSvg from "@/img/MoreHoriz.svg?react";
 import MoreHorizontalSvg from "@/img/MoreHorizontal.svg?react";
 import MoreVertSvg from "@/img/MoreVert.svg?react";
 import MoreVerticalSvg from "@/img/MoreVertical.svg?react";
+import MousePointer2Svg from "@/img/MousePointer2.svg?react";
 import MoveSvg from "@/img/Move.svg?react";
 import NotebookPenSvg from "@/img/NotebookPen.svg?react";
 import NotesSvg from "@/img/Notes.svg?react";
@@ -261,6 +276,7 @@ import PanelRightOpenSvg from "@/img/PanelRightOpen.svg?react";
 import PauseSvg from "@/img/Pause.svg?react";
 import PauseCircleOutlineSvg from "@/img/PauseCircleOutline.svg?react";
 import PenLineSvg from "@/img/PenLine.svg?react";
+import PenToolSvg from "@/img/PenTool.svg?react";
 import PencilSvg from "@/img/Pencil.svg?react";
 import PercentSvg from "@/img/Percent.svg?react";
 import PersonAddAltSvg from "@/img/PersonAddAlt.svg?react";
@@ -271,6 +287,7 @@ import PinSvg from "@/img/Pin.svg?react";
 import PinStrokeSvg from "@/img/PinStroke.svg?react";
 import PlaySvg from "@/img/Play.svg?react";
 import PlayArrowSvg from "@/img/PlayArrow.svg?react";
+import PlusSvg from "@/img/Plus.svg?react";
 import PolylineSvg from "@/img/Polyline.svg?react";
 import PsychologySvg from "@/img/Psychology.svg?react";
 import PuzzleSvg from "@/img/Puzzle.svg?react";
@@ -278,6 +295,7 @@ import QuestionMarkSvg from "@/img/QuestionMark.svg?react";
 import RadioSvg from "@/img/Radio.svg?react";
 import RectangleSvg from "@/img/Rectangle.svg?react";
 import RedoSvg from "@/img/Redo.svg?react";
+import Redo2Svg from "@/img/Redo2.svg?react";
 import RefreshSvg from "@/img/Refresh.svg?react";
 import RefreshCwSvg from "@/img/RefreshCw.svg?react";
 import RemoveSvg from "@/img/Remove.svg?react";
@@ -290,6 +308,7 @@ import RestartAltOutlinedSvg from "@/img/RestartAltOutlined.svg?react";
 import ReviewSvg from "@/img/Review.svg?react";
 import RocketLaunchSvg from "@/img/RocketLaunch.svg?react";
 import RotateCcwSvg from "@/img/RotateCcw.svg?react";
+import Rows2Svg from "@/img/Rows2.svg?react";
 import RuleSvg from "@/img/Rule.svg?react";
 import RuleFolderSvg from "@/img/RuleFolder.svg?react";
 import SaveSvg from "@/img/Save.svg?react";
@@ -308,6 +327,7 @@ import Settings2Svg from "@/img/Settings2.svg?react";
 import SettingsBackupRestoreSvg from "@/img/SettingsBackupRestore.svg?react";
 import SettingsInputCompositeRoundedSvg from "@/img/SettingsInputCompositeRounded.svg?react";
 import SettingsOutlinedSvg from "@/img/SettingsOutlined.svg?react";
+import SettingsStrokeSvg from "@/img/SettingsStroke.svg?react";
 import SettingsSystemDaydreamOutlinedSvg from "@/img/SettingsSystemDaydreamOutlined.svg?react";
 import ShieldCheckSvg from "@/img/ShieldCheck.svg?react";
 import ShowChartOutlinedSvg from "@/img/ShowChartOutlined.svg?react";
@@ -319,7 +339,9 @@ import SlidersHorizontalSvg from "@/img/SlidersHorizontal.svg?react";
 import SmartToySvg from "@/img/SmartToy.svg?react";
 import SparklesSvg from "@/img/Sparkles.svg?react";
 import SpeedSvg from "@/img/Speed.svg?react";
+import SplineSvg from "@/img/Spline.svg?react";
 import SplitscreenSvg from "@/img/Splitscreen.svg?react";
+import SquareSvg from "@/img/Square.svg?react";
 import StopCircleOutlinedSvg from "@/img/StopCircleOutlined.svg?react";
 import StorageSvg from "@/img/Storage.svg?react";
 import StraightenSvg from "@/img/Straighten.svg?react";
@@ -331,6 +353,7 @@ import SyncSvg from "@/img/Sync.svg?react";
 import TableChartOutlinedSvg from "@/img/TableChartOutlined.svg?react";
 import TagSvg from "@/img/Tag.svg?react";
 import TagStrokeSvg from "@/img/TagStroke.svg?react";
+import TargetSvg from "@/img/Target.svg?react";
 import TextSvg from "@/img/Text.svg?react";
 import TextureSvg from "@/img/Texture.svg?react";
 import ThreeSixtySvg from "@/img/ThreeSixty.svg?react";
@@ -340,9 +363,11 @@ import TimerSvg from "@/img/Timer.svg?react";
 import TimerOffSvg from "@/img/TimerOff.svg?react";
 import ToggleSvg from "@/img/Toggle.svg?react";
 import TrackChangesSvg from "@/img/TrackChanges.svg?react";
+import Trash2Svg from "@/img/Trash2.svg?react";
 import TuneSvg from "@/img/Tune.svg?react";
 import UnarchiveOutlinedSvg from "@/img/UnarchiveOutlined.svg?react";
 import UndoSvg from "@/img/Undo.svg?react";
+import Undo2Svg from "@/img/Undo2.svg?react";
 import UnfoldMoreSvg from "@/img/UnfoldMore.svg?react";
 import UnlockSvg from "@/img/Unlock.svg?react";
 import UnsupportedSvg from "@/img/Unsupported.svg?react";
@@ -371,6 +396,7 @@ import WebhookSvg from "@/img/Webhook.svg?react";
 import WestSvg from "@/img/West.svg?react";
 import WorkflowSvg from "@/img/Workflow.svg?react";
 import WorkspacesSvg from "@/img/Workspaces.svg?react";
+import XSvg from "@/img/X.svg?react";
 import ZapSvg from "@/img/Zap.svg?react";
 import ZoomSvg from "@/img/Zoom.svg?react";
 import ZoomInSvg from "@/img/ZoomIn.svg?react";
@@ -590,6 +616,10 @@ export const CalendarClockIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={CalendarClockSvg} />
 );
 
+export const CalendarDaysIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={CalendarDaysSvg} />
+);
+
 export const CallMergeIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={CallMergeSvg} />
 );
@@ -620,6 +650,10 @@ export const CasinoIcon: FC<IconProps> = (props) => (
 
 export const CenterFocusWeakIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={CenterFocusWeakSvg} />
+);
+
+export const ChartNoAxesColumnIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ChartNoAxesColumnSvg} />
 );
 
 export const ChatBubbleOutlineRoundedIcon: FC<IconProps> = (props) => (
@@ -714,6 +748,14 @@ export const ClearOutlinedIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ClearOutlinedSvg} />
 );
 
+export const ClipboardCheckIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ClipboardCheckSvg} />
+);
+
+export const ClipboardListIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ClipboardListSvg} />
+);
+
 export const ClockIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ClockSvg} />
 );
@@ -742,6 +784,10 @@ export const CloudCogIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={CloudCogSvg} />
 );
 
+export const CloudDownloadIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={CloudDownloadSvg} />
+);
+
 export const CloudOutlinedIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={CloudOutlinedSvg} />
 );
@@ -764,6 +810,10 @@ export const CogIcon: FC<IconProps> = (props) => (
 
 export const ColorLensIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ColorLensSvg} />
+);
+
+export const Columns2Icon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={Columns2Svg} />
 );
 
 export const ContactIcon: FC<IconProps> = (props) => (
@@ -820,6 +870,10 @@ export const DataObjectIcon: FC<IconProps> = (props) => (
 
 export const DatabaseIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={DatabaseSvg} />
+);
+
+export const DatasetIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={DatasetSvg} />
 );
 
 export const DateRangeIcon: FC<IconProps> = (props) => (
@@ -1016,6 +1070,10 @@ export const FlipToBackIcon: FC<IconProps> = (props) => (
 
 export const FolderIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={FolderSvg} />
+);
+
+export const FolderKanbanIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={FolderKanbanSvg} />
 );
 
 export const FolderOffIcon: FC<IconProps> = (props) => (
@@ -1222,6 +1280,10 @@ export const LayersIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={LayersSvg} />
 );
 
+export const LayersOutlineIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={LayersOutlineSvg} />
+);
+
 export const LayoutPanelTopIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={LayoutPanelTopSvg} />
 );
@@ -1236,6 +1298,14 @@ export const LightModeIcon: FC<IconProps> = (props) => (
 
 export const LightbulbIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={LightbulbSvg} />
+);
+
+export const GlobeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={GlobeSvg} />
+);
+
+export const LinkIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={LinkSvg} />
 );
 
 export const Link2Icon: FC<IconProps> = (props) => (
@@ -1402,6 +1472,10 @@ export const PenLineIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={PenLineSvg} />
 );
 
+export const PenToolIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={PenToolSvg} />
+);
+
 export const PencilIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={PencilSvg} />
 );
@@ -1442,6 +1516,10 @@ export const PlayArrowIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={PlayArrowSvg} />
 );
 
+export const PlusIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={PlusSvg} />
+);
+
 export const PolylineIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={PolylineSvg} />
 );
@@ -1468,6 +1546,10 @@ export const RectangleIcon: FC<IconProps> = (props) => (
 
 export const RedoIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={RedoSvg} />
+);
+
+export const Redo2Icon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={Redo2Svg} />
 );
 
 export const RefreshIcon: FC<IconProps> = (props) => (
@@ -1516,6 +1598,10 @@ export const RocketLaunchIcon: FC<IconProps> = (props) => (
 
 export const RotateCcwIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={RotateCcwSvg} />
+);
+
+export const Rows2Icon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={Rows2Svg} />
 );
 
 export const RuleIcon: FC<IconProps> = (props) => (
@@ -1682,6 +1768,10 @@ export const TagStrokeIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={TagStrokeSvg} />
 );
 
+export const TargetIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={TargetSvg} />
+);
+
 export const TextIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={TextSvg} />
 );
@@ -1728,6 +1818,42 @@ export const UnarchiveOutlinedIcon: FC<IconProps> = (props) => (
 
 export const UndoIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={UndoSvg} />
+);
+
+export const Undo2Icon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={Undo2Svg} />
+);
+
+export const SettingsStrokeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={SettingsStrokeSvg} />
+);
+
+export const EllipsisVerticalIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={EllipsisVerticalSvg} />
+);
+
+export const MousePointer2Icon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={MousePointer2Svg} />
+);
+
+export const SquareIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={SquareSvg} />
+);
+
+export const SplineIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={SplineSvg} />
+);
+
+export const LocateIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={LocateSvg} />
+);
+
+export const MinusIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={MinusSvg} />
+);
+
+export const Trash2Icon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={Trash2Svg} />
 );
 
 export const UnfoldMoreIcon: FC<IconProps> = (props) => (
@@ -1840,6 +1966,10 @@ export const WorkflowIcon: FC<IconProps> = (props) => (
 
 export const WorkspacesIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={WorkspacesSvg} />
+);
+
+export const XIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={XSvg} />
 );
 
 export const ZapIcon: FC<IconProps> = (props) => (
