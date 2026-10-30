@@ -57,6 +57,7 @@ import BrushSvg from "@/img/Brush.svg?react";
 import BubbleChartSvg from "@/img/BubbleChart.svg?react";
 import CachedOutlinedSvg from "@/img/CachedOutlined.svg?react";
 import CalendarClockSvg from "@/img/CalendarClock.svg?react";
+import CalendarDaysSvg from "@/img/CalendarDays.svg?react";
 import CallMergeSvg from "@/img/CallMerge.svg?react";
 import CallSplitSvg from "@/img/CallSplit.svg?react";
 import CallSplitOutlinedSvg from "@/img/CallSplitOutlined.svg?react";
@@ -65,6 +66,7 @@ import CancelOutlinedSvg from "@/img/CancelOutlined.svg?react";
 import CaretDownSvg from "@/img/CaretDown.svg?react";
 import CasinoSvg from "@/img/Casino.svg?react";
 import CenterFocusWeakSvg from "@/img/CenterFocusWeak.svg?react";
+import ChartNoAxesColumnSvg from "@/img/ChartNoAxesColumn.svg?react";
 import ChatBubbleOutlineRoundedSvg from "@/img/ChatBubbleOutlineRounded.svg?react";
 import CheckSvg from "@/img/Check.svg?react";
 import CheckBoxOutlineBlankSvg from "@/img/CheckBoxOutlineBlank.svg?react";
@@ -87,6 +89,8 @@ import CircleUserSvg from "@/img/CircleUser.svg?react";
 import ClearSvg from "@/img/Clear.svg?react";
 import ClearAllSvg from "@/img/ClearAll.svg?react";
 import ClearOutlinedSvg from "@/img/ClearOutlined.svg?react";
+import ClipboardCheckSvg from "@/img/ClipboardCheck.svg?react";
+import ClipboardListSvg from "@/img/ClipboardList.svg?react";
 import ClockSvg from "@/img/Clock.svg?react";
 import CloseSvg from "@/img/Close.svg?react";
 import CloseOutlinedSvg from "@/img/CloseOutlined.svg?react";
@@ -162,6 +166,7 @@ import FingerprintSvg from "@/img/Fingerprint.svg?react";
 import FitScreenSvg from "@/img/FitScreen.svg?react";
 import FlipToBackSvg from "@/img/FlipToBack.svg?react";
 import FolderSvg from "@/img/Folder.svg?react";
+import FolderKanbanSvg from "@/img/FolderKanban.svg?react";
 import FolderOffSvg from "@/img/FolderOff.svg?react";
 import FolderOpenSvg from "@/img/FolderOpen.svg?react";
 import FullscreenSvg from "@/img/Fullscreen.svg?react";
@@ -213,6 +218,7 @@ import LabelImportantSvg from "@/img/LabelImportant.svg?react";
 import LabelOutlinedSvg from "@/img/LabelOutlined.svg?react";
 import LaunchSvg from "@/img/Launch.svg?react";
 import LayersSvg from "@/img/Layers.svg?react";
+import LayersOutlineSvg from "@/img/LayersOutline.svg?react";
 import LayoutPanelTopSvg from "@/img/LayoutPanelTop.svg?react";
 import LibraryAddSvg from "@/img/LibraryAdd.svg?react";
 import LightModeSvg from "@/img/LightMode.svg?react";
@@ -258,6 +264,7 @@ import PanelRightOpenSvg from "@/img/PanelRightOpen.svg?react";
 import PauseSvg from "@/img/Pause.svg?react";
 import PauseCircleOutlineSvg from "@/img/PauseCircleOutline.svg?react";
 import PenLineSvg from "@/img/PenLine.svg?react";
+import PenToolSvg from "@/img/PenTool.svg?react";
 import PencilSvg from "@/img/Pencil.svg?react";
 import PercentSvg from "@/img/Percent.svg?react";
 import PersonAddAltSvg from "@/img/PersonAddAlt.svg?react";
@@ -327,6 +334,7 @@ import SyncSvg from "@/img/Sync.svg?react";
 import TableChartOutlinedSvg from "@/img/TableChartOutlined.svg?react";
 import TagSvg from "@/img/Tag.svg?react";
 import TagStrokeSvg from "@/img/TagStroke.svg?react";
+import TargetSvg from "@/img/Target.svg?react";
 import TextSvg from "@/img/Text.svg?react";
 import TextureSvg from "@/img/Texture.svg?react";
 import ThreeSixtySvg from "@/img/ThreeSixty.svg?react";
@@ -999,6 +1007,38 @@ export const FlipToBackIcon: FC<IconProps> = (props) => (
 
 export const FolderIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={FolderSvg} />
+);
+
+export const ClipboardListIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ClipboardListSvg} />
+);
+
+export const ClipboardCheckIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ClipboardCheckSvg} />
+);
+
+export const ChartNoAxesColumnIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ChartNoAxesColumnSvg} />
+);
+
+export const CalendarDaysIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={CalendarDaysSvg} />
+);
+
+export const TargetIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={TargetSvg} />
+);
+
+export const PenToolIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={PenToolSvg} />
+);
+
+export const LayersOutlineIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={LayersOutlineSvg} />
+);
+
+export const FolderKanbanIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={FolderKanbanSvg} />
 );
 
 export const FolderOffIcon: FC<IconProps> = (props) => (

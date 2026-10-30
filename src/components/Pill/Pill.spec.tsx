@@ -31,6 +31,23 @@ describe("Pill", () => {
     expect(svg).toBeInTheDocument();
   });
 
+  it("should tint the status dot with dotColor, apart from the text", () => {
+    const { container } = render(
+      <Pill isStatus color="text-foreground" dotColor="text-failure">
+        {pillText}
+      </Pill>
+    );
+
+    const dot = render(
+      <Pill isStatus color="text-failure">
+        x
+      </Pill>
+    );
+    expect(container.querySelector("svg")?.outerHTML).toBe(
+      dot.container.querySelector("svg")?.outerHTML
+    );
+  });
+
   it("should not render status icon when isStatus is false", () => {
     render(<Pill isStatus={false}>{pillText}</Pill>);
 
