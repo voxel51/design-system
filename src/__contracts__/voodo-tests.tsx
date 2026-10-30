@@ -654,7 +654,7 @@ export const Everything = (
           {s}
         </TextAction>
       ))}
-      {(["sm", "md", "lg"] as const).map((s) => (
+      {(["xs", "sm", "md", "lg"] as const).map((s) => (
         <IconAction key={s} icon="Add" size={s} aria-label={s} />
       ))}
       <TextAction collapse leadingIcon="Add" aria-label="Share" onClick={noop}>
