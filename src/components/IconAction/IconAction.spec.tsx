@@ -28,4 +28,32 @@ describe("IconAction", () => {
 
     expect(screen.getByRole("button")).toHaveClass("size-[26px]");
   });
+
+  it("has an xs size for dense inline affordances", () => {
+    render(<IconAction icon={IconName.Add} aria-label="Add stage" size="xs" />);
+
+    const button = screen.getByRole("button");
+    expect(button).toHaveClass("size-4");
+    expect(button.querySelector("svg")).toHaveAttribute("width", "10");
+  });
+
+  it("tints toward the brand on hover with the brand tone", () => {
+    render(<IconAction icon={IconName.Add} aria-label="Pin" tone="brand" />);
+
+    const button = screen.getByRole("button");
+    expect(button).toHaveClass("hover:bg-brand-primary/15");
+    expect(button).not.toHaveClass("bg-content-bg-card-nested");
+  });
+
+  it("fills with the danger colour on hover with the danger tone", () => {
+    render(
+      <IconAction icon={IconName.Close} aria-label="Remove" tone="danger" />
+    );
+
+    const button = screen.getByRole("button");
+    expect(button).toHaveClass("hover:text-white");
+    expect(button).toHaveClass(
+      "hover:bg-[var(--color-content-interactive-danger-hover)]"
+    );
+  });
 });
