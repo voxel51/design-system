@@ -28,4 +28,14 @@ describe("IconAction", () => {
 
     expect(screen.getByRole("button")).toHaveClass("size-[26px]");
   });
+
+  it("has an xs size for dense inline affordances", () => {
+    render(
+      <IconAction icon={IconName.Add} aria-label="Add stage" size="xs" />
+    );
+
+    const button = screen.getByRole("button");
+    expect(button).toHaveClass("size-4");
+    expect(button.querySelector("svg")).toHaveAttribute("width", "10");
+  });
 });
