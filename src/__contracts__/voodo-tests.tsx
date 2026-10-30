@@ -64,6 +64,9 @@ import {
   ModalSize,
   OverflowRow,
   Pagination,
+  ChipSelect,
+  FilterBar,
+  FilterChip,
   Orientation,
   ScrimColor,
   VizChartColor,
@@ -608,6 +611,21 @@ export const Everything = (
           r={r}
         </Pill>
       ))}
+      <Pill isStatus color="text-foreground" dotColor="text-failure">
+        dot
+      </Pill>
+      <FilterBar search={<span>search</span>} actions={<span>actions</span>}>
+        <ChipSelect
+          aria-label="Sort by"
+          prefix="Sort by"
+          value="a"
+          onChange={() => {}}
+          options={[{ id: "a", label: "A" }]}
+        />
+      </FilterBar>
+      <FilterChip count={3} selected onClick={() => {}}>
+        tag
+      </FilterChip>
       <RichButtonGroup
         buttons={[
           { id: "a", data: { children: "A" } },
