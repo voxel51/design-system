@@ -654,9 +654,13 @@ export const Everything = (
           {s}
         </TextAction>
       ))}
-      {(["sm", "md", "lg"] as const).map((s) => (
+      {(["xs", "sm", "md", "lg"] as const).map((s) => (
         <IconAction key={s} icon="Add" size={s} aria-label={s} />
       ))}
+      <IconAction icon="Add" tone="brand" aria-label="Pin" />
+      <IconAction icon="Add" tone="danger" aria-label="Remove" />
+      {/* @ts-expect-error - unknown tone */}
+      <IconAction icon="Add" tone="warning" aria-label="Pin" />
       <TextAction collapse leadingIcon="Add" aria-label="Share" onClick={noop}>
         Share
       </TextAction>

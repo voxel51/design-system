@@ -7,7 +7,7 @@ const meta: Meta<typeof IconAction> = {
   component: IconAction,
   parameters: { layout: "centered" },
   argTypes: {
-    size: { control: "select", options: [Size.Sm, Size.Md, Size.Lg] },
+    size: { control: "select", options: [Size.Xs, Size.Sm, Size.Md, Size.Lg] },
   },
 };
 

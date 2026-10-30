@@ -5,6 +5,7 @@ import type { ButtonHTMLAttributes, FC } from "react";
 import { type IconInput, IconWrapper } from "@/components/Icons";
 import radiusStyles from "@/styles/radius";
 import {
+  BackgroundColor,
   bgColorClass,
   ElementState,
   IconColor,
@@ -14,24 +15,33 @@ import {
   textColorClass,
 } from "@/types";
 
-type IconActionSize = `${Size.Sm | Size.Md | Size.Lg}`;
+type IconActionSize = `${Size.Xs | Size.Sm | Size.Md | Size.Lg}`;
+
+export type IconActionTone = "default" | "brand" | "danger";
 
 export interface IconActionProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon: IconInput;
   size?: IconActionSize;
+  /** On (a pinned pin, say): a filled brand-coloured glyph on a nested-card fill. */
+  active?: boolean;
+  /** `"brand"`: brand-tinted on hover while off, as it is when on. `"danger"`: a danger fill on hover (remove, delete). */
+  tone?: IconActionTone;
   "aria-label": string;
 }
 
-// Figma BorderlessButton, icon style: 26px round hit area with a 14px glyph
-// at Small, 36px with 16px at Medium (the file says 35), 40px with 20px at
+// Figma BorderlessButton, icon style: a 16px disc with a 10px glyph at Xs
+// (dense inline affordances, such as the stage inserter between pills), 26px
+// round hit area with a 14px glyph at Small, 36px with 16px at Medium (the file says 35), 40px with 20px at
 // Large.
 const sizeStyles: Record<IconActionSize, string> = {
+  [Size.Xs]: "size-4",
   [Size.Sm]: "size-[26px]",
   [Size.Md]: "size-9",
   [Size.Lg]: "size-10",
 };
 
 const iconSizes: Record<IconActionSize, number> = {
+  [Size.Xs]: 10,
   [Size.Sm]: 14,
   [Size.Md]: 16,
   [Size.Lg]: 20,
@@ -46,7 +56,9 @@ const iconSizes: Record<IconActionSize, number> = {
  * ```
  *
  * @param icon The icon to show: a per-icon component such as `CloseIcon`.
- * @param size `"sm"`, `"md"` or `"lg"`. Defaults to `"md"`.
+ * @param size `"xs"`, `"sm"`, `"md"` or `"lg"`. Defaults to `"md"`.
+ * @param active Shows the action as on: a filled brand-coloured glyph on a nested-card fill, brand-tinted on hover.
+ * @param tone `"brand"` gives the off state the same brand-tinted hover (a pin that is not pinned yet); `"danger"` fills with the danger colour on hover (remove, delete). Defaults to `"default"`.
  * @param aria-label Required, because the action has no visible text.
  * @param className Additional CSS class names to apply to the button.
  * @param props Additional HTML button properties, such as `onClick`.
@@ -54,6 +66,8 @@ const iconSizes: Record<IconActionSize, number> = {
 export const IconAction: FC<IconActionProps> = ({
   icon,
   size = Size.Md,
+  active,
+  tone = "default",
   className,
   ...props
 }) => (
@@ -63,10 +77,38 @@ export const IconAction: FC<IconActionProps> = ({
       "hover:cursor-pointer disabled:pointer-events-none disabled:opacity-50",
       radiusStyles(Radius.Full),
       sizeStyles[size],
-      textColorClass(IconColor.Default),
-      textColorClass(IconColor.Emphasis, ElementState.Hover),
-      bgColorClass(InteractiveColor.SecondaryHover, ElementState.Hover),
-      bgColorClass(InteractiveColor.SecondaryPressed, ElementState.Active),
+      active
+        ? [
+            "hover:bg-brand-primary/15 [&_svg]:fill-current",
+            textColorClass(IconColor.Brand),
+            bgColorClass(BackgroundColor.CardNested),
+          ]
+        : tone === "brand"
+          ? [
+              "hover:bg-brand-primary/15",
+              textColorClass(IconColor.Default),
+              textColorClass(IconColor.Brand, ElementState.Hover),
+            ]
+          : tone === "danger"
+            ? [
+                "hover:text-white",
+                textColorClass(IconColor.Default),
+                bgColorClass(InteractiveColor.DangerHover, ElementState.Hover),
+                bgColorClass(
+                  InteractiveColor.DangerPressed,
+                  ElementState.Active
+                ),
+              ]
+            : [
+                textColorClass(IconColor.Default),
+                textColorClass(IconColor.Emphasis, ElementState.Hover),
+                bgColorClass(
+                  InteractiveColor.SecondaryHover,
+                  ElementState.Hover
+                ),
+              ],
+      tone !== "danger" &&
+        bgColorClass(InteractiveColor.SecondaryPressed, ElementState.Active),
       className
     )}
     {...props}
