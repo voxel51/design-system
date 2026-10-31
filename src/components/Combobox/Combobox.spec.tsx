@@ -1,7 +1,7 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { ComponentProps } from "react";
-import { StrictMode, useState } from "react";
+import { StrictMode, useRef, useState } from "react";
 
 import { IconName } from "@/types";
 
@@ -168,6 +168,29 @@ describe("Combobox", () => {
     expect(screen.getAllByRole("option")).toHaveLength(OPTIONS.length);
   });
 
+  it("sizes a portaled list to its anchor rather than the field", async () => {
+    function Framed() {
+      const frame = useRef<HTMLDivElement>(null);
+      return (
+        <div ref={frame} data-testid="frame">
+          <Harness portal anchor={frame} />
+        </div>
+      );
+    }
+    render(<Framed />);
+    jest.spyOn(
+      screen.getByTestId("frame"),
+      "getBoundingClientRect"
+    ).mockReturnValue(DOMRect.fromRect({ width: 500, height: 44 }));
+    await userEvent.click(screen.getByRole("combobox"));
+
+    await waitFor(() =>
+      expect(screen.getByRole("listbox")).toHaveStyle({
+        minWidth: "500px",
+      })
+    );
+  });
+
   it("closes a portaled list on an outside click but not on a list click", async () => {
     render(<Harness portal />);
     await userEvent.click(screen.getByRole("combobox"));
@@ -178,6 +201,51 @@ describe("Combobox", () => {
     expect(screen.getByRole("listbox")).toBeInTheDocument();
 
     await userEvent.pointer({ keys: "[MouseLeft]", target: document.body });
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+  });
+
+  it("titles each group where it starts", async () => {
+    render(
+      <Harness
+        options={[
+          { id: "a", label: "alpha", group: "Filter" },
+          { id: "b", label: "beta", group: "Filter" },
+          { id: "c", label: "gamma", group: "Sort" },
+        ]}
+      />
+    );
+    await userEvent.click(screen.getByRole("combobox"));
+
+    const text = screen.getByRole("listbox").textContent;
+    expect(text).toBe("FilteralphabetaSortgamma");
+  });
+
+  it("shows an inline list without focus and reports Escape", async () => {
+    const onOpenChange = jest.fn();
+    render(<Harness inline onOpenChange={onOpenChange} />);
+    expect(screen.getAllByRole("option")).toHaveLength(OPTIONS.length);
+
+    await userEvent.click(screen.getByRole("combobox"));
+    await userEvent.keyboard("{Escape}");
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
+    expect(screen.getByRole("listbox")).toBeInTheDocument();
+  });
+
+  it("closes on a press outside that stops propagation", async () => {
+    render(
+      <>
+        <Harness portal />
+        <div
+          data-testid="panel"
+          onPointerDown={(e): void => e.stopPropagation()}
+        />
+      </>
+    );
+    await userEvent.click(screen.getByRole("combobox"));
+    await userEvent.pointer({
+      keys: "[MouseLeft]",
+      target: screen.getByTestId("panel"),
+    });
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
   });
 
