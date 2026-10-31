@@ -107,6 +107,7 @@ import ContentCopySvg from "@/img/ContentCopy.svg?react";
 import ContentCopyOutlinedSvg from "@/img/ContentCopyOutlined.svg?react";
 import CopySvg from "@/img/Copy.svg?react";
 import CopyAllOutlinedSvg from "@/img/CopyAllOutlined.svg?react";
+import CornerDownLeftSvg from "@/img/CornerDownLeft.svg?react";
 import CorporateFareSvg from "@/img/CorporateFare.svg?react";
 import CpuSvg from "@/img/Cpu.svg?react";
 import CreditCardSvg from "@/img/CreditCard.svg?react";
@@ -783,6 +784,10 @@ export const CopyIcon: FC<IconProps> = (props) => (
 
 export const CopyAllOutlinedIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={CopyAllOutlinedSvg} />
+);
+
+export const CornerDownLeftIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={CornerDownLeftSvg} />
 );
 
 export const CorporateFareIcon: FC<IconProps> = (props) => (

@@ -3,8 +3,10 @@ import type { ComponentProps } from "react";
 import { useMemo, useState } from "react";
 
 import {
+  ArrowUpDownIcon,
   Combobox,
   type ComboboxOption,
+  FilterAltIcon,
   StatusDot,
   Text,
   TextColor,
@@ -120,3 +122,33 @@ export const WithHeader: Story = {
 };
 
 export default meta;
+
+const QUERIES: ComboboxOption[] = [
+  {
+    id: "1",
+    label: "armyworm with low confidence",
+    icon: FilterAltIcon,
+    hint: "filters grid",
+  },
+  {
+    id: "2",
+    label: "samples tagged needs-review",
+    icon: FilterAltIcon,
+    hint: "filters grid",
+  },
+  {
+    id: "3",
+    label: "hardest samples for the current model",
+    icon: ArrowUpDownIcon,
+    hint: "ranks by confidence",
+  },
+];
+
+/** Rows with a leading icon and a hint; the highlighted row adds Enter. */
+export const IconsAndHints: Story = {
+  render: () => (
+    <div className="w-[32rem]">
+      <Demo all={QUERIES} placeholder="Search" aria-label="Query" />
+    </div>
+  ),
+};

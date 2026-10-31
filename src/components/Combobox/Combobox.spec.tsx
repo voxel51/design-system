@@ -1,7 +1,7 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { ComponentProps } from "react";
-import { StrictMode, useState } from "react";
+import { StrictMode, useRef, useState } from "react";
 
 import { IconName } from "@/types";
 
@@ -65,6 +65,24 @@ describe("Combobox", () => {
     expect(screen.getByText("the first one")).toBeInTheDocument();
   });
 
+  it("renders an option's icon and hint, with Enter on the highlighted row", async () => {
+    const user = userEvent.setup();
+    render(
+      <Harness
+        options={[
+          { id: "a", label: "alpha", icon: IconName.Search, hint: "searches" },
+          { id: "b", label: "beta", hint: "searches" },
+        ]}
+      />
+    );
+    await user.click(screen.getByRole("combobox"));
+    await user.keyboard("{ArrowDown}");
+    const [first, second] = screen.getAllByRole("option");
+    expect(first).toHaveTextContent("searches");
+    expect(first.querySelectorAll("svg")).toHaveLength(2);
+    expect(second.querySelectorAll("svg")).toHaveLength(0);
+  });
+
   it("picks an option on click and fills the field", async () => {
     const onPick = jest.fn();
     render(<Harness onPick={onPick} />);
@@ -104,6 +122,18 @@ describe("Combobox", () => {
 
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
     expect(onPick).not.toHaveBeenCalled();
+  });
+
+  it("keeps Escape from reaching a parent while the list is open", async () => {
+    const onParentKey = jest.fn();
+    document.addEventListener("keydown", onParentKey);
+    render(<Harness />);
+    await userEvent.click(screen.getByRole("combobox"));
+    await userEvent.keyboard("{Escape}");
+    expect(onParentKey).not.toHaveBeenCalled();
+    await userEvent.keyboard("{Escape}");
+    expect(onParentKey).toHaveBeenCalledTimes(1);
+    document.removeEventListener("keydown", onParentKey);
   });
 
   it("drops the selection once the text no longer matches it", async () => {
@@ -168,6 +198,28 @@ describe("Combobox", () => {
     expect(screen.getAllByRole("option")).toHaveLength(OPTIONS.length);
   });
 
+  it("sizes a portaled list to its anchor rather than the field", async () => {
+    function Framed() {
+      const frame = useRef<HTMLDivElement>(null);
+      return (
+        <div ref={frame} data-testid="frame">
+          <Harness portal anchor={frame} />
+        </div>
+      );
+    }
+    render(<Framed />);
+    jest
+      .spyOn(screen.getByTestId("frame"), "getBoundingClientRect")
+      .mockReturnValue(DOMRect.fromRect({ width: 500, height: 44 }));
+    await userEvent.click(screen.getByRole("combobox"));
+
+    await waitFor(() =>
+      expect(screen.getByRole("listbox")).toHaveStyle({
+        minWidth: "500px",
+      })
+    );
+  });
+
   it("closes a portaled list on an outside click but not on a list click", async () => {
     render(<Harness portal />);
     await userEvent.click(screen.getByRole("combobox"));
@@ -178,6 +230,51 @@ describe("Combobox", () => {
     expect(screen.getByRole("listbox")).toBeInTheDocument();
 
     await userEvent.pointer({ keys: "[MouseLeft]", target: document.body });
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+  });
+
+  it("titles each group where it starts", async () => {
+    render(
+      <Harness
+        options={[
+          { id: "a", label: "alpha", group: "Filter" },
+          { id: "b", label: "beta", group: "Filter" },
+          { id: "c", label: "gamma", group: "Sort" },
+        ]}
+      />
+    );
+    await userEvent.click(screen.getByRole("combobox"));
+
+    const text = screen.getByRole("listbox").textContent;
+    expect(text).toBe("FilteralphabetaSortgamma");
+  });
+
+  it("shows an inline list without focus and reports Escape", async () => {
+    const onOpenChange = jest.fn();
+    render(<Harness inline onOpenChange={onOpenChange} />);
+    expect(screen.getAllByRole("option")).toHaveLength(OPTIONS.length);
+
+    await userEvent.click(screen.getByRole("combobox"));
+    await userEvent.keyboard("{Escape}");
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
+    expect(screen.getByRole("listbox")).toBeInTheDocument();
+  });
+
+  it("closes on a press outside that stops propagation", async () => {
+    render(
+      <>
+        <Harness portal />
+        <div
+          data-testid="panel"
+          onPointerDown={(e): void => e.stopPropagation()}
+        />
+      </>
+    );
+    await userEvent.click(screen.getByRole("combobox"));
+    await userEvent.pointer({
+      keys: "[MouseLeft]",
+      target: screen.getByTestId("panel"),
+    });
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
   });
 
@@ -256,6 +353,17 @@ describe("Combobox", () => {
     render(<Harness autoHighlight />);
     await userEvent.click(screen.getByRole("combobox"));
     expect(screen.queryByRole("option", { selected: true })).toBeNull();
+  });
+
+  it("stands on the top row of an inline list before any text with autoHighlight", async () => {
+    const onPick = jest.fn();
+    render(<Harness inline autoHighlight focusOnMount onPick={onPick} />);
+    expect(screen.getByRole("option", { name: "alpha" })).toHaveAttribute(
+      "aria-selected",
+      "true"
+    );
+    await userEvent.keyboard("{Enter}");
+    expect(onPick).toHaveBeenCalledWith(OPTIONS[0]);
   });
 
   it("shows the empty message when there are no options", async () => {

@@ -11,17 +11,23 @@ import {
   useCallback,
   useEffect,
   useId,
+  useLayoutEffect,
   useRef,
   useState,
   type FC,
   type HTMLAttributes,
   type KeyboardEvent,
   type ReactNode,
+  type RefObject,
 } from "react";
 
-import type { IconInput } from "@/components/Icons";
+import {
+  CornerDownLeftIcon,
+  IconWrapper,
+  type IconInput,
+} from "@/components/Icons";
 import { Input } from "@/components/Input";
-import { menuPanelStyles } from "@/components/Menu";
+import { MenuSectionTitle, menuPanelStyles } from "@/components/Menu";
 import { Spinner } from "@/components/Spinner";
 import { Text } from "@/components/Text";
 import {
@@ -30,6 +36,7 @@ import {
   ElementState,
   Size,
   TextColor,
+  textColorClass,
   TextVariant,
   ZIndex,
   zIndexStyles,
@@ -47,6 +54,16 @@ export interface ComboboxOption {
   label: string;
   /** Optional second line — a definition, a slug, an owner. */
   description?: ReactNode;
+  /** A leading icon saying what kind of row it is. */
+  icon?: IconInput;
+  /** A short note at the row's end, such as what picking it does; the
+   * highlighted row adds an Enter glyph after it. */
+  hint?: ReactNode;
+  /**
+   * The section the row belongs to. A titled section starts wherever the
+   * group changes, so pass the rows ordered by group.
+   */
+  group?: string;
   /** `data-*` attributes for the row — a test id, a tracking hook. */
   [dataAttribute: `data-${string}`]: string | undefined;
 }
@@ -109,6 +126,18 @@ export interface ComboboxProps extends Omit<
    * @default false
    */
   portal?: boolean;
+  /**
+   * With `portal`, the element the list drops under and takes its width
+   * from, instead of the field — for a field inside a larger frame, such as
+   * a search bar, whose list spans the frame.
+   */
+  anchor?: RefObject<HTMLElement | null>;
+  /**
+   * The list always shows, in the flow under the field, with no frame of its
+   * own — for a picker inside a popover, like a command palette. Escape and
+   * picking still report `onOpenChange(false)`, so the host can close.
+   */
+  inline?: boolean;
   /** Explicit z-index for the list. A portaled list defaults to above-modal. */
   zIndex?: ZIndex;
   /**
@@ -125,8 +154,8 @@ export interface ComboboxProps extends Omit<
   /** Focus the field on mount — for a combobox that opens on demand. */
   focusOnMount?: boolean;
   /**
-   * Highlight the first row whenever there is text, so Enter takes the top
-   * match without an arrow key first. Off by default: with it off, Enter on
+   * Highlight the first row whenever there is text (an inline list: always),
+   * so Enter takes the top match without an arrow key first. Off by default: with it off, Enter on
    * unmatched text commits free text (or nothing), never a row the user
    * has not pointed at.
    * @default false
@@ -134,12 +163,19 @@ export interface ComboboxProps extends Omit<
   autoHighlight?: boolean;
 }
 
-const optionStyles = (active: boolean): string =>
+// An inline list sits on its popover's surface, so its highlight is a
+// nested card rather than the selection tint (card matches popover in light)
+const optionStyles = (active: boolean, inline: boolean, row: boolean): string =>
   cn(
-    "flex w-full cursor-pointer flex-col items-start gap-0.5",
+    "flex w-full cursor-pointer",
+    row ? "items-center gap-2" : "flex-col items-start gap-0.5",
     "px-2 py-1.5 text-left",
     "rounded-md",
-    active && bgColorClass(BackgroundColor.Selected, ElementState.None)
+    active &&
+      bgColorClass(
+        inline ? BackgroundColor.CardNested : BackgroundColor.Selected,
+        ElementState.None
+      )
   );
 
 /** The data-* attributes an option carries, for the row that renders it. */
@@ -208,12 +244,14 @@ ListPortal.displayName = "ListPortal";
  * @param emptyMessage Shown when there are no options; a function receives `close`.
  * @param className `class` overrides for the wrapper.
  * @param portal Render the list in a portal, anchored to the field.
+ * @param anchor With `portal`, the element the list drops under instead of the field.
+ * @param inline The list always shows, in the flow, unframed.
  * @param zIndex Explicit z-index for the list.
  * @param commitOnBlur Commit free text on blur (default `true`).
  * @param borderless No frame on the field.
  * @param icon A leading icon in the field.
  * @param focusOnMount Focus the field on mount.
- * @param autoHighlight Highlight the first row whenever there is text.
+ * @param autoHighlight Highlight the first row whenever there is text (inline: always).
  * @param inputProps Attributes for the field itself.
  * @param header Shown above the list's contents whenever the list is open.
  * @param listProps Attributes for the list.
@@ -234,6 +272,8 @@ export const Combobox: FC<ComboboxProps> = ({
   emptyMessage = "No matches",
   className,
   portal = false,
+  anchor,
+  inline = false,
   zIndex,
   commitOnBlur = true,
   borderless = false,
@@ -290,10 +330,15 @@ export const Combobox: FC<ComboboxProps> = ({
   const setWrapper = useCallback(
     (node: HTMLDivElement | null): void => {
       wrapper.current = node;
-      refs.setReference(node);
+      if (!anchor) refs.setReference(node);
     },
-    [refs]
+    [refs, anchor]
   );
+  // An ancestor's ref attaches after the field mounts, so the anchor is read
+  // when the list opens
+  useLayoutEffect((): void => {
+    if (open && anchor?.current) refs.setReference(anchor.current);
+  }, [open, anchor, refs]);
 
   // A fresh list means the old highlight index points at a different row.
   useEffect((): void => setActive(null), [options]);
@@ -308,11 +353,14 @@ export const Combobox: FC<ComboboxProps> = ({
   }, []);
 
   // `active` is what the user pointed at. With nothing pointed at, an
-  // auto-highlighting combobox stands on the top row whenever there is text,
-  // so Enter takes the top match — derived, not stored, so a fresh list or
+  // auto-highlighting combobox stands on the top row whenever there is text
+  // (an inline list, always on screen, even without), so Enter takes the top match — derived, not stored, so a fresh list or
   // fresh text never has to reset it.
   const highlighted =
-    active ?? (autoHighlight && inputValue.trim() && options.length ? 0 : null);
+    active ??
+    (autoHighlight && (inline || inputValue.trim()) && options.length
+      ? 0
+      : null);
 
   const close = useCallback((): void => {
     setOpen(false);
@@ -332,9 +380,10 @@ export const Combobox: FC<ComboboxProps> = ({
       if (refs.floating.current?.contains(target)) return;
       close();
     };
-    document.addEventListener("pointerdown", onPointerDown);
+    // Capture, so a press on a surface that stops propagation still counts
+    document.addEventListener("pointerdown", onPointerDown, true);
     return (): void =>
-      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("pointerdown", onPointerDown, true);
   }, [close, open, refs.floating]);
 
   const pick = useCallback(
@@ -389,7 +438,9 @@ export const Combobox: FC<ComboboxProps> = ({
         return;
       }
       const option =
-        open && highlighted !== null ? options[highlighted] : undefined;
+        (open || inline) && highlighted !== null
+          ? options[highlighted]
+          : undefined;
       if (option) {
         e.preventDefault();
         pick(option);
@@ -400,6 +451,7 @@ export const Combobox: FC<ComboboxProps> = ({
       return;
     }
     if (e.key === "Escape") {
+      if (open) e.stopPropagation();
       close();
     }
   };
@@ -432,73 +484,128 @@ export const Combobox: FC<ComboboxProps> = ({
           if (value && e.target.value !== value.label) onChange(null);
         }}
       />
-      {open && (loading || options.length > 0 || emptyMessage !== null) && (
-        <ListPortal portal={portal}>
-          <div
-            id={listId}
-            role="listbox"
-            {...listProps}
-            ref={portal ? refs.setFloating : undefined}
-            style={portal ? floatingStyles : undefined}
-            className={cn(
-              portal ? undefined : "absolute top-full left-0 mt-1 w-full",
-              "max-h-64 overflow-y-auto",
-              menuPanelStyles(),
-              portal ? undefined : "max-w-none",
-              zIndexStyles(
-                zIndex ?? (portal ? ZIndex.AboveModal : ZIndex.Medium)
-              )
-            )}
-          >
-            {header}
-            {loading && (
-              <div className="flex justify-center py-2">
-                <Spinner size={Size.Md} />
-              </div>
-            )}
-            {!loading && !options.length && (
-              <div className="px-2 py-1.5">
-                <Text variant={TextVariant.Sm} color={TextColor.Tertiary}>
-                  {typeof emptyMessage === "function"
-                    ? emptyMessage({ close })
-                    : emptyMessage}
-                </Text>
-              </div>
-            )}
-            {!loading &&
-              options.map((option, i) => (
-                <button
-                  key={option.id}
-                  type="button"
-                  role="option"
-                  // The visible row is label + description; the name is the label
-                  aria-label={option.label}
-                  {...dataAttributes(option)}
-                  aria-selected={i === highlighted}
-                  className={optionStyles(i === highlighted)}
-                  // The field owns focus; hovering only moves the highlight so
-                  // pointer and keyboard agree on what Enter would pick.
-                  onMouseEnter={(): void => setActive(i)}
-                  // Mousedown, not click: click lands after blur, and blur has
-                  // already committed or closed by then.
-                  onMouseDown={(e): void => {
-                    e.preventDefault();
-                    pick(option);
-                  }}
-                >
-                  <Text variant={TextVariant.Sm} color={TextColor.Primary}>
-                    {option.label}
+      {(open || inline) &&
+        (loading || options.length > 0 || emptyMessage !== null) && (
+          <ListPortal portal={portal && !inline}>
+            <div
+              id={listId}
+              role="listbox"
+              {...listProps}
+              ref={portal && !inline ? refs.setFloating : undefined}
+              style={portal && !inline ? floatingStyles : undefined}
+              className={
+                inline
+                  ? "mt-1 max-h-80 overflow-y-auto"
+                  : cn(
+                      portal
+                        ? undefined
+                        : "absolute top-full left-0 mt-1 w-full",
+                      "max-h-64 overflow-y-auto",
+                      menuPanelStyles(),
+                      portal ? undefined : "max-w-none",
+                      zIndexStyles(
+                        zIndex ?? (portal ? ZIndex.AboveModal : ZIndex.Medium)
+                      )
+                    )
+              }
+            >
+              {header}
+              {loading && (
+                <div className="flex justify-center py-2">
+                  <Spinner size={Size.Md} />
+                </div>
+              )}
+              {!loading && !options.length && (
+                <div className="px-2 py-1.5">
+                  <Text variant={TextVariant.Sm} color={TextColor.Tertiary}>
+                    {typeof emptyMessage === "function"
+                      ? emptyMessage({ close })
+                      : emptyMessage}
                   </Text>
-                  {option.description && (
-                    <Text variant={TextVariant.Xs} color={TextColor.Tertiary}>
-                      {option.description}
-                    </Text>
-                  )}
-                </button>
-              ))}
-          </div>
-        </ListPortal>
-      )}
+                </div>
+              )}
+              {!loading &&
+                options.map((option, i) => [
+                  option.group && option.group !== options[i - 1]?.group && (
+                    <MenuSectionTitle
+                      key={`group:${option.group}`}
+                      className="pt-2 pb-1"
+                    >
+                      {option.group}
+                    </MenuSectionTitle>
+                  ),
+                  <button
+                    key={option.id}
+                    type="button"
+                    role="option"
+                    // The visible row is label + description; the name is the label
+                    aria-label={option.label}
+                    {...dataAttributes(option)}
+                    aria-selected={i === highlighted}
+                    className={optionStyles(
+                      i === highlighted,
+                      inline,
+                      Boolean(option.icon || option.hint)
+                    )}
+                    // The field owns focus; hovering only moves the highlight so
+                    // pointer and keyboard agree on what Enter would pick.
+                    onMouseEnter={(): void => setActive(i)}
+                    // Mousedown, not click: click lands after blur, and blur has
+                    // already committed or closed by then.
+                    onMouseDown={(e): void => {
+                      e.preventDefault();
+                      pick(option);
+                    }}
+                  >
+                    {option.icon && (
+                      <IconWrapper
+                        content={option.icon}
+                        size={14}
+                        className={cn(
+                          "shrink-0",
+                          textColorClass(TextColor.Secondary)
+                        )}
+                      />
+                    )}
+                    <span className="flex min-w-0 flex-1 flex-col items-start gap-0.5">
+                      <Text
+                        variant={TextVariant.BodySecondary}
+                        color={TextColor.Primary}
+                      >
+                        {option.label}
+                      </Text>
+                      {option.description && (
+                        <Text
+                          variant={TextVariant.BodyTertiary}
+                          color={TextColor.Secondary}
+                        >
+                          {option.description}
+                        </Text>
+                      )}
+                    </span>
+                    {option.hint && (
+                      <span
+                        className={cn(
+                          "flex shrink-0 items-center gap-1.5 whitespace-nowrap",
+                          textColorClass(TextColor.Tertiary)
+                        )}
+                      >
+                        <Text
+                          variant={TextVariant.BodyTertiary}
+                          color={TextColor.Tertiary}
+                        >
+                          {option.hint}
+                        </Text>
+                        {i === highlighted && (
+                          <IconWrapper content={CornerDownLeftIcon} size={12} />
+                        )}
+                      </span>
+                    )}
+                  </button>,
+                ])}
+            </div>
+          </ListPortal>
+        )}
     </div>
   );
 };
