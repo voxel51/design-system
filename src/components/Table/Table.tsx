@@ -10,8 +10,6 @@ import { textStyles } from "@/styles/text";
 import {
   BackgroundColor,
   bgColorClass,
-  BorderColor,
-  borderColorClass,
   ElementState,
   Radius,
   TextColor,
@@ -92,7 +90,7 @@ export const TableRow: FC<HTMLAttributes<HTMLTableRowElement>> = ({
     <tr
       className={cn(
         "border-b last:border-0",
-        borderColorClass(BorderColor.Subtle),
+        "border-content-border-default/30",
         isClickable && "hover:cursor-pointer",
         isClickable &&
           bgColorClass(BackgroundColor.CardNested, ElementState.Hover),
@@ -124,11 +122,7 @@ export const TableHeader: FC<HTMLAttributes<HTMLTableSectionElement>> = ({
 }) => {
   return (
     <thead
-      className={cn(
-        "border-b",
-        borderColorClass(BorderColor.Subtle),
-        className
-      )}
+      className={cn("border-b", "border-content-border-default/30", className)}
       {...props}
     >
       {children}
