@@ -5,6 +5,7 @@ import { IconAction } from "@/components/IconAction";
 import { CloseIcon, SearchStrokeIcon } from "@/components/Icons";
 import { MenuCheckItem } from "@/components/Menu";
 import radiusStyles from "@/styles/radius";
+import { TEXT_STYLES } from "@/styles/text";
 import {
   BackgroundColor,
   bgColorClass,
@@ -15,6 +16,7 @@ import {
   Size,
   TextColor,
   textColorClass,
+  TextVariant,
 } from "@/types";
 import { cn } from "@/util/classes";
 
@@ -134,7 +136,7 @@ export const SearchInput: FC<SearchInputProps> = ({
           {...props}
           borderless
           size={size}
-          className="text-body-primary"
+          className={TEXT_STYLES[TextVariant.BodySecondary]}
           disabled={disabled}
           value={value}
           onChange={(e) => onChange(e.target.value, e)}
