@@ -13,6 +13,7 @@ export * from "./Divider";
 export * from "./Drawer";
 export * from "./Dropdown";
 export * from "./Dropzone";
+export * from "./EmptyArt";
 export * from "./EmptyState";
 export * from "./FormField";
 export * from "./FormFieldGroup";
