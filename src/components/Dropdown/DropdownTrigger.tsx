@@ -10,6 +10,7 @@ import { Tooltip, TooltipLabel } from "@/components/Tooltip";
 import { TEXT_STYLES } from "@/styles/text";
 import { Size, TextColor, textColorClass, TextVariant, Variant } from "@/types";
 import { cn } from "@/util/classes";
+import { useOverflowRowCompact } from "@/util/compact";
 
 const BorderlessCaret: FC<IconProps> = (props) => (
   <ChevronDownStrokeIcon {...props} size={12} className="opacity-70" />
@@ -57,9 +58,10 @@ export type DropdownTriggerProps = Omit<
  * ```
  *
  * @param children Button label.
- * @param prefix What the value names, shown as `prefix: value`. Below 640px
- *  only the value shows and a tooltip reads prefix and value; the
- *  `aria-label` keeps both unless one is passed.
+ * @param prefix What the value names, shown as `prefix: value`. Below 640px,
+ *  or in a row out of room (`useCompactRow`, `OverflowRow`), only the value
+ *  shows and a tooltip reads prefix and value; the `aria-label` keeps both
+ *  unless one is passed.
  * @param size Button size. Defaults to `"sm"`.
  * @param borderless No outline; a rounded fill appears on hover.
  * @param props Additional {@link ButtonProps} (excluding `variant` and `trailingIcon`).
@@ -73,6 +75,8 @@ export const DropdownTrigger: FC<DropdownTriggerProps> = ({
   ...props
 }) => {
   const [prefixHidden, setPrefixHidden] = useState(false);
+  // a row that is out of room drops the prefix before its items leave
+  const compact = useOverflowRowCompact();
   const named = typeof prefix === "string" && typeof children === "string";
   const button = (
     <Button
@@ -98,7 +102,8 @@ export const DropdownTrigger: FC<DropdownTriggerProps> = ({
         <span
           {...{ [PREFIX_ATTR]: "" }}
           className={cn(
-            "hidden sm:mr-1 sm:inline",
+            "hidden",
+            !compact && "sm:mr-1 sm:inline",
             textColorClass(TextColor.Secondary)
           )}
         >
