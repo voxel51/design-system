@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 
+import { PanelEmptyArt } from "@/components/EmptyArt";
 import { DrawIcon } from "@/components/Icons";
 
 import { EmptyState } from "./EmptyState";
@@ -22,5 +23,25 @@ describe("EmptyState", () => {
     expect(
       screen.getByText("This is an example description.")
     ).toBeInTheDocument();
+  });
+
+  it("should render art instead of the icon, and an action area", () => {
+    render(
+      <EmptyState icon={DrawIcon} art={<PanelEmptyArt />} title="No runs yet">
+        <button>Run</button>
+      </EmptyState>
+    );
+    expect(
+      screen.getByRole("img", { name: "Nothing here yet" })
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Run" })).toBeInTheDocument();
+  });
+
+  it("should size the art down when small", () => {
+    const { container } = render(
+      <EmptyState size="sm" art={<PanelEmptyArt />} title="Nothing yet" />
+    );
+    expect(container.querySelector(".w-\\[104px\\]")).not.toBeNull();
+    expect(container.querySelector(".w-\\[150px\\]")).toBeNull();
   });
 });
