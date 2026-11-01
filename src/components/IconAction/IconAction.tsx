@@ -5,6 +5,7 @@ import type { ButtonHTMLAttributes, FC } from "react";
 import { type IconInput, IconWrapper } from "@/components/Icons";
 import radiusStyles from "@/styles/radius";
 import {
+  BackgroundColor,
   bgColorClass,
   ElementState,
   IconColor,
@@ -19,6 +20,8 @@ type IconActionSize = `${Size.Xs | Size.Sm | Size.Md | Size.Lg}`;
 export interface IconActionProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon: IconInput;
   size?: IconActionSize;
+  /** On (a pinned pin, say): a filled brand-coloured glyph on a nested-card fill. */
+  active?: boolean;
   "aria-label": string;
 }
 
@@ -50,6 +53,7 @@ const iconSizes: Record<IconActionSize, number> = {
  *
  * @param icon The icon to show: a per-icon component such as `CloseIcon`.
  * @param size `"xs"`, `"sm"`, `"md"` or `"lg"`. Defaults to `"md"`.
+ * @param active Shows the action as on: a filled brand-coloured glyph on a nested-card fill, brand-tinted on hover.
  * @param aria-label Required, because the action has no visible text.
  * @param className Additional CSS class names to apply to the button.
  * @param props Additional HTML button properties, such as `onClick`.
@@ -57,6 +61,7 @@ const iconSizes: Record<IconActionSize, number> = {
 export const IconAction: FC<IconActionProps> = ({
   icon,
   size = Size.Md,
+  active,
   className,
   ...props
 }) => (
@@ -66,9 +71,17 @@ export const IconAction: FC<IconActionProps> = ({
       "hover:cursor-pointer disabled:pointer-events-none disabled:opacity-50",
       radiusStyles(Radius.Full),
       sizeStyles[size],
-      textColorClass(IconColor.Default),
-      textColorClass(IconColor.Emphasis, ElementState.Hover),
-      bgColorClass(InteractiveColor.SecondaryHover, ElementState.Hover),
+      active
+        ? [
+            "hover:bg-brand-primary/15 [&_svg]:fill-current",
+            textColorClass(IconColor.Brand),
+            bgColorClass(BackgroundColor.CardNested),
+          ]
+        : [
+            textColorClass(IconColor.Default),
+            textColorClass(IconColor.Emphasis, ElementState.Hover),
+            bgColorClass(InteractiveColor.SecondaryHover, ElementState.Hover),
+          ],
       bgColorClass(InteractiveColor.SecondaryPressed, ElementState.Active),
       className
     )}
