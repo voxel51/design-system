@@ -1,4 +1,4 @@
-import { Field, Input as HeadlessInput } from "@headlessui/react";
+import { Input as HeadlessInput } from "@headlessui/react";
 import {
   type ChangeEvent,
   type FC,
@@ -324,7 +324,7 @@ export const Input: FC<InputProps> = ({
   const hasText = currentValue.trim().length > 0;
 
   return (
-    <Field className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1">
       <div className={cn("relative", icon && "flex items-center")}>
         {icon && <InputIcon icon={icon} size={size} hasText={hasText} />}
         <HeadlessInput
@@ -357,7 +357,7 @@ export const Input: FC<InputProps> = ({
           </span>
         )}
       </div>
-    </Field>
+    </div>
   );
 };
 
