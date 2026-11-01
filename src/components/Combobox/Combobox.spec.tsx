@@ -106,6 +106,18 @@ describe("Combobox", () => {
     expect(onPick).not.toHaveBeenCalled();
   });
 
+  it("keeps Escape from reaching a parent while the list is open", async () => {
+    const onParentKey = jest.fn();
+    document.addEventListener("keydown", onParentKey);
+    render(<Harness />);
+    await userEvent.click(screen.getByRole("combobox"));
+    await userEvent.keyboard("{Escape}");
+    expect(onParentKey).not.toHaveBeenCalled();
+    await userEvent.keyboard("{Escape}");
+    expect(onParentKey).toHaveBeenCalledTimes(1);
+    document.removeEventListener("keydown", onParentKey);
+  });
+
   it("drops the selection once the text no longer matches it", async () => {
     const onPick = jest.fn();
     render(<Harness onPick={onPick} />);

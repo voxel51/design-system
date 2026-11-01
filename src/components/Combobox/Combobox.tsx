@@ -435,6 +435,7 @@ export const Combobox: FC<ComboboxProps> = ({
       return;
     }
     if (e.key === "Escape") {
+      if (open) e.stopPropagation();
       close();
     }
   };
