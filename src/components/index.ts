@@ -49,6 +49,7 @@ export * from "./Stack";
 export * from "./StepRail";
 export * from "./Table";
 export * from "./Tabs";
+export * from "./TagInput";
 export * from "./Text";
 export * from "./TextAction";
 export * from "./TextArea";

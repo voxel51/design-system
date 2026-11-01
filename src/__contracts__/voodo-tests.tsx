@@ -67,6 +67,7 @@ import {
   ChipSelect,
   FilterBar,
   FilterChip,
+  TagInput,
   ListRow,
   Orientation,
   ScrimColor,
@@ -635,6 +636,15 @@ export const Everything = (
       <FilterChip count={3} selected onClick={() => {}}>
         tag
       </FilterChip>
+      <TagInput
+        value={["a"]}
+        onChange={() => {}}
+        inputValue=""
+        onInputChange={() => {}}
+        suggestions={["b"]}
+        loading
+        aria-label="Tags"
+      />
       <RichButtonGroup
         buttons={[
           { id: "a", data: { children: "A" } },
