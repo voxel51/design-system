@@ -20,6 +20,7 @@ import { cn } from "@/util/classes";
 export interface OptionProps extends HTMLAttributes<HTMLDivElement> {
   value?: unknown;
   selected?: boolean;
+  disabled?: boolean;
 }
 
 /**
@@ -36,14 +37,16 @@ export const Option: FC<OptionProps> = ({
   children,
   selected,
   value,
+  disabled,
   ...props
 }) => (
-  <ComboboxOption value={value} {...props}>
+  <ComboboxOption value={value} disabled={disabled} {...props}>
     <div
       className={clsx(
         "flex flex-nowrap items-center justify-between",
         "gap-x-md",
         "py-2 px-3",
+        disabled && "opacity-50 cursor-not-allowed",
         radiusStyles(Radius.Sm),
         cn(
           // Use a single subtle base surface for all rows instead of aggressive

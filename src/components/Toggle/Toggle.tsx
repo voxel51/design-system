@@ -1,6 +1,7 @@
 import { Field, Switch as HeadlessSwitch, Label } from "@headlessui/react";
-import { ButtonHTMLAttributes, type FC } from "react";
+import { ButtonHTMLAttributes, type FC, type ReactNode } from "react";
 
+import { FieldText } from "@/components/FormField/FieldText";
 import { UnsetHint } from "@/components/UnsetHint";
 import radiusStyles from "@/styles/radius";
 import { TEXT_STYLES } from "@/styles/text";
@@ -28,6 +29,8 @@ export interface ToggleProps extends ModifiedToggleProps {
   checked?: boolean;
   onChange?: (checked: boolean) => void;
   label?: string;
+  /** Helper text under the label, tertiary caption. */
+  description?: ReactNode;
   disabled?: boolean;
   size?: ToggleSize;
   className?: string;
@@ -100,6 +103,7 @@ const getThumbTranslateStyles = (size: Size): string => {
  * @param className `class` overrides to apply to the component.
  * @param labelClassName `class` overrides to apply to the toggle's label.
  * @param label Optional label for the toggle.
+ * @param description Helper text under the label.
  * @param showUnsetHint If `true`, displays a hint to the user to initialize the toggle's value.
  * @param props Additional HTML properties to apply to the component.
  */
@@ -111,11 +115,14 @@ export const Toggle: FC<ToggleProps> = ({
   className,
   labelClassName,
   label,
+  description,
   showUnsetHint,
   ...props
 }) => {
   return (
-    <Field className="flex items-center gap-2">
+    <Field
+      className={cn("flex gap-2", description ? "items-start" : "items-center")}
+    >
       <HeadlessSwitch
         checked={checked}
         onChange={onChange}
@@ -143,6 +150,7 @@ export const Toggle: FC<ToggleProps> = ({
           "data-checked:hover:bg-content-interactive-primary-pressed",
           trackSizeStyles[size],
           radiusStyles(Radius.Full), // intentionally require Full radius
+          "shrink-0",
           className
         )}
         {...props}
@@ -167,19 +175,24 @@ export const Toggle: FC<ToggleProps> = ({
           )}
         />
       </HeadlessSwitch>
-      {label && (
-        <Label
-          className={cn(
-            textColorClass(TextColor.Secondary),
-            "peer-data-disabled:text-content-text-tertiary",
-            textStyles[size],
-            "cursor-pointer",
-            labelClassName
-          )}
-        >
-          {label}
-        </Label>
-      )}
+      <FieldText
+        label={
+          label && (
+            <Label
+              className={cn(
+                textColorClass(TextColor.Secondary),
+                "peer-data-disabled:text-content-text-tertiary",
+                textStyles[size],
+                "cursor-pointer",
+                labelClassName
+              )}
+            >
+              {label}
+            </Label>
+          )
+        }
+        description={description}
+      />
       {showUnsetHint && (
         <UnsetHint value={checked} hint={"Click the toggle to set a value"} />
       )}

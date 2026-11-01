@@ -10,6 +10,8 @@ import { Radio, RadioProps } from "./Radio";
 export interface RadioOption {
   value: string;
   label: string;
+  /** Helper text under the option label. */
+  description?: RadioProps["description"];
   disabled?: boolean;
   /** Additional HTML properties for this option's row alone */
   fieldProps?: RadioProps["fieldProps"];
@@ -112,6 +114,7 @@ export const RadioGroup: FC<RadioGroupProps> = ({
           key={option.value}
           value={option.value}
           label={option.label}
+          description={option.description}
           size={size}
           disabled={disabled || option.disabled}
           {...radioProps}

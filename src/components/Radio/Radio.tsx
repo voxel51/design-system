@@ -1,6 +1,12 @@
 import { Field, Radio as HeadlessRadio, Label } from "@headlessui/react";
-import { type FC, type HTMLAttributes, InputHTMLAttributes } from "react";
+import {
+  type FC,
+  type HTMLAttributes,
+  InputHTMLAttributes,
+  type ReactNode,
+} from "react";
 
+import { FieldText } from "@/components/FormField/FieldText";
 import { textStyles } from "@/styles/text.ts";
 import { Size, TextColor, textColorClass, TextVariant } from "@/types";
 import { cn } from "@/util/classes";
@@ -17,6 +23,8 @@ type ModifiedRadioProps = Omit<
 export interface RadioProps extends ModifiedRadioProps {
   value?: string;
   label?: string;
+  /** Helper text under the label, tertiary caption. */
+  description?: ReactNode;
   disabled?: boolean;
   /**
    * @deprecated Figma draws one radio size, so this no longer changes the
@@ -57,6 +65,7 @@ const labelTextStyles = textStyles(TextVariant.BodyPrimary);
  * @param className `class` overrides to apply to the radio.
  * @param labelClassName `class` overrides to apply to the radio's label.
  * @param label Label to display for the radio element.
+ * @param description Helper text under the label.
  * @param disabled If `true`, disables the radio element.
  * @param fieldProps Additional HTML properties to apply to the row holding the radio and its label.
  * @param props Additional HTML properties to apply to the radio.
@@ -66,6 +75,7 @@ export const Radio: FC<RadioProps> = ({
   className,
   labelClassName,
   label,
+  description,
   disabled,
   fieldProps,
   // Deprecated and intentionally unused; kept out of `...props` so it never
@@ -76,18 +86,26 @@ export const Radio: FC<RadioProps> = ({
   return (
     <Field
       {...fieldProps}
-      className={cn("group flex items-center gap-3", fieldProps?.className)}
+      className={cn(
+        "group flex gap-3",
+        description ? "items-start" : "items-center",
+        fieldProps?.className
+      )}
     >
       <HeadlessRadio
         value={value}
         disabled={disabled}
         className={cn(
           "peer",
+          // a long label wraps; the circle keeps its size
+          "shrink-0",
           !disabled && "cursor-pointer",
           "appearance-none",
           "border",
           "border-content-text-tertiary",
           disabled && "opacity-50",
+          // centred on the label's first 20px line
+          !!description && "mt-[3px]",
           "rounded-full",
           controlStyles,
           // on focus - unchecked
@@ -134,19 +152,26 @@ export const Radio: FC<RadioProps> = ({
           <RadioDotIcon />
         </div>
       </HeadlessRadio>
-      {label && (
-        <Label
-          className={cn(
-            // Figma: label is white when enabled, tertiary when disabled
-            textColorClass(disabled ? TextColor.Tertiary : TextColor.Primary),
-            labelTextStyles,
-            !disabled && "cursor-pointer",
-            labelClassName
-          )}
-        >
-          {label}
-        </Label>
-      )}
+      <FieldText
+        label={
+          label && (
+            <Label
+              className={cn(
+                // Figma: label is white when enabled, tertiary when disabled
+                textColorClass(
+                  disabled ? TextColor.Tertiary : TextColor.Primary
+                ),
+                labelTextStyles,
+                !disabled && "cursor-pointer",
+                labelClassName
+              )}
+            >
+              {label}
+            </Label>
+          )
+        }
+        description={description}
+      />
     </Field>
   );
 };

@@ -1,7 +1,8 @@
 import { Field, Checkbox as HeadlessCheckbox, Label } from "@headlessui/react";
 import clsx from "clsx";
-import { type FC, InputHTMLAttributes } from "react";
+import { type FC, InputHTMLAttributes, type ReactNode } from "react";
 
+import { FieldText } from "@/components/FormField/FieldText";
 import { CheckIcon, RemoveIcon } from "@/components/Icons";
 import { UnsetHint } from "@/components/UnsetHint";
 import radiusStyles from "@/styles/radius";
@@ -30,6 +31,8 @@ export interface CheckboxProps extends ModifiedCheckboxProps {
   onChange?: (checked: boolean) => void;
   indeterminate?: boolean;
   label?: string;
+  /** Helper text under the label, tertiary caption. */
+  description?: ReactNode;
   disabled?: boolean;
   size?: Size;
   radius?: Radius;
@@ -88,6 +91,7 @@ const labelStyles: Record<Size, string> = {
  * @param labelClassName `class` overrides for custom styling of the checkbox's label.
  * @param disabled If `true`, disables the checkbox.
  * @param label Label to display alongside the checkbox.
+ * @param description Helper text under the label.
  * @param showUnsetHint If `true`, displays a hint to the user for checkbox interaction.
  * @param props Additional HTML properties to apply to the checkbox.
  */
@@ -101,13 +105,19 @@ export const Checkbox: FC<CheckboxProps> = ({
   labelClassName,
   disabled,
   label,
+  description,
   showUnsetHint,
   ...props
 }) => {
   const showIndeterminate = !!indeterminate && !checked;
 
   return (
-    <Field className="group flex items-center gap-2.5">
+    <Field
+      className={cn(
+        "group flex gap-2.5",
+        description ? "items-start" : "items-center"
+      )}
+    >
       <HeadlessCheckbox
         checked={checked}
         onChange={onChange}
@@ -117,6 +127,8 @@ export const Checkbox: FC<CheckboxProps> = ({
           "group",
           "peer",
           "relative",
+          // a long label wraps; the box keeps its size
+          "shrink-0",
           "cursor-pointer",
           "appearance-none",
           "border",
@@ -141,6 +153,7 @@ export const Checkbox: FC<CheckboxProps> = ({
           // the fill and the mark together, so a checked or indeterminate box
           // still reads as disabled without a second disabled border token.
           "data-disabled:opacity-50",
+          !!description && "mt-0.5",
           className
         )}
         {...props}
@@ -158,20 +171,25 @@ export const Checkbox: FC<CheckboxProps> = ({
           />
         )}
       </HeadlessCheckbox>
-      {label && (
-        <Label
-          className={cn(
-            // Figma: label is white when enabled, tertiary when disabled
-            textColorClass(TextColor.Primary),
-            "peer-data-disabled:text-content-text-tertiary",
-            labelStyles[size],
-            "cursor-pointer",
-            labelClassName
-          )}
-        >
-          {label}
-        </Label>
-      )}
+      <FieldText
+        label={
+          label && (
+            <Label
+              className={cn(
+                // Figma: label is white when enabled, tertiary when disabled
+                textColorClass(TextColor.Primary),
+                "peer-data-disabled:text-content-text-tertiary",
+                labelStyles[size],
+                "cursor-pointer",
+                labelClassName
+              )}
+            >
+              {label}
+            </Label>
+          )
+        }
+        description={description}
+      />
       {showUnsetHint && (
         <UnsetHint value={checked} hint="Click the checkbox to set a value" />
       )}

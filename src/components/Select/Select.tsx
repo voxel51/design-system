@@ -70,7 +70,11 @@ export interface SelectProps extends Omit<
   disabled?: boolean;
   exclusive?: boolean;
   onChange?: (value: string | string[] | null) => void;
-  options?: Descriptor<{ label: string; content?: ReactNode }>[];
+  options?: Descriptor<{
+    label: string;
+    content?: ReactNode;
+    disabled?: boolean;
+  }>[];
   zIndex?: ZIndex;
   portal?: boolean;
   size?: Size;
@@ -173,7 +177,7 @@ function getZIndexClass(zIndex?: ZIndex, portal?: boolean): string | undefined {
  * @param onChange Callback triggered when selection state changes. Receives the
  *  selected option `id` (a string, or `null`) when `exclusive`, otherwise an
  *  array of selected `id`s.
- * @param options List of component descriptors which will be used to create {@link Option} child components.
+ * @param options List of component descriptors which will be used to create {@link Option} child components; `data.disabled` makes an option unselectable.
  * @param zIndex Z-index level for the dropdown.
  * @param portal If `true`, renders the options in a portal that always stacks
  *  above modals, overriding `zIndex`.
@@ -198,6 +202,7 @@ export const Select: FC<SelectProps> = ({
   value,
   placeholder,
   variant = "default",
+  "aria-label": ariaLabel,
   ...props
 }) => {
   const [query, setQuery] = useState("");
@@ -262,6 +267,7 @@ export const Select: FC<SelectProps> = ({
       >
         <div ref={triggerRef} className="relative flex items-center">
           <ComboboxInput
+            aria-label={ariaLabel}
             autoComplete="off" // interferes with dropdown menu
             displayValue={getDisplayValue}
             onChange={(e) => setQuery(e.target.value)}
@@ -328,7 +334,8 @@ export const Select: FC<SelectProps> = ({
                 key={opt.id}
                 value={opt.id}
                 selected={isSelected}
-                className={clsx("cursor-pointer")}
+                disabled={opt.data.disabled}
+                className={clsx(!opt.data.disabled && "cursor-pointer")}
               >
                 <Text>{opt.data.content ?? opt.data.label}</Text>
               </Option>

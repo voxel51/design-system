@@ -3,6 +3,9 @@ import type { ReactNode } from "react";
 
 import { randomString } from "@/util/random";
 
+import { Input } from "@/components/Input";
+import { TextArea } from "@/components/TextArea";
+
 import { FormField } from "./FormField";
 
 describe("FormField", () => {
@@ -70,5 +73,26 @@ describe("FormField", () => {
 
     const field = screen.getByTestId(testId);
     expect(within(field).getByText(error)).toBeInTheDocument();
+  });
+
+  it("links its label, description and disabled state to an Input", () => {
+    render(
+      <FormField
+        label="Name"
+        description="Shown in the URL"
+        disabled
+        control={<Input value="" onChange={() => undefined} />}
+      />
+    );
+
+    const input = screen.getByLabelText("Name");
+    expect(input).toHaveAccessibleDescription("Shown in the URL");
+    expect(input).toBeDisabled();
+  });
+
+  it("links its label to a TextArea", () => {
+    render(<FormField label="Description" control={<TextArea />} />);
+
+    expect(screen.getByLabelText("Description").tagName).toBe("TEXTAREA");
   });
 });
