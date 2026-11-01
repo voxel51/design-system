@@ -1,20 +1,47 @@
-import { type FC, type ReactNode, type SyntheticEvent, useState } from "react";
+import {
+  type FC,
+  type ReactNode,
+  type SyntheticEvent,
+  useMemo,
+  useState,
+} from "react";
 
 import { Button, type ButtonProps } from "@/components/Button";
 import {
   CaretDownIcon,
   ChevronDownStrokeIcon,
+  type IconInput,
   type IconProps,
+  IconWrapper,
 } from "@/components/Icons";
 import { Tooltip, TooltipLabel } from "@/components/Tooltip";
 import { TEXT_STYLES } from "@/styles/text";
-import { Size, TextColor, textColorClass, TextVariant, Variant } from "@/types";
+import {
+  IconColor,
+  Size,
+  TextColor,
+  textColorClass,
+  TextVariant,
+  Variant,
+} from "@/types";
 import { cn } from "@/util/classes";
 import { useOverflowRowCompact } from "@/util/compact";
 
-const BorderlessCaret: FC<IconProps> = (props) => (
-  <ChevronDownStrokeIcon {...props} size={12} className="opacity-70" />
+const MUTED_ICON = textColorClass(IconColor.Default);
+
+// Lovable's borderless filters: a 14px leading icon and a 12px caret, both muted
+const BorderlessCaret: FC<IconProps> = () => (
+  <span className={MUTED_ICON}>
+    <ChevronDownStrokeIcon size={12} className="block opacity-70" />
+  </span>
 );
+
+const mutedLeading = (icon: IconInput): FC<IconProps> => {
+  const Leading: FC<IconProps> = () => (
+    <IconWrapper content={icon} size={14} className={MUTED_ICON} />
+  );
+  return Leading;
+};
 
 /**
  * Props for {@link DropdownTrigger}. Accepts {@link ButtonProps} except
@@ -63,7 +90,9 @@ export type DropdownTriggerProps = Omit<
  *  shows and a tooltip reads prefix and value; the `aria-label` keeps both
  *  unless one is passed.
  * @param size Button size. Defaults to `"sm"`.
- * @param borderless No outline; a rounded fill appears on hover.
+ * @param borderless No outline; a rounded fill appears on hover. The leading
+ *  icon shrinks to 14px and both icons take the muted icon colour.
+ * @param leadingIcon Optional icon before the label.
  * @param props Additional {@link ButtonProps} (excluding `variant` and `trailingIcon`).
  */
 export const DropdownTrigger: FC<DropdownTriggerProps> = ({
@@ -71,9 +100,14 @@ export const DropdownTrigger: FC<DropdownTriggerProps> = ({
   size = Size.Sm,
   borderless,
   prefix,
+  leadingIcon,
   className,
   ...props
 }) => {
+  const leading = useMemo(
+    () => (borderless && leadingIcon ? mutedLeading(leadingIcon) : leadingIcon),
+    [borderless, leadingIcon]
+  );
   const [prefixHidden, setPrefixHidden] = useState(false);
   // a row that is out of room drops the prefix before its items leave
   const compact = useOverflowRowCompact();
@@ -83,6 +117,7 @@ export const DropdownTrigger: FC<DropdownTriggerProps> = ({
       variant={borderless ? Variant.Icon : Variant.Secondary}
       borderless={borderless}
       size={size}
+      leadingIcon={leading}
       trailingIcon={borderless ? BorderlessCaret : CaretDownIcon}
       aria-label={named ? `${prefix}: ${children}` : undefined}
       className={cn(
