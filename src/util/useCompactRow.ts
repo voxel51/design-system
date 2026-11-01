@@ -105,6 +105,8 @@ export function useCompactRow({
           : { compact: true, labelMax: null }
       );
     };
+    // before paint, or a mount shows the full row for a frame
+    measure();
     const observer = new ResizeObserver(measure);
     const watchChildren = (): void =>
       [...row.children].forEach((child) => observer.observe(child));
