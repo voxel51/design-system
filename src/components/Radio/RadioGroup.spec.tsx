@@ -263,4 +263,14 @@ describe("RadioGroup", () => {
       expect(handleChange).not.toHaveBeenCalled();
     });
   });
+
+  it("describes an option with its description", () => {
+    render(
+      <RadioGroup
+        options={[{ value: "a", label: "A", description: "Helper" }]}
+        onChange={jest.fn()}
+      />
+    );
+    expect(screen.getByRole("radio")).toHaveAccessibleDescription("Helper");
+  });
 });

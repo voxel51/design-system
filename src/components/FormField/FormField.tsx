@@ -20,7 +20,7 @@ export interface FormFieldProps extends HTMLAttributes<HTMLDivElement> {
  * and error message.
  *
  * This component applies standard form best-practices to the contained elements, such as ensuring the label and form
- * control are properly linked.
+ * control are properly linked. It links one control: give any extra control (a min/max pair, say) its own `id`.
  *
  * See also {@link FormFieldGroup}.
  *

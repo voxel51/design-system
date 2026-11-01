@@ -1,4 +1,4 @@
-import { Field, Textarea as HeadlessTextarea } from "@headlessui/react";
+import { Textarea as HeadlessTextarea } from "@headlessui/react";
 import clsx from "clsx";
 import { type FC, TextareaHTMLAttributes } from "react";
 
@@ -113,7 +113,7 @@ export const TextArea: FC<TextAreaProps> = ({
   ...props
 }) => {
   return (
-    <Field className={cn("flex flex-col gap-1", containerClassName)}>
+    <div className={cn("flex flex-col gap-1", containerClassName)}>
       <HeadlessTextarea
         rows={rows}
         disabled={disabled}
@@ -153,7 +153,7 @@ export const TextArea: FC<TextAreaProps> = ({
         )}
         {...props}
       />
-    </Field>
+    </div>
   );
 };
 

@@ -76,4 +76,9 @@ describe("Checkbox", () => {
       expect(checkbox).not.toHaveAttribute("aria-checked", "mixed");
     });
   });
+
+  it("describes itself with the description", () => {
+    render(<Checkbox label={checkboxLabel} description="Helper" />);
+    expect(screen.getByRole("checkbox")).toHaveAccessibleDescription("Helper");
+  });
 });
