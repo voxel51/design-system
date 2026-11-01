@@ -23,6 +23,8 @@ export interface UseCompactRowReturn {
   labelMax: number | null;
   /** `compact` and `labelMax` together, for `OverflowRowCompactContext`. */
   context: OverflowRowFit;
+  /** Whether the row has been measured; until then (server render, first paint) `compact` is a guess, so hide the parts. */
+  measured: boolean;
 }
 
 /**
@@ -51,6 +53,7 @@ export function useCompactRow({
 }: UseCompactRowOptions = {}): UseCompactRowReturn {
   const [row, setRow] = useState<HTMLElement | null>(null);
   const [fit, setFit] = useState<OverflowRowFit>(FULL_FIT);
+  const [measured, setMeasured] = useState(false);
   const current = useRef<OverflowRowFit>(FULL_FIT);
   // what the row needs at full size, and its labels' own widths
   const needed = useRef({ width: 0, labels: [] as number[] });
@@ -105,6 +108,9 @@ export function useCompactRow({
           : { compact: true, labelMax: null }
       );
     };
+    // before paint, or a mount shows the full row for a frame
+    measure();
+    setMeasured(true);
     const observer = new ResizeObserver(measure);
     const watchChildren = (): void =>
       [...row.children].forEach((child) => observer.observe(child));
@@ -127,5 +133,6 @@ export function useCompactRow({
     compact: fit.compact,
     labelMax: fit.labelMax,
     context: fit,
+    measured,
   };
 }
