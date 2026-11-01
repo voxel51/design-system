@@ -5,6 +5,7 @@ import {
   BackgroundColor,
   bgColorClass,
   ElementState,
+  IconColor,
   TextColor,
   textColorClass,
 } from "@/types";
@@ -51,15 +52,12 @@ export const FilterChip: FC<FilterChipProps> = ({
     className={clsx(
       "inline-flex max-w-full cursor-pointer items-center gap-1.5 rounded-full px-3 py-1.5 text-body-primary transition-colors",
       selected
-        ? [
-            bgColorClass(TextColor.Foreground),
-            textColorClass(TextColor.Inverse),
-          ]
+        ? [bgColorClass(TextColor.Primary), textColorClass(TextColor.Inverse)]
         : [
             bgColorClass(BackgroundColor.Card),
             textColorClass(TextColor.Secondary),
-            bgColorClass(BackgroundColor.CardElevated, ElementState.Hover),
-            textColorClass(TextColor.Foreground, ElementState.Hover),
+            bgColorClass(BackgroundColor.CardNested, ElementState.Hover),
+            textColorClass(TextColor.Primary, ElementState.Hover),
           ],
       className
     )}
@@ -72,7 +70,7 @@ export const FilterChip: FC<FilterChipProps> = ({
           "text-caption tabular-nums",
           selected
             ? [textColorClass(TextColor.Inverse), "opacity-70"]
-            : textColorClass(TextColor.Tertiary)
+            : textColorClass(IconColor.Subtle)
         )}
       >
         {count.toLocaleString()}
