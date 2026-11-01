@@ -30,9 +30,11 @@ interface Indicator {
   left: number;
   width: number;
   visible: boolean;
+  /** Slide to the new place: only when the active tab changed, not on a resize. */
+  slide: boolean;
 }
 
-const HIDDEN: Indicator = { left: 0, width: 0, visible: false };
+const HIDDEN: Indicator = { left: 0, width: 0, visible: false, slide: false };
 
 /**
  * A horizontal tab bar with a single underline which slides to the active
@@ -60,9 +62,8 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(
   ({ className, children, ...props }, ref) => {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const [indicator, setIndicator] = useState<Indicator>(HIDDEN);
-    // The first placement must not animate, or the underline slides in from
-    // the left edge on mount.
-    const hasPlacedRef = useRef(false);
+    // the first placement and resizes must not animate, only a new active tab
+    const activeRef = useRef<HTMLElement | null>(null);
 
     const setRefs = useCallback(
       (el: HTMLDivElement | null) => {
@@ -88,10 +89,14 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(
 
         const containerRect = container.getBoundingClientRect();
         const activeRect = active.getBoundingClientRect();
+        const slide =
+          activeRef.current !== null && activeRef.current !== active;
+        activeRef.current = active;
         setIndicator({
           left: activeRect.left - containerRect.left,
           width: activeRect.width,
           visible: true,
+          slide,
         });
       };
 
@@ -110,14 +115,6 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(
       };
     }, [children]);
 
-    useEffect((): (() => void) | undefined => {
-      if (!indicator.visible) return;
-      const frame = window.requestAnimationFrame(() => {
-        hasPlacedRef.current = true;
-      });
-      return () => window.cancelAnimationFrame(frame);
-    }, [indicator.visible]);
-
     return (
       <div
         ref={setRefs}
@@ -130,7 +127,7 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(
           aria-hidden
           className={cn(
             "pointer-events-none absolute bottom-0 h-0.5 rounded-full",
-            hasPlacedRef.current &&
+            indicator.slide &&
               cn(
                 "transition-[left,width]",
                 transitionDuration(TransitionDuration.Moderate),
