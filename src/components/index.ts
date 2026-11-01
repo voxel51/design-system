@@ -17,6 +17,7 @@ export * from "./Dropzone";
 export * from "./EmptyArt";
 export * from "./EmptyState";
 export * from "./FilterBar";
+export * from "./FilterChip";
 export * from "./FormField";
 export * from "./FormFieldGroup";
 export * from "./Heading";

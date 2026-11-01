@@ -66,6 +66,7 @@ import {
   Pagination,
   ChipSelect,
   FilterBar,
+  FilterChip,
   Orientation,
   ScrimColor,
   VizChartColor,
@@ -622,6 +623,9 @@ export const Everything = (
           options={[{ id: "a", label: "A" }]}
         />
       </FilterBar>
+      <FilterChip count={3} selected onClick={() => {}}>
+        tag
+      </FilterChip>
       <RichButtonGroup
         buttons={[
           { id: "a", data: { children: "A" } },
