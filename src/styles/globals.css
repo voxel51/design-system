@@ -14,3 +14,42 @@
     color: var(--color-content-text-primary);
   }
 }
+
+/* Scrollbars, as in the Lovable design: thin overlay bars with a transparent
+   track and a slim pill thumb that brightens on hover. Chromium 121+ lets
+   `scrollbar-color` override the pseudo-elements, so it is set only where
+   they are unsupported. */
+@layer base {
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--color-content-scrollbar-thumb);
+    border: 3px solid transparent;
+    border-radius: 9999px;
+    background-clip: content-box;
+    min-height: 32px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-content-scrollbar-thumb-hover);
+  }
+
+  ::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  @supports not selector(::-webkit-scrollbar) {
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--color-content-scrollbar-thumb) transparent;
+    }
+  }
+}
