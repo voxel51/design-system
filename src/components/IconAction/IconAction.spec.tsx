@@ -44,4 +44,16 @@ describe("IconAction", () => {
     expect(button).toHaveClass("hover:bg-brand-primary/15");
     expect(button).not.toHaveClass("bg-content-bg-card-nested");
   });
+
+  it("fills with the danger colour on hover with the danger tone", () => {
+    render(
+      <IconAction icon={IconName.Close} aria-label="Remove" tone="danger" />
+    );
+
+    const button = screen.getByRole("button");
+    expect(button).toHaveClass("hover:text-white");
+    expect(button).toHaveClass(
+      "hover:bg-[var(--color-content-interactive-danger-hover)]"
+    );
+  });
 });
