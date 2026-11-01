@@ -1,6 +1,14 @@
 import clsx from "clsx";
 import type { ButtonHTMLAttributes, FC, ReactNode } from "react";
 
+import {
+  BackgroundColor,
+  bgColorClass,
+  ElementState,
+  TextColor,
+  textColorClass,
+} from "@/types";
+
 export interface FilterChipProps extends Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
   "children"
@@ -43,8 +51,16 @@ export const FilterChip: FC<FilterChipProps> = ({
     className={clsx(
       "inline-flex max-w-full cursor-pointer items-center gap-1.5 rounded-full px-3 py-1.5 text-body-primary transition-colors",
       selected
-        ? "bg-content-text-foreground text-content-text-inverse"
-        : "bg-content-bg-card text-content-text-secondary hover:bg-content-bg-card-elevated hover:text-content-text-foreground",
+        ? [
+            bgColorClass(TextColor.Foreground),
+            textColorClass(TextColor.Inverse),
+          ]
+        : [
+            bgColorClass(BackgroundColor.Card),
+            textColorClass(TextColor.Secondary),
+            bgColorClass(BackgroundColor.CardElevated, ElementState.Hover),
+            textColorClass(TextColor.Foreground, ElementState.Hover),
+          ],
       className
     )}
     {...props}
@@ -55,8 +71,8 @@ export const FilterChip: FC<FilterChipProps> = ({
         className={clsx(
           "text-caption tabular-nums",
           selected
-            ? "text-content-text-inverse/70"
-            : "text-content-text-tertiary"
+            ? [textColorClass(TextColor.Inverse), "opacity-70"]
+            : textColorClass(TextColor.Tertiary)
         )}
       >
         {count.toLocaleString()}
