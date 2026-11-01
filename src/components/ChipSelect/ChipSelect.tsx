@@ -73,6 +73,7 @@ export function ChipSelect<T extends string = string>({
           size={Size.Md}
           leadingIcon={icon}
           prefix={prefix}
+          collapse="auto"
           aria-label={ariaLabel}
           data-cy={dataCy}
         >
