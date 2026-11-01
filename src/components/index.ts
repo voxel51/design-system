@@ -26,6 +26,7 @@ export * from "./Icons";
 export * from "./ImageList";
 export * from "./Input";
 export * from "./ListItem";
+export * from "./ListRow";
 export * from "./Loader";
 export * from "./LoadingDots";
 export * from "./Menu";
