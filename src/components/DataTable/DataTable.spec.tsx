@@ -49,6 +49,12 @@ describe("DataTable", () => {
     expect(screen.getByText("full")).toBeInTheDocument();
   });
 
+  it("keeps the table at a narrow width when cardBelow is never", () => {
+    withWidth(300);
+    render(<DataTable columns={columns} rows={rows} cardBelow="never" />);
+    expect(screen.getByRole("table")).toBeInTheDocument();
+  });
+
   it("hides a hideBelow column's header and cells together", () => {
     withWidth(1000);
     render(<DataTable columns={columns} rows={rows} />);

@@ -167,7 +167,7 @@ export const TableCell: FC<TdHTMLAttributes<HTMLTableCellElement>> = ({
   return (
     <td
       className={cn(
-        "px-3 py-3 text-left font-normal sm:px-6",
+        "px-4 py-3 text-left font-normal",
         textColorClass(TextColor.Primary),
         textStyles(TextVariant.BodySecondary),
         className
@@ -180,7 +180,7 @@ export const TableCell: FC<TdHTMLAttributes<HTMLTableCellElement>> = ({
 };
 
 /**
- * A header cell (`th`), in the secondary text color.
+ * A header cell (`th`): an uppercase label in the tertiary text color.
  *
  * @example
  * ```tsx
@@ -195,9 +195,9 @@ export const TableHead: FC<ThHTMLAttributes<HTMLTableCellElement>> = ({
   return (
     <th
       className={cn(
-        "px-3 py-3 text-left font-normal sm:px-6",
-        textColorClass(TextColor.Secondary),
-        textStyles(TextVariant.BodySecondary),
+        "px-4 py-2.5 text-left",
+        textColorClass(TextColor.Tertiary),
+        textStyles(TextVariant.Label),
         className
       )}
       {...props}
