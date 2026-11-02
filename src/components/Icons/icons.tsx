@@ -100,6 +100,7 @@ import CloseRoundedSvg from "@/img/CloseRounded.svg?react";
 import CloseTwoToneSvg from "@/img/CloseTwoTone.svg?react";
 import CloudSvg from "@/img/Cloud.svg?react";
 import CloudCogSvg from "@/img/CloudCog.svg?react";
+import CloudDownloadSvg from "@/img/CloudDownload.svg?react";
 import CloudOutlinedSvg from "@/img/CloudOutlined.svg?react";
 import CloudUploadSvg from "@/img/CloudUpload.svg?react";
 import CodeSvg from "@/img/Code.svg?react";
@@ -227,6 +228,7 @@ import LayoutPanelTopSvg from "@/img/LayoutPanelTop.svg?react";
 import LibraryAddSvg from "@/img/LibraryAdd.svg?react";
 import LightModeSvg from "@/img/LightMode.svg?react";
 import LightbulbSvg from "@/img/Lightbulb.svg?react";
+import LinkSvg from "@/img/Link.svg?react";
 import Link2Svg from "@/img/Link2.svg?react";
 import ListSvg from "@/img/List.svg?react";
 import ListChecksSvg from "@/img/ListChecks.svg?react";
@@ -772,6 +774,10 @@ export const CloudCogIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={CloudCogSvg} />
 );
 
+export const CloudDownloadIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={CloudDownloadSvg} />
+);
+
 export const CloudOutlinedIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={CloudOutlinedSvg} />
 );
@@ -1278,6 +1284,10 @@ export const LightModeIcon: FC<IconProps> = (props) => (
 
 export const LightbulbIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={LightbulbSvg} />
+);
+
+export const LinkIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={LinkSvg} />
 );
 
 export const Link2Icon: FC<IconProps> = (props) => (
