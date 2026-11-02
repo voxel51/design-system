@@ -83,14 +83,14 @@ describe("RichButton", () => {
   it("should apply a background color when active", () => {
     render(<RichButton {...defaultProps} active />);
 
-    expect(screen.getByTestId(testId)).toHaveClass("bg-content-bg-selected");
+    expect(screen.getByTestId(testId)).toHaveClass("bg-content-bg-primary/10");
   });
 
   it("should not apply a background color when inactive", () => {
     render(<RichButton {...defaultProps} />);
 
     expect(screen.getByTestId(testId)).not.toHaveClass(
-      "bg-content-bg-selected"
+      "bg-content-bg-primary/10"
     );
   });
 
@@ -113,11 +113,11 @@ describe("RichButton", () => {
     );
   });
 
-  it("should tint with the selected background when active", () => {
+  it("should tint with a light brand background when active", () => {
     render(<RichButton {...defaultProps} active style={{ margin: "4px" }} />);
 
     const el = screen.getByTestId(testId);
-    expect(el).toHaveClass("bg-content-bg-selected");
+    expect(el).toHaveClass("bg-content-bg-primary/10");
     expect(el.style.margin).toBe("4px");
   });
 });
