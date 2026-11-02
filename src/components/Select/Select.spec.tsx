@@ -154,4 +154,11 @@ describe("Select", () => {
 
     expect(screen.getByRole("listbox")).toBeInTheDocument();
   });
+
+  it("names its combobox with aria-label", () => {
+    render(<Select {...defaultProps} aria-label="Color by" />);
+    expect(
+      screen.getByRole("combobox", { name: "Color by" })
+    ).toBeInTheDocument();
+  });
 });
