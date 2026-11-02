@@ -144,8 +144,8 @@ export interface ComboboxProps extends Omit<
   /** Focus the field on mount — for a combobox that opens on demand. */
   focusOnMount?: boolean;
   /**
-   * Highlight the first row whenever there is text, so Enter takes the top
-   * match without an arrow key first. Off by default: with it off, Enter on
+   * Highlight the first row whenever there is text (an inline list: always),
+   * so Enter takes the top match without an arrow key first. Off by default: with it off, Enter on
    * unmatched text commits free text (or nothing), never a row the user
    * has not pointed at.
    * @default false
@@ -240,7 +240,7 @@ ListPortal.displayName = "ListPortal";
  * @param borderless No frame on the field.
  * @param icon A leading icon in the field.
  * @param focusOnMount Focus the field on mount.
- * @param autoHighlight Highlight the first row whenever there is text.
+ * @param autoHighlight Highlight the first row whenever there is text (inline: always).
  * @param inputProps Attributes for the field itself.
  * @param header Shown above the list's contents whenever the list is open.
  * @param listProps Attributes for the list.
@@ -342,11 +342,14 @@ export const Combobox: FC<ComboboxProps> = ({
   }, []);
 
   // `active` is what the user pointed at. With nothing pointed at, an
-  // auto-highlighting combobox stands on the top row whenever there is text,
-  // so Enter takes the top match — derived, not stored, so a fresh list or
+  // auto-highlighting combobox stands on the top row whenever there is text
+  // (an inline list, always on screen, even without), so Enter takes the top match — derived, not stored, so a fresh list or
   // fresh text never has to reset it.
   const highlighted =
-    active ?? (autoHighlight && inputValue.trim() && options.length ? 0 : null);
+    active ??
+    (autoHighlight && (inline || inputValue.trim()) && options.length
+      ? 0
+      : null);
 
   const close = useCallback((): void => {
     setOpen(false);
@@ -424,7 +427,9 @@ export const Combobox: FC<ComboboxProps> = ({
         return;
       }
       const option =
-        open && highlighted !== null ? options[highlighted] : undefined;
+        (open || inline) && highlighted !== null
+          ? options[highlighted]
+          : undefined;
       if (option) {
         e.preventDefault();
         pick(option);
