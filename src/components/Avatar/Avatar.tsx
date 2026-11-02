@@ -41,12 +41,28 @@ const initials = (name: string): string =>
     .map((part) => part.charAt(0).toUpperCase())
     .join("");
 
-// a stable hue per name; fixed saturation and lightness keep white initials
-// legible on every hue, in both themes
-const nameFill = (name: string): string => {
+// A stable hue per name at a fixed saturation and lightness; the initials
+// take white or near-black, whichever contrasts more with that hue's
+// luminance (yellows and cyans read light even at 42% lightness).
+const nameFill = (name: string): { backgroundColor: string; color: string } => {
   let hash = 0;
   for (const char of name) hash = (hash * 31 + char.charCodeAt(0)) | 0;
-  return `hsl(${Math.abs(hash) % 360} 45% 42%)`;
+  const hue = Math.abs(hash) % 360;
+  const [s, l] = [0.45, 0.42];
+  const channel = (n: number): number => {
+    const k = (n + hue / 30) % 12;
+    const v =
+      l - s * Math.min(l, 1 - l) * Math.max(-1, Math.min(k - 3, 9 - k, 1));
+    return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+  };
+  const luminance =
+    0.2126 * channel(0) + 0.7152 * channel(8) + 0.0722 * channel(4);
+  // contrast with white vs with #111 (luminance ~0.0056)
+  const light = 1.05 / (luminance + 0.05) >= (luminance + 0.05) / 0.0556;
+  return {
+    backgroundColor: `hsl(${hue} 45% 42%)`,
+    color: light ? "#fff" : "#111",
+  };
 };
 
 /**
@@ -88,13 +104,13 @@ export const Avatar: FC<AvatarProps> = ({
         "inline-flex shrink-0 select-none items-center justify-center overflow-hidden",
         radiusStyles(Radius.Full),
         neutral && bgColorClass(BackgroundColor.CardNested),
-        neutral ? textColorClass(TextColor.Secondary) : "text-white",
+        neutral && textColorClass(TextColor.Secondary),
         sizeStyles[size],
         !showName && className
       )}
       {...(!showName && props)}
       style={{
-        ...(!neutral && { backgroundColor: nameFill(name) }),
+        ...(!neutral && nameFill(name)),
         ...(!showName && props.style),
       }}
     >
