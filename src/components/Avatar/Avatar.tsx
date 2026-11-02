@@ -11,6 +11,8 @@ import { textStyles } from "@/styles/text";
 import {
   BackgroundColor,
   bgColorClass,
+  BorderColor,
+  borderColorClass,
   Radius,
   Size,
   TextColor,
@@ -33,7 +35,11 @@ export interface AvatarProps extends HTMLAttributes<HTMLSpanElement> {
   /** With `showName`, a second line under the name, such as an email. */
   subtitle?: ReactNode;
   tone?: AvatarTone;
-  /** Shown in place of the initials (an invite, a group), on the neutral fill. */
+  /**
+   * Shown in place of the initials (an invite, a group, a setting). With a
+   * `colorKey` it takes that key's tint like initials do; without one it sits
+   * on the neutral fill with a subtle edge, so it reads on any surface.
+   */
   icon?: ReactNode;
   /** What picks the colour, such as an email; defaults to the initials. */
   colorKey?: string;
@@ -164,6 +170,7 @@ const tintStyles = cn(
  * <Avatar name="Ada Lovelace" size="lg" showName subtitle="ada@example.com" />
  * <Avatar name="Ada Lovelace" tone="neutral" />
  * <Avatar name="ada@example.com" icon={<MailOutlineIcon size="md" />} />
+ * <Avatar name="Labelers" colorKey={group.id} icon={<UsersRoundIcon size={14} />} />
  * <Avatar name="Ada Lovelace" colorKey={user.email} />
  * ```
  *
@@ -176,8 +183,9 @@ const tintStyles = cn(
  * @param tone `"auto"` (default): initials on one of twenty tuned colours
  *  picked from `colorKey`, the same for a key everywhere; `"neutral"`: on the
  *  nested-card fill.
- * @param icon Shown in place of the initials when there is no image, on the
- *  neutral fill: a person not known yet (an invite) or not a person (a group).
+ * @param icon Shown in place of the initials when there is no image: a person
+ *  not known yet (an invite) or not a person (a group, a setting). Tinted by
+ *  `colorKey` when given, else neutral with a subtle edge.
  * @param colorKey What picks the colour: a stable id such as the email.
  *  Defaults to the initials.
  * @param square Rounded square instead of a circle, for a group.
@@ -199,7 +207,9 @@ export const Avatar: FC<AvatarProps> = ({
 }) => {
   const [failedSrc, setFailedSrc] = useState<string>();
   const image = src && src !== failedSrc ? src : undefined;
-  const neutral = tone === "neutral" || Boolean(image) || Boolean(icon);
+  const neutral =
+    tone === "neutral" || Boolean(image) || (Boolean(icon) && !colorKey);
+  const edged = neutral && !image && Boolean(icon);
   const avatar = (
     <span
       role="img"
@@ -210,6 +220,7 @@ export const Avatar: FC<AvatarProps> = ({
         radiusStyles(square ? Radius.Md : Radius.Full),
         neutral && bgColorClass(BackgroundColor.CardNested),
         neutral && textColorClass(TextColor.Secondary),
+        edged && cn("border", borderColorClass(BorderColor.Subtle)),
         !neutral && tintStyles,
         sizeStyles[size],
         !showName && className

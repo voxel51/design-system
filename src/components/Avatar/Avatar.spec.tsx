@@ -30,6 +30,22 @@ describe("Avatar", () => {
     expect(container.querySelector('[role="img"]')).toHaveClass("size-5");
   });
 
+  it("tints an icon by its colorKey, else edges it on the neutral fill", () => {
+    const { rerender } = render(
+      <Avatar name="Labelers" colorKey="g1" icon={<svg />} />
+    );
+    expect(
+      screen.getByRole("img").style.getPropertyValue("--avatar-bg")
+    ).not.toBe("");
+    expect(screen.getByRole("img")).not.toHaveClass("border");
+
+    rerender(<Avatar name="Invite" icon={<svg />} />);
+    expect(screen.getByRole("img").style.getPropertyValue("--avatar-bg")).toBe(
+      ""
+    );
+    expect(screen.getByRole("img")).toHaveClass("border");
+  });
+
   it("puts a subtitle under the name", () => {
     render(
       <Avatar name="Ada Lovelace" size="lg" showName subtitle="ada@x.com" />
