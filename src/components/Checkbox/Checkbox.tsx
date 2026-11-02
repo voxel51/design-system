@@ -117,6 +117,8 @@ export const Checkbox: FC<CheckboxProps> = ({
           "group",
           "peer",
           "relative",
+          // a long label wraps; the box keeps its size
+          "shrink-0",
           "cursor-pointer",
           "appearance-none",
           "border",

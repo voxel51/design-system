@@ -83,6 +83,8 @@ export const Radio: FC<RadioProps> = ({
         disabled={disabled}
         className={cn(
           "peer",
+          // a long label wraps; the circle keeps its size
+          "shrink-0",
           !disabled && "cursor-pointer",
           "appearance-none",
           "border",
