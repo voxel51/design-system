@@ -30,6 +30,15 @@ describe("Avatar", () => {
     expect(container.querySelector('[role="img"]')).toHaveClass("size-5");
   });
 
+  it("puts a subtitle under the name", () => {
+    render(
+      <Avatar name="Ada Lovelace" size="lg" showName subtitle="ada@x.com" />
+    );
+
+    expect(screen.getByText("Ada Lovelace")).toHaveClass("truncate");
+    expect(screen.getByText("ada@x.com")).toHaveClass("truncate");
+  });
+
   it("tints by default and neutral on request", () => {
     const { rerender } = render(<Avatar name="Ada Lovelace" />);
     const fill = screen.getByRole("img").style.getPropertyValue("--avatar-bg");
