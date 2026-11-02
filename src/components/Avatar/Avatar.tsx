@@ -11,8 +11,6 @@ import { textStyles } from "@/styles/text";
 import {
   BackgroundColor,
   bgColorClass,
-  BorderColor,
-  borderColorClass,
   Radius,
   Size,
   TextColor,
@@ -23,7 +21,7 @@ import { cn } from "@/util/classes";
 
 export type AvatarSize = `${Size.Sm | Size.Md | Size.Lg}`;
 
-/** `"auto"`: a fill picked from the name; `"neutral"`: the nested-card fill. */
+/** `"auto"`: a fill picked from the name; `"neutral"`: the muted fill. */
 export type AvatarTone = "auto" | "neutral";
 
 export interface AvatarProps extends HTMLAttributes<HTMLSpanElement> {
@@ -35,11 +33,7 @@ export interface AvatarProps extends HTMLAttributes<HTMLSpanElement> {
   /** With `showName`, a second line under the name, such as an email. */
   subtitle?: ReactNode;
   tone?: AvatarTone;
-  /**
-   * Shown in place of the initials (an invite, a group, a setting). With a
-   * `colorKey` it takes that key's tint like initials do; without one it sits
-   * on the neutral fill with a subtle edge, so it reads on any surface.
-   */
+  /** Shown in place of the initials (an invite, a group), on the muted fill. */
   icon?: ReactNode;
   /** What picks the colour, such as an email; defaults to the initials. */
   colorKey?: string;
@@ -170,7 +164,7 @@ const tintStyles = cn(
  * <Avatar name="Ada Lovelace" size="lg" showName subtitle="ada@example.com" />
  * <Avatar name="Ada Lovelace" tone="neutral" />
  * <Avatar name="ada@example.com" icon={<MailOutlineIcon size="md" />} />
- * <Avatar name="Labelers" colorKey={group.id} icon={<UsersRoundIcon size={14} />} />
+ * <Avatar name="Labelers" icon={<UsersRoundIcon size={14} />} />
  * <Avatar name="Ada Lovelace" colorKey={user.email} />
  * ```
  *
@@ -182,10 +176,9 @@ const tintStyles = cn(
  *  as an email or a group's description; both lines truncate.
  * @param tone `"auto"` (default): initials on one of twenty tuned colours
  *  picked from `colorKey`, the same for a key everywhere; `"neutral"`: on the
- *  nested-card fill.
- * @param icon Shown in place of the initials when there is no image: a person
- *  not known yet (an invite) or not a person (a group, a setting). Tinted by
- *  `colorKey` when given, else neutral with a subtle edge.
+ *  muted fill.
+ * @param icon Shown in place of the initials when there is no image, on the
+ *  muted fill: a person not known yet (an invite) or not a person (a group).
  * @param colorKey What picks the colour: a stable id such as the email.
  *  Defaults to the initials.
  * @param square Rounded square instead of a circle, for a group.
@@ -207,9 +200,7 @@ export const Avatar: FC<AvatarProps> = ({
 }) => {
   const [failedSrc, setFailedSrc] = useState<string>();
   const image = src && src !== failedSrc ? src : undefined;
-  const neutral =
-    tone === "neutral" || Boolean(image) || (Boolean(icon) && !colorKey);
-  const edged = neutral && !image && Boolean(icon);
+  const neutral = tone === "neutral" || Boolean(image) || Boolean(icon);
   const avatar = (
     <span
       role="img"
@@ -218,9 +209,8 @@ export const Avatar: FC<AvatarProps> = ({
       className={cn(
         "inline-flex shrink-0 select-none items-center justify-center overflow-hidden",
         radiusStyles(square ? Radius.Md : Radius.Full),
-        neutral && bgColorClass(BackgroundColor.CardNested),
+        neutral && bgColorClass(BackgroundColor.Muted),
         neutral && textColorClass(TextColor.Secondary),
-        edged && cn("border", borderColorClass(BorderColor.Subtle)),
         !neutral && tintStyles,
         sizeStyles[size],
         !showName && className

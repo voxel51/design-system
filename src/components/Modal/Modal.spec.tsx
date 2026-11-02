@@ -97,4 +97,15 @@ describe("Modal", () => {
 
     expect(screen.getByTestId("modal-panel")).toHaveClass("max-w-[800px]");
   });
+  it("puts a description under the title", () => {
+    render(
+      <Modal open onClose={() => {}} title="Share" description="Who can see it">
+        body
+      </Modal>
+    );
+
+    expect(screen.getByRole("dialog")).toHaveAccessibleDescription(
+      "Who can see it"
+    );
+  });
 });

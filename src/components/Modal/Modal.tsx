@@ -1,4 +1,5 @@
 import {
+  Description,
   Dialog,
   DialogBackdrop,
   DialogPanel,
@@ -7,7 +8,7 @@ import {
 import type { FC, ReactNode } from "react";
 
 import { IconAction } from "@/components/IconAction";
-import { CloseIcon } from "@/components/Icons";
+import { XIcon } from "@/components/Icons";
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
 import { TEXT_STYLES } from "@/styles/text";
@@ -70,6 +71,8 @@ export interface ModalProps {
   onClose: () => void;
   /** Heading rendered in the modal's title bar. */
   title?: ReactNode;
+  /** A line under the title saying what the modal is for, in secondary text. */
+  description?: ReactNode;
   /** Panel width. See {@link ModalSize}. Defaults to `"md"`. */
   size?: ModalSize;
   /**
@@ -125,6 +128,7 @@ export interface ModalProps {
  * @param open Whether the modal is rendered.
  * @param onClose Invoked on close button, backdrop click, or Escape.
  * @param title Heading for the title bar.
+ * @param description A line under the title saying what the modal is for.
  * @param size Panel width. See {@link ModalSize}.
  * @param showCloseButton Whether the title bar renders a close button.
  * @param footer Content pinned below the scrollable body.
@@ -138,6 +142,7 @@ export const Modal: FC<ModalProps> = ({
   title,
   size = ModalSize.Md,
   showCloseButton,
+  description,
   footer,
   className,
   contentClassName,
@@ -187,30 +192,42 @@ export const Modal: FC<ModalProps> = ({
           {(title || withCloseButton) && (
             <div
               className={cn(
-                "flex flex-none items-center justify-between gap-md",
+                "flex flex-none items-start justify-between gap-md",
                 "px-6 pt-6 pb-5"
               )}
             >
               {title ? (
-                <DialogTitle
-                  className={cn(
-                    TEXT_STYLES[TextVariant.HeadingLg],
-                    textColorClass(TextColor.Primary),
-                    "min-w-0"
+                <div className="flex min-w-0 flex-col gap-1">
+                  <DialogTitle
+                    className={cn(
+                      TEXT_STYLES[TextVariant.HeadingLg],
+                      textColorClass(TextColor.Primary)
+                    )}
+                  >
+                    {title}
+                  </DialogTitle>
+                  {description && (
+                    <Description
+                      className={cn(
+                        TEXT_STYLES[TextVariant.BodyPrimary],
+                        textColorClass(TextColor.Secondary)
+                      )}
+                    >
+                      {description}
+                    </Description>
                   )}
-                >
-                  {title}
-                </DialogTitle>
+                </div>
               ) : (
                 <span />
               )}
               {withCloseButton && (
+                // Lovable's modal close: a 16px thin X, held at the title's height
                 <IconAction
-                  size={Size.Lg}
+                  size={Size.Md}
                   aria-label="Close"
-                  icon={CloseIcon}
+                  icon={XIcon}
                   onClick={onClose}
-                  className="shrink-0"
+                  className="-mt-1.5 -mr-2 shrink-0"
                 />
               )}
             </div>

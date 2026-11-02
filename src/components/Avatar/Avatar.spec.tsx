@@ -30,20 +30,13 @@ describe("Avatar", () => {
     expect(container.querySelector('[role="img"]')).toHaveClass("size-5");
   });
 
-  it("tints an icon by its colorKey, else edges it on the neutral fill", () => {
-    const { rerender } = render(
-      <Avatar name="Labelers" colorKey="g1" icon={<svg />} />
-    );
-    expect(
-      screen.getByRole("img").style.getPropertyValue("--avatar-bg")
-    ).not.toBe("");
-    expect(screen.getByRole("img")).not.toHaveClass("border");
+  it("puts an icon on the muted fill, even with a colorKey", () => {
+    render(<Avatar name="Labelers" colorKey="g1" icon={<svg />} />);
 
-    rerender(<Avatar name="Invite" icon={<svg />} />);
     expect(screen.getByRole("img").style.getPropertyValue("--avatar-bg")).toBe(
       ""
     );
-    expect(screen.getByRole("img")).toHaveClass("border");
+    expect(screen.getByRole("img")).toHaveClass("bg-content-bg-muted");
   });
 
   it("puts a subtitle under the name", () => {
