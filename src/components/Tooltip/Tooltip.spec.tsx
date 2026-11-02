@@ -53,6 +53,37 @@ describe("Tooltip", () => {
     expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
   });
 
+  it("hides over its trigger's open popup", () => {
+    render(
+      <Tooltip content="Layouts">
+        <button type="button" aria-haspopup="menu" aria-expanded="false">
+          Open
+        </button>
+      </Tooltip>
+    );
+    const button = screen.getByRole("button");
+    fireEvent.mouseEnter(button.parentElement!);
+    expect(screen.getByRole("tooltip")).toBeInTheDocument();
+    fireEvent.pointerDown(button, { pointerType: "mouse" });
+    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+    button.setAttribute("aria-expanded", "true");
+    fireEvent.mouseLeave(button.parentElement!);
+    fireEvent.mouseEnter(button.parentElement!);
+    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+  });
+
+  it("stays hidden inside a trigger whose popup is open", () => {
+    render(
+      <div aria-haspopup="menu" aria-expanded="true">
+        <Tooltip content="Layouts">
+          <button type="button">Open</button>
+        </Tooltip>
+      </div>
+    );
+    fireEvent.mouseEnter(screen.getByRole("button").parentElement!);
+    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+  });
+
   it("should render tooltip on hover", () => {
     const content = randomString();
     const children = randomString();

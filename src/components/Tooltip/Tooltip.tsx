@@ -175,6 +175,21 @@ export const Tooltip: FC<TooltipProps> = ({
     setIsOpen(false);
   }, [interactive]);
 
+  // A trigger's own popup (a menu, a popover) covers what the tooltip says:
+  // pressing it hides the tooltip, and hovering stays quiet while it is open
+  const popupTrigger = (target: EventTarget | null): boolean =>
+    target instanceof Element && target.closest("[aria-haspopup]") !== null;
+  const popupOpen = (): boolean => {
+    const open = '[aria-haspopup][aria-expanded="true"]';
+    const reference = refs.domReference.current;
+    // the popup's trigger wraps the tooltip (a Dropdown) or sits inside it
+    return (
+      reference instanceof Element &&
+      (reference.closest(open) !== null ||
+        reference.querySelector(open) !== null)
+    );
+  };
+
   const side = sideOf(placement);
   const arrowStyle: CSSProperties = {
     left: middlewareData.arrow?.x,
@@ -220,12 +235,17 @@ export const Tooltip: FC<TooltipProps> = ({
       ref={refs.setReference}
       className={cn("relative", wrapperClassName)}
       onMouseEnter={() => {
-        if (Date.now() - lastTouch.current > EMULATED_MOUSE_WINDOW) open();
+        if (
+          Date.now() - lastTouch.current > EMULATED_MOUSE_WINDOW &&
+          !popupOpen()
+        )
+          open();
       }}
       onMouseLeave={close}
       onPointerDown={(event) => {
         props.onPointerDown?.(event);
         longPressed.current = false;
+        if (popupTrigger(event.target)) setIsOpen(false);
         // A touch screen has no hover: a long press shows the tooltip for a
         // moment, so a tap or a swipe never covers the content
         if (event.pointerType !== "touch") return;
@@ -256,6 +276,10 @@ export const Tooltip: FC<TooltipProps> = ({
       onContextMenu={(event) => {
         props.onContextMenu?.(event);
         if (longPressed.current) event.preventDefault();
+      }}
+      onKeyDown={(event) => {
+        props.onKeyDown?.(event);
+        if (popupTrigger(event.target)) setIsOpen(false);
       }}
       onPointerCancel={(event) => {
         props.onPointerCancel?.(event);
