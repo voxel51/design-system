@@ -306,6 +306,9 @@ export const Select: FC<SelectProps> = ({
           style={triggerWidth ? { width: triggerWidth } : undefined}
           className={clsx(
             "p-1",
+            // About eight rows, then the list scrolls: a long list left to
+            // fill the viewport covers the form it opened from.
+            "[--anchor-max-height:20rem]",
             "border",
             borderColorClass(BorderColor.Default),
             bgColorClass(BackgroundColor.Card),
