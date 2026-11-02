@@ -6,8 +6,6 @@ import { type IconInput, IconWrapper } from "@/components/Icons";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
 import {
-  BackgroundColor,
-  bgColorClass,
   BorderColor,
   borderColorClass,
   ElementState,
@@ -72,20 +70,22 @@ export const RichButton: FC<RichButtonProps> = ({
   <Clickable>
     <div
       className={clsx(
-        // Figma RichButton: 12/16 padding, radius/sm, border/default at rest,
-        // border/focus on hover, and Active tints with bg/selected behind a
-        // border/active edge (node 708:879). The named group lets hover reach the
-        // icon without reacting to a consumer's own `.group` ancestor.
+        // 10/12 padding, radius/sm (Figma), border/input at rest,
+        // border/hover on hover, and Active as a border/active edge over a
+        // light brand tint. The named group lets hover reach the icon without
+        // reacting to a consumer's own `.group` ancestor.
         "group/rich-button",
-        "border",
+        "border transition-colors",
         active
           ? clsx(
               borderColorClass(BorderColor.Active),
-              bgColorClass(BackgroundColor.Selected)
+              "bg-content-bg-primary/10"
             )
-          : borderColorClass(BorderColor.Default),
-        !active && borderColorClass(BorderColor.Focus, ElementState.Hover),
-        "px-4 py-3",
+          : clsx(
+              borderColorClass(BorderColor.Input),
+              borderColorClass(BorderColor.Hover, ElementState.Hover)
+            ),
+        "px-3 py-2.5",
         radiusStyles(Radius.Sm),
         className
       )}
@@ -101,7 +101,7 @@ export const RichButton: FC<RichButtonProps> = ({
       tabIndex={0}
       {...props}
     >
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-0.5">
         <span className="flex gap-2.5 items-center">
           <IconWrapper
             content={icon}
@@ -117,11 +117,18 @@ export const RichButton: FC<RichButtonProps> = ({
                   )
             )}
           />
-          {label && <Text variant={TextVariant.HeadingSm}>{label}</Text>}
+          {label && (
+            <Text
+              variant={TextVariant.BodyPrimary}
+              color={active ? TextColor.Accent : TextColor.Primary}
+            >
+              {label}
+            </Text>
+          )}
         </span>
 
         {description && (
-          <Text variant={TextVariant.BodyTertiary} color={TextColor.Secondary}>
+          <Text variant={TextVariant.BodySecondary} color={TextColor.Secondary}>
             {description}
           </Text>
         )}
