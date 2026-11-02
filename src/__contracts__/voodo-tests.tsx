@@ -19,6 +19,7 @@
  */
 import {
   Avatar,
+  LiveToggle,
   InteractiveColor,
   ActivityToast,
   AddIcon,
@@ -601,6 +602,13 @@ export const Everything = (
       ))}
       <Avatar name="Ada Lovelace" size="sm" showName />
       <Avatar name="Ada Lovelace" tone="neutral" />
+      <LiveToggle
+        checked
+        onCheckedChange={() => undefined}
+        active={false}
+        onRefresh={() => undefined}
+        title="Refreshes every 5 seconds"
+      />
       <Pill isStatus color={StatusColor.ProgressText}>
         Running
       </Pill>
