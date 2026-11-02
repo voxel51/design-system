@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { Avatar } from "@voxel51/voodo";
+import { Avatar, MailOutlineIcon } from "@voxel51/voodo";
 
 const meta: Meta<typeof Avatar> = {
   title: "Components/Avatar",
@@ -21,4 +21,16 @@ export const Large: Story = {
   args: { name: "Ada Lovelace", size: "lg" },
 };
 
+export const WithName: Story = {
+  args: { name: "Ada Lovelace", size: "sm", showName: true },
+};
+
+export const Neutral: Story = {
+  args: { name: "Ada Lovelace", tone: "neutral" },
+};
+
 export default meta;
+
+export const WithIcon: Story = {
+  args: { name: "ada@example.com", icon: <MailOutlineIcon size="md" /> },
+};
