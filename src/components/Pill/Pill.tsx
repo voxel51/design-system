@@ -30,11 +30,12 @@ export interface PillProps extends HTMLAttributes<HTMLSpanElement> {
   size?: PillSize;
   radius?: Radius;
   shadow?: Shadow;
-  color?: TextColor;
+  /** Text color; a status `*-text` color tints a status pill. */
+  color?: TextColor | StatusColor;
   /** Prefixes the content with a status dot. */
   isStatus?: boolean;
   /** Color of the status dot, when it differs from the text. Defaults to `color`. See {@link TextColor}. */
-  dotColor?: TextColor;
+  dotColor?: TextColor | StatusColor;
   backgroundColor?: PillColor;
   icon?: IconInput;
   onRemove?: () => void;
