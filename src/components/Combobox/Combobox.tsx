@@ -153,8 +153,8 @@ export interface ComboboxProps extends Omit<
   autoHighlight?: boolean;
 }
 
-// An inline list sits on its popover's surface, so its highlight is the
-// card one step up rather than the selection tint
+// An inline list sits on its popover's surface, so its highlight is a
+// nested card rather than the selection tint (card matches popover in light)
 const optionStyles = (active: boolean, inline: boolean): string =>
   cn(
     "flex w-full cursor-pointer flex-col items-start gap-0.5",
@@ -162,7 +162,7 @@ const optionStyles = (active: boolean, inline: boolean): string =>
     "rounded-md",
     active &&
       bgColorClass(
-        inline ? BackgroundColor.Card : BackgroundColor.Selected,
+        inline ? BackgroundColor.CardNested : BackgroundColor.Selected,
         ElementState.None
       )
   );
