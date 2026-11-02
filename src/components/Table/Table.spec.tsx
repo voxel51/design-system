@@ -82,20 +82,19 @@ describe("Table", () => {
       bgColorClass(BackgroundColor.Card)
     );
     expect(screen.getByRole("table")).toHaveClass(radiusStyles(Radius.Md));
-    expect(screen.getByRole("columnheader")).toHaveClass("px-3", "sm:px-6");
+    expect(screen.getByRole("columnheader")).toHaveClass("px-4", "uppercase");
     expect(screen.getByRole("table").parentElement).toHaveClass(
       "overflow-x-auto"
     );
-    expect(screen.getByRole("columnheader")).toHaveClass("py-3");
+    expect(screen.getByRole("columnheader")).toHaveClass("py-2.5");
     expect(screen.getByRole("columnheader")).toHaveClass("text-left");
-    expect(screen.getByRole("columnheader")).toHaveClass("font-normal");
     expect(screen.getByRole("columnheader")).toHaveClass(
-      textColorClass(TextColor.Secondary)
+      textColorClass(TextColor.Tertiary)
     );
     expect(screen.getByRole("columnheader")).toHaveClass(
-      textStyles(TextVariant.BodySecondary)!
+      textStyles(TextVariant.Label)!
     );
-    expect(screen.getByRole("cell")).toHaveClass("px-3", "sm:px-6");
+    expect(screen.getByRole("cell")).toHaveClass("px-4");
     expect(screen.getByRole("cell")).toHaveClass("py-3");
     expect(screen.getByRole("cell")).toHaveClass("text-left");
     expect(screen.getByRole("cell")).toHaveClass("font-normal");
