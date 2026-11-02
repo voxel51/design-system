@@ -30,18 +30,18 @@ describe("Avatar", () => {
     expect(container.querySelector('[role="img"]')).toHaveClass("size-5");
   });
 
-  it("tints from the name by default and neutral on request", () => {
+  it("tints by default and neutral on request", () => {
     const { rerender } = render(<Avatar name="Ada Lovelace" />);
-    const hue = screen.getByRole("img").style.getPropertyValue("--avatar-hue");
-    expect(hue).not.toBe("");
+    const fill = screen.getByRole("img").style.getPropertyValue("--avatar-bg");
+    expect(fill).not.toBe("");
 
     rerender(<Avatar name="Ada Lovelace" />);
-    expect(screen.getByRole("img").style.getPropertyValue("--avatar-hue")).toBe(
-      hue
+    expect(screen.getByRole("img").style.getPropertyValue("--avatar-bg")).toBe(
+      fill
     );
 
     rerender(<Avatar name="Ada Lovelace" tone="neutral" />);
-    expect(screen.getByRole("img").style.getPropertyValue("--avatar-hue")).toBe(
+    expect(screen.getByRole("img").style.getPropertyValue("--avatar-bg")).toBe(
       ""
     );
   });
@@ -52,7 +52,7 @@ describe("Avatar", () => {
     const avatar = screen.getByRole("img", { name: "ada@example.com" });
     expect(screen.getByTestId("mail")).toBeInTheDocument();
     expect(avatar).not.toHaveTextContent("A");
-    expect(avatar.style.getPropertyValue("--avatar-hue")).toBe("");
+    expect(avatar.style.getPropertyValue("--avatar-bg")).toBe("");
   });
 
   it("falls back to the initials when the image fails", () => {
@@ -62,5 +62,27 @@ describe("Avatar", () => {
 
     expect(container.querySelector("img")).toBeNull();
     expect(screen.getByRole("img")).toHaveTextContent("AL");
+  });
+
+  it("picks the colour from colorKey, not the name", () => {
+    const fill = (props: { name: string; colorKey?: string }) => {
+      const { unmount } = render(<Avatar {...props} />);
+      const value = screen
+        .getByRole("img")
+        .style.getPropertyValue("--avatar-bg");
+      unmount();
+      return value;
+    };
+
+    expect(fill({ name: "Test User", colorKey: "a@example.com" })).toBe(
+      fill({ name: "Someone Else", colorKey: "a@example.com" })
+    );
+    expect(fill({ name: "Test User" })).toBe(fill({ name: "Tom Uno" }));
+  });
+
+  it("draws a group as a rounded square", () => {
+    render(<Avatar name="Annotators" square />);
+
+    expect(screen.getByRole("img")).not.toHaveClass("rounded-full");
   });
 });
