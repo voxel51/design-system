@@ -34,6 +34,9 @@ describe("Avatar", () => {
     const { rerender } = render(<Avatar name="Ada Lovelace" />);
     const fill = screen.getByRole("img").style.backgroundColor;
     expect(fill).not.toBe("");
+    expect(["rgb(255, 255, 255)", "rgb(17, 17, 17)"]).toContain(
+      screen.getByRole("img").style.color
+    );
 
     rerender(<Avatar name="Ada Lovelace" />);
     expect(screen.getByRole("img").style.backgroundColor).toBe(fill);
