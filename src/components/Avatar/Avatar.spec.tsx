@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 
 import { Avatar } from "./Avatar";
 
@@ -43,5 +43,23 @@ describe("Avatar", () => {
 
     rerender(<Avatar name="Ada Lovelace" tone="neutral" />);
     expect(screen.getByRole("img").style.backgroundColor).toBe("");
+  });
+
+  it("shows an icon on the neutral fill in place of the initials", () => {
+    render(<Avatar name="ada@example.com" icon={<svg data-testid="mail" />} />);
+
+    const avatar = screen.getByRole("img", { name: "ada@example.com" });
+    expect(screen.getByTestId("mail")).toBeInTheDocument();
+    expect(avatar).not.toHaveTextContent("A");
+    expect(avatar.style.backgroundColor).toBe("");
+  });
+
+  it("falls back to the initials when the image fails", () => {
+    const { container } = render(<Avatar name="Ada Lovelace" src="/x.png" />);
+
+    fireEvent.error(container.querySelector("img")!);
+
+    expect(container.querySelector("img")).toBeNull();
+    expect(screen.getByRole("img")).toHaveTextContent("AL");
   });
 });
