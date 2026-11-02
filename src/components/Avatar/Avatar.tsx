@@ -30,6 +30,8 @@ export interface AvatarProps extends HTMLAttributes<HTMLSpanElement> {
   size?: AvatarSize;
   /** Shows the name beside the avatar, truncating, as in a "Run by" cell. */
   showName?: boolean;
+  /** With `showName`, a second line under the name, such as an email. */
+  subtitle?: ReactNode;
   tone?: AvatarTone;
   /** Shown in place of the initials (an invite, a group), on the neutral fill. */
   icon?: ReactNode;
@@ -159,6 +161,7 @@ const tintStyles = cn(
  * ```tsx
  * <Avatar name="Ada Lovelace" src={user.photoUrl} size="sm" />
  * <Avatar name={run.runBy.name} size="sm" showName />
+ * <Avatar name="Ada Lovelace" size="lg" showName subtitle="ada@example.com" />
  * <Avatar name="Ada Lovelace" tone="neutral" />
  * <Avatar name="ada@example.com" icon={<MailOutlineIcon size="md" />} />
  * <Avatar name="Ada Lovelace" colorKey={user.email} />
@@ -168,6 +171,8 @@ const tintStyles = cn(
  * @param src Image URL. Initials show when it is missing.
  * @param size `"sm"` (20px), `"md"` (24px) or `"lg"` (32px). Defaults to `"md"`.
  * @param showName Shows the name beside the avatar (body text, truncating).
+ * @param subtitle With `showName`, a second line under a larger name, such
+ *  as an email or a group's description; both lines truncate.
  * @param tone `"auto"` (default): initials on one of twenty tuned colours
  *  picked from `colorKey`, the same for a key everywhere; `"neutral"`: on the
  *  nested-card fill.
@@ -184,6 +189,7 @@ export const Avatar: FC<AvatarProps> = ({
   src,
   size = Size.Md,
   showName = false,
+  subtitle,
   tone = "auto",
   icon,
   colorKey,
@@ -229,18 +235,37 @@ export const Avatar: FC<AvatarProps> = ({
     </span>
   );
   if (!showName) return avatar;
+  const twoLines = subtitle !== undefined && subtitle !== null;
   return (
     <span
       className={cn(
-        "inline-flex min-w-0 items-center gap-1.5",
+        "inline-flex min-w-0 items-center",
+        twoLines ? "gap-3" : "gap-1.5",
         textColorClass(TextColor.Primary),
-        textStyles(TextVariant.BodySecondary),
+        textStyles(
+          twoLines ? TextVariant.BodyPrimary : TextVariant.BodySecondary
+        ),
         className
       )}
       {...props}
     >
       {avatar}
-      <span className="truncate">{name}</span>
+      {twoLines ? (
+        <span className="flex min-w-0 flex-col">
+          <span className="truncate">{name}</span>
+          <span
+            className={cn(
+              "truncate",
+              textStyles(TextVariant.BodyTertiary),
+              textColorClass(TextColor.Tertiary)
+            )}
+          >
+            {subtitle}
+          </span>
+        </span>
+      ) : (
+        <span className="truncate">{name}</span>
+      )}
     </span>
   );
 };
