@@ -1,4 +1,10 @@
-import { type FC, type HTMLAttributes, type ReactNode, useState } from "react";
+import {
+  type CSSProperties,
+  type FC,
+  type HTMLAttributes,
+  type ReactNode,
+  useState,
+} from "react";
 
 import radiusStyles from "@/styles/radius";
 import { textStyles } from "@/styles/text";
@@ -43,29 +49,22 @@ const initials = (name: string): string =>
     .map((part) => part.charAt(0).toUpperCase())
     .join("");
 
-// A stable hue per name at a fixed saturation and lightness; the initials
-// take white or near-black, whichever contrasts more with that hue's
-// luminance (yellows and cyans read light even at 42% lightness).
-const nameFill = (name: string): { backgroundColor: string; color: string } => {
+// Twelve hues that stay distinct as pale tints in both themes; yellow-greens
+// and browns are left out because they read muddy when pale.
+const HUES = [5, 25, 45, 140, 170, 195, 215, 240, 265, 290, 315, 340];
+
+// A stable hue per name: the same person keeps their colour everywhere.
+const nameHue = (name: string): number => {
   let hash = 0;
   for (const char of name) hash = (hash * 31 + char.charCodeAt(0)) | 0;
-  const hue = Math.abs(hash) % 360;
-  const [s, l] = [0.45, 0.42];
-  const channel = (n: number): number => {
-    const k = (n + hue / 30) % 12;
-    const v =
-      l - s * Math.min(l, 1 - l) * Math.max(-1, Math.min(k - 3, 9 - k, 1));
-    return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
-  };
-  const luminance =
-    0.2126 * channel(0) + 0.7152 * channel(8) + 0.0722 * channel(4);
-  // contrast with white vs with #111 (luminance ~0.0056)
-  const light = 1.05 / (luminance + 0.05) >= (luminance + 0.05) / 0.0556;
-  return {
-    backgroundColor: `hsl(${hue} 45% 42%)`,
-    color: light ? "#fff" : "#111",
-  };
+  return HUES[Math.abs(hash) % HUES.length];
 };
+
+// A pale tint with deep initials of the same hue, reversed in the dark theme
+const tintStyles = cn(
+  "bg-[hsl(var(--avatar-hue)_75%_91%)] text-[hsl(var(--avatar-hue)_60%_32%)]",
+  "dark:bg-[hsl(var(--avatar-hue)_40%_25%)] dark:text-[hsl(var(--avatar-hue)_85%_82%)]"
+);
 
 /**
  * A round picture of a person, falling back to their initials when there is
@@ -83,8 +82,9 @@ const nameFill = (name: string): { backgroundColor: string; color: string } => {
  * @param src Image URL. Initials show when it is missing.
  * @param size `"sm"` (20px), `"md"` (24px) or `"lg"` (32px). Defaults to `"md"`.
  * @param showName Shows the name beside the avatar (body text, truncating).
- * @param tone `"auto"` (default): initials on a fill picked from the name, the
- *  same for a name everywhere; `"neutral"`: on the nested-card fill.
+ * @param tone `"auto"` (default): initials on a pale tint of one of twelve
+ *  hues picked from the name, the same for a name everywhere; `"neutral"`: on
+ *  the nested-card fill.
  * @param icon Shown in place of the initials when there is no image, on the
  *  neutral fill: a person not known yet (an invite) or not a person (a group).
  * @param className `class` overrides to apply to the component.
@@ -113,12 +113,13 @@ export const Avatar: FC<AvatarProps> = ({
         radiusStyles(Radius.Full),
         neutral && bgColorClass(BackgroundColor.CardNested),
         neutral && textColorClass(TextColor.Secondary),
+        !neutral && tintStyles,
         sizeStyles[size],
         !showName && className
       )}
       {...(!showName && props)}
       style={{
-        ...(!neutral && nameFill(name)),
+        ...(!neutral && ({ "--avatar-hue": nameHue(name) } as CSSProperties)),
         ...(!showName && props.style),
       }}
     >
