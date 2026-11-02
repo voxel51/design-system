@@ -228,6 +228,7 @@ import LayoutPanelTopSvg from "@/img/LayoutPanelTop.svg?react";
 import LibraryAddSvg from "@/img/LibraryAdd.svg?react";
 import LightModeSvg from "@/img/LightMode.svg?react";
 import LightbulbSvg from "@/img/Lightbulb.svg?react";
+import GlobeSvg from "@/img/Globe.svg?react";
 import LinkSvg from "@/img/Link.svg?react";
 import Link2Svg from "@/img/Link2.svg?react";
 import ListSvg from "@/img/List.svg?react";
@@ -1284,6 +1285,10 @@ export const LightModeIcon: FC<IconProps> = (props) => (
 
 export const LightbulbIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={LightbulbSvg} />
+);
+
+export const GlobeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={GlobeSvg} />
 );
 
 export const LinkIcon: FC<IconProps> = (props) => (
