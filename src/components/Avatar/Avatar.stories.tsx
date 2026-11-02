@@ -25,4 +25,8 @@ export const WithName: Story = {
   args: { name: "Ada Lovelace", size: "sm", showName: true },
 };
 
+export const Neutral: Story = {
+  args: { name: "Ada Lovelace", tone: "neutral" },
+};
+
 export default meta;

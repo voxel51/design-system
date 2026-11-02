@@ -15,12 +15,16 @@ import { cn } from "@/util/classes";
 
 export type AvatarSize = `${Size.Sm | Size.Md | Size.Lg}`;
 
+/** `"auto"`: a fill picked from the name; `"neutral"`: the nested-card fill. */
+export type AvatarTone = "auto" | "neutral";
+
 export interface AvatarProps extends HTMLAttributes<HTMLSpanElement> {
   name: string;
   src?: string;
   size?: AvatarSize;
   /** Shows the name beside the avatar, truncating, as in a "Run by" cell. */
   showName?: boolean;
+  tone?: AvatarTone;
 }
 
 const sizeStyles: Record<AvatarSize, string> = {
@@ -37,6 +41,14 @@ const initials = (name: string): string =>
     .map((part) => part.charAt(0).toUpperCase())
     .join("");
 
+// a stable hue per name; fixed saturation and lightness keep white initials
+// legible on every hue, in both themes
+const nameFill = (name: string): string => {
+  let hash = 0;
+  for (const char of name) hash = (hash * 31 + char.charCodeAt(0)) | 0;
+  return `hsl(${Math.abs(hash) % 360} 45% 42%)`;
+};
+
 /**
  * A round picture of a person, falling back to their initials when there is
  * no image.
@@ -45,12 +57,15 @@ const initials = (name: string): string =>
  * ```tsx
  * <Avatar name="Ada Lovelace" src={user.photoUrl} size="sm" />
  * <Avatar name={run.runBy.name} size="sm" showName />
+ * <Avatar name="Ada Lovelace" tone="neutral" />
  * ```
  *
  * @param name The person's name: it makes the initials and the accessible label.
  * @param src Image URL. Initials show when it is missing.
  * @param size `"sm"` (20px), `"md"` (24px) or `"lg"` (32px). Defaults to `"md"`.
  * @param showName Shows the name beside the avatar (body text, truncating).
+ * @param tone `"auto"` (default): initials on a fill picked from the name, the
+ *  same for a name everywhere; `"neutral"`: on the nested-card fill.
  * @param className `class` overrides to apply to the component.
  * @param props Additional HTML properties to apply to the component.
  */
@@ -59,9 +74,11 @@ export const Avatar: FC<AvatarProps> = ({
   src,
   size = Size.Md,
   showName = false,
+  tone = "auto",
   className,
   ...props
 }) => {
+  const neutral = tone === "neutral" || Boolean(src);
   const avatar = (
     <span
       role="img"
@@ -70,12 +87,16 @@ export const Avatar: FC<AvatarProps> = ({
       className={cn(
         "inline-flex shrink-0 select-none items-center justify-center overflow-hidden",
         radiusStyles(Radius.Full),
-        bgColorClass(BackgroundColor.CardNested),
-        textColorClass(TextColor.Secondary),
+        neutral && bgColorClass(BackgroundColor.CardNested),
+        neutral ? textColorClass(TextColor.Secondary) : "text-white",
         sizeStyles[size],
         !showName && className
       )}
       {...(!showName && props)}
+      style={{
+        ...(!neutral && { backgroundColor: nameFill(name) }),
+        ...(!showName && props.style),
+      }}
     >
       {src ? (
         <img src={src} alt="" className="size-full object-cover" />

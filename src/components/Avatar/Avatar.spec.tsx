@@ -29,4 +29,16 @@ describe("Avatar", () => {
     expect(container.querySelector('[role="img"]')).toHaveTextContent("AL");
     expect(container.querySelector('[role="img"]')).toHaveClass("size-5");
   });
+
+  it("fills from the name by default and neutral on request", () => {
+    const { rerender } = render(<Avatar name="Ada Lovelace" />);
+    const fill = screen.getByRole("img").style.backgroundColor;
+    expect(fill).not.toBe("");
+
+    rerender(<Avatar name="Ada Lovelace" />);
+    expect(screen.getByRole("img").style.backgroundColor).toBe(fill);
+
+    rerender(<Avatar name="Ada Lovelace" tone="neutral" />);
+    expect(screen.getByRole("img").style.backgroundColor).toBe("");
+  });
 });
