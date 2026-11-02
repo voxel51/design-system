@@ -78,8 +78,8 @@ export interface DataTableProps {
   rows: DataTableRow[];
   /** Shown in place of the rows when there are none. */
   empty?: ReactNode;
-  /** The table shows cards while it is narrower than this. Defaults to `"sm"`. */
-  cardBelow?: Breakpoint;
+  /** The table shows cards while it is narrower than this; `"never"` keeps the table. Defaults to `"sm"`. */
+  cardBelow?: Breakpoint | "never";
   className?: string;
   /** Names the table for assistive technology. */
   "aria-label"?: string;
@@ -354,7 +354,7 @@ const Card: FC<{ columns: DataTableColumn[]; row: DataTableRow }> = ({
  * @param columns The columns, in wide-mode order. See {@link DataTableColumn}.
  * @param rows The rows. See {@link DataTableRow}.
  * @param empty Shown in place of the rows when there are none.
- * @param cardBelow Breakpoint under which the table shows cards. Defaults to `"sm"` (640px).
+ * @param cardBelow Breakpoint under which the table shows cards. Defaults to `"sm"` (640px); `"never"` keeps the table at any width, such as in a modal.
  * @param className Additional CSS class names for the table, or the box holding the cards.
  * @param aria-label Names the table for assistive technology.
  * @param children More rows as {@link DataTableRowItem} elements, for rows with hooks or state.
@@ -369,7 +369,8 @@ export const DataTable: FC<DataTableProps> = ({
   "aria-label": ariaLabel,
 }) => {
   const { ref, width } = useElementSize();
-  const card = width > 0 && width < BREAKPOINT_WIDTHS[cardBelow];
+  const card =
+    cardBelow !== "never" && width > 0 && width < BREAKPOINT_WIDTHS[cardBelow];
   return (
     <DataTableContext.Provider value={{ columns, card }}>
       <div ref={ref} className="w-full">
