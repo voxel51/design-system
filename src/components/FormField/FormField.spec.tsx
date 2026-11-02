@@ -1,10 +1,9 @@
 import { render, screen, within } from "@testing-library/react";
 import type { ReactNode } from "react";
 
-import { randomString } from "@/util/random";
-
 import { Input } from "@/components/Input";
 import { TextArea } from "@/components/TextArea";
+import { randomString } from "@/util/random";
 
 import { FormField } from "./FormField";
 

@@ -230,6 +230,9 @@ export const Tooltip: FC<TooltipProps> = ({
   );
 
   return (
+    // roleless on purpose: a wrapper that only listens to events bubbling
+    // from the interactive trigger it wraps
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
       {...props}
       ref={refs.setReference}

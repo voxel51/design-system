@@ -24,7 +24,7 @@ export interface LiveToggleProps {
 const dot = (
   color: "status-progress-text" | "text-tertiary",
   pulse = false
-) => {
+): FC => {
   const Dot: FC = () => (
     <span className="flex size-full items-center justify-center">
       <StatusDot aria-hidden color={color} pulse={pulse} />
