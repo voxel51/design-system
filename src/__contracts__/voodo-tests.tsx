@@ -600,6 +600,7 @@ export const Everything = (
         <Avatar key={s} name="Ada Lovelace" size={s} />
       ))}
       <Avatar name="Ada Lovelace" size="sm" showName />
+      <Avatar name="Ada Lovelace" tone="neutral" />
       <Pill isStatus color={StatusColor.ProgressText}>
         Running
       </Pill>
