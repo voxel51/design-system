@@ -198,6 +198,7 @@ export const Select: FC<SelectProps> = ({
   value,
   placeholder,
   variant = "default",
+  "aria-label": ariaLabel,
   ...props
 }) => {
   const [query, setQuery] = useState("");
@@ -262,6 +263,7 @@ export const Select: FC<SelectProps> = ({
       >
         <div ref={triggerRef} className="relative flex items-center">
           <ComboboxInput
+            aria-label={ariaLabel}
             autoComplete="off" // interferes with dropdown menu
             displayValue={getDisplayValue}
             onChange={(e) => setQuery(e.target.value)}
