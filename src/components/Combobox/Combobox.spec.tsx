@@ -190,10 +190,9 @@ describe("Combobox", () => {
       );
     }
     render(<Framed />);
-    jest.spyOn(
-      screen.getByTestId("frame"),
-      "getBoundingClientRect"
-    ).mockReturnValue(DOMRect.fromRect({ width: 500, height: 44 }));
+    jest
+      .spyOn(screen.getByTestId("frame"), "getBoundingClientRect")
+      .mockReturnValue(DOMRect.fromRect({ width: 500, height: 44 }));
     await userEvent.click(screen.getByRole("combobox"));
 
     await waitFor(() =>
@@ -336,6 +335,17 @@ describe("Combobox", () => {
     render(<Harness autoHighlight />);
     await userEvent.click(screen.getByRole("combobox"));
     expect(screen.queryByRole("option", { selected: true })).toBeNull();
+  });
+
+  it("stands on the top row of an inline list before any text with autoHighlight", async () => {
+    const onPick = jest.fn();
+    render(<Harness inline autoHighlight focusOnMount onPick={onPick} />);
+    expect(screen.getByRole("option", { name: "alpha" })).toHaveAttribute(
+      "aria-selected",
+      "true"
+    );
+    await userEvent.keyboard("{Enter}");
+    expect(onPick).toHaveBeenCalledWith(OPTIONS[0]);
   });
 
   it("shows the empty message when there are no options", async () => {

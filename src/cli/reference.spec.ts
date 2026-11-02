@@ -351,7 +351,7 @@ const built =
     expect(button).toContain('type ButtonSize = "xs" | "sm" | "md";');
     expect(toggle).toContain('type ToggleSize = "sm" | "md";');
     expect(run("docs", "IconAction")).toContain(
-      'type IconActionSize = "sm" | "md" | "lg";'
+      'type IconActionSize = "xs" | "sm" | "md" | "lg";'
     );
     for (const docs of [button, toggle]) {
       expect(docs).not.toContain("type Size =");
