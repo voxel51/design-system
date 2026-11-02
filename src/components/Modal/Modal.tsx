@@ -162,7 +162,10 @@ export const Modal: FC<ModalProps> = ({
       <DialogBackdrop
         className={cn("fixed inset-0", bgColorClass(ScrimColor.Default))}
       />
-      <div className="fixed inset-0 flex items-center justify-center p-4">
+      {/* Sized to the viewport, not to the page beside its scrollbar: the
+          scroll lock lifts as the close fades in, and a scrollbar returning
+          then would slide a centered panel sideways. */}
+      <div className="fixed inset-y-0 left-0 flex w-screen items-center justify-center p-4">
         <DialogPanel
           data-testid="modal-panel"
           className={cn(
@@ -206,7 +209,7 @@ export const Modal: FC<ModalProps> = ({
               )}
               {withCloseButton && (
                 <IconAction
-                  size={Size.Lg}
+                  size={Size.Md}
                   aria-label="Close"
                   icon={CloseIcon}
                   onClick={onClose}
