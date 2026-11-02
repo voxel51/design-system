@@ -1,4 +1,4 @@
-import type { FC, HTMLAttributes } from "react";
+import { type FC, type HTMLAttributes, type ReactNode, useState } from "react";
 
 import radiusStyles from "@/styles/radius";
 import { textStyles } from "@/styles/text";
@@ -25,6 +25,8 @@ export interface AvatarProps extends HTMLAttributes<HTMLSpanElement> {
   /** Shows the name beside the avatar, truncating, as in a "Run by" cell. */
   showName?: boolean;
   tone?: AvatarTone;
+  /** Shown in place of the initials (an invite, a group), on the neutral fill. */
+  icon?: ReactNode;
 }
 
 const sizeStyles: Record<AvatarSize, string> = {
@@ -67,13 +69,14 @@ const nameFill = (name: string): { backgroundColor: string; color: string } => {
 
 /**
  * A round picture of a person, falling back to their initials when there is
- * no image.
+ * no image or it fails to load.
  *
  * @example
  * ```tsx
  * <Avatar name="Ada Lovelace" src={user.photoUrl} size="sm" />
  * <Avatar name={run.runBy.name} size="sm" showName />
  * <Avatar name="Ada Lovelace" tone="neutral" />
+ * <Avatar name="ada@example.com" icon={<MailOutlineIcon size="md" />} />
  * ```
  *
  * @param name The person's name: it makes the initials and the accessible label.
@@ -82,6 +85,8 @@ const nameFill = (name: string): { backgroundColor: string; color: string } => {
  * @param showName Shows the name beside the avatar (body text, truncating).
  * @param tone `"auto"` (default): initials on a fill picked from the name, the
  *  same for a name everywhere; `"neutral"`: on the nested-card fill.
+ * @param icon Shown in place of the initials when there is no image, on the
+ *  neutral fill: a person not known yet (an invite) or not a person (a group).
  * @param className `class` overrides to apply to the component.
  * @param props Additional HTML properties to apply to the component.
  */
@@ -91,10 +96,13 @@ export const Avatar: FC<AvatarProps> = ({
   size = Size.Md,
   showName = false,
   tone = "auto",
+  icon,
   className,
   ...props
 }) => {
-  const neutral = tone === "neutral" || Boolean(src);
+  const [failedSrc, setFailedSrc] = useState<string>();
+  const image = src && src !== failedSrc ? src : undefined;
+  const neutral = tone === "neutral" || Boolean(image) || Boolean(icon);
   const avatar = (
     <span
       role="img"
@@ -114,10 +122,17 @@ export const Avatar: FC<AvatarProps> = ({
         ...(!showName && props.style),
       }}
     >
-      {src ? (
-        <img src={src} alt="" className="size-full object-cover" />
+      {image ? (
+        // Google-hosted profile pictures refuse requests with a referrer
+        <img
+          src={image}
+          alt=""
+          referrerPolicy="no-referrer"
+          className="size-full object-cover"
+          onError={() => setFailedSrc(image)}
+        />
       ) : (
-        initials(name)
+        (icon ?? initials(name))
       )}
     </span>
   );
