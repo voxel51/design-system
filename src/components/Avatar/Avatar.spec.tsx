@@ -30,19 +30,20 @@ describe("Avatar", () => {
     expect(container.querySelector('[role="img"]')).toHaveClass("size-5");
   });
 
-  it("fills from the name by default and neutral on request", () => {
+  it("tints from the name by default and neutral on request", () => {
     const { rerender } = render(<Avatar name="Ada Lovelace" />);
-    const fill = screen.getByRole("img").style.backgroundColor;
-    expect(fill).not.toBe("");
-    expect(["rgb(255, 255, 255)", "rgb(17, 17, 17)"]).toContain(
-      screen.getByRole("img").style.color
-    );
+    const hue = screen.getByRole("img").style.getPropertyValue("--avatar-hue");
+    expect(hue).not.toBe("");
 
     rerender(<Avatar name="Ada Lovelace" />);
-    expect(screen.getByRole("img").style.backgroundColor).toBe(fill);
+    expect(screen.getByRole("img").style.getPropertyValue("--avatar-hue")).toBe(
+      hue
+    );
 
     rerender(<Avatar name="Ada Lovelace" tone="neutral" />);
-    expect(screen.getByRole("img").style.backgroundColor).toBe("");
+    expect(screen.getByRole("img").style.getPropertyValue("--avatar-hue")).toBe(
+      ""
+    );
   });
 
   it("shows an icon on the neutral fill in place of the initials", () => {
@@ -51,7 +52,7 @@ describe("Avatar", () => {
     const avatar = screen.getByRole("img", { name: "ada@example.com" });
     expect(screen.getByTestId("mail")).toBeInTheDocument();
     expect(avatar).not.toHaveTextContent("A");
-    expect(avatar.style.backgroundColor).toBe("");
+    expect(avatar.style.getPropertyValue("--avatar-hue")).toBe("");
   });
 
   it("falls back to the initials when the image fails", () => {
