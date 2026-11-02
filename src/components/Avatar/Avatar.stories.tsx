@@ -21,4 +21,8 @@ export const Large: Story = {
   args: { name: "Ada Lovelace", size: "lg" },
 };
 
+export const WithName: Story = {
+  args: { name: "Ada Lovelace", size: "sm", showName: true },
+};
+
 export default meta;

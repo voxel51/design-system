@@ -599,6 +599,10 @@ export const Everything = (
       {(["sm", "md", "lg"] as const).map((s) => (
         <Avatar key={s} name="Ada Lovelace" size={s} />
       ))}
+      <Avatar name="Ada Lovelace" size="sm" showName />
+      <Pill isStatus color={StatusColor.ProgressText}>
+        Running
+      </Pill>
     </Stack>
 
     {/* Pills: size × radius × shadow, plus rich buttons */}

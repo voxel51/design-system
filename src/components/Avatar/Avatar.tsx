@@ -19,6 +19,8 @@ export interface AvatarProps extends HTMLAttributes<HTMLSpanElement> {
   name: string;
   src?: string;
   size?: AvatarSize;
+  /** Shows the name beside the avatar, truncating, as in a "Run by" cell. */
+  showName?: boolean;
 }
 
 const sizeStyles: Record<AvatarSize, string> = {
@@ -42,11 +44,13 @@ const initials = (name: string): string =>
  * @example
  * ```tsx
  * <Avatar name="Ada Lovelace" src={user.photoUrl} size="sm" />
+ * <Avatar name={run.runBy.name} size="sm" showName />
  * ```
  *
  * @param name The person's name: it makes the initials and the accessible label.
  * @param src Image URL. Initials show when it is missing.
  * @param size `"sm"` (20px), `"md"` (24px) or `"lg"` (32px). Defaults to `"md"`.
+ * @param showName Shows the name beside the avatar (body text, truncating).
  * @param className `class` overrides to apply to the component.
  * @param props Additional HTML properties to apply to the component.
  */
@@ -54,28 +58,47 @@ export const Avatar: FC<AvatarProps> = ({
   name,
   src,
   size = Size.Md,
+  showName = false,
   className,
   ...props
-}) => (
-  <span
-    role="img"
-    aria-label={name}
-    className={cn(
-      "inline-flex shrink-0 select-none items-center justify-center overflow-hidden",
-      radiusStyles(Radius.Full),
-      bgColorClass(BackgroundColor.CardNested),
-      textColorClass(TextColor.Secondary),
-      sizeStyles[size],
-      className
-    )}
-    {...props}
-  >
-    {src ? (
-      <img src={src} alt="" className="size-full object-cover" />
-    ) : (
-      initials(name)
-    )}
-  </span>
-);
+}) => {
+  const avatar = (
+    <span
+      role="img"
+      aria-label={showName ? undefined : name}
+      aria-hidden={showName || undefined}
+      className={cn(
+        "inline-flex shrink-0 select-none items-center justify-center overflow-hidden",
+        radiusStyles(Radius.Full),
+        bgColorClass(BackgroundColor.CardNested),
+        textColorClass(TextColor.Secondary),
+        sizeStyles[size],
+        !showName && className
+      )}
+      {...(!showName && props)}
+    >
+      {src ? (
+        <img src={src} alt="" className="size-full object-cover" />
+      ) : (
+        initials(name)
+      )}
+    </span>
+  );
+  if (!showName) return avatar;
+  return (
+    <span
+      className={cn(
+        "inline-flex min-w-0 items-center gap-1.5",
+        textColorClass(TextColor.Primary),
+        textStyles(TextVariant.BodySecondary),
+        className
+      )}
+      {...props}
+    >
+      {avatar}
+      <span className="truncate">{name}</span>
+    </span>
+  );
+};
 
 Avatar.displayName = "Avatar";
