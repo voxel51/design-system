@@ -154,4 +154,21 @@ describe("Select", () => {
 
     expect(screen.getByRole("listbox")).toBeInTheDocument();
   });
+
+  it("should cap the list height so a long list scrolls", async () => {
+    const user = userEvent.setup();
+    render(
+      <Select
+        portal
+        options={[{ id: "a", data: { label: "Alpha" } }]}
+        onChange={jest.fn()}
+      />
+    );
+
+    await user.click(screen.getByRole("combobox"));
+
+    expect(await screen.findByRole("listbox")).toHaveClass(
+      "[--anchor-max-height:20rem]"
+    );
+  });
 });
