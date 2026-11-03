@@ -56,7 +56,7 @@ const theme: PrismTheme = {
 };
 
 const preClassName = cn(
-  "overflow-x-auto pr-8",
+  "min-h-0 overflow-auto",
   textStyles(TextVariant.CodePrimary),
   "leading-5"
 );
@@ -112,7 +112,7 @@ export const CodeBlock: FC<CodeBlockProps> = ({
       data-testid="code"
       {...props}
       className={cn(
-        "relative min-w-0 rounded-md p-4",
+        "relative flex min-w-0 flex-col rounded-md p-4 pr-12",
         bgColorClass(BackgroundColor.Card),
         className
       )}
