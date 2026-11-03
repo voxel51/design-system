@@ -65,6 +65,24 @@ describe("Combobox", () => {
     expect(screen.getByText("the first one")).toBeInTheDocument();
   });
 
+  it("renders an option's icon and hint, with Enter on the highlighted row", async () => {
+    const user = userEvent.setup();
+    render(
+      <Harness
+        options={[
+          { id: "a", label: "alpha", icon: IconName.Search, hint: "searches" },
+          { id: "b", label: "beta", hint: "searches" },
+        ]}
+      />
+    );
+    await user.click(screen.getByRole("combobox"));
+    await user.keyboard("{ArrowDown}");
+    const [first, second] = screen.getAllByRole("option");
+    expect(first).toHaveTextContent("searches");
+    expect(first.querySelectorAll("svg")).toHaveLength(2);
+    expect(second.querySelectorAll("svg")).toHaveLength(0);
+  });
+
   it("picks an option on click and fills the field", async () => {
     const onPick = jest.fn();
     render(<Harness onPick={onPick} />);

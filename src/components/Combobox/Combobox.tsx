@@ -21,7 +21,11 @@ import {
   type RefObject,
 } from "react";
 
-import type { IconInput } from "@/components/Icons";
+import {
+  CornerDownLeftIcon,
+  IconWrapper,
+  type IconInput,
+} from "@/components/Icons";
 import { Input } from "@/components/Input";
 import { MenuSectionTitle, menuPanelStyles } from "@/components/Menu";
 import { Spinner } from "@/components/Spinner";
@@ -32,6 +36,7 @@ import {
   ElementState,
   Size,
   TextColor,
+  textColorClass,
   TextVariant,
   ZIndex,
   zIndexStyles,
@@ -49,6 +54,11 @@ export interface ComboboxOption {
   label: string;
   /** Optional second line — a definition, a slug, an owner. */
   description?: ReactNode;
+  /** A leading icon saying what kind of row it is. */
+  icon?: IconInput;
+  /** A short note at the row's end, such as what picking it does; the
+   * highlighted row adds an Enter glyph after it. */
+  hint?: ReactNode;
   /**
    * The section the row belongs to. A titled section starts wherever the
    * group changes, so pass the rows ordered by group.
@@ -155,9 +165,10 @@ export interface ComboboxProps extends Omit<
 
 // An inline list sits on its popover's surface, so its highlight is a
 // nested card rather than the selection tint (card matches popover in light)
-const optionStyles = (active: boolean, inline: boolean): string =>
+const optionStyles = (active: boolean, inline: boolean, row: boolean): string =>
   cn(
-    "flex w-full cursor-pointer flex-col items-start gap-0.5",
+    "flex w-full cursor-pointer",
+    row ? "items-center gap-2" : "flex-col items-start gap-0.5",
     "px-2 py-1.5 text-left",
     "rounded-md",
     active &&
@@ -531,7 +542,11 @@ export const Combobox: FC<ComboboxProps> = ({
                     aria-label={option.label}
                     {...dataAttributes(option)}
                     aria-selected={i === highlighted}
-                    className={optionStyles(i === highlighted, inline)}
+                    className={optionStyles(
+                      i === highlighted,
+                      inline,
+                      Boolean(option.icon || option.hint)
+                    )}
                     // The field owns focus; hovering only moves the highlight so
                     // pointer and keyboard agree on what Enter would pick.
                     onMouseEnter={(): void => setActive(i)}
@@ -542,19 +557,49 @@ export const Combobox: FC<ComboboxProps> = ({
                       pick(option);
                     }}
                   >
-                    <Text
-                      variant={TextVariant.BodySecondary}
-                      color={TextColor.Primary}
-                    >
-                      {option.label}
-                    </Text>
-                    {option.description && (
+                    {option.icon && (
+                      <IconWrapper
+                        content={option.icon}
+                        size={14}
+                        className={cn(
+                          "shrink-0",
+                          textColorClass(TextColor.Secondary)
+                        )}
+                      />
+                    )}
+                    <span className="flex min-w-0 flex-1 flex-col items-start gap-0.5">
                       <Text
-                        variant={TextVariant.BodyTertiary}
-                        color={TextColor.Secondary}
+                        variant={TextVariant.BodySecondary}
+                        color={TextColor.Primary}
                       >
-                        {option.description}
+                        {option.label}
                       </Text>
+                      {option.description && (
+                        <Text
+                          variant={TextVariant.BodyTertiary}
+                          color={TextColor.Secondary}
+                        >
+                          {option.description}
+                        </Text>
+                      )}
+                    </span>
+                    {option.hint && (
+                      <span
+                        className={cn(
+                          "flex shrink-0 items-center gap-1.5 whitespace-nowrap",
+                          textColorClass(TextColor.Tertiary)
+                        )}
+                      >
+                        <Text
+                          variant={TextVariant.BodyTertiary}
+                          color={TextColor.Tertiary}
+                        >
+                          {option.hint}
+                        </Text>
+                        {i === highlighted && (
+                          <IconWrapper content={CornerDownLeftIcon} size={12} />
+                        )}
+                      </span>
                     )}
                   </button>,
                 ])}
