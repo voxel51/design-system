@@ -6,6 +6,7 @@ export * from "./Checkbox";
 export * from "./Clickable";
 export * from "./ChipSelect";
 export * from "./CodeBlock";
+export * from "./CodeEditor";
 export * from "./Collapsible";
 export * from "./Combobox";
 export * from "./ContextMenu";

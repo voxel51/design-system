@@ -93,4 +93,18 @@ describe("ListItem", () => {
       });
     });
   });
+
+  describe("size", () => {
+    it("renders the dense row at sm", () => {
+      render(<ListItem size="sm" data-testid={elementId} />);
+
+      expect(screen.getByTestId(elementId)).toHaveClass("py-2");
+    });
+
+    it("renders the roomy row by default", () => {
+      render(<ListItem data-testid={elementId} />);
+
+      expect(screen.getByTestId(elementId)).toHaveClass("py-3");
+    });
+  });
 });

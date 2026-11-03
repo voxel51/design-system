@@ -56,6 +56,8 @@ export type DropdownTriggerProps = Omit<
 > & {
   /** What the value is, shown before it (`Sort by: Newest`); on a phone only in the tooltip. */
   prefix?: ReactNode;
+  /** Spans its container: the label truncates on the left, the caret sits at the far right (a form picker). */
+  fullWidth?: boolean;
 };
 
 /**
@@ -93,6 +95,7 @@ export type DropdownTriggerProps = Omit<
  * @param borderless No outline; a rounded fill appears on hover. The leading
  *  icon shrinks to 14px and both icons take the muted icon colour.
  * @param leadingIcon Optional icon before the label.
+ * @param fullWidth Span the container, label truncating left and caret at the far right.
  * @param props Additional {@link ButtonProps} (excluding `variant` and `trailingIcon`).
  */
 export const DropdownTrigger: FC<DropdownTriggerProps> = ({
@@ -100,6 +103,7 @@ export const DropdownTrigger: FC<DropdownTriggerProps> = ({
   size = Size.Sm,
   borderless,
   prefix,
+  fullWidth,
   leadingIcon,
   className,
   ...props
@@ -130,6 +134,7 @@ export const DropdownTrigger: FC<DropdownTriggerProps> = ({
           ],
         borderless && size === Size.Md && "py-1",
         prefix != null && textColorClass(TextColor.Primary),
+        fullWidth && "w-full min-w-0 [&>div]:w-full [&>div]:justify-between",
         className
       )}
       {...props}
@@ -146,7 +151,11 @@ export const DropdownTrigger: FC<DropdownTriggerProps> = ({
           {prefix}:
         </span>
       )}
-      {children}
+      {fullWidth ? (
+        <span className="min-w-0 flex-1 truncate text-left">{children}</span>
+      ) : (
+        children
+      )}
     </Button>
   );
   if (prefix == null) return button;

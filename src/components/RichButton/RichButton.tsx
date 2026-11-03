@@ -19,6 +19,7 @@ import { cn } from "@/util/classes";
 
 export interface RichButtonProps extends HTMLAttributes<HTMLDivElement> {
   active?: boolean;
+  disabled?: boolean;
   description?: ReactNode;
   icon?: IconInput;
   label?: ReactNode;
@@ -50,6 +51,7 @@ export interface RichButtonProps extends HTMLAttributes<HTMLDivElement> {
  * ```
  *
  * @param active If `true`, renders the component in its active state.
+ * @param disabled If `true`, the button is dimmed and ignores clicks and keys.
  * @param description Content to display as the description of the component. This is the component's secondary content.
  * @param icon Icon component to display in the component.
  * @param label Content to display as the label of the component. This is the component's primary content.
@@ -59,6 +61,7 @@ export interface RichButtonProps extends HTMLAttributes<HTMLDivElement> {
  */
 export const RichButton: FC<RichButtonProps> = ({
   active,
+  disabled,
   description,
   icon,
   label,
@@ -83,22 +86,25 @@ export const RichButton: FC<RichButtonProps> = ({
             )
           : clsx(
               borderColorClass(BorderColor.Input),
-              borderColorClass(BorderColor.Hover, ElementState.Hover)
+              !disabled &&
+                borderColorClass(BorderColor.Hover, ElementState.Hover)
             ),
+        disabled && "cursor-not-allowed opacity-50",
         "px-3 py-2.5",
         radiusStyles(Radius.Sm),
         className
       )}
       style={style}
-      onClick={onClick}
+      onClick={disabled ? undefined : onClick}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          onClick?.();
+          if (!disabled) onClick?.();
         }
       }}
       role="button"
-      tabIndex={0}
+      aria-disabled={disabled || undefined}
+      tabIndex={disabled ? -1 : 0}
       {...props}
     >
       <div className="flex flex-col gap-0.5">
@@ -113,7 +119,8 @@ export const RichButton: FC<RichButtonProps> = ({
                 ? textColorClass(IconColor.Emphasis)
                 : clsx(
                     textColorClass(IconColor.Default),
-                    "group-hover/rich-button:text-content-icon-emphasis"
+                    !disabled &&
+                      "group-hover/rich-button:text-content-icon-emphasis"
                   )
             )}
           />

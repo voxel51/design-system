@@ -119,4 +119,25 @@ describe("MenuCheckItem", () => {
     const item = screen.getByText("Option").closest("button")!;
     expect(item).toHaveClass("custom-item");
   });
+
+  it("trails the check and closes the menu as a select option", async () => {
+    const user = userEvent.setup();
+    const onClick = jest.fn();
+    render(
+      <Dropdown trigger={trigger}>
+        <MenuCheckItem select checked onClick={onClick}>
+          Schema
+        </MenuCheckItem>
+      </Dropdown>
+    );
+    await user.click(screen.getByText("Open menu"));
+    const item = await screen.findByRole("menuitemcheckbox");
+    expect(item).toHaveClass("flex-row-reverse");
+
+    await user.click(item);
+
+    expect(onClick).toHaveBeenCalled();
+    await act(async () => {});
+    expect(screen.getByRole("menu")).toHaveAttribute("data-closed");
+  });
 });

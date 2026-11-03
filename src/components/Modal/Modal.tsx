@@ -7,8 +7,8 @@ import {
 } from "@headlessui/react";
 import type { FC, ReactNode } from "react";
 
-import { IconAction } from "@/components/IconAction";
-import { XIcon } from "@/components/Icons";
+import { IconAction, type IconActionProps } from "@/components/IconAction";
+import { ArrowLeftStrokeIcon, XIcon } from "@/components/Icons";
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
 import { TEXT_STYLES } from "@/styles/text";
@@ -84,6 +84,22 @@ export interface ModalProps {
   showCloseButton?: boolean;
   /** Pinned below the scrollable body — typically the action buttons. */
   footer?: ReactNode;
+  /**
+   * Pinned at the footer's start, opposite `footer` — a selection count or a
+   * secondary action. Renders the footer row on its own.
+   */
+  footerStart?: ReactNode;
+  /** When given, a back arrow before the title calls it (a sub-view's way out). */
+  onBack?: () => void;
+  /** Extra props for the close button, such as a test id or a tooltip title. */
+  closeButtonProps?: Partial<Omit<IconActionProps, "icon" | "onClick">> & {
+    [data: `data-${string}`]: string | undefined;
+  };
+  /**
+   * Stacking level. Defaults to `"high"`; `"above-modal"` puts it over app
+   * overlays (an open sample viewer and its tooltips).
+   */
+  zIndex?: ZIndex;
   /** `class` overrides for the panel. */
   className?: string;
   /** `class` overrides for the scrollable body. */
@@ -113,6 +129,23 @@ export interface ModalProps {
  *
  * @example
  * ```tsx
+ * // A sub-view: back arrow, a count at the footer's start.
+ * <Modal
+ *   open={open}
+ *   onClose={close}
+ *   onBack={showList}
+ *   title="Edit field"
+ *   size="lg"
+ *   zIndex="above-modal"
+ *   footerStart={<Text variant="body-secondary">2 selected</Text>}
+ *   footer={<Button size="sm">Save</Button>}
+ * >
+ *   {form}
+ * </Modal>
+ * ```
+ *
+ * @example
+ * ```tsx
  * // Actions pinned below a long, scrolling body.
  * <Modal
  *   open={open}
@@ -132,6 +165,10 @@ export interface ModalProps {
  * @param size Panel width. See {@link ModalSize}.
  * @param showCloseButton Whether the title bar renders a close button.
  * @param footer Content pinned below the scrollable body.
+ * @param footerStart Content pinned at the footer's start, opposite `footer`.
+ * @param onBack When given, renders a back arrow before the title that calls it.
+ * @param closeButtonProps Extra props for the close button.
+ * @param zIndex Stacking level. See {@link ZIndex}.
  * @param className `class` overrides for the panel.
  * @param contentClassName `class` overrides for the scrollable body.
  * @param children Modal content.
@@ -144,6 +181,10 @@ export const Modal: FC<ModalProps> = ({
   showCloseButton,
   description,
   footer,
+  footerStart,
+  onBack,
+  closeButtonProps,
+  zIndex = ZIndex.High,
   className,
   contentClassName,
   children,
@@ -157,8 +198,10 @@ export const Modal: FC<ModalProps> = ({
       onClose={onClose}
       transition
       className={cn(
-        "relative",
-        zIndexStyles(ZIndex.High),
+        // spans the viewport, so the root itself has a box (tests and
+        // hit-testing find the dialog by it)
+        "fixed inset-0",
+        zIndexStyles(zIndex),
         transitionDuration(TransitionDuration.Normal),
         "transition-opacity data-closed:opacity-0"
       )}
@@ -200,25 +243,36 @@ export const Modal: FC<ModalProps> = ({
               )}
             >
               {title ? (
-                <div className="flex min-w-0 flex-col gap-1">
-                  <DialogTitle
-                    className={cn(
-                      TEXT_STYLES[TextVariant.HeadingLg],
-                      textColorClass(TextColor.Primary)
-                    )}
-                  >
-                    {title}
-                  </DialogTitle>
-                  {description && (
-                    <Description
+                <div className="flex min-w-0 items-start gap-2">
+                  {onBack && (
+                    <IconAction
+                      size={Size.Sm}
+                      aria-label="Back"
+                      icon={ArrowLeftStrokeIcon}
+                      onClick={onBack}
+                      className="-ml-1 shrink-0"
+                    />
+                  )}
+                  <div className="flex min-w-0 flex-col gap-1">
+                    <DialogTitle
                       className={cn(
-                        TEXT_STYLES[TextVariant.BodyPrimary],
-                        textColorClass(TextColor.Secondary)
+                        TEXT_STYLES[TextVariant.HeadingLg],
+                        textColorClass(TextColor.Primary)
                       )}
                     >
-                      {description}
-                    </Description>
-                  )}
+                      {title}
+                    </DialogTitle>
+                    {description && (
+                      <Description
+                        className={cn(
+                          TEXT_STYLES[TextVariant.BodyPrimary],
+                          textColorClass(TextColor.Secondary)
+                        )}
+                      >
+                        {description}
+                      </Description>
+                    )}
+                  </div>
                 </div>
               ) : (
                 <span />
@@ -231,6 +285,7 @@ export const Modal: FC<ModalProps> = ({
                   icon={XIcon}
                   onClick={onClose}
                   className="-mt-1.5 -mr-2 shrink-0"
+                  {...closeButtonProps}
                 />
               )}
             </div>
@@ -244,14 +299,19 @@ export const Modal: FC<ModalProps> = ({
           >
             {children}
           </div>
-          {footer && (
+          {(footer || footerStart) && (
             <div
               className={cn(
                 // Figma: 16px between actions, 40px above them, no divider
-                "flex flex-none items-center justify-end gap-4",
+                "flex flex-none flex-wrap items-center justify-end gap-4",
                 "px-6 pt-4 pb-6"
               )}
             >
+              {footerStart && (
+                <div className="mr-auto flex min-w-0 items-center gap-2">
+                  {footerStart}
+                </div>
+              )}
               {footer}
             </div>
           )}

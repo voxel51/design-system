@@ -24,7 +24,7 @@ import {
 } from "react";
 
 import { ListItemProps } from "@/components/ListItem";
-import { Descriptor, Spacing } from "@/types";
+import { Descriptor, Size, Spacing } from "@/types";
 
 import { SortableListItem } from "./SortableListItem";
 
@@ -44,6 +44,7 @@ export interface RichListProps extends HTMLAttributes<HTMLDivElement> {
   onOrderChange?: (newItems: Descriptor<ListItemProps>[]) => void;
   selected?: string[];
   spacing?: Spacing;
+  size?: Size.Sm | Size.Md;
 }
 
 /**
@@ -115,6 +116,7 @@ export interface RichListProps extends HTMLAttributes<HTMLDivElement> {
  *  The order of this list dictates the order of the children from top to bottom.
  * @param draggable If `true`, allows reordering of children via dragging {@link ListItem} components.
  * @param spacing Vertical gap between items. Defaults to `"md"`. See {@link Spacing}.
+ * @param size Row density for every item: `"sm"` dense, `"md"` (default) roomy.
  * @param onSelected Callback triggered when selection state changes.
  *  This callback includes a list of currently-selected descriptor IDs.
  * @param onOrderChange Callback triggered when {@link ListItem} ordering changes.
@@ -130,6 +132,7 @@ export const RichList: FC<RichListProps> = ({
   onOrderChange,
   selected,
   spacing = Spacing.Md,
+  size,
   ...props
 }) => {
   // transientSelected contains the ID for each selected element in the list
@@ -190,13 +193,14 @@ export const RichList: FC<RichListProps> = ({
           id={descriptor.id}
           disabled={!draggable}
           data-testid={descriptor.id}
+          size={size}
           {...descriptor.data}
           canDrag={draggable && descriptor.data.canDrag !== false}
           selected={transientSelected.includes(descriptor.id)}
           onSelected={(isSelected) => onSelect(descriptor.id, isSelected)}
         />
       )),
-    [listItems, draggable, onSelect, transientSelected]
+    [listItems, draggable, onSelect, transientSelected, size]
   );
 
   return (
