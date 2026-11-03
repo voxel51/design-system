@@ -33,7 +33,10 @@ const resolve = (cssVar: string): string | undefined => {
         .getPropertyValue(name)
         .trim()
     : "";
-  return value.startsWith("#") ? value : undefined;
+  // Monaco takes #RRGGBB(AA) only
+  const hex = /^#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.exec(value)?.[1];
+  if (!hex) return undefined;
+  return `#${hex.length > 4 ? hex : [...hex].map((c) => c + c).join("")}`;
 };
 
 const applyTheme = (monaco: Monaco, mode: ColorMode): void => {

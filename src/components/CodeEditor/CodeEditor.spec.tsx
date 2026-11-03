@@ -9,20 +9,27 @@ jest.mock("@monaco-editor/react", () => ({
     value,
     onChange,
     options,
+    beforeMount,
   }: {
     value?: string;
     onChange?: (value?: string) => void;
     options?: { readOnly?: boolean };
-  }) => (
-    <textarea
-      className="monaco-editor"
-      aria-label="code"
-      value={value}
-      readOnly={options?.readOnly}
-      onChange={(e) => onChange?.(e.target.value)}
-    />
-  ),
+    beforeMount?: (monaco: unknown) => void;
+  }) => {
+    beforeMount?.(fakeMonaco);
+    return (
+      <textarea
+        className="monaco-editor"
+        aria-label="code"
+        value={value}
+        readOnly={options?.readOnly}
+        onChange={(e) => onChange?.(e.target.value)}
+      />
+    );
+  },
 }));
+
+const fakeMonaco = { editor: { defineTheme: jest.fn(), setTheme: jest.fn() } };
 
 describe("CodeEditor", () => {
   it("renders the value once Monaco loads", async () => {
@@ -50,5 +57,22 @@ describe("CodeEditor", () => {
     render(<CodeEditor value="{}" height={240} data-testid="frame" />);
 
     expect(screen.getByTestId("frame")).toHaveStyle({ height: "240px" });
+  });
+
+  it("hands Monaco 6-digit hex colors", async () => {
+    document.documentElement.style.setProperty(
+      "--color-content-text-primary",
+      "#fff"
+    );
+    render(<CodeEditor value="{}" />);
+    await screen.findByLabelText("code");
+
+    const calls = fakeMonaco.editor.defineTheme.mock.calls as [
+      string,
+      { colors: Record<string, string> },
+    ][];
+    expect(calls[calls.length - 1][1].colors["editor.foreground"]).toBe(
+      "#ffffff"
+    );
   });
 });
