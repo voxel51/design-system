@@ -183,6 +183,7 @@ import GitHubSvg from "@/img/GitHub.svg?react";
 import GlobeSvg from "@/img/Globe.svg?react";
 import GridOnSvg from "@/img/GridOn.svg?react";
 import GridViewSvg from "@/img/GridView.svg?react";
+import GripVerticalSvg from "@/img/GripVertical.svg?react";
 import GroupAddSvg from "@/img/GroupAdd.svg?react";
 import GroupAddOutlinedSvg from "@/img/GroupAddOutlined.svg?react";
 import HardDriveSvg from "@/img/HardDrive.svg?react";
@@ -960,6 +961,10 @@ export const EditOutlinedIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={EditOutlinedSvg} />
 );
 
+export const EllipsisVerticalIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={EllipsisVerticalSvg} />
+);
+
 export const EmailOutlinedIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={EmailOutlinedSvg} />
 );
@@ -1100,12 +1105,20 @@ export const GitHubIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={GitHubSvg} />
 );
 
+export const GlobeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={GlobeSvg} />
+);
+
 export const GridOnIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={GridOnSvg} />
 );
 
 export const GridViewIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={GridViewSvg} />
+);
+
+export const GripVerticalIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={GripVerticalSvg} />
 );
 
 export const GroupAddIcon: FC<IconProps> = (props) => (
@@ -1300,10 +1313,6 @@ export const LightbulbIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={LightbulbSvg} />
 );
 
-export const GlobeIcon: FC<IconProps> = (props) => (
-  <IconBase {...props} svg={GlobeSvg} />
-);
-
 export const LinkIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={LinkSvg} />
 );
@@ -1330,6 +1339,10 @@ export const LocalOfferIcon: FC<IconProps> = (props) => (
 
 export const LocalOfferOutlinedIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={LocalOfferOutlinedSvg} />
+);
+
+export const LocateIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={LocateSvg} />
 );
 
 export const LockIcon: FC<IconProps> = (props) => (
@@ -1388,6 +1401,10 @@ export const Minimize2Icon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={Minimize2Svg} />
 );
 
+export const MinusIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={MinusSvg} />
+);
+
 export const MoreHorizIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={MoreHorizSvg} />
 );
@@ -1402,6 +1419,10 @@ export const MoreVertIcon: FC<IconProps> = (props) => (
 
 export const MoreVerticalIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={MoreVerticalSvg} />
+);
+
+export const MousePointer2Icon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={MousePointer2Svg} />
 );
 
 export const MoveIcon: FC<IconProps> = (props) => (
@@ -1676,6 +1697,10 @@ export const SettingsOutlinedIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={SettingsOutlinedSvg} />
 );
 
+export const SettingsStrokeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={SettingsStrokeSvg} />
+);
+
 export const SettingsSystemDaydreamOutlinedIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={SettingsSystemDaydreamOutlinedSvg} />
 );
@@ -1720,8 +1745,16 @@ export const SpeedIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={SpeedSvg} />
 );
 
+export const SplineIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={SplineSvg} />
+);
+
 export const SplitscreenIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={SplitscreenSvg} />
+);
+
+export const SquareIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={SquareSvg} />
 );
 
 export const StopCircleOutlinedIcon: FC<IconProps> = (props) => (
@@ -1808,6 +1841,10 @@ export const TrackChangesIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={TrackChangesSvg} />
 );
 
+export const Trash2Icon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={Trash2Svg} />
+);
+
 export const TuneIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={TuneSvg} />
 );
@@ -1822,38 +1859,6 @@ export const UndoIcon: FC<IconProps> = (props) => (
 
 export const Undo2Icon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={Undo2Svg} />
-);
-
-export const SettingsStrokeIcon: FC<IconProps> = (props) => (
-  <IconBase {...props} svg={SettingsStrokeSvg} />
-);
-
-export const EllipsisVerticalIcon: FC<IconProps> = (props) => (
-  <IconBase {...props} svg={EllipsisVerticalSvg} />
-);
-
-export const MousePointer2Icon: FC<IconProps> = (props) => (
-  <IconBase {...props} svg={MousePointer2Svg} />
-);
-
-export const SquareIcon: FC<IconProps> = (props) => (
-  <IconBase {...props} svg={SquareSvg} />
-);
-
-export const SplineIcon: FC<IconProps> = (props) => (
-  <IconBase {...props} svg={SplineSvg} />
-);
-
-export const LocateIcon: FC<IconProps> = (props) => (
-  <IconBase {...props} svg={LocateSvg} />
-);
-
-export const MinusIcon: FC<IconProps> = (props) => (
-  <IconBase {...props} svg={MinusSvg} />
-);
-
-export const Trash2Icon: FC<IconProps> = (props) => (
-  <IconBase {...props} svg={Trash2Svg} />
 );
 
 export const UnfoldMoreIcon: FC<IconProps> = (props) => (

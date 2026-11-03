@@ -103,7 +103,7 @@ export const SearchInput: FC<SearchInputProps> = ({
       )}
     >
       <SearchStrokeIcon
-        size={Size.Sm}
+        size={size === Size.Sm ? Size.Sm : Size.Md}
         className={textColorClass(TextColor.Secondary)}
       />
       {scopes && active && (
@@ -131,7 +131,8 @@ export const SearchInput: FC<SearchInputProps> = ({
           ))}
         </Dropdown>
       )}
-      <div className="min-w-0 flex-1">
+      {/* the frame's border sits outside the input; keep the field at its size */}
+      <div className="-my-px min-w-0 flex-1">
         <Input
           {...props}
           borderless

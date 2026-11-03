@@ -152,11 +152,12 @@ const variantTextStyles: Record<Variant, string> = {
 };
 
 // Figma Button: padding is 8/16 for Medium, 6/12 for Small and 4/10 for
-// X-small, with a 6px gap between icon and label at every size.
+// X-small, with a 6px gap between icon and label at every size. The height
+// is fixed (36, 28, 24) so an outlined button's border doesn't add 2px.
 const sizeStyles: Record<ButtonSize, string> = {
-  [Size.Xs]: "px-2.5 py-1",
-  [Size.Sm]: "px-3 py-1.5",
-  [Size.Md]: "px-4 py-2",
+  [Size.Xs]: "h-6 px-2.5 py-1",
+  [Size.Sm]: "h-7 px-3 py-1.5",
+  [Size.Md]: "h-9 px-4 py-2",
 };
 
 // Icon-only buttons are not square in Figma: 40×36, 36×32 and 30×26.
@@ -172,14 +173,14 @@ const collapsedSizeStyles: Record<
   Record<ButtonSize, string>
 > = {
   sm: {
-    [Size.Xs]: "px-2 py-1.5 sm:px-2.5 sm:py-1",
-    [Size.Sm]: "px-2.5 py-2 sm:px-3 sm:py-1.5",
-    [Size.Md]: "px-3 py-2.5 sm:px-4 sm:py-2",
+    [Size.Xs]: "px-2 py-1.5 sm:h-6 sm:px-2.5 sm:py-1",
+    [Size.Sm]: "px-2.5 py-2 sm:h-7 sm:px-3 sm:py-1.5",
+    [Size.Md]: "px-3 py-2.5 sm:h-9 sm:px-4 sm:py-2",
   },
   lg: {
-    [Size.Xs]: "px-2 py-1.5 lg:px-2.5 lg:py-1",
-    [Size.Sm]: "px-2.5 py-2 lg:px-3 lg:py-1.5",
-    [Size.Md]: "px-3 py-2.5 lg:px-4 lg:py-2",
+    [Size.Xs]: "px-2 py-1.5 lg:h-6 lg:px-2.5 lg:py-1",
+    [Size.Sm]: "px-2.5 py-2 lg:h-7 lg:px-3 lg:py-1.5",
+    [Size.Md]: "px-3 py-2.5 lg:h-9 lg:px-4 lg:py-2",
   },
   always: iconOnlySizeStyles,
 };
