@@ -16,6 +16,8 @@ export interface MenuCheckItemProps extends HTMLAttributes<HTMLButtonElement> {
   checked?: boolean;
   /** If `true`, the item cannot be interacted with and is rendered in a muted style. */
   disabled?: boolean;
+  /** A single-select option: the check trails the label and choosing closes the menu. */
+  select?: boolean;
 }
 
 /**
@@ -36,8 +38,21 @@ export interface MenuCheckItemProps extends HTMLAttributes<HTMLButtonElement> {
  * </Dropdown>
  * ```
  *
+ * @example
+ * ```tsx
+ * // A single-select picker: the check trails, choosing closes the menu.
+ * <Dropdown trigger={<DropdownTrigger fullWidth>{schema.name}</DropdownTrigger>}>
+ *   {schemas.map((s) => (
+ *     <MenuCheckItem key={s.id} select checked={s.id === id} onClick={() => pick(s.id)}>
+ *       {s.name}
+ *     </MenuCheckItem>
+ *   ))}
+ * </Dropdown>
+ * ```
+ *
  * @param checked If `true`, a checkmark is shown in the leading slot.
  * @param disabled If `true`, the item cannot be interacted with.
+ * @param select A single-select option: trailing check, closes the menu on click.
  * @param children The label text.
  * @param className `class` overrides to apply to the component.
  * @param props Additional HTML properties to apply to the component.
@@ -45,6 +60,7 @@ export interface MenuCheckItemProps extends HTMLAttributes<HTMLButtonElement> {
 export const MenuCheckItem: FC<MenuCheckItemProps> = ({
   checked,
   disabled,
+  select,
   children,
   className,
   ...props
@@ -54,7 +70,7 @@ export const MenuCheckItem: FC<MenuCheckItemProps> = ({
       checked={!!checked}
       disabled={disabled}
       // Toggling keeps the menu open so several options can be set in a row
-      closeOnClick={false}
+      closeOnClick={!!select}
       nativeButton
       // Consumer handlers ride the rendered button, outside Base UI's own
       // disabled gate, so a disabled item drops its click handler here
@@ -69,6 +85,7 @@ export const MenuCheckItem: FC<MenuCheckItemProps> = ({
         cn(
           menuRowStyles(state),
           "gap-2",
+          select && "flex-row-reverse justify-between",
           checked &&
             (state.highlighted && !disabled
               ? "bg-brand-primary/15"

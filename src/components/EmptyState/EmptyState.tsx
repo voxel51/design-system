@@ -78,7 +78,8 @@ export const EmptyState: FC<EmptyStateProps> = ({
       orientation={Orientation.Column}
       align={Align.Center}
       className={cn(
-        "text-center", sm && art ? "px-4 py-6" : "p-10",
+        "text-center",
+        sm && art ? "px-4 py-6" : "p-10",
         radiusStyles(Radius.Md),
         bgColorClass(BackgroundColor.Card),
         className
@@ -107,7 +108,9 @@ export const EmptyState: FC<EmptyStateProps> = ({
           </Text>
           {description && (
             <Text
-              variant={sm ? TextVariant.BodyTertiary : TextVariant.BodySecondary}
+              variant={
+                sm ? TextVariant.BodyTertiary : TextVariant.BodySecondary
+              }
               color={TextColor.Tertiary}
               className={sm ? "mt-1 max-w-[240px]" : "mt-1.5"}
             >

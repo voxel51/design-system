@@ -107,4 +107,11 @@ describe("DropdownTrigger", () => {
       jest.restoreAllMocks();
     });
   });
+
+  it("spans its container with fullWidth", () => {
+    render(<DropdownTrigger fullWidth>Default schema</DropdownTrigger>);
+
+    expect(screen.getByRole("button")).toHaveClass("w-full");
+    expect(screen.getByText("Default schema")).toHaveClass("truncate");
+  });
 });
