@@ -130,4 +130,61 @@ describe("Modal", () => {
       "Who can see it"
     );
   });
+
+  it("renders a back arrow that calls onBack", async () => {
+    const onBack = jest.fn();
+    render(
+      <Modal open onClose={jest.fn()} onBack={onBack} title="Edit">
+        body
+      </Modal>
+    );
+
+    await userEvent.click(screen.getByRole("button", { name: "Back" }));
+
+    expect(onBack).toHaveBeenCalledTimes(1);
+  });
+
+  it("passes closeButtonProps to the close button", () => {
+    render(
+      <Modal
+        open
+        onClose={jest.fn()}
+        title="Title"
+        closeButtonProps={{ title: "Close manager", "data-cy": "close" }}
+      >
+        body
+      </Modal>
+    );
+
+    expect(screen.getByRole("button", { name: "Close" })).toHaveAttribute(
+      "title",
+      "Close manager"
+    );
+  });
+
+  it("renders footerStart without a footer", () => {
+    render(
+      <Modal open onClose={jest.fn()} title="Title" footerStart="2 selected">
+        body
+      </Modal>
+    );
+
+    expect(screen.getByText("2 selected")).toBeInTheDocument();
+  });
+
+  it("stacks at the given zIndex", () => {
+    render(
+      <Modal
+        open
+        onClose={jest.fn()}
+        title="Title"
+        zIndex="above-modal"
+        data-testid="root"
+      >
+        body
+      </Modal>
+    );
+
+    expect(screen.getByTestId("root")).toHaveClass("z-[var(--z-above-modal)]");
+  });
 });

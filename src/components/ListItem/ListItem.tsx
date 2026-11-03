@@ -10,6 +10,7 @@ import {
   BackgroundColor,
   bgColorClass,
   Radius,
+  Size,
   TextColor,
   textColorClass,
   TextVariant,
@@ -26,6 +27,7 @@ export interface ListItemProps extends HTMLAttributes<HTMLDivElement> {
   secondaryContent?: ReactNode;
   actions?: ReactNode;
   additionalContent?: ReactNode;
+  size?: Size.Sm | Size.Md;
 }
 
 /**
@@ -42,6 +44,8 @@ export interface ListItemProps extends HTMLAttributes<HTMLDivElement> {
  *  This content will be pushed to the trailing edge of the list item.
  * @param additionalContent Additional content to display in the list item.
  *  Rendered below the main row, indented to line up with `primaryContent`.
+ * @param size `"sm"` is the dense row (8px tall padding, 14px name, 12px
+ *  detail, small checkbox); `"md"` (default) the roomy one.
  * @param className `class` overrides to apply to the component.
  * @param props Additional HTML properties to apply to the component.
  *
@@ -57,6 +61,7 @@ export const ListItem: FC<ListItemProps> = ({
   secondaryContent = undefined,
   actions = undefined,
   additionalContent = undefined,
+  size = Size.Md,
   className,
   ...props
 }) => {
@@ -65,7 +70,7 @@ export const ListItem: FC<ListItemProps> = ({
       className={cn(
         "flex flex-col",
         "w-full",
-        "py-3 px-3.5",
+        size === Size.Sm ? "py-2 pl-3.5 pr-2" : "py-3 px-3.5",
         bgColorClass(BackgroundColor.CardNested),
         radiusStyles(Radius.Sm),
         className
@@ -79,9 +84,15 @@ export const ListItem: FC<ListItemProps> = ({
           "gap-x-lg"
         )}
       >
-        <div className={cn("flex flex-nowrap items-center", "gap-x-md")}>
+        <div
+          className={cn(
+            "flex min-w-0 flex-nowrap items-center",
+            size === Size.Sm ? "gap-x-sm" : "gap-x-md"
+          )}
+        >
           {canSelect && (
             <Checkbox
+              size={size === Size.Sm ? Size.Sm : Size.Md}
               checked={selected}
               onChange={(checked) => onSelected?.(checked)}
             />
@@ -96,11 +107,24 @@ export const ListItem: FC<ListItemProps> = ({
               />
             </span>
           )}
-          <Text variant={TextVariant.BodyPrimary}>{primaryContent}</Text>
+          <Text
+            variant={
+              size === Size.Sm
+                ? TextVariant.BodySecondary
+                : TextVariant.BodyPrimary
+            }
+            className="min-w-0"
+          >
+            {primaryContent}
+          </Text>
           <div
             className={cn(
-              "flex items-center",
-              TEXT_STYLES[TextVariant.BodySecondary],
+              "flex min-w-0 items-center",
+              TEXT_STYLES[
+                size === Size.Sm
+                  ? TextVariant.BodyTertiary
+                  : TextVariant.BodySecondary
+              ],
               textColorClass(TextColor.Secondary)
             )}
           >
@@ -110,8 +134,8 @@ export const ListItem: FC<ListItemProps> = ({
 
         <span
           className={cn(
-            "flex flex-nowrap items-center",
-            "gap-x-sm",
+            "flex shrink-0 flex-nowrap items-center",
+            size === Size.Sm ? "gap-x-xs" : "gap-x-sm",
             // Action affordances (e.g. icon Buttons) read as light grey, not white.
             textColorClass(TextColor.Secondary)
           )}

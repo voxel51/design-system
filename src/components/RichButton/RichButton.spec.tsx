@@ -120,4 +120,17 @@ describe("RichButton", () => {
     expect(el).toHaveClass("bg-content-bg-primary/10");
     expect(el.style.margin).toBe("4px");
   });
+
+  it("ignores clicks and keys when disabled", async () => {
+    const onClick = jest.fn();
+    render(<RichButton label="Text" disabled onClick={onClick} />);
+    const button = screen.getByRole("button");
+
+    await userEvent.click(button);
+    button.focus();
+    await userEvent.keyboard("{Enter}");
+
+    expect(onClick).not.toHaveBeenCalled();
+    expect(button).toHaveAttribute("aria-disabled", "true");
+  });
 });
