@@ -144,6 +144,7 @@ import EastRoundedSvg from "@/img/EastRounded.svg?react";
 import EditSvg from "@/img/Edit.svg?react";
 import EditNoteSvg from "@/img/EditNote.svg?react";
 import EditOutlinedSvg from "@/img/EditOutlined.svg?react";
+import EllipsisVerticalSvg from "@/img/EllipsisVertical.svg?react";
 import EmailOutlinedSvg from "@/img/EmailOutlined.svg?react";
 import EmbeddingsSvg from "@/img/Embeddings.svg?react";
 import EnterSvg from "@/img/Enter.svg?react";
@@ -237,6 +238,7 @@ import ListChecksSvg from "@/img/ListChecks.svg?react";
 import ListTreeSvg from "@/img/ListTree.svg?react";
 import LocalOfferSvg from "@/img/LocalOffer.svg?react";
 import LocalOfferOutlinedSvg from "@/img/LocalOfferOutlined.svg?react";
+import LocateSvg from "@/img/Locate.svg?react";
 import LockSvg from "@/img/Lock.svg?react";
 import LockOpenOutlinedSvg from "@/img/LockOpenOutlined.svg?react";
 import LockOutlinedSvg from "@/img/LockOutlined.svg?react";
@@ -251,10 +253,12 @@ import MenuBookSvg from "@/img/MenuBook.svg?react";
 import MessageSquareSvg from "@/img/MessageSquare.svg?react";
 import MinimizeSvg from "@/img/Minimize.svg?react";
 import Minimize2Svg from "@/img/Minimize2.svg?react";
+import MinusSvg from "@/img/Minus.svg?react";
 import MoreHorizSvg from "@/img/MoreHoriz.svg?react";
 import MoreHorizontalSvg from "@/img/MoreHorizontal.svg?react";
 import MoreVertSvg from "@/img/MoreVert.svg?react";
 import MoreVerticalSvg from "@/img/MoreVertical.svg?react";
+import MousePointer2Svg from "@/img/MousePointer2.svg?react";
 import MoveSvg from "@/img/Move.svg?react";
 import NotebookPenSvg from "@/img/NotebookPen.svg?react";
 import NotesSvg from "@/img/Notes.svg?react";
@@ -323,6 +327,7 @@ import Settings2Svg from "@/img/Settings2.svg?react";
 import SettingsBackupRestoreSvg from "@/img/SettingsBackupRestore.svg?react";
 import SettingsInputCompositeRoundedSvg from "@/img/SettingsInputCompositeRounded.svg?react";
 import SettingsOutlinedSvg from "@/img/SettingsOutlined.svg?react";
+import SettingsStrokeSvg from "@/img/SettingsStroke.svg?react";
 import SettingsSystemDaydreamOutlinedSvg from "@/img/SettingsSystemDaydreamOutlined.svg?react";
 import ShieldCheckSvg from "@/img/ShieldCheck.svg?react";
 import ShowChartOutlinedSvg from "@/img/ShowChartOutlined.svg?react";
@@ -334,7 +339,9 @@ import SlidersHorizontalSvg from "@/img/SlidersHorizontal.svg?react";
 import SmartToySvg from "@/img/SmartToy.svg?react";
 import SparklesSvg from "@/img/Sparkles.svg?react";
 import SpeedSvg from "@/img/Speed.svg?react";
+import SplineSvg from "@/img/Spline.svg?react";
 import SplitscreenSvg from "@/img/Splitscreen.svg?react";
+import SquareSvg from "@/img/Square.svg?react";
 import StopCircleOutlinedSvg from "@/img/StopCircleOutlined.svg?react";
 import StorageSvg from "@/img/Storage.svg?react";
 import StraightenSvg from "@/img/Straighten.svg?react";
@@ -356,6 +363,7 @@ import TimerSvg from "@/img/Timer.svg?react";
 import TimerOffSvg from "@/img/TimerOff.svg?react";
 import ToggleSvg from "@/img/Toggle.svg?react";
 import TrackChangesSvg from "@/img/TrackChanges.svg?react";
+import Trash2Svg from "@/img/Trash2.svg?react";
 import TuneSvg from "@/img/Tune.svg?react";
 import UnarchiveOutlinedSvg from "@/img/UnarchiveOutlined.svg?react";
 import UndoSvg from "@/img/Undo.svg?react";
@@ -1814,6 +1822,38 @@ export const UndoIcon: FC<IconProps> = (props) => (
 
 export const Undo2Icon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={Undo2Svg} />
+);
+
+export const SettingsStrokeIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={SettingsStrokeSvg} />
+);
+
+export const EllipsisVerticalIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={EllipsisVerticalSvg} />
+);
+
+export const MousePointer2Icon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={MousePointer2Svg} />
+);
+
+export const SquareIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={SquareSvg} />
+);
+
+export const SplineIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={SplineSvg} />
+);
+
+export const LocateIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={LocateSvg} />
+);
+
+export const MinusIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={MinusSvg} />
+);
+
+export const Trash2Icon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={Trash2Svg} />
 );
 
 export const UnfoldMoreIcon: FC<IconProps> = (props) => (
