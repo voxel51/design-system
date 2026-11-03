@@ -38,6 +38,28 @@ describe("Modal", () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
+  it("renders a medium close button", () => {
+    render(
+      <Modal open onClose={jest.fn()} title="Title">
+        body
+      </Modal>
+    );
+
+    expect(screen.getByRole("button", { name: "Close" })).toHaveClass("size-9");
+  });
+
+  it("centers the panel across the full viewport width", () => {
+    render(
+      <Modal open onClose={jest.fn()} title="Title">
+        body
+      </Modal>
+    );
+
+    expect(screen.getByTestId("modal-panel").parentElement).toHaveClass(
+      "w-screen"
+    );
+  });
+
   it("closes on Escape", async () => {
     const onClose = jest.fn();
     render(
