@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { EmptyState, IconName } from "@voxel51/voodo";
+import { AnnotationEmptyArt, EmptyState, IconName } from "@voxel51/voodo";
 
 const meta: Meta<typeof EmptyState> = {
   title: "Components/EmptyState",
@@ -48,6 +48,22 @@ export const WithDescription: Story = {
     icon: IconName.Draw,
     title: "EmptyState with label",
     description: "This is an empty state with a description",
+  },
+};
+
+export const SmallWithArt: Story = {
+  decorators: [
+    (Story) => (
+      <div className="w-[300px]">
+        <Story />
+      </div>
+    ),
+  ],
+  args: {
+    size: "sm",
+    art: <AnnotationEmptyArt />,
+    title: "Start labelling this sample",
+    description: "Pick a tool above and draw on the image.",
   },
 };
 

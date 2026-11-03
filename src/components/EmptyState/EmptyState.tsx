@@ -22,7 +22,11 @@ export interface EmptyStateProps extends StackProps {
   art?: ReactNode;
   title: string;
   description?: string;
+  size?: EmptyStateSize;
 }
+
+/** `sm` for narrow sidebars and inline list slots, `md` for panels and pages. */
+export type EmptyStateSize = `${Extract<Size, "sm" | "md">}`;
 
 /**
  * A basic empty state to display to the user.
@@ -50,6 +54,9 @@ export interface EmptyStateProps extends StackProps {
  * @param art An illustration shown instead of the icon, 150px wide.
  * @param title The title to display in the empty state.
  * @param description An optional description to display in the empty state.
+ * @param size `"sm"` for narrow sidebars and list slots (104px art, tighter
+ *  padding and smaller text), `"md"` for panels and pages. Applies to the
+ *  illustrated layout. Defaults to `"md"`.
  * @param children An optional action area below the text.
  * @param props Additional {@link Stack} properties to apply to the component.
  */
@@ -58,10 +65,12 @@ export const EmptyState: FC<EmptyStateProps> = ({
   art,
   title,
   description,
+  size = Size.Md,
   className,
   children,
   ...props
 }) => {
+  const sm = size === Size.Sm;
   const IconContent = resolveIconInput(icon);
 
   return (
@@ -69,14 +78,14 @@ export const EmptyState: FC<EmptyStateProps> = ({
       orientation={Orientation.Column}
       align={Align.Center}
       className={cn(
-        "text-center p-10",
+        "text-center", sm && art ? "px-4 py-6" : "p-10",
         radiusStyles(Radius.Md),
         bgColorClass(BackgroundColor.Card),
         className
       )}
       {...props}
     >
-      {art && <div className="w-[150px]">{art}</div>}
+      {art && <div className={sm ? "w-[104px]" : "w-[150px]"}>{art}</div>}
       {!art && IconContent && (
         <span
           className={cn(
@@ -90,14 +99,17 @@ export const EmptyState: FC<EmptyStateProps> = ({
       )}
       {art ? (
         <>
-          <Text variant={TextVariant.BodyPrimary} className="mt-5 font-medium">
+          <Text
+            variant={sm ? TextVariant.HeadingSm : TextVariant.BodyPrimary}
+            className={sm ? "mt-3" : "mt-5 font-medium"}
+          >
             {title}
           </Text>
           {description && (
             <Text
-              variant={TextVariant.BodySecondary}
+              variant={sm ? TextVariant.BodyTertiary : TextVariant.BodySecondary}
               color={TextColor.Tertiary}
-              className="mt-1.5"
+              className={sm ? "mt-1 max-w-[240px]" : "mt-1.5"}
             >
               {description}
             </Text>
@@ -113,7 +125,11 @@ export const EmptyState: FC<EmptyStateProps> = ({
           )}
         </>
       )}
-      {children && <div className="mt-7 w-full">{children}</div>}
+      {children && (
+        <div className={cn(sm && art ? "mt-5" : "mt-7", "w-full")}>
+          {children}
+        </div>
+      )}
     </Stack>
   );
 };

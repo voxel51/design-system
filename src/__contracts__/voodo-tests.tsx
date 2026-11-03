@@ -951,6 +951,7 @@ export const Everything = (
     <Stack orientation="row" spacing="xl" align="end" justify="evenly">
       <RichList spacing="md" listItems={[]} />
       <EmptyState orientation="col" spacing="md" title="Nothing here" />
+      <EmptyState size="sm" title="Nothing here" />
       <Collapsible
         defaultOpen
         header={({ open }) => <span>{String(open)}</span>}

@@ -36,4 +36,12 @@ describe("EmptyState", () => {
     ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Run" })).toBeInTheDocument();
   });
+
+  it("should size the art down when small", () => {
+    const { container } = render(
+      <EmptyState size="sm" art={<PanelEmptyArt />} title="Nothing yet" />
+    );
+    expect(container.querySelector(".w-\\[104px\\]")).not.toBeNull();
+    expect(container.querySelector(".w-\\[150px\\]")).toBeNull();
+  });
 });
