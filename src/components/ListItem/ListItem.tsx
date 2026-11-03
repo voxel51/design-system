@@ -2,13 +2,14 @@ import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import type { FC, HTMLAttributes, ReactNode } from "react";
 
 import { Checkbox } from "@/components/Checkbox";
-import { DragHandleGripIcon } from "@/components/Icons/DragHandle";
+import { GripVerticalIcon } from "@/components/Icons/icons";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
 import { TEXT_STYLES } from "@/styles/text";
 import {
   BackgroundColor,
   bgColorClass,
+  IconColor,
   Radius,
   Size,
   TextColor,
@@ -36,7 +37,7 @@ export interface ListItemProps extends HTMLAttributes<HTMLDivElement> {
  * @param canSelect If `true`, the component will include a {@link Checkbox} to enable selection.
  * @param selected Controls the selection state of the list item. If `canSelect` is not truthy, this has no effect.
  * @param onSelected Called when the checkbox toggles, with the new selected state.
- * @param canDrag If `true`, displays a {@link DragHandleGripIcon} to allow dragging this component.
+ * @param canDrag If `true`, displays a 14px grip handle to allow dragging this component.
  * @param dragHandleListeners Optional mapping of `listenerId: listener` for drag events.
  * @param primaryContent Primary content to display in the list item.
  * @param secondaryContent Secondary content to display in the list item.
@@ -102,8 +103,9 @@ export const ListItem: FC<ListItemProps> = ({
               className="flex align-items cursor-grab touch-none"
               {...dragHandleListeners}
             >
-              <DragHandleGripIcon
-                className={cn("size-4", textColorClass(TextColor.Secondary))}
+              <GripVerticalIcon
+                size={14}
+                className={textColorClass(IconColor.Subtle)}
               />
             </span>
           )}

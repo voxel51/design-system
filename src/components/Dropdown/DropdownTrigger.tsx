@@ -132,7 +132,7 @@ export const DropdownTrigger: FC<DropdownTriggerProps> = ({
               ? TextVariant.BodySecondary
               : TextVariant.BodyTertiary
           ],
-        borderless && size === Size.Md && "py-1",
+        borderless && size === Size.Md && "h-7 py-1",
         prefix != null && textColorClass(TextColor.Primary),
         fullWidth && "w-full min-w-0 [&>div]:w-full [&>div]:justify-between",
         className
