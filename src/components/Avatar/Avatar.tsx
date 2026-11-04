@@ -209,7 +209,7 @@ export const Avatar: FC<AvatarProps> = ({
       className={cn(
         "inline-flex shrink-0 select-none items-center justify-center overflow-hidden",
         radiusStyles(square ? Radius.Md : Radius.Full),
-        neutral && bgColorClass(BackgroundColor.Muted),
+        neutral && bgColorClass(BackgroundColor.CardNested),
         neutral && textColorClass(TextColor.Secondary),
         !neutral && tintStyles,
         sizeStyles[size],
