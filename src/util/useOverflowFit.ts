@@ -49,6 +49,8 @@ export interface UseOverflowFitReturn {
   labelMax: number | null;
   /** `compact` and `labelMax` together, for `OverflowRowCompactContext`. */
   context: OverflowRowFit;
+  /** Width of every item at full size with gaps, in pixels; `0` until measured. */
+  natural: number;
 }
 
 /**
@@ -94,6 +96,7 @@ export function useOverflowFit(
   // An item that changes size on its own (content arriving late) refits the
   // row. Each element is observed once: observing it again reports it again.
   const [resized, setResized] = useState(0);
+  const [natural, setNatural] = useState(0);
   const observer = useRef<{
     resize: ResizeObserver;
     seen: WeakSet<HTMLElement>;
@@ -154,6 +157,7 @@ export function useOverflowFit(
       return;
     }
     const fullTotal = totalOf(full.current);
+    setNatural(fullTotal);
     if (fullTotal <= width) {
       set({ fit: all, ...FULL_FIT });
       return;
@@ -211,5 +215,6 @@ export function useOverflowFit(
     compact,
     labelMax,
     context,
+    natural,
   };
 }

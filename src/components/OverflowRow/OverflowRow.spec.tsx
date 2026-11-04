@@ -40,6 +40,28 @@ describe("OverflowRow", () => {
     ).toBeInTheDocument();
   });
 
+  it("hugs its items' full width when asked", () => {
+    withWidth(400);
+    render(
+      <OverflowRow data-testid="row" hug>
+        {items}
+      </OverflowRow>
+    );
+    expect(screen.getByTestId("row").style.flex).toBe("0 1 212px");
+  });
+
+  it("sizes its menu button for small actions", () => {
+    withWidth(150);
+    render(
+      <OverflowRow data-testid="row" size="sm" label="More actions">
+        {items}
+      </OverflowRow>
+    );
+    expect(screen.getByRole("button", { name: "More actions" })).toHaveClass(
+      "size-[26px]"
+    );
+  });
+
   describe("compactable", () => {
     const Item = ({ id }: { id: string }) => {
       const compact = useOverflowRowCompact();

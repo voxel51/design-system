@@ -3,6 +3,7 @@ import clsx from "clsx";
 import type { ButtonHTMLAttributes, FC, ReactNode } from "react";
 
 import { type IconInput, IconWrapper } from "@/components/Icons";
+import { MenuIconTextItem } from "@/components/Menu/MenuIconTextItem";
 import { ActionTooltip } from "@/components/Tooltip/ActionTooltip";
 import radiusStyles from "@/styles/radius";
 import {
@@ -15,6 +16,7 @@ import {
   Size,
   textColorClass,
 } from "@/types";
+import { useOverflowRowFit } from "@/util/compact";
 
 type IconActionSize = `${Size.Xs | Size.Sm | Size.Md | Size.Lg}`;
 
@@ -66,7 +68,7 @@ const iconSizes: Record<IconActionSize, number> = {
  * @param tone `"brand"` gives the off state the same brand-tinted hover (a pin that is not pinned yet); `"danger"` fills with the danger colour on hover (remove, delete). Defaults to `"default"`.
  * @param tooltip Names the action in a tooltip, from its `aria-label`.
  * @param hint More about the action, such as why it is disabled: its tooltip, under its name with `tooltip`.
- * @param aria-label Required, because the action has no visible text.
+ * @param aria-label Required, because the action has no visible text. In an {@link OverflowRow}'s menu it is the row's label.
  * @param className Additional CSS class names to apply to the button.
  * @param props Additional HTML button properties, such as `onClick`.
  */
@@ -79,56 +81,76 @@ export const IconAction: FC<IconActionProps> = ({
   hint,
   className,
   ...props
-}) => (
-  <ActionTooltip collapsed={tooltip} label={props["aria-label"]} hint={hint}>
-    <HeadlessButton
-      className={clsx(
-        "inline-flex shrink-0 items-center justify-center transition-colors",
-        "hover:cursor-pointer disabled:pointer-events-none disabled:opacity-50",
-        radiusStyles(Radius.Full),
-        sizeStyles[size],
-        active
-          ? [
-              "hover:bg-brand-primary/15 [&_svg]:fill-current",
-              textColorClass(IconColor.Brand),
-              bgColorClass(BackgroundColor.CardNested),
-            ]
-          : tone === "brand"
+}) => {
+  const { menu } = useOverflowRowFit();
+  if (menu) {
+    return (
+      <ActionTooltip collapsed={false} hint={hint}>
+        <MenuIconTextItem
+          icon={<IconWrapper content={icon} size={16} className="flex" />}
+          text={props["aria-label"]}
+          destructive={tone === "danger"}
+          disabled={props.disabled}
+          onClick={props.onClick}
+          className={className}
+        />
+      </ActionTooltip>
+    );
+  }
+  return (
+    <ActionTooltip collapsed={tooltip} label={props["aria-label"]} hint={hint}>
+      <HeadlessButton
+        className={clsx(
+          "inline-flex shrink-0 items-center justify-center transition-colors",
+          "hover:cursor-pointer disabled:pointer-events-none disabled:opacity-50",
+          radiusStyles(Radius.Full),
+          sizeStyles[size],
+          active
             ? [
-                "hover:bg-brand-primary/15",
-                textColorClass(IconColor.Default),
-                textColorClass(IconColor.Brand, ElementState.Hover),
+                "hover:bg-brand-primary/15 [&_svg]:fill-current",
+                textColorClass(IconColor.Brand),
+                bgColorClass(BackgroundColor.CardNested),
               ]
-            : tone === "danger"
+            : tone === "brand"
               ? [
-                  "hover:text-white",
+                  "hover:bg-brand-primary/15",
                   textColorClass(IconColor.Default),
-                  bgColorClass(
-                    InteractiveColor.DangerHover,
-                    ElementState.Hover
-                  ),
-                  bgColorClass(
-                    InteractiveColor.DangerPressed,
-                    ElementState.Active
-                  ),
+                  textColorClass(IconColor.Brand, ElementState.Hover),
                 ]
-              : [
-                  textColorClass(IconColor.Default),
-                  textColorClass(IconColor.Emphasis, ElementState.Hover),
-                  bgColorClass(
-                    InteractiveColor.SecondaryHover,
-                    ElementState.Hover
-                  ),
-                ],
-        tone !== "danger" &&
-          bgColorClass(InteractiveColor.SecondaryPressed, ElementState.Active),
-        className
-      )}
-      {...props}
-    >
-      <IconWrapper content={icon} size={iconSizes[size]} className="flex" />
-    </HeadlessButton>
-  </ActionTooltip>
-);
+              : tone === "danger"
+                ? [
+                    "hover:text-white",
+                    textColorClass(IconColor.Default),
+                    bgColorClass(
+                      InteractiveColor.DangerHover,
+                      ElementState.Hover
+                    ),
+                    bgColorClass(
+                      InteractiveColor.DangerPressed,
+                      ElementState.Active
+                    ),
+                  ]
+                : [
+                    textColorClass(IconColor.Default),
+                    textColorClass(IconColor.Emphasis, ElementState.Hover),
+                    bgColorClass(
+                      InteractiveColor.SecondaryHover,
+                      ElementState.Hover
+                    ),
+                  ],
+          tone !== "danger" &&
+            bgColorClass(
+              InteractiveColor.SecondaryPressed,
+              ElementState.Active
+            ),
+          className
+        )}
+        {...props}
+      >
+        <IconWrapper content={icon} size={iconSizes[size]} className="flex" />
+      </HeadlessButton>
+    </ActionTooltip>
+  );
+};
 
 IconAction.displayName = "IconAction";
