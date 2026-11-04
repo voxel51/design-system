@@ -48,6 +48,7 @@ export * from "./RichList";
 export * from "./Select";
 export * from "./Sheet";
 export * from "./Slider";
+export * from "./SplitButton";
 export * from "./Spinner";
 export * from "./StatusDot";
 export * from "./Stack";
