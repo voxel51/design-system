@@ -1,6 +1,10 @@
 import { fireEvent, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
+import { Dropdown, DropdownTrigger } from "@/components/Dropdown";
 import { IconName, Size } from "@/types";
+import { MENU_FIT, OverflowRowCompactContext } from "@/util/compact";
+
 
 import { IconAction } from "./IconAction";
 
@@ -76,5 +80,29 @@ describe("IconAction", () => {
       <IconAction icon={IconName.Close} aria-label="Dismiss" />
     );
     expect(container.firstElementChild).toBe(screen.getByRole("button"));
+  });
+
+  it("is a labelled menu row inside an overflow menu", async () => {
+    const onClick = jest.fn();
+    render(
+      <Dropdown trigger={<DropdownTrigger>More</DropdownTrigger>}>
+        <OverflowRowCompactContext.Provider value={MENU_FIT}>
+          <IconAction
+            icon={IconName.Close}
+            aria-label="Delete snapshot"
+            tone="danger"
+            data-testid="delete-snapshot"
+            onClick={onClick}
+          />
+        </OverflowRowCompactContext.Provider>
+      </Dropdown>
+    );
+    await userEvent.click(screen.getByText("More"));
+    const item = await screen.findByRole("menuitem", {
+      name: "Delete snapshot",
+    });
+    expect(item).toHaveAttribute("data-testid", "delete-snapshot");
+    await userEvent.click(item);
+    expect(onClick).toHaveBeenCalledTimes(1);
   });
 });
