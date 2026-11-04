@@ -27,6 +27,8 @@ export interface SliderProps extends Omit<
   bare?: boolean;
   debounceDelay?: number;
   formatLabel?: (value: number) => ReactNode;
+  formatInput?: (value: number) => string;
+  parseInput?: (text: string) => number;
   labeled?: boolean;
   knobLabel?: boolean;
   min: number;
@@ -93,6 +95,10 @@ const clamp = (value: number, min: number, max: number): number =>
  *  Note that internal state updates are *not* debounced, so this value does not affect slider responsiveness.
  * @param formatLabel Renders the endpoint and knob labels for a value, e.g. a date for a timestamp.
  *  Defaults to the value truncated to `step`.
+ * @param formatInput Renders a value as the text of a numeric input, e.g. `40` for `0.4` as a percent.
+ *  Defaults to the plain number. Pair it with `parseInput`.
+ * @param parseInput Reads a numeric input's text back into a value, the inverse of `formatInput`.
+ *  Defaults to `Number.parseFloat`.
  * @param labeled If `true`, displays labels for `min` and `max` slider endpoints.
  * @param knobLabel If `true`, displays labels above all slider knobs.
  *  With `labeled`, a knob label near an endpoint is hidden so it can't overlap the endpoint label;
@@ -139,6 +145,8 @@ export const BaseSlider: FC<SliderProps> = ({
   className,
   debounceDelay = 200,
   formatLabel,
+  formatInput = String,
+  parseInput = Number.parseFloat,
   labeled,
   knobLabel,
   max,
@@ -159,20 +167,25 @@ export const BaseSlider: FC<SliderProps> = ({
     number | number[] | undefined
   >(value);
   const [minValue, setMinValue] = useState<string>(() =>
-    Array.isArray(value) ? value[0].toString() : min.toString()
+    formatInput(Array.isArray(value) ? value[0] : min)
   );
   const [maxValue, setMaxValue] = useState<string>(() =>
-    Array.isArray(value) ? value[1].toString() : (value ?? max).toString()
+    formatInput(Array.isArray(value) ? value[1] : (value ?? max))
   );
 
   /**
    * Check whether values are ordered such that min <= newMin <= newMax <= max.
    */
   const isValidRange = useCallback(
-    (newMin: string | number, newMax: string | number) =>
-      makeRangeValidator(min, Number.parseFloat(newMax.toString()))(newMin) &&
-      makeRangeValidator(Number.parseFloat(newMin.toString()), max)(newMax),
-    [max, min]
+    (newMin: string | number, newMax: string | number) => {
+      // input text is in display units; compare in value units
+      const low = typeof newMin === "string" ? parseInput(newMin) : newMin;
+      const high = typeof newMax === "string" ? parseInput(newMax) : newMax;
+      return (
+        makeRangeValidator(min, high)(low) && makeRangeValidator(low, max)(high)
+      );
+    },
+    [max, min, parseInput]
   );
 
   // synchronize transient state with changes in controlled value
@@ -184,14 +197,14 @@ export const BaseSlider: FC<SliderProps> = ({
   useEffect(() => {
     if (transientValue !== null && transientValue !== undefined) {
       if (Array.isArray(transientValue)) {
-        setMinValue(clamp(transientValue[0], min, max).toString());
-        setMaxValue(clamp(transientValue[1], min, max).toString());
+        setMinValue(formatInput(clamp(transientValue[0], min, max)));
+        setMaxValue(formatInput(clamp(transientValue[1], min, max)));
       } else {
-        setMinValue(min.toString());
-        setMaxValue(clamp(transientValue, min, max).toString());
+        setMinValue(formatInput(min));
+        setMaxValue(formatInput(clamp(transientValue, min, max)));
       }
     }
-  }, [max, min, transientValue]);
+  }, [formatInput, max, min, transientValue]);
 
   // debounce onChange events to prevent excessive updates when e.g. dragging the slider
   const debouncedOnChange = useDebouncedCallback(
@@ -212,40 +225,40 @@ export const BaseSlider: FC<SliderProps> = ({
     (e: ChangeEvent<HTMLInputElement>) => {
       setMinValue(e.target.value);
 
-      const v = Number.parseFloat(e.target.value);
-      if (isValidRange(v, maxValue) && v !== Number.parseFloat(minValue)) {
-        handleChange([v, Number.parseFloat(maxValue)]);
+      const v = parseInput(e.target.value);
+      if (isValidRange(v, maxValue) && v !== parseInput(minValue)) {
+        handleChange([v, parseInput(maxValue)]);
       }
     },
-    [handleChange, isValidRange, maxValue, minValue]
+    [handleChange, isValidRange, maxValue, minValue, parseInput]
   );
 
   const handleMaxInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       setMaxValue(e.target.value);
 
-      const v = Number.parseFloat(e.target.value);
-      if (isValidRange(minValue, v) && v !== Number.parseFloat(maxValue)) {
-        handleChange(multi ? [Number.parseFloat(minValue), v] : v);
+      const v = parseInput(e.target.value);
+      if (isValidRange(minValue, v) && v !== parseInput(maxValue)) {
+        handleChange(multi ? [parseInput(minValue), v] : v);
       }
     },
-    [handleChange, isValidRange, maxValue, minValue, multi]
+    [handleChange, isValidRange, maxValue, minValue, multi, parseInput]
   );
 
   // commit the current input value(s) once editing settles (blur / Enter)
   const handleInputCommit = useCallback(() => {
     if (!onChangeCommitted) return;
 
-    const maxNum = Number.parseFloat(maxValue);
+    const maxNum = parseInput(maxValue);
     if (multi) {
-      const minNum = Number.parseFloat(minValue);
+      const minNum = parseInput(minValue);
       if (isValidRange(minNum, maxNum)) {
         onChangeCommitted([minNum, maxNum]);
       }
     } else if (Number.isFinite(maxNum)) {
       onChangeCommitted(maxNum);
     }
-  }, [isValidRange, maxValue, minValue, multi, onChangeCommitted]);
+  }, [isValidRange, maxValue, minValue, multi, onChangeCommitted, parseInput]);
 
   const hint = bare
     ? "Click on the slider to set a value"

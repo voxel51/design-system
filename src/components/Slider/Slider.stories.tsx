@@ -249,6 +249,32 @@ export const FormattedKnobLabels: Story = {
   },
 };
 
+/** Values 0–1 shown and typed as percent in the knob label and the input. */
+export const PercentInputs: Story = {
+  args: {
+    min: 0,
+    max: 1,
+    step: 0.01,
+    knobLabel: true,
+    maxLabel: "Max %",
+  },
+  render: (props) => {
+    const [value, setValue] = useState<number>(0.4);
+    const toPercent = (v: number) => String(Math.round(v * 100));
+
+    return (
+      <SingleValueSlider
+        {...props}
+        value={value}
+        onChange={setValue}
+        formatLabel={(v) => `${toPercent(v)}%`}
+        formatInput={toPercent}
+        parseInput={(text) => Number.parseFloat(text) / 100}
+      />
+    );
+  },
+};
+
 export const Unset: Story = {
   args: {
     ...singleKnobProps.args,

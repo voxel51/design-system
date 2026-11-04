@@ -8,6 +8,8 @@ import { TEXT_STYLES } from "@/styles/text";
 import {
   BackgroundColor,
   bgColorClass,
+  BorderColor,
+  borderColorClass,
   ElementState,
   InteractiveColor,
   Radius,
@@ -135,7 +137,11 @@ export const Toggle: FC<ToggleProps> = ({
           "cursor-pointer",
           "items-center",
           bgColorClass(BackgroundColor.CardElevated),
-          // Figma: the track has no edge and no hover change
+          // off: an input-border edge keeps the light track visible on light
+          // surfaces; checked: transparent, so the primary fill shows through
+          "border",
+          borderColorClass(BorderColor.Input),
+          "data-checked:border-transparent",
           "transition-colors",
           "focus:outline-none",
           "focus:ring-0",
@@ -169,7 +175,8 @@ export const Toggle: FC<ToggleProps> = ({
             "group-data-checked:bg-white",
             "ring-0", // show focus on outside of track
             "transition-transform",
-            "translate-x-[1.5px]",
+            // 1.5px from the outer edge, inside the 1px border
+            "translate-x-[0.5px]",
             thumbSizeStyles[size],
             getThumbTranslateStyles(size)
           )}
