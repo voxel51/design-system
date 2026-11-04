@@ -1,4 +1,10 @@
-import { Children, Fragment, type FC, type HTMLAttributes } from "react";
+import {
+  Children,
+  Fragment,
+  isValidElement,
+  type FC,
+  type HTMLAttributes,
+} from "react";
 
 import { Text } from "@/components/Text";
 import { TextColor, TextVariant } from "@/types";
@@ -37,7 +43,9 @@ export const MetaList: FC<MetaListProps> = ({
       {...props}
     >
       {items.map((item, i) => (
-        <Fragment key={i}>
+        <Fragment
+          key={isValidElement(item) && item.key !== null ? item.key : i}
+        >
           {i > 0 && (
             <span aria-hidden className="text-content-text-muted">
               ·

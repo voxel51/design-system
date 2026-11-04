@@ -1,7 +1,7 @@
 import type { FC, HTMLAttributes, ReactNode } from "react";
 
 import { Text } from "@/components/Text";
-import { TextColor, TextVariant } from "@/types";
+import { TextColor, textColorClass, TextVariant } from "@/types";
 import { cn } from "@/util/classes";
 
 export const AlertTone = {
@@ -48,6 +48,12 @@ const toneStyles: Record<AlertTone, { surface: string; text: TextColor }> = {
   },
 };
 
+const toneControls = cn(
+  "flex shrink-0",
+  "[&_:is(a,button)]:text-current [&_:is(a,button)_*]:text-current",
+  "[&_:is(a,button):hover]:text-current [&_:is(a,button):hover]:bg-current/10"
+);
+
 /**
  * A single-line inline message on a tinted surface, with an optional action,
  * for a state the page should call out, such as why a run failed.
@@ -60,7 +66,7 @@ const toneStyles: Record<AlertTone, { surface: string; text: TextColor }> = {
  * ```
  *
  * @param tone The {@link AlertTone}: `"failure"` (default), `"warning"`, `"info"` or `"success"`.
- * @param action Control shown at the end of the row, such as a {@link TextAction}.
+ * @param action Control shown at the end of the row, such as a {@link TextAction}; it takes the tone's text colour.
  * @param multiline Wraps a long message over several lines instead of cutting it with an ellipsis.
  * @param className `class` overrides to apply to the component.
  * @param children The message; cut with an ellipsis when it does not fit unless `multiline`.
@@ -77,7 +83,7 @@ export const Alert: FC<AlertProps> = ({
   const { surface, text } = toneStyles[tone];
   return (
     <div
-      role="alert"
+      role={tone === AlertTone.Failure ? "alert" : "status"}
       className={cn(
         "flex items-center gap-4 rounded-md px-3 py-2",
         surface,
@@ -93,7 +99,9 @@ export const Alert: FC<AlertProps> = ({
       >
         {children}
       </Text>
-      {action}
+      {action && (
+        <span className={cn(toneControls, textColorClass(text))}>{action}</span>
+      )}
     </div>
   );
 };

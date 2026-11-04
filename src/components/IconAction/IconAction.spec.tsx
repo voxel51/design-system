@@ -56,4 +56,25 @@ describe("IconAction", () => {
       "hover:bg-[var(--color-content-interactive-danger-hover)]"
     );
   });
+
+  it("names itself and its hint in a tooltip", () => {
+    render(
+      <IconAction
+        icon={IconName.Close}
+        aria-label="Delete"
+        tooltip
+        hint="Archived"
+        disabled
+      />
+    );
+    fireEvent.mouseEnter(screen.getByRole("button").parentElement as Element);
+    expect(screen.getByRole("tooltip")).toHaveTextContent("DeleteArchived");
+  });
+
+  it("has no tooltip unless asked", () => {
+    const { container } = render(
+      <IconAction icon={IconName.Close} aria-label="Dismiss" />
+    );
+    expect(container.firstElementChild).toBe(screen.getByRole("button"));
+  });
 });
