@@ -5,6 +5,13 @@ import { Orientation } from "@/types";
 import { Divider, DividerStyle } from "./Divider";
 
 describe("Divider", () => {
+  it("draws the default border color on a card", () => {
+    render(<Divider onCard />);
+    expect(screen.getByTestId("divider-line-before")).toHaveClass(
+      "bg-content-border-default/30"
+    );
+  });
+
   it("should render horizontal Divider without label by default", () => {
     const { container } = render(<Divider />);
     expect(screen.getByTestId("divider-line-before")).toHaveClass("h-px");
