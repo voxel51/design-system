@@ -9,7 +9,15 @@ import {
 
 import radiusStyles from "@/styles/radius";
 import { TEXT_STYLES } from "@/styles/text";
-import { Radius, TextColor, textColorClass, TextVariant } from "@/types";
+import {
+  BorderColor,
+  borderColorClass,
+  ElementState,
+  Radius,
+  TextColor,
+  textColorClass,
+  TextVariant,
+} from "@/types";
 
 export interface DropzoneProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
@@ -72,7 +80,12 @@ export const Dropzone: FC<DropzoneProps> = ({
         radiusStyles(Radius.Lg),
         dragging
           ? "border-brand-primary bg-brand-primary/10"
-          : "border-content-border-input hover:border-content-border-hover",
+          : [
+              "border-content-border-input hover:border-content-border-hover",
+              // same focus affordance as Input: the edge, not an outline
+              "focus:outline-none",
+              borderColorClass(BorderColor.InputFocus, ElementState.Focus),
+            ],
         disabled && "pointer-events-none opacity-50",
         className
       )}
