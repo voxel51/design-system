@@ -36,7 +36,7 @@ describe("Avatar", () => {
     expect(screen.getByRole("img").style.getPropertyValue("--avatar-bg")).toBe(
       ""
     );
-    expect(screen.getByRole("img")).toHaveClass("bg-content-bg-muted");
+    expect(screen.getByRole("img")).toHaveClass("bg-content-bg-card-nested");
   });
 
   it("puts a subtitle under the name", () => {
