@@ -42,9 +42,9 @@ export interface AvatarProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 const sizeStyles: Record<AvatarSize, string> = {
-  [Size.Sm]: cn("size-5", textStyles(TextVariant.Caption)),
-  [Size.Md]: cn("size-6", textStyles(TextVariant.BodyTertiary)),
-  [Size.Lg]: cn("size-8", textStyles(TextVariant.BodySecondary)),
+  [Size.Sm]: "size-5 text-xxs leading-none font-medium",
+  [Size.Md]: "size-6 text-xs leading-none font-medium",
+  [Size.Lg]: "size-8 text-sm leading-none font-medium",
 };
 
 const initials = (name: string): string =>
@@ -209,7 +209,7 @@ export const Avatar: FC<AvatarProps> = ({
       className={cn(
         "inline-flex shrink-0 select-none items-center justify-center overflow-hidden",
         radiusStyles(square ? Radius.Md : Radius.Full),
-        neutral && bgColorClass(BackgroundColor.Muted),
+        neutral && bgColorClass(BackgroundColor.CardNested),
         neutral && textColorClass(TextColor.Secondary),
         !neutral && tintStyles,
         sizeStyles[size],
@@ -241,7 +241,7 @@ export const Avatar: FC<AvatarProps> = ({
     <span
       className={cn(
         "inline-flex min-w-0 items-center",
-        twoLines ? "gap-3" : "gap-1.5",
+        twoLines ? "gap-3" : "gap-2",
         textColorClass(TextColor.Primary),
         textStyles(
           twoLines ? TextVariant.BodyPrimary : TextVariant.BodySecondary
