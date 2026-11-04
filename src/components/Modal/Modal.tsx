@@ -106,6 +106,8 @@ export interface ModalProps {
   contentClassName?: string;
   /** Accessible name when there is no visible `title`. */
   "aria-label"?: string;
+  /** Test id for the modal's root. */
+  "data-testid"?: string;
   /** Modal content. */
   children?: ReactNode;
 }

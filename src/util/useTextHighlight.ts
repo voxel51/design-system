@@ -1,7 +1,4 @@
-import { type RefObject, useEffect } from "react";
-
-const HIGHLIGHT_NAME = "voodo-text-highlight";
-const STYLE_ID = "voodo-text-highlight-style";
+import { type RefObject, useEffect, useId } from "react";
 
 interface HighlightRegistry {
   set(name: string, highlight: unknown): void;
@@ -13,11 +10,11 @@ const registry = (): HighlightRegistry | undefined =>
     ? undefined
     : (CSS as unknown as { highlights?: HighlightRegistry }).highlights;
 
-const ensureStyle = (): void => {
-  if (document.getElementById(STYLE_ID)) return;
+const ensureStyle = (name: string): void => {
+  if (document.getElementById(name)) return;
   const style = document.createElement("style");
-  style.id = STYLE_ID;
-  style.textContent = `::highlight(${HIGHLIGHT_NAME}) { background-color: var(--color-content-bg-accent); color: inherit; }`;
+  style.id = name;
+  style.textContent = `::highlight(${name}) { background-color: var(--color-content-bg-accent); color: inherit; }`;
   document.head.appendChild(style);
 };
 
@@ -44,6 +41,7 @@ export const useTextHighlight = (
   query: string,
   deps: unknown[] = []
 ): void => {
+  const name = `voodo-text-highlight-${useId().replace(/[^a-zA-Z0-9-]/g, "")}`;
   useEffect(() => {
     const root = ref.current;
     const highlights = registry();
@@ -51,10 +49,10 @@ export const useTextHighlight = (
       return undefined;
     const needle = query.trim().toLowerCase();
     if (!needle) {
-      highlights.delete(HIGHLIGHT_NAME);
+      highlights.delete(name);
       return undefined;
     }
-    ensureStyle();
+    ensureStyle(name);
     const apply = (): void => {
       const ranges: Range[] = [];
       const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
@@ -71,7 +69,7 @@ export const useTextHighlight = (
           ranges.push(range);
         }
       }
-      highlights.set(HIGHLIGHT_NAME, new Highlight(...ranges));
+      highlights.set(name, new Highlight(...ranges));
     };
     apply();
     const observer = new MutationObserver(apply);
@@ -82,8 +80,9 @@ export const useTextHighlight = (
     });
     return () => {
       observer.disconnect();
-      highlights.delete(HIGHLIGHT_NAME);
+      highlights.delete(name);
+      document.getElementById(name)?.remove();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- `deps` is the caller's list
-  }, [ref, query, ...deps]);
+  }, [ref, name, query, ...deps]);
 };

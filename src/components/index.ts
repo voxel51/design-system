@@ -59,6 +59,7 @@ export * from "./Text";
 export * from "./TextAction";
 export * from "./TextArea";
 export * from "./TextBadge";
+export * from "./TextLink";
 export * from "./Toast";
 export * from "./ToastContainer";
 export * from "./Toggle";
