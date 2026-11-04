@@ -1,5 +1,5 @@
 import { Menu } from "@base-ui/react/menu";
-import type { FC, HTMLAttributes } from "react";
+import type { FC, HTMLAttributes, ReactNode } from "react";
 
 import { CheckIcon } from "@/components/Icons";
 import { Text } from "@/components/Text";
@@ -18,6 +18,8 @@ export interface MenuCheckItemProps extends HTMLAttributes<HTMLButtonElement> {
   disabled?: boolean;
   /** A single-select option: the check trails the label and choosing closes the menu. */
   select?: boolean;
+  /** A second line under the label, wrapping if it is long. */
+  description?: ReactNode;
 }
 
 /**
@@ -53,6 +55,7 @@ export interface MenuCheckItemProps extends HTMLAttributes<HTMLButtonElement> {
  * @param checked If `true`, a checkmark is shown in the leading slot.
  * @param disabled If `true`, the item cannot be interacted with.
  * @param select A single-select option: trailing check, closes the menu on click.
+ * @param description A second line under the label, such as what a permission allows.
  * @param children The label text.
  * @param className `class` overrides to apply to the component.
  * @param props Additional HTML properties to apply to the component.
@@ -61,6 +64,7 @@ export const MenuCheckItem: FC<MenuCheckItemProps> = ({
   checked,
   disabled,
   select,
+  description,
   children,
   className,
   ...props
@@ -85,6 +89,7 @@ export const MenuCheckItem: FC<MenuCheckItemProps> = ({
         cn(
           menuRowStyles(state),
           "gap-2",
+          !!description && "my-0.5 items-start py-2",
           select && "flex-row-reverse justify-between",
           checked &&
             (state.highlighted && !disabled
@@ -98,13 +103,24 @@ export const MenuCheckItem: FC<MenuCheckItemProps> = ({
       <span className="flex size-4 shrink-0 items-center justify-center">
         {checked && <CheckIcon size={Size.Sm} color={BrandColor.Primary} />}
       </span>
-      <Text
-        variant={TextVariant.BodyPrimary}
-        color={TextColor.Primary}
-        className={cn("block min-w-0 truncate", checked && "font-medium")}
-      >
-        {children}
-      </Text>
+      <span className="flex min-w-0 flex-col gap-0.5 text-left">
+        <Text
+          variant={TextVariant.BodyPrimary}
+          color={TextColor.Primary}
+          className={cn("block min-w-0 truncate", checked && "font-medium")}
+        >
+          {children}
+        </Text>
+        {description && (
+          <Text
+            variant={TextVariant.BodyTertiary}
+            color={TextColor.Tertiary}
+            className="block"
+          >
+            {description}
+          </Text>
+        )}
+      </span>
     </Menu.CheckboxItem>
   );
 };
