@@ -13,4 +13,9 @@ describe("Alert", () => {
     render(<Alert tone="warning">Careful</Alert>);
     expect(screen.getByRole("alert")).toHaveClass("bg-content-bg-warning/10");
   });
+
+  it("wraps a long message when multiline", () => {
+    render(<Alert multiline>Long message</Alert>);
+    expect(screen.getByText("Long message")).not.toHaveClass("truncate");
+  });
 });

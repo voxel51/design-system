@@ -25,6 +25,7 @@ export interface AlertProps extends Omit<
 > {
   tone?: AlertTone;
   action?: ReactNode;
+  multiline?: boolean;
 }
 
 // Literal class names so Tailwind's scanner sees them
@@ -60,13 +61,15 @@ const toneStyles: Record<AlertTone, { surface: string; text: TextColor }> = {
  *
  * @param tone The {@link AlertTone}: `"failure"` (default), `"warning"`, `"info"` or `"success"`.
  * @param action Control shown at the end of the row, such as a {@link TextAction}.
+ * @param multiline Wraps a long message over several lines instead of cutting it with an ellipsis.
  * @param className `class` overrides to apply to the component.
- * @param children The message; cut with an ellipsis when it does not fit.
+ * @param children The message; cut with an ellipsis when it does not fit unless `multiline`.
  * @param props Additional HTML properties to apply to the component.
  */
 export const Alert: FC<AlertProps> = ({
   tone = AlertTone.Failure,
   action,
+  multiline,
   className,
   children,
   ...props
@@ -85,7 +88,7 @@ export const Alert: FC<AlertProps> = ({
       <Text
         variant={TextVariant.BodySecondary}
         color={text}
-        truncate
+        truncate={!multiline}
         className="min-w-0 flex-1"
       >
         {children}
