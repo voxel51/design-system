@@ -64,6 +64,7 @@ import {
   ListItem,
   Loader,
   LoadingDots,
+  MenuIconTextItem,
   MenuSeparator,
   ModalSize,
   OverflowRow,
@@ -915,6 +916,11 @@ export const Everything = (
         trigger={<Button variant="icon">open</Button>}
       >
         <MenuSeparator />
+        <MenuIconTextItem
+          icon={<span />}
+          text="Auto labeling"
+          badge={<TextBadge color="text-tertiary">Beta</TextBadge>}
+        />
       </Dropdown>
     ))}
     {POPOVER_ANCHORS.map((a) => (

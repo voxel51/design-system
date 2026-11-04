@@ -9,6 +9,7 @@ import {
   MenuSectionTitle,
   MenuSeparator,
   MenuTextItem,
+  TextBadge,
   actionMenuPanelStyles,
 } from "@voxel51/voodo";
 
@@ -63,6 +64,11 @@ export const Items: Story = {
         icon={IconName.Edit}
         text="Rename"
         subtext="Changes the display name only"
+      />
+      <MenuIconTextItem
+        icon={IconName.Add}
+        text="Auto labeling"
+        badge={<TextBadge color="text-tertiary">Beta</TextBadge>}
       />
       <MenuTextItem>Move to folder</MenuTextItem>
       <MenuSeparator />

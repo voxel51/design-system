@@ -27,6 +27,23 @@ describe("MenuIconTextItem", () => {
     expect(screen.getByText("Make changes")).toBeInTheDocument();
   });
 
+  it("should render a badge after the text", async () => {
+    const user = userEvent.setup();
+    render(
+      <Dropdown trigger={trigger}>
+        <MenuIconTextItem
+          icon={<EditIcon />}
+          text="Auto labeling"
+          badge={<span>Beta</span>}
+        />
+      </Dropdown>
+    );
+    await user.click(screen.getByText("Open menu"));
+    const item = await screen.findByRole("menuitem");
+    expect(item).toHaveTextContent("Auto labeling");
+    expect(item).toHaveTextContent("Beta");
+  });
+
   it("should render without subtext", async () => {
     const user = userEvent.setup();
     render(

@@ -30,6 +30,8 @@ export interface MenuIconTextItemProps extends HTMLAttributes<HTMLButtonElement>
   text: string;
   /** Optional secondary description shown below the primary text. */
   subtext?: string;
+  /** A short tag after the text, e.g. a `TextBadge` reading "Beta". */
+  badge?: ReactNode;
   /** If `true`, the item cannot be interacted with and is rendered in a muted style. */
   disabled?: boolean;
   /** If `true`, renders the text and icon in the failure color, and fills the row with the danger color (white content) on hover and focus. */
@@ -65,6 +67,7 @@ export interface MenuIconTextItemProps extends HTMLAttributes<HTMLButtonElement>
  *
  * @param icon An icon element (e.g. `<EditIcon />`) rendered in the leading slot; a legacy {@link IconName} is still accepted.
  * @param text The primary label for the item.
+ * @param badge A short tag after the text, e.g. `<TextBadge color="text-tertiary">Beta</TextBadge>`.
  * @param subtext An optional secondary line rendered below the primary text in muted color.
  * @param disabled If `true`, the item cannot be interacted with.
  * @param destructive If `true`, renders the text and icon in the failure color, and fills the row with the danger color (white content) on hover and focus.
@@ -77,6 +80,7 @@ export const MenuIconTextItem: FC<MenuIconTextItemProps> = ({
   icon,
   text,
   subtext,
+  badge,
   disabled,
   destructive,
   textVariant = TextVariant.BodyPrimary,
@@ -124,18 +128,21 @@ export const MenuIconTextItem: FC<MenuIconTextItemProps> = ({
       </span>
 
       <span className="flex flex-col gap-0.5 min-w-0">
-        <Text
-          variant={textVariant}
-          color={textColor}
-          className={cn(
-            "block truncate",
-            textColor !== TextColor.Primary &&
-              !destructive &&
-              "group-data-[highlighted]:text-content-text-primary"
-          )}
-        >
-          {text}
-        </Text>
+        <span className="flex min-w-0 items-center gap-2">
+          <Text
+            variant={textVariant}
+            color={textColor}
+            className={cn(
+              "block truncate",
+              textColor !== TextColor.Primary &&
+                !destructive &&
+                "group-data-[highlighted]:text-content-text-primary"
+            )}
+          >
+            {text}
+          </Text>
+          {badge}
+        </span>
         {subtext && (
           <Text
             variant={TextVariant.BodyTertiary}
