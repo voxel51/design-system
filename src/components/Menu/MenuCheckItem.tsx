@@ -89,6 +89,7 @@ export const MenuCheckItem: FC<MenuCheckItemProps> = ({
         cn(
           menuRowStyles(state),
           "gap-2",
+          !!description && "my-0.5 items-start py-2",
           select && "flex-row-reverse justify-between",
           checked &&
             (state.highlighted && !disabled
