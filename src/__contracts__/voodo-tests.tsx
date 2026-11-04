@@ -898,6 +898,8 @@ export const Everything = (
         max={10}
         value={5}
         formatLabel={(v: number) => <span>{v}%</span>}
+        formatInput={(v: number) => String(v * 100)}
+        parseInput={(text: string) => Number.parseFloat(text) / 100}
       />
       {SIZES.map((s) => (
         <DatePicker key={s} size={s} radius="lg" onChange={noop} />

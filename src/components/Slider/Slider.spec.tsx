@@ -89,6 +89,30 @@ describe("Slider", () => {
       await waitFor(() => expect(onChange).toHaveBeenLastCalledWith(newValue));
     });
 
+    it("should show and read inputs through formatInput and parseInput", async () => {
+      const onChange = jest.fn();
+      render(
+        <SingleValueSlider
+          {...defaultProps}
+          value={0.4}
+          formatInput={(v) => String(Math.round(v * 100))}
+          parseInput={(text) => Number.parseFloat(text) / 100}
+          onChange={onChange}
+        />
+      );
+
+      const input: HTMLInputElement = within(
+        screen.getByTestId(testId)
+      ).getByRole("textbox");
+      expect(input.value).toBe("40");
+
+      const user = userEvent.setup();
+      await user.clear(input);
+      await user.type(input, "75");
+
+      await waitFor(() => expect(onChange).toHaveBeenLastCalledWith(0.75));
+    });
+
     it("should debounce onChange emission when inputs change", async () => {
       jest.useFakeTimers();
 
