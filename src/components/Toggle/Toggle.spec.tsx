@@ -91,4 +91,9 @@ describe("Toggle", () => {
     render(<Toggle showUnsetHint={false} label={toggleLabel} />);
     expect(screen.queryByText(/click the toggle/i)).not.toBeInTheDocument();
   });
+
+  it("describes itself with the description", () => {
+    render(<Toggle label="Debug" description="Helper" />);
+    expect(screen.getByRole("switch")).toHaveAccessibleDescription("Helper");
+  });
 });
