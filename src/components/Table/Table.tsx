@@ -122,10 +122,7 @@ export const TableHeader: FC<HTMLAttributes<HTMLTableSectionElement>> = ({
   ...props
 }) => {
   return (
-    <thead
-      className={cn("border-b", RULE_BORDER, className)}
-      {...props}
-    >
+    <thead className={cn("border-b", RULE_BORDER, className)} {...props}>
       {children}
     </thead>
   );

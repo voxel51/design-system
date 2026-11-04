@@ -5,7 +5,6 @@ import { Dropdown, DropdownTrigger } from "@/components/Dropdown";
 import { IconName, Size } from "@/types";
 import { MENU_FIT, OverflowRowCompactContext } from "@/util/compact";
 
-
 import { IconAction } from "./IconAction";
 
 describe("IconAction", () => {
