@@ -6,10 +6,15 @@ export interface OverflowRowFit {
   compact: boolean;
   /** Labels are cut to this width with an ellipsis; `null` for no limit. */
   labelMax: number | null;
+  /** Items are rows of an overflow menu. */
+  menu?: boolean;
 }
 
 /** A row with room for every item as it is. */
 export const FULL_FIT: OverflowRowFit = { compact: false, labelMax: null };
+
+/** Items moved into an overflow menu: drawn in full, as menu rows. */
+export const MENU_FIT: OverflowRowFit = { ...FULL_FIT, menu: true };
 
 /** Marks the label of an action whose row may shorten it. */
 export const COLLAPSE_LABEL_ATTR = "data-collapse-label";

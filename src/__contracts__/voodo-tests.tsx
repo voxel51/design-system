@@ -758,6 +758,8 @@ export const Everything = (
     <OverflowRow
       label="More actions"
       compactable
+      size="sm"
+      hug
       onFitChange={(fit) => fit.compact && fit.folded}
       className="x"
     >
