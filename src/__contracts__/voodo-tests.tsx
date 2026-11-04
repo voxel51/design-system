@@ -73,6 +73,7 @@ import {
   FilterChip,
   TagInput,
   ListRow,
+  SplitButton,
   Orientation,
   ScrimColor,
   VizChartColor,
@@ -649,6 +650,10 @@ export const Everything = (
         actions={<span />}
       />
       <ListRow title="t" onClick={() => {}} />
+      <ListRow title="t" active disabled />
+      <SplitButton onClick={() => {}} menuLabel="m" menu={<span />}>
+        t
+      </SplitButton>
       <FilterChip count={3} selected onClick={() => {}}>
         tag
       </FilterChip>
