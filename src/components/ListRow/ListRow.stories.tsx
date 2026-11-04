@@ -33,4 +33,19 @@ export const Default: Story = {
   ),
 };
 
+export const ActiveAndDisabled: Story = {
+  render: () => (
+    <div className="flex w-72 flex-col gap-0.5">
+      <ListRow title="Compute visualization" subtitle="@voxel51/brain" active />
+      <ListRow title="Export dataset" subtitle="@voxel51/io" />
+      <ListRow
+        title="Delete samples"
+        subtitle="@voxel51/utils"
+        disabled
+        actions={<IconAction icon={PinIcon} aria-label="Pin" />}
+      />
+    </div>
+  ),
+};
+
 export default meta;

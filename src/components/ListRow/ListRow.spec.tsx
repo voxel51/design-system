@@ -31,4 +31,30 @@ describe("ListRow", () => {
       screen.getByRole("button", { name: "Unpin" })
     );
   });
+
+  it("blocks the click of a disabled row but keeps its actions", async () => {
+    const onClick = jest.fn();
+    const onUnpin = jest.fn();
+    render(
+      <ListRow
+        title="Locked"
+        disabled
+        onClick={onClick}
+        actions={
+          <button type="button" onClick={onUnpin}>
+            Unpin
+          </button>
+        }
+      />
+    );
+    await userEvent.click(screen.getByRole("button", { name: /Locked/ }));
+    await userEvent.click(screen.getByRole("button", { name: "Unpin" }));
+    expect(onClick).not.toHaveBeenCalled();
+    expect(onUnpin).toHaveBeenCalledTimes(1);
+  });
+
+  it("draws an active row in its hover surface", () => {
+    const { container } = render(<ListRow title="Highlighted" active />);
+    expect(container.firstChild).toHaveClass("bg-content-bg-card");
+  });
 });

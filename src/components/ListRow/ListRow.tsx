@@ -29,6 +29,10 @@ export interface ListRowProps extends Omit<
   leading?: ReactNode;
   /** Controls at the row's end, outside the link (an unpin `IconAction`, say). */
   actions?: ReactNode;
+  /** Draws the row in its hover surface, for a keyboard-highlighted row in a list. */
+  active?: boolean;
+  /** Dims the row and blocks its click; actions stay usable. */
+  disabled?: boolean;
 }
 
 /**
@@ -50,15 +54,32 @@ export interface ListRowProps extends Omit<
  * @param subtitle A second line under the title, in secondary text.
  * @param leading A marker before the text, aligned with the title (a `StatusDot`, say).
  * @param actions Controls at the row's end, kept outside the link or button.
+ * @param active Draws the row in its hover surface (a keyboard-highlighted row).
+ * @param disabled Dims the row and blocks its click; actions stay usable.
  * @param href Makes the row a link; without it the row is a button (use `onClick`).
  * @param className `class` overrides for the row.
  * @param props Additional link (or button) properties, applied to the clickable part.
  */
 export const ListRow = forwardRef<HTMLAnchorElement, ListRowProps>(
-  ({ title, subtitle, leading, actions, className, href, ...props }, ref) => {
+  (
+    {
+      title,
+      subtitle,
+      leading,
+      actions,
+      active,
+      disabled,
+      className,
+      href,
+      ...props
+    },
+    ref
+  ) => {
     const body = (
       <>
-        {leading && <span className="mt-1.5 flex shrink-0">{leading}</span>}
+        {leading && (
+          <span className="flex h-5 shrink-0 items-center">{leading}</span>
+        )}
         <span className="min-w-0 flex-1">
           <Text
             variant={TextVariant.BodySecondary}
@@ -79,25 +100,37 @@ export const ListRow = forwardRef<HTMLAnchorElement, ListRowProps>(
         </span>
       </>
     );
-    const clickable =
-      "flex min-w-0 flex-1 cursor-pointer items-start gap-2.5 px-2 py-1.5 text-left";
+    const clickable = cn(
+      "flex min-w-0 flex-1 items-start gap-2.5 px-2 py-1.5 text-left",
+      disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+    );
 
     return (
       <div
         className={cn(
           "flex items-center transition-colors",
           radiusStyles(Radius.Sm),
-          bgColorClass(BackgroundColor.Card, ElementState.Hover),
+          bgColorClass(
+            BackgroundColor.Card,
+            active ? ElementState.None : ElementState.Hover
+          ),
           className
         )}
       >
         {href !== undefined ? (
-          <a ref={ref} href={href} className={clickable} {...props}>
+          <a
+            ref={ref}
+            href={disabled ? undefined : href}
+            aria-disabled={disabled || undefined}
+            className={clickable}
+            {...props}
+          >
             {body}
           </a>
         ) : (
           <button
             type="button"
+            disabled={disabled}
             className={clickable}
             {...(props as ButtonHTMLAttributes<HTMLButtonElement>)}
           >
