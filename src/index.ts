@@ -16,6 +16,7 @@ export {
 } from "./util/breakpoints";
 export { useClippedItems } from "./util/useClippedItems";
 export { useScrollEdges } from "./util/useScrollEdges";
+export { useTextHighlight } from "./util/useTextHighlight";
 export type { UseClippedItemsOptions } from "./util/useClippedItems";
 export { useCompactRow } from "./util/useCompactRow";
 export type {

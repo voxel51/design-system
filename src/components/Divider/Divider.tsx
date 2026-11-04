@@ -40,10 +40,12 @@ export interface DividerProps extends HTMLAttributes<HTMLDivElement> {
    */
   dividerStyle?: DividerStyle;
   textProps?: TextProps;
+  onCard?: boolean;
 }
 
 interface LineProps extends HTMLAttributes<HTMLDivElement> {
   orientation?: Orientation;
+  onCard?: boolean;
   dividerStyle?: DividerStyle;
 }
 
@@ -75,6 +77,9 @@ interface DotProps extends HTMLAttributes<HTMLDivElement> {
  *   Defaults to `"line"`. Use `"dot"` to render a dotted line, or, when no
  *   `label` is present, a single centered dot separator.
  * @param textProps Additional props forwarded to the label {@link Text}.
+ * @param onCard Draws the rule as {@link Table} rows do (default border color at
+ *   30%). Use it on a card surface, where the subtle rule is the card's own
+ *   color in the dark theme and cannot be seen.
  * @param props Additional HTML properties to apply to the component.
  */
 export const Divider: FC<DividerProps> = ({
@@ -82,6 +87,7 @@ export const Divider: FC<DividerProps> = ({
   label,
   dividerStyle = DividerStyle.Line,
   textProps,
+  onCard,
   ...props
 }) => {
   const isColumn = orientation === Orientation.Column;
@@ -112,12 +118,14 @@ export const Divider: FC<DividerProps> = ({
           <Line
             orientation={orientation}
             dividerStyle={DividerStyle.Line}
+            onCard={onCard}
             data-testid="divider-line-before"
           />
           <Dot orientation={orientation} data-testid="divider-dot" />
           <Line
             orientation={orientation}
             dividerStyle={DividerStyle.Line}
+            onCard={onCard}
             data-testid="divider-line-after"
           />
         </>
@@ -126,6 +134,7 @@ export const Divider: FC<DividerProps> = ({
           <Line
             orientation={orientation}
             dividerStyle={dividerStyle}
+            onCard={onCard}
             data-testid="divider-line-before"
           />
           {resolvedLabel && (
@@ -142,6 +151,7 @@ export const Divider: FC<DividerProps> = ({
               <Line
                 orientation={orientation}
                 dividerStyle={dividerStyle}
+                onCard={onCard}
                 data-testid="divider-line-after"
               />
             </>
@@ -155,6 +165,7 @@ export const Divider: FC<DividerProps> = ({
 const Line: FC<LineProps> = ({
   orientation,
   dividerStyle = DividerStyle.Line,
+  onCard,
   className,
   ...props
 }) => {
@@ -182,7 +193,7 @@ const Line: FC<LineProps> = ({
   return (
     <div
       className={cn(
-        "bg-content-border-subtle",
+        onCard ? "bg-content-border-default/30" : "bg-content-border-subtle",
         isColumn ? "w-px h-full" : "h-px flex-1",
         className
       )}

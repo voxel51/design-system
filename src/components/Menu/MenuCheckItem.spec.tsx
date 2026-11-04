@@ -8,6 +8,17 @@ import { MenuCheckItem } from "./MenuCheckItem";
 const trigger = <DropdownTrigger>Open menu</DropdownTrigger>;
 
 describe("MenuCheckItem", () => {
+  it("should render its description under the label", async () => {
+    const user = userEvent.setup();
+    render(
+      <Dropdown trigger={trigger}>
+        <MenuCheckItem description="Can view samples">Can view</MenuCheckItem>
+      </Dropdown>
+    );
+    await user.click(screen.getByText("Open menu"));
+    expect(await screen.findByText("Can view samples")).toBeInTheDocument();
+  });
+
   it("should render its label", async () => {
     const user = userEvent.setup();
     render(

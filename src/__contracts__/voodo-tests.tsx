@@ -22,6 +22,8 @@ import {
   LiveToggle,
   InteractiveColor,
   ActivityToast,
+  Alert,
+  MetaList,
   AddIcon,
   Align,
   Anchor,
@@ -670,6 +672,16 @@ export const Everything = (
       {(["row", "col"] as const).map((o) => (
         <Divider key={o} orientation={o} />
       ))}
+      {(["failure", "warning", "info", "success"] as const).map((tone) => (
+        <Alert key={tone} tone={tone} action={<button>act</button>}>
+          {tone}
+        </Alert>
+      ))}
+      <Divider onCard />
+      <MetaList>
+        <span>a</span>
+        <span>b</span>
+      </MetaList>
     </Stack>
 
     {/* Cards: every background × a shadow sweep */}
