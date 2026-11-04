@@ -17,6 +17,7 @@ import {
 } from "@/components/Table";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
+import { RULE_BORDER } from "@/styles/rule";
 import { textStyles } from "@/styles/text";
 import {
   BackgroundColor,
@@ -236,7 +237,7 @@ const Card: FC<{ columns: DataTableColumn[]; row: DataTableRow }> = ({
       {...clickableProps(row)}
       className={cn(
         "flex flex-col gap-xs border-b p-3 last:border-0",
-        "border-content-border-default/30",
+        RULE_BORDER,
         row.onClick && "hover:cursor-pointer",
         row.onClick &&
           bgColorClass(BackgroundColor.CardNested, ElementState.Hover),

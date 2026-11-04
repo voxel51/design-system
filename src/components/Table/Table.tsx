@@ -6,6 +6,7 @@ import type {
 } from "react";
 
 import radiusStyles from "@/styles/radius";
+import { RULE_BORDER } from "@/styles/rule";
 import { textStyles } from "@/styles/text";
 import {
   BackgroundColor,
@@ -90,7 +91,7 @@ export const TableRow: FC<HTMLAttributes<HTMLTableRowElement>> = ({
     <tr
       className={cn(
         "border-b last:border-0",
-        "border-content-border-default/30",
+        RULE_BORDER,
         isClickable && "hover:cursor-pointer",
         isClickable &&
           bgColorClass(BackgroundColor.CardNested, ElementState.Hover),
@@ -122,7 +123,7 @@ export const TableHeader: FC<HTMLAttributes<HTMLTableSectionElement>> = ({
 }) => {
   return (
     <thead
-      className={cn("border-b", "border-content-border-default/30", className)}
+      className={cn("border-b", RULE_BORDER, className)}
       {...props}
     >
       {children}

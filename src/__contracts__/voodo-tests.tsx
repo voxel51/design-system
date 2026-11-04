@@ -24,6 +24,7 @@ import {
   ActivityToast,
   Alert,
   MetaList,
+  TextLink,
   AddIcon,
   Align,
   Anchor,
@@ -680,7 +681,9 @@ export const Everything = (
       <Divider onCard />
       <MetaList>
         <span>a</span>
-        <span>b</span>
+        <TextLink href="/b" external accent truncate>
+          b
+        </TextLink>
       </MetaList>
     </Stack>
 
@@ -721,6 +724,7 @@ export const Everything = (
       ))}
       <IconAction icon="Add" tone="brand" aria-label="Pin" />
       <IconAction icon="Add" tone="danger" aria-label="Remove" />
+      <IconAction icon="Add" aria-label="Archive" tooltip hint="Archived" />
       {/* @ts-expect-error - unknown tone */}
       <IconAction icon="Add" tone="warning" aria-label="Pin" />
       <TextAction collapse leadingIcon="Add" aria-label="Share" onClick={noop}>
