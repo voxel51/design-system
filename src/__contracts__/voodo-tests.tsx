@@ -103,6 +103,7 @@ import {
   Size,
   SkeletonColor,
   Spacing,
+  MarkdownEditor,
   Spinner,
   StatusDot,
   Stack,
@@ -883,6 +884,12 @@ export const Everything = (
       {RESIZES.map((r) => (
         <FormField key={r} control={<TextArea size="sm" resize={r} />} />
       ))}
+      <MarkdownEditor
+        value="# Title"
+        onChange={() => {}}
+        renderPreview={(text) => <p>{text}</p>}
+        rows={4}
+      />
       {RADII.map((r) => (
         <Checkbox key={r} size="md" radius={r} label={`radius ${r}`} />
       ))}
