@@ -213,6 +213,7 @@ import JSONSvg from "@/img/JSON.svg?react";
 import KeySvg from "@/img/Key.svg?react";
 import KeyRoundSvg from "@/img/KeyRound.svg?react";
 import KeySquareSvg from "@/img/KeySquare.svg?react";
+import KeyboardSvg from "@/img/Keyboard.svg?react";
 import KeyboardArrowDownSvg from "@/img/KeyboardArrowDown.svg?react";
 import KeyboardArrowDownOutlinedSvg from "@/img/KeyboardArrowDownOutlined.svg?react";
 import KeyboardArrowLeftSvg from "@/img/KeyboardArrowLeft.svg?react";
@@ -1315,6 +1316,10 @@ export const LightbulbIcon: FC<IconProps> = (props) => (
 
 export const LinkIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={LinkSvg} />
+);
+
+export const KeyboardIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={KeyboardSvg} />
 );
 
 export const Link2Icon: FC<IconProps> = (props) => (
