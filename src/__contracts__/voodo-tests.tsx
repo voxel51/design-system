@@ -60,6 +60,7 @@ import {
   IconName,
   Input,
   Justify,
+  Kbd,
   LinkColor,
   ListItem,
   Loader,
@@ -602,6 +603,7 @@ export const Everything = (
       ))}
       <AddIcon size={Size.Xl} color={BrandColor.Accent} />
       <StatusDot pulse color={BrandColor.Accent} />
+      <Kbd title="Escape">Esc</Kbd>
       {(["sm", "md", "lg"] as const).map((s) => (
         <Avatar key={s} name="Ada Lovelace" size={s} />
       ))}

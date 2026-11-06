@@ -28,6 +28,7 @@ export * from "./IconAction";
 export * from "./Icons";
 export * from "./ImageList";
 export * from "./Input";
+export * from "./Kbd";
 export * from "./ListItem";
 export * from "./ListRow";
 export * from "./LiveToggle";
