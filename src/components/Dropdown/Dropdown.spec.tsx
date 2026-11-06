@@ -120,4 +120,94 @@ describe("Dropdown", () => {
     await user.click(screen.getByText("Open menu"));
     expect(screen.queryByText("Item")).not.toBeInTheDocument();
   });
+
+  it("should open from the open prop without a trigger press", async () => {
+    render(
+      <Dropdown open onOpenChange={jest.fn()} trigger={trigger}>
+        <MenuTextItem>Shown item</MenuTextItem>
+      </Dropdown>
+    );
+
+    await screen.findByRole("menu");
+    expect(screen.getByText("Shown item")).toBeInTheDocument();
+  });
+
+  it("should stay open through Escape while open is held", async () => {
+    const user = userEvent.setup();
+    const onOpenChange = jest.fn();
+    render(
+      <Dropdown open onOpenChange={onOpenChange} trigger={trigger}>
+        <MenuTextItem>Held item</MenuTextItem>
+      </Dropdown>
+    );
+
+    await screen.findByRole("menu");
+    await user.keyboard("{Escape}");
+
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+    expect(screen.getByText("Held item")).toBeInTheDocument();
+  });
+
+  it("should report a trigger press to onOpenChange", async () => {
+    const user = userEvent.setup();
+    const onOpenChange = jest.fn();
+    render(
+      <Dropdown open={false} onOpenChange={onOpenChange} trigger={trigger}>
+        <MenuTextItem>Closed item</MenuTextItem>
+      </Dropdown>
+    );
+
+    await user.click(screen.getByText("Open menu"));
+
+    await waitFor(() => expect(onOpenChange).toHaveBeenCalledWith(true));
+    expect(screen.queryByText("Closed item")).not.toBeInTheDocument();
+  });
+
+  it("should stay open through an outside click while open is held", async () => {
+    const user = userEvent.setup();
+    const onOpenChange = jest.fn();
+    render(
+      <>
+        <button>Elsewhere</button>
+        <Dropdown open onOpenChange={onOpenChange} trigger={trigger}>
+          <MenuTextItem>Held item</MenuTextItem>
+        </Dropdown>
+      </>
+    );
+
+    await screen.findByRole("menu");
+    await user.click(screen.getByText("Elsewhere"));
+
+    await waitFor(() => expect(onOpenChange).toHaveBeenCalledWith(false));
+    expect(screen.getByText("Held item")).toBeInTheDocument();
+  });
+
+  it("should stay open through an item click while open is held", async () => {
+    const user = userEvent.setup();
+    const onOpenChange = jest.fn();
+    const onClick = jest.fn();
+    render(
+      <Dropdown open onOpenChange={onOpenChange} trigger={trigger}>
+        <MenuTextItem onClick={onClick}>Held item</MenuTextItem>
+      </Dropdown>
+    );
+
+    await screen.findByRole("menu");
+    await user.click(screen.getByText("Held item"));
+
+    expect(onClick).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(onOpenChange).toHaveBeenCalledWith(false));
+    expect(screen.getByText("Held item")).toBeInTheDocument();
+  });
+
+  it("should stay closed when disabled, even with open held", () => {
+    render(
+      <Dropdown open disabled onOpenChange={jest.fn()} trigger={trigger}>
+        <MenuTextItem>Disabled item</MenuTextItem>
+      </Dropdown>
+    );
+
+    expect(screen.queryByRole("menu")).not.toBeInTheDocument();
+    expect(screen.queryByText("Disabled item")).not.toBeInTheDocument();
+  });
 });
