@@ -148,4 +148,11 @@ describe("Button", () => {
       "bg-(image:--gradient-action-expressive)"
     );
   });
+
+  it("wraps a hinted button in a flex box, so no line box offsets it", () => {
+    render(<Button hint="Why">{buttonText}</Button>);
+    expect(screen.getByRole("button").parentElement?.className).toContain(
+      "flex"
+    );
+  });
 });

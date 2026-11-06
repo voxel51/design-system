@@ -37,6 +37,7 @@ export const ActionTooltip: FC<{
   return (
     <Tooltip
       content={content ?? null}
+      wrapperClassName="flex"
       onMouseOverCapture={truncatable ? measure : undefined}
       onPointerDownCapture={truncatable ? measure : undefined}
     >
