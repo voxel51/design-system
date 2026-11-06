@@ -178,3 +178,47 @@ describe("Table cell attributes", () => {
     expect(screen.getByText("Queue")).toHaveAttribute("scope", "col");
   });
 });
+
+describe("Table boxed variant", () => {
+  const renderBoxed = (onSort?: () => void) =>
+    render(
+      <Table variant="boxed">
+        <TableHeader>
+          <TableRow>
+            <TableHead align="end" sort="desc" onSort={onSort}>
+              Support
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell align="end">42</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    );
+
+  it("tints the header and tightens cells", () => {
+    renderBoxed();
+    expect(screen.getByRole("columnheader").closest("thead")).toHaveClass(
+      bgColorClass(BackgroundColor.CardElevated)
+    );
+    expect(screen.getByRole("cell")).toHaveClass("px-3", "py-2");
+    expect(screen.getByRole("columnheader")).not.toHaveClass("uppercase");
+  });
+
+  it("right-aligns end cells with tabular figures", () => {
+    renderBoxed();
+    expect(screen.getByRole("cell")).toHaveClass("text-right", "tabular-nums");
+  });
+
+  it("marks the sorted header and sorts on click", async () => {
+    const onSort = jest.fn();
+    renderBoxed(onSort);
+    const header = screen.getByRole("columnheader");
+    expect(header).toHaveAttribute("aria-sort", "descending");
+    expect(header).toHaveClass(textColorClass(TextColor.Primary));
+    await userEvent.click(header);
+    expect(onSort).toHaveBeenCalledTimes(1);
+  });
+});

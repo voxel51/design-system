@@ -137,6 +137,12 @@ import {
   Variant,
   ZIndex,
   zIndexStyles,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@voxel51/voodo";
 
 const noop = (): void => undefined;
@@ -801,6 +807,26 @@ export const Everything = (
     <DataTable columns={[]} />
     {/* @ts-expect-error - role is a fixed set */}
     <DataTable columns={[{ key: "a", label: "A", role: "title" }]} rows={[]} />
+
+    {/* Table: boxed variant, align, sort */}
+    <Table variant="boxed" wrapperClassName="x">
+      <TableHeader>
+        <TableRow>
+          <TableHead align="end" sort="asc" onSort={noop}>
+            A
+          </TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        <TableRow>
+          <TableCell align="end">1</TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
+    {/* @ts-expect-error - variant is a fixed set */}
+    <Table variant="striped" />
+    {/* @ts-expect-error - sort is a fixed set */}
+    <TableHead sort="up" />
 
     {/* Pagination: every prop */}
     <Pagination
