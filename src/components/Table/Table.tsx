@@ -34,6 +34,7 @@ export type TableAlign = "start" | "end";
 export type TableSort = "asc" | "desc" | "none";
 
 const TableVariantContext = createContext<TableVariant>("default");
+const TableHoverContext = createContext(true);
 
 const alignClass = (align?: TableAlign): string =>
   align === "end" ? "text-right tabular-nums" : "text-left";
@@ -67,6 +68,8 @@ const alignClass = (align?: TableAlign): string =>
  * @param variant `"default"` or `"boxed"`. `"boxed"` draws the table as a bordered
  *  card with a tinted header row in sentence case and tighter cells; every row
  *  highlights on hover. See {@link TableVariant}.
+ * @param hoverable Whether rows of a `"boxed"` table highlight on hover. Defaults to `true`; set `false`
+ *  for read-only label and value lists.
  * @param className Additional CSS class names to apply to the table.
  * @param wrapperClassName Additional CSS class names to apply to the scroll box around the table.
  * @param children The table sections.
@@ -76,40 +79,44 @@ export const Table: FC<
   HTMLAttributes<HTMLTableElement> & {
     wrapperClassName?: string;
     variant?: TableVariant;
+    hoverable?: boolean;
   }
 > = ({
   children,
   className,
   wrapperClassName,
   variant = "default",
+  hoverable = true,
   ...props
 }) => {
   const boxed = variant === "boxed";
   return (
     <TableVariantContext.Provider value={variant}>
-      <div
-        className={cn(
-          "w-full overflow-x-auto",
-          boxed && "border-1",
-          boxed && borderColorClass(BorderColor.Subtle),
-          boxed && radiusStyles(Radius.Md),
-          wrapperClassName
-        )}
-      >
-        <table
+      <TableHoverContext.Provider value={hoverable}>
+        <div
           className={cn(
-            "w-full border-collapse",
-            bgColorClass(
-              boxed ? BackgroundColor.CardNested : BackgroundColor.Card
-            ),
-            !boxed && radiusStyles(Radius.Md),
-            className
+            "w-full overflow-x-auto",
+            boxed && "border-1",
+            boxed && borderColorClass(BorderColor.Subtle),
+            boxed && radiusStyles(Radius.Md),
+            wrapperClassName
           )}
-          {...props}
         >
-          {children}
-        </table>
-      </div>
+          <table
+            className={cn(
+              "w-full border-collapse",
+              bgColorClass(
+                boxed ? BackgroundColor.CardNested : BackgroundColor.Card
+              ),
+              !boxed && radiusStyles(Radius.Md),
+              className
+            )}
+            {...props}
+          >
+            {children}
+          </table>
+        </div>
+      </TableHoverContext.Provider>
     </TableVariantContext.Provider>
   );
 };
@@ -133,13 +140,14 @@ export const TableRow: FC<HTMLAttributes<HTMLTableRowElement>> = ({
 }) => {
   const isClickable = typeof props.onClick === "function";
   const boxed = useContext(TableVariantContext) === "boxed";
+  const hoverable = useContext(TableHoverContext);
   return (
     <tr
       className={cn(
         "border-b last:border-0",
         RULE_BORDER,
         isClickable && "hover:cursor-pointer",
-        (isClickable || boxed) &&
+        (isClickable || (boxed && hoverable)) &&
           bgColorClass(
             boxed ? BackgroundColor.CardElevated : BackgroundColor.CardNested,
             ElementState.Hover

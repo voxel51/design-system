@@ -207,6 +207,19 @@ describe("Table boxed variant", () => {
     expect(screen.getByRole("columnheader")).not.toHaveClass("uppercase");
   });
 
+  it("keeps rows static when not hoverable", () => {
+    render(
+      <Table variant="boxed" hoverable={false}>
+        <TableBody>
+          <TableRow>
+            <TableCell>42</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    );
+    expect(screen.getByRole("row").className).not.toContain("hover:");
+  });
+
   it("right-aligns end cells with tabular figures", () => {
     renderBoxed();
     expect(screen.getByRole("cell")).toHaveClass("text-right", "tabular-nums");
