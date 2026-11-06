@@ -78,7 +78,8 @@ export const SplitButton: FC<SplitButtonProps> = ({
       />
       <Dropdown
         anchor={DropdownAnchor.BottomEnd}
-        className="flex [&>div]:flex"
+        className="flex"
+        triggerClassName="flex"
         disabled={disabled}
         trigger={
           <Button

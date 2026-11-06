@@ -71,6 +71,8 @@ interface DropdownBaseProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
   /** Position of the menu panel relative to the trigger. */
   anchor?: DropdownAnchor;
+  /** `class` overrides for the trigger wrapper. */
+  triggerClassName?: string;
   /**
    * Renders the menu panel in a portal so it escapes overflow-hidden
    * ancestors and stacks above complex layouts (modals, mosaic grids,
@@ -171,6 +173,7 @@ export type DropdownProps = DropdownBaseProps &
  * @param disabled If `true`, the menu cannot be opened.
  * @param open Whether the menu is open, when its owner controls it; requires `onOpenChange`. Ignored while disabled.
  * @param onOpenChange Called with the open state the menu asks for.
+ * @param triggerClassName `class` overrides for the trigger wrapper.
  * @param className `class` overrides for the root wrapper.
  * @param props Additional HTML properties for the root wrapper.
  */
@@ -183,6 +186,7 @@ export const Dropdown: FC<DropdownProps> = ({
   disabled,
   open,
   onOpenChange,
+  triggerClassName,
   className,
   ...props
 }) => {
@@ -228,7 +232,10 @@ export const Dropdown: FC<DropdownProps> = ({
           render={(triggerProps) => (
             <div {...triggerProps} role={undefined} tabIndex={undefined} />
           )}
-          className={isDisabled ? "cursor-not-allowed" : "cursor-pointer"}
+          className={cn(
+            isDisabled ? "cursor-not-allowed" : "cursor-pointer",
+            triggerClassName
+          )}
         >
           {trigger}
         </Menu.Trigger>

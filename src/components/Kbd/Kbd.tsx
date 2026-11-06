@@ -33,7 +33,7 @@ export type KbdProps = HTMLAttributes<HTMLElement>;
 export const Kbd: FC<KbdProps> = ({ className, children, ...props }) => (
   <kbd
     className={cn(
-      "inline-flex min-w-7 shrink-0 items-center justify-center px-1 tabular-nums whitespace-nowrap",
+      "inline-flex min-h-7 min-w-7 shrink-0 items-center justify-center px-1 tabular-nums whitespace-nowrap",
       textStyles(TextVariant.CodePrimary),
       textColorClass(TextColor.Primary),
       bgColorClass(BackgroundColor.CardElevated),

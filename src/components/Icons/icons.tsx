@@ -1238,6 +1238,10 @@ export const KeySquareIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={KeySquareSvg} />
 );
 
+export const KeyboardIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={KeyboardSvg} />
+);
+
 export const KeyboardArrowDownIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={KeyboardArrowDownSvg} />
 );
@@ -1316,10 +1320,6 @@ export const LightbulbIcon: FC<IconProps> = (props) => (
 
 export const LinkIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={LinkSvg} />
-);
-
-export const KeyboardIcon: FC<IconProps> = (props) => (
-  <IconBase {...props} svg={KeyboardSvg} />
 );
 
 export const Link2Icon: FC<IconProps> = (props) => (
