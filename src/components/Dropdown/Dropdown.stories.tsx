@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 
 import {
+  Button,
   Dropdown,
   DropdownTrigger,
   IconName,
@@ -83,4 +84,34 @@ export const BorderlessTrigger: Story = {
       <MenuTextItem>Oldest</MenuTextItem>
     </Dropdown>
   ),
+};
+
+const HeldMenu = () => {
+  const [open, setOpen] = useState(false);
+  const [held, setHeld] = useState(true);
+  return (
+    <div className="flex items-start gap-4">
+      <Dropdown
+        open={open || held}
+        onOpenChange={setOpen}
+        trigger={<DropdownTrigger>Panels</DropdownTrigger>}
+      >
+        <MenuSectionTitle>Curate</MenuSectionTitle>
+        <MenuTextItem>Embeddings</MenuTextItem>
+        <MenuTextItem>Histograms</MenuTextItem>
+      </Dropdown>
+      <Button variant="secondary" onClick={() => setHeld(!held)}>
+        {held ? "Release menu" : "Hold menu open"}
+      </Button>
+    </div>
+  );
+};
+
+/**
+ * Controlled with `open` and `onOpenChange`. While held, the menu stays open
+ * through Escape and outside clicks, as it would for a guided tour pointing
+ * into it; released, the trigger works as usual.
+ */
+export const HeldOpen: Story = {
+  render: () => <HeldMenu />,
 };

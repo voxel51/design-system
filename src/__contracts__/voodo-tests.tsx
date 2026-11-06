@@ -908,6 +908,13 @@ export const Everything = (
     </FormFieldGroup>
 
     {/* Menus and overlays: full anchor sweeps */}
+    <Dropdown
+      open
+      onOpenChange={(open: boolean) => void open}
+      trigger={<Button variant="icon">open</Button>}
+    >
+      <MenuSeparator />
+    </Dropdown>
     {MENU_ANCHORS.map((a) => (
       <Dropdown
         key={a}
