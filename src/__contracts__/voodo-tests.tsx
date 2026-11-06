@@ -915,6 +915,10 @@ export const Everything = (
     >
       <MenuSeparator />
     </Dropdown>
+    {/* @ts-expect-error - open needs onOpenChange, or the menu could never close */}
+    <Dropdown open trigger={<Button variant="icon">open</Button>}>
+      <MenuSeparator />
+    </Dropdown>
     {MENU_ANCHORS.map((a) => (
       <Dropdown
         key={a}

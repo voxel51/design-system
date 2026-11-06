@@ -100,7 +100,14 @@ const HeldMenu = () => {
         <MenuTextItem>Embeddings</MenuTextItem>
         <MenuTextItem>Histograms</MenuTextItem>
       </Dropdown>
-      <Button variant="secondary" onClick={() => setHeld(!held)}>
+      <Button
+        variant="secondary"
+        onClick={() => {
+          // releasing closes the menu, whatever the trigger asked for while held
+          setOpen(false);
+          setHeld(!held);
+        }}
+      >
         {held ? "Release menu" : "Hold menu open"}
       </Button>
     </div>
@@ -109,8 +116,9 @@ const HeldMenu = () => {
 
 /**
  * Controlled with `open` and `onOpenChange`. While held, the menu stays open
- * through Escape and outside clicks, as it would for a guided tour pointing
- * into it; released, the trigger works as usual.
+ * through Escape, item clicks and outside clicks, as it would for a guided
+ * tour pointing into it. Releasing closes it; after that the trigger opens
+ * and closes it as usual.
  */
 export const HeldOpen: Story = {
   render: () => <HeldMenu />,

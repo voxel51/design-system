@@ -60,10 +60,8 @@ const ANCHOR_PLACEMENT: Record<
 const FOCUSABLE =
   'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
-/**
- * Props for {@link Dropdown}.
- */
-export interface DropdownProps extends HTMLAttributes<HTMLDivElement> {
+/** The props every {@link Dropdown} takes, controlled or not. */
+interface DropdownBaseProps extends HTMLAttributes<HTMLDivElement> {
   /**
    * The element that opens the dropdown when clicked.
    * Rendered inside the menu's trigger wrapper — any focusable element works.
@@ -89,19 +87,35 @@ export interface DropdownProps extends HTMLAttributes<HTMLDivElement> {
    * when the `trigger` element has `disabled` set on its props.
    */
   disabled?: boolean;
-  /**
-   * Whether the menu is open, for a menu its owner opens or holds open from
-   * code (a guided tour pointing into it, say). Pair it with `onOpenChange`;
-   * leave both out and the trigger alone opens and closes the menu.
-   */
-  open?: boolean;
-  /**
-   * Called when the menu asks to open or close: a trigger press, an item
-   * click, Escape or a click outside. A controlled menu changes only when
-   * `open` does, so the owner can keep it open through these.
-   */
-  onOpenChange?: (open: boolean) => void;
 }
+
+/**
+ * Props for {@link Dropdown}. `open` comes with `onOpenChange`: a menu given
+ * `open` alone could never close.
+ */
+export type DropdownProps = DropdownBaseProps &
+  (
+    | {
+        /** Uncontrolled: the trigger alone opens and closes the menu. */
+        open?: undefined;
+        /** Called when the menu opens or closes. */
+        onOpenChange?: (open: boolean) => void;
+      }
+    | {
+        /**
+         * Whether the menu is open, for a menu its owner opens or holds open
+         * from code (a guided tour pointing into it, say). `disabled` wins:
+         * a disabled menu stays closed.
+         */
+        open: boolean;
+        /**
+         * Called when the menu asks to open or close: a trigger press, an
+         * item click, Escape or a click outside. A controlled menu changes
+         * only when `open` does, so the owner can keep it open through these.
+         */
+        onOpenChange: (open: boolean) => void;
+      }
+  );
 
 /**
  * A click-triggered menu component. Composes with the Menu primitives:
@@ -155,7 +169,7 @@ export interface DropdownProps extends HTMLAttributes<HTMLDivElement> {
  * @param portal If `true` (the default), renders the panel in a portal above modals.
  * @param zIndex Explicit z-index for the panel; only applied when `portal` is `false`.
  * @param disabled If `true`, the menu cannot be opened.
- * @param open Whether the menu is open, when its owner controls it.
+ * @param open Whether the menu is open, when its owner controls it; requires `onOpenChange`. Ignored while disabled.
  * @param onOpenChange Called with the open state the menu asks for.
  * @param className `class` overrides for the root wrapper.
  * @param props Additional HTML properties for the root wrapper.
@@ -200,7 +214,9 @@ export const Dropdown: FC<DropdownProps> = ({
       <Menu.Root
         modal={false}
         disabled={isDisabled}
-        open={open}
+        open={open === undefined ? undefined : open && !isDisabled}
+        // Only the open state crosses: Base UI's event details stay out of
+        // voodo's public API, so consumers never depend on Base UI types
         onOpenChange={onOpenChange && ((next) => onOpenChange(next))}
       >
         <Menu.Trigger
