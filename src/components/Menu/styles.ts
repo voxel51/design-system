@@ -53,7 +53,7 @@ export const actionMenuPanelStyles = (): string =>
   // list scrolls instead of running off screen.
   cn(
     menuPanelStyles(),
-    "min-w-[226px] max-h-[var(--available-height)] overflow-y-auto"
+    "flex flex-col gap-0.5 min-w-[226px] max-h-[var(--available-height)] overflow-y-auto"
   );
 
 /**
