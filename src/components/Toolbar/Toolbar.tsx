@@ -213,6 +213,11 @@ export const Toolbar = ({
             role="button"
             tabIndex={0}
             aria-label="Drag to reposition toolbar"
+            title={
+              isCollapsed
+                ? "Double-click to expand"
+                : "Drag to move · Double-click to collapse"
+            }
             onMouseDown={handleDragStart}
             onDoubleClick={handleDragHandleDoubleClick}
             onKeyDown={(e) => {

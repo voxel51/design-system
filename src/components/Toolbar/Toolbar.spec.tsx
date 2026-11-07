@@ -109,6 +109,17 @@ describe("Toolbar", () => {
     ).toBeInTheDocument();
   });
 
+  it("hints at dragging and collapsing on the drag handle, then at expanding", () => {
+    renderToolbar();
+    const dragHandle = screen.getByRole("toolbar").firstChild as HTMLElement;
+    expect(dragHandle).toHaveAttribute(
+      "title",
+      "Drag to move · Double-click to collapse"
+    );
+    fireEvent.doubleClick(dragHandle);
+    expect(dragHandle).toHaveAttribute("title", "Double-click to expand");
+  });
+
   it("applies custom className to the container", () => {
     renderToolbar({ className: "my-custom-class" });
     expect(screen.getByRole("toolbar")).toHaveClass("my-custom-class");
