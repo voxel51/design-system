@@ -38,7 +38,7 @@ export interface MenuIconTextItemProps extends HTMLAttributes<HTMLButtonElement>
   destructive?: boolean;
   /**
    * Type style of the primary text.
-   * @default {@link TextVariant.BodyPrimary}
+   * @default {@link TextVariant.BodySecondary}
    */
   textVariant?: TextVariant;
   /**
@@ -57,7 +57,7 @@ export interface MenuIconTextItemProps extends HTMLAttributes<HTMLButtonElement>
  * ```tsx
  * <Dropdown trigger={<DropdownTrigger>Open</DropdownTrigger>}>
  *   <MenuIconTextItem
- *     icon={<ImageSearchIcon size="lg" />}
+ *     icon={<ImageSearchIcon />}
  *     text="Sort by similarity"
  *     subtext="Find visually similar"
  *     onClick={() => {}}
@@ -83,7 +83,7 @@ export const MenuIconTextItem: FC<MenuIconTextItemProps> = ({
   badge,
   disabled,
   destructive,
-  textVariant = TextVariant.BodyPrimary,
+  textVariant = TextVariant.BodySecondary,
   textColor: textColorProp = TextColor.Primary,
   className,
   ...props
@@ -120,7 +120,9 @@ export const MenuIconTextItem: FC<MenuIconTextItemProps> = ({
     >
       <span
         className={cn(
-          "flex size-5 shrink-0 items-center justify-center",
+          // The icon slot fixes the glyph at 16px whatever size the caller
+          // asked for, so every menu reads the same
+          "flex size-5 shrink-0 items-center justify-center [&_svg]:!size-4",
           textColorClass(iconColor)
         )}
       >
