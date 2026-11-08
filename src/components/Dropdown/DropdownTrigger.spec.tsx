@@ -114,4 +114,14 @@ describe("DropdownTrigger", () => {
     expect(screen.getByRole("button")).toHaveClass("w-full");
     expect(screen.getByText("Default schema")).toHaveClass("truncate");
   });
+
+  it("stays a labelled pill, not a circle, when borderless and fullWidth", () => {
+    render(
+      <DropdownTrigger borderless fullWidth>
+        Default schema
+      </DropdownTrigger>
+    );
+
+    expect(screen.getByRole("button")).not.toHaveClass("aspect-square");
+  });
 });

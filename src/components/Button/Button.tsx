@@ -67,6 +67,9 @@ export interface ButtonProps
   hint?: ReactNode;
 }
 
+/** Marks an element child as the button's text label, so the button is not read as icon-only. */
+export const LABEL_ATTR = "data-button-label";
+
 const variantStyles: Record<Variant, string> = {
   [Variant.Primary]: clsx(
     bgColorClass(InteractiveColor.PrimaryDefault),
@@ -258,7 +261,10 @@ export const Button: FC<ButtonProps> = ({
   const hasLabel = childArray.some(
     (child) =>
       (typeof child === "string" && child.trim() !== "") ||
-      typeof child === "number"
+      typeof child === "number" ||
+      // a wrapper that is itself the text label (e.g. a truncating span)
+      (isValidElement<Record<string, unknown>>(child) &&
+        child.props[LABEL_ATTR] !== undefined)
   );
   // With an icon prop set, an element child (e.g. a translation component)
   // is the label, not a second icon, so it keeps the rectangular padding.
@@ -281,6 +287,8 @@ export const Button: FC<ButtonProps> = ({
       ? "transition-[filter]"
       : "transition-colors",
     "hover:cursor-pointer",
+    // no browser focus ring: it shows after a popover hands focus back to its trigger
+    "focus-visible:outline-none",
     "disabled:cursor-not-allowed disabled:pointer-events-none",
     isIconOnly
       ? iconOnlySizeStyles[size]

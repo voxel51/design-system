@@ -7,6 +7,7 @@ import {
 } from "react";
 
 import { Button, type ButtonProps } from "@/components/Button";
+import { LABEL_ATTR } from "@/components/Button/Button";
 import {
   CaretDownIcon,
   ChevronDownStrokeIcon,
@@ -152,7 +153,12 @@ export const DropdownTrigger: FC<DropdownTriggerProps> = ({
         </span>
       )}
       {fullWidth ? (
-        <span className="min-w-0 flex-1 truncate text-left">{children}</span>
+        <span
+          {...{ [LABEL_ATTR]: "" }}
+          className="min-w-0 flex-1 truncate text-left"
+        >
+          {children}
+        </span>
       ) : (
         children
       )}

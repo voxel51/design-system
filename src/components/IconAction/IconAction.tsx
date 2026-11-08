@@ -102,6 +102,8 @@ export const IconAction: FC<IconActionProps> = ({
         className={clsx(
           "inline-flex shrink-0 items-center justify-center transition-colors",
           "hover:cursor-pointer disabled:pointer-events-none disabled:opacity-50",
+          // no browser focus ring (it reappears when a popover returns focus)
+          "focus-visible:outline-none",
           radiusStyles(Radius.Full),
           sizeStyles[size],
           active
