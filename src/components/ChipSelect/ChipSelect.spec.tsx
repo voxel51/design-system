@@ -50,4 +50,20 @@ describe("ChipSelect", () => {
     await userEvent.click(await screen.findByText("Oldest"));
     expect(onChange).toHaveBeenCalledWith("oldest");
   });
+
+  it("closes the menu on a pick, as a single choice", async () => {
+    render(
+      <ChipSelect
+        aria-label="Sort by"
+        value="newest"
+        onChange={() => {}}
+        options={options}
+      />
+    );
+    await userEvent.click(screen.getByRole("button", { name: "Sort by" }));
+    await userEvent.click(await screen.findByText("Oldest"));
+    expect(screen.getByRole("menu", { hidden: true })).toHaveAttribute(
+      "data-closed"
+    );
+  });
 });

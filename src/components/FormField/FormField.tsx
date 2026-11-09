@@ -87,10 +87,7 @@ export const FormField: FC<FormFieldProps> = ({
         {label && (
           <Stack orientation={Orientation.Column} spacing={Spacing.Xs}>
             <Label>
-              <Text
-                color={TextColor.Secondary}
-                variant={TextVariant.BodySecondary}
-              >
+              <Text color={TextColor.Secondary} variant={TextVariant.HeadingSm}>
                 {label}
                 {required && (
                   <Text
@@ -106,7 +103,10 @@ export const FormField: FC<FormFieldProps> = ({
             </Label>
             {description && (
               <Description>
-                <Text color={TextColor.Tertiary} variant={TextVariant.Caption}>
+                <Text
+                  color={TextColor.Secondary}
+                  variant={TextVariant.BodySecondary}
+                >
                   {description}
                 </Text>
               </Description>

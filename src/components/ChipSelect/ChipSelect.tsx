@@ -1,7 +1,11 @@
 import type { JSX } from "react";
 
 import type { ButtonProps } from "@/components/Button";
-import { Dropdown, DropdownTrigger } from "@/components/Dropdown";
+import {
+  Dropdown,
+  DropdownAnchor,
+  DropdownTrigger,
+} from "@/components/Dropdown";
 import { MenuCheckItem } from "@/components/Menu";
 import { Size } from "@/types";
 
@@ -30,7 +34,7 @@ export interface ChipSelectProps<T extends string = string> {
 
 /**
  * A borderless single-choice menu for filter and sort rows: an icon, an optional
- * `prefix: value` and a caret, opening a checklist of options.
+ * `prefix: value` and a caret, opening a checklist of options; a pick closes it.
  *
  * @example
  * ```tsx
@@ -66,7 +70,7 @@ export function ChipSelect<T extends string = string>({
 }: ChipSelectProps<T>): JSX.Element {
   return (
     <Dropdown
-      anchor="bottom start"
+      anchor={DropdownAnchor.BottomStart}
       trigger={
         <DropdownTrigger
           borderless
@@ -84,6 +88,7 @@ export function ChipSelect<T extends string = string>({
       {options.map((o) => (
         <MenuCheckItem
           key={o.id}
+          select
           checked={o.id === value}
           onClick={() => onChange(o.id)}
         >
