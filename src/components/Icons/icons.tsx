@@ -361,6 +361,7 @@ import TargetSvg from "@/img/Target.svg?react";
 import TextSvg from "@/img/Text.svg?react";
 import TextureSvg from "@/img/Texture.svg?react";
 import ThreeSixtySvg from "@/img/ThreeSixty.svg?react";
+import ThumbDownOutlinedSvg from "@/img/ThumbDownOutlined.svg?react";
 import TimelineSvg from "@/img/Timeline.svg?react";
 import TimelineOutlinedSvg from "@/img/TimelineOutlined.svg?react";
 import TimerSvg from "@/img/Timer.svg?react";
@@ -1830,6 +1831,10 @@ export const TextureIcon: FC<IconProps> = (props) => (
 
 export const ThreeSixtyIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ThreeSixtySvg} />
+);
+
+export const ThumbDownOutlinedIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ThumbDownOutlinedSvg} />
 );
 
 export const TimelineIcon: FC<IconProps> = (props) => (
