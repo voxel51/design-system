@@ -45,4 +45,27 @@ export const Default: Story = {
   ),
 };
 
+export const Divided: Story = {
+  render: () => (
+    <div className="w-[480px]">
+      <CollapsibleCard
+        icon={SettingsIcon}
+        title="Agent settings"
+        background="primary"
+        border={false}
+        divided
+      >
+        <RadioGroup
+          value="a"
+          onChange={() => {}}
+          options={[
+            { value: "a", label: "Detection" },
+            { value: "b", label: "Caption" },
+          ]}
+        />
+      </CollapsibleCard>
+    </div>
+  ),
+};
+
 export default meta;

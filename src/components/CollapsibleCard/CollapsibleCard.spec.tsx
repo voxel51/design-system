@@ -51,4 +51,13 @@ describe("CollapsibleCard", () => {
       screen.queryByRole("button", { name: "Select all" })
     ).not.toBeInTheDocument();
   });
+
+  it("rules off the content under the header when divided", () => {
+    render(
+      <CollapsibleCard title="Agent settings" divided>
+        <p>Body</p>
+      </CollapsibleCard>
+    );
+    expect(screen.getByText("Body").parentElement).toHaveClass("border-t");
+  });
 });

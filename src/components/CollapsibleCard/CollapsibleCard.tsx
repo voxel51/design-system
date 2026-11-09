@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import type { HTMLAttributes, ReactNode } from "react";
 
 import { Card, CardBackground } from "@/components/Card";
@@ -7,6 +8,8 @@ import { type IconInput } from "@/components/Icons/Icon";
 import { IconWrapper } from "@/components/Icons/IconWrapper";
 import { Text } from "@/components/Text";
 import {
+  BorderColor,
+  borderColorClass,
   IconColor,
   Size,
   TextColor,
@@ -26,6 +29,12 @@ export interface CollapsibleCardProps
   icon?: IconInput;
   /** Small borderless controls shown in the header while open, left of the chevron. */
   actions?: ReactNode;
+  /** The card's fill. Defaults to the nested card surface. */
+  background?: CardBackground;
+  /** Whether the card has an outline. Defaults to `true`. */
+  border?: boolean;
+  /** A rule between the header and the content, with roomier content. */
+  divided?: boolean;
   /** The section's content, shown while open. */
   children?: ReactNode;
 }
@@ -45,6 +54,9 @@ export interface CollapsibleCardProps
  * @param title The section's name, in the header.
  * @param summary One line after the title, such as the current choice; a cut summary shows in full in a tooltip.
  * @param icon An 18px icon before the title, emphasised while open.
+ * @param background The card's {@link CardBackground}. Defaults to `"secondary"`.
+ * @param border Whether the card has an outline. Defaults to `true`.
+ * @param divided Draws a rule under the header and opens the content up; for a card on a plain surface.
  * @param actions Small borderless controls shown in the header while open; a click on one never folds the card.
  * @param defaultOpen Initial open state when uncontrolled. Defaults to `true`.
  * @param open Controlled open state, with `onOpenChange`.
@@ -57,6 +69,9 @@ export const CollapsibleCard = ({
   summary,
   icon,
   actions,
+  background = CardBackground.Secondary,
+  border = true,
+  divided = false,
   defaultOpen,
   open: controlledOpen,
   onOpenChange,
@@ -72,8 +87,8 @@ export const CollapsibleCard = ({
 
   return (
     <Card
-      background={CardBackground.Secondary}
-      border
+      background={background}
+      border={border}
       className={cn("p-0", className)}
       {...props}
     >
@@ -95,10 +110,7 @@ export const CollapsibleCard = ({
               />
             </span>
           )}
-          <Text
-            variant={TextVariant.HeadingSm}
-            className="shrink-0"
-          >
+          <Text variant={TextVariant.HeadingSm} className="shrink-0">
             {title}
           </Text>
           {summary && (
@@ -131,7 +143,19 @@ export const CollapsibleCard = ({
         />
       </div>
       {open && (
-        <div className="flex flex-col gap-4 px-4 pt-1 pb-4">{children}</div>
+        <div
+          className={cn(
+            "flex flex-col px-4 pb-4",
+            divided
+              ? clsx(
+                  "gap-6 pt-5 border-t",
+                  borderColorClass(BorderColor.Subtle)
+                )
+              : "gap-4 pt-1"
+          )}
+        >
+          {children}
+        </div>
       )}
     </Card>
   );
