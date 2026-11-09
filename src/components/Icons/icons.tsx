@@ -41,6 +41,7 @@ import ArrowUpwardSvg from "@/img/ArrowUpward.svg?react";
 import ArticleOutlinedSvg from "@/img/ArticleOutlined.svg?react";
 import AssignmentSvg from "@/img/Assignment.svg?react";
 import AssignmentOutlinedSvg from "@/img/AssignmentOutlined.svg?react";
+import AttachFileSvg from "@/img/AttachFile.svg?react";
 import AutoAwesomeSvg from "@/img/AutoAwesome.svg?react";
 import AutoAwesomeMosaicOutlinedSvg from "@/img/AutoAwesomeMosaicOutlined.svg?react";
 import AutoLabelSvg from "@/img/AutoLabel.svg?react";
@@ -319,6 +320,7 @@ import ScanEyeSvg from "@/img/ScanEye.svg?react";
 import ScanSearchSvg from "@/img/ScanSearch.svg?react";
 import ScatterPlotSvg from "@/img/ScatterPlot.svg?react";
 import SchoolSvg from "@/img/School.svg?react";
+import ScreenshotMonitorSvg from "@/img/ScreenshotMonitor.svg?react";
 import SearchSvg from "@/img/Search.svg?react";
 import SearchOutlinedSvg from "@/img/SearchOutlined.svg?react";
 import SearchStrokeSvg from "@/img/SearchStroke.svg?react";
@@ -548,6 +550,10 @@ export const AssignmentIcon: FC<IconProps> = (props) => (
 
 export const AssignmentOutlinedIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={AssignmentOutlinedSvg} />
+);
+
+export const AttachFileIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={AttachFileSvg} />
 );
 
 export const AutoAwesomeIcon: FC<IconProps> = (props) => (
@@ -1238,6 +1244,10 @@ export const KeySquareIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={KeySquareSvg} />
 );
 
+export const KeyboardIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={KeyboardSvg} />
+);
+
 export const KeyboardArrowDownIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={KeyboardArrowDownSvg} />
 );
@@ -1316,10 +1326,6 @@ export const LightbulbIcon: FC<IconProps> = (props) => (
 
 export const LinkIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={LinkSvg} />
-);
-
-export const KeyboardIcon: FC<IconProps> = (props) => (
-  <IconBase {...props} svg={KeyboardSvg} />
 );
 
 export const Link2Icon: FC<IconProps> = (props) => (
@@ -1660,6 +1666,10 @@ export const ScatterPlotIcon: FC<IconProps> = (props) => (
 
 export const SchoolIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={SchoolSvg} />
+);
+
+export const ScreenshotMonitorIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ScreenshotMonitorSvg} />
 );
 
 export const SearchIcon: FC<IconProps> = (props) => (
