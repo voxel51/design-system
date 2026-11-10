@@ -29,6 +29,10 @@ export interface ChipSelectProps<T extends string = string> {
   prefix?: string;
   /** The trigger text, when it should differ from the checked option's label (a count, say). */
   label?: string;
+  /** The value is set (not the default): the chip gets a soft filled pill. */
+  active?: boolean;
+  /** Classes for the trigger, such as tighter padding. */
+  className?: string;
   "data-cy"?: string;
 }
 
@@ -56,6 +60,8 @@ export interface ChipSelectProps<T extends string = string> {
  * @param onChange Called with the `id` of the option picked.
  * @param icon Leading icon of the trigger.
  * @param prefix What the value is, shown before it. Below 640px only the value shows and a tooltip names both.
+ * @param active Marks the chip as set.
+ * @param className Classes for the trigger.
  * @param label The trigger text, when it should differ from the checked option's label. Defaults to that label.
  */
 export function ChipSelect<T extends string = string>({
@@ -66,6 +72,8 @@ export function ChipSelect<T extends string = string>({
   prefix,
   label,
   "aria-label": ariaLabel,
+  active,
+  className,
   "data-cy": dataCy,
 }: ChipSelectProps<T>): JSX.Element {
   return (
@@ -78,6 +86,8 @@ export function ChipSelect<T extends string = string>({
           leadingIcon={icon}
           prefix={prefix}
           collapse="auto"
+          active={active}
+          className={className}
           aria-label={ariaLabel}
           data-cy={dataCy}
         >
