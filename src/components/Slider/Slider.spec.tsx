@@ -814,4 +814,31 @@ describe("Slider", () => {
       });
     });
   });
+
+  describe("with marks", () => {
+    it("draws a tick per mark and labels the labelled ones", () => {
+      render(
+        <MultiValueSlider
+          data-testid={testId}
+          bare
+          min={0}
+          max={1}
+          value={[0, 1]}
+          marks={[
+            { value: 0, label: "0" },
+            { value: 0.5 },
+            { value: 1, label: "1" },
+          ]}
+        />
+      );
+      const root = screen.getByTestId(testId);
+      expect(root.querySelectorAll("span.pointer-events-none")).toHaveLength(3);
+      expect(within(root).getByText("1")).toHaveStyle({ left: "100%" });
+      expect(
+        within(root).getByText("0", { selector: ".absolute" })
+      ).toHaveStyle({
+        left: "0%",
+      });
+    });
+  });
 });

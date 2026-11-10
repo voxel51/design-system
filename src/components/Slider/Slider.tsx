@@ -13,6 +13,7 @@ import { FormField } from "@/components/FormField";
 import { Input } from "@/components/Input";
 import { SliderBar } from "@/components/Slider/SliderBar";
 import { SliderLabels } from "@/components/Slider/SliderLabels";
+import { SliderMarks } from "@/components/Slider/SliderMarks";
 import { Stack } from "@/components/Stack";
 import { UnsetHint } from "@/components/UnsetHint";
 import { Orientation, Spacing } from "@/types";
@@ -20,6 +21,14 @@ import { useDebouncedCallback } from "@/util/useDebouncedCallback.ts";
 import { makeRangeValidator } from "@/util/validators";
 
 type ChangeHandler = (value: number | number[]) => void;
+
+/** A tick on a slider's track, with an optional label under it. */
+export interface SliderMark {
+  /** Where the tick sits, in `[min, max]`. */
+  value: number;
+  /** Shown under the tick, e.g. `"0.5"` or `"High"`. */
+  label?: ReactNode;
+}
 
 export interface SliderProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
@@ -32,6 +41,7 @@ export interface SliderProps extends Omit<
   parseInput?: (text: string) => number;
   labeled?: boolean;
   knobLabel?: boolean;
+  marks?: SliderMark[];
   min: number;
   minLabel?: ReactNode;
   max: number;
@@ -104,6 +114,8 @@ const clamp = (value: number, min: number, max: number): number =>
  * @param knobLabel If `true`, displays labels above all slider knobs.
  *  With `labeled`, a knob label near an endpoint is hidden so it can't overlap the endpoint label;
  *  without it, knob labels always show and stay within the track.
+ * @param marks Ticks on the track at these values, each labelled under the track when it has a `label`.
+ *  See {@link SliderMark}.
  * @param max Maximum slider value
  * @param maxLabel Optional label to display for maximum numeric input.
  * @param min Minimum slider value.
@@ -150,6 +162,7 @@ export const BaseSlider: FC<SliderProps> = ({
   parseInput = Number.parseFloat,
   labeled,
   knobLabel,
+  marks,
   max,
   maxLabel,
   min,
@@ -299,7 +312,10 @@ export const BaseSlider: FC<SliderProps> = ({
         value={transientValue}
         onChange={handleChange}
         onChangeCommitted={onChangeCommitted}
+        marks={marks?.map((mark) => mark.value)}
       />
+
+      {marks && <SliderMarks marks={marks} min={min} max={max} />}
 
       {!bare && (
         <div className="flex justify-between items-center">
