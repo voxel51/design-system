@@ -34,6 +34,7 @@ export * from "./ListRow";
 export * from "./LiveToggle";
 export * from "./Loader";
 export * from "./LoadingDots";
+export * from "./MarkdownEditor";
 export * from "./Menu";
 export * from "./MetaList";
 export * from "./Modal";
