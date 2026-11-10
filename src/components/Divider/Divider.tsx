@@ -179,7 +179,7 @@ const Line: FC<LineProps> = ({
       <div
         className={cn(
           // Figma Divider: border/subtle line, border/default dot. Use the
-          // static class rather than a runtime-built `border-[var(...)]`,
+          // static class rather than a runtime-built arbitrary-value border class,
           // which Tailwind's scanner cannot see and the safelist does not
           // cover without a state prefix.
           "border-dotted",

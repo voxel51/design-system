@@ -123,7 +123,7 @@ export namespace TransitionPreset {
 }
 
 /**
- * Returns a Tailwind `duration-[var(...)]` class for the given duration token.
+ * Returns the Tailwind duration utility class for the given duration token.
  *
  * @example
  * ```tsx
@@ -136,7 +136,7 @@ export function transitionDuration(duration: TransitionDuration): string {
 }
 
 /**
- * Returns a Tailwind `ease-[var(...)]` class for the given easing token.
+ * Returns the Tailwind easing utility class for the given easing token.
  *
  * @example
  * ```tsx
@@ -149,7 +149,7 @@ export function transitionEasing(easing: TransitionEasing): string {
 }
 
 /**
- * Returns a Tailwind `transition-[var(...)]` class for the given preset token.
+ * Returns the Tailwind transition utility class for the given preset token.
  * The preset encodes both the property list, duration, and easing in one token.
  *
  * @example
