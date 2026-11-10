@@ -14,6 +14,22 @@ function Row({ width, parts }: { width: number; parts: number[] }) {
   );
 }
 
+function MovingRow({ second }: { second: boolean }) {
+  const { ref, compact } = useCompactRow();
+  return (
+    <>
+      <div ref={second ? undefined : ref} data-width={150}>
+        <span data-part={100} />
+        <span data-part={100} />
+      </div>
+      <div ref={second ? ref : undefined} data-width={180}>
+        <span data-part={100} />
+      </div>
+      <output>{String(compact)}</output>
+    </>
+  );
+}
+
 describe("useCompactRow", () => {
   beforeEach(() => {
     globalThis.ResizeObserver = jest.fn().mockImplementation(() => ({
@@ -56,5 +72,13 @@ describe("useCompactRow", () => {
     render(<Row width={150} parts={[100, 100]} />);
     measure();
     expect(screen.getByRole("status")).toHaveTextContent("true");
+  });
+
+  it("measures afresh when the ref moves to another row", () => {
+    const { rerender } = render(<MovingRow second={false} />);
+    measure();
+    expect(screen.getByRole("status")).toHaveTextContent("true");
+    rerender(<MovingRow second />);
+    expect(screen.getByRole("status")).toHaveTextContent("false");
   });
 });
