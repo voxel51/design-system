@@ -5,6 +5,8 @@ import type {
 } from "react";
 import { forwardRef } from "react";
 
+import { Avatar } from "@/components/Avatar";
+import { type IconInput, IconWrapper } from "@/components/Icons";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
 import {
@@ -27,6 +29,8 @@ export interface ListRowProps extends Omit<
   subtitle?: ReactNode;
   /** A marker before the text, aligned with the title, such as a `StatusDot`. */
   leading?: ReactNode;
+  /** A glyph in a round badge before the text, tinted brand while the row is hovered. */
+  icon?: IconInput;
   /** Controls at the row's end, outside the link (an unpin `IconAction`, say). */
   actions?: ReactNode;
   /** Draws the row in its hover surface, for a keyboard-highlighted row in a list. */
@@ -48,11 +52,14 @@ export interface ListRowProps extends Omit<
  *   title="Similarity index refresh"
  *   subtitle="Pest Detection 1K · 2 minutes ago"
  * />
+ * <ListRow icon={WandIcon} title="Auto-label" subtitle="Label samples with a model" onClick={open} />
  * ```
  *
  * @param title The row's name, on one line; a cut title shows in full in a tooltip.
  * @param subtitle A second line under the title, in secondary text.
  * @param leading A marker before the text, aligned with the title (a `StatusDot`, say).
+ * @param icon A glyph in a round badge before the text, tinted brand while
+ *  the row is hovered.
  * @param actions Controls at the row's end, kept outside the link or button.
  * @param active Draws the row in its hover surface (a keyboard-highlighted row).
  * @param disabled Dims the row and blocks its click; actions stay usable.
@@ -66,6 +73,7 @@ export const ListRow = forwardRef<HTMLAnchorElement, ListRowProps>(
       title,
       subtitle,
       leading,
+      icon,
       actions,
       active,
       disabled,
@@ -77,6 +85,15 @@ export const ListRow = forwardRef<HTMLAnchorElement, ListRowProps>(
   ) => {
     const body = (
       <>
+        {icon && (
+          <Avatar
+            name=""
+            aria-hidden
+            size="lg"
+            icon={<IconWrapper content={icon} size={16} />}
+            className="self-center group-hover:bg-brand-primary/10 group-hover:text-content-icon-brand"
+          />
+        )}
         {leading && (
           <span className="flex h-5 shrink-0 items-center">{leading}</span>
         )}
@@ -108,7 +125,7 @@ export const ListRow = forwardRef<HTMLAnchorElement, ListRowProps>(
     return (
       <div
         className={cn(
-          "flex items-center transition-colors",
+          "group flex items-center transition-colors",
           radiusStyles(Radius.Sm),
           bgColorClass(
             BackgroundColor.Card,

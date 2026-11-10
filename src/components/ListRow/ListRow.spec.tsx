@@ -57,4 +57,14 @@ describe("ListRow", () => {
     const { container } = render(<ListRow title="Highlighted" active />);
     expect(container.firstChild).toHaveClass("bg-content-bg-card");
   });
+
+  it("draws an icon badge that tints on row hover", () => {
+    const Glyph = () => <svg data-testid="glyph" />;
+    const { container } = render(<ListRow title="Skill" icon={Glyph} />);
+    expect(screen.getByTestId("glyph")).toBeInTheDocument();
+    expect(container.firstChild).toHaveClass("group");
+    expect(screen.getByTestId("glyph").closest("[aria-hidden]")).toHaveClass(
+      "group-hover:text-content-icon-brand"
+    );
+  });
 });
