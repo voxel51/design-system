@@ -78,7 +78,7 @@ export const CollapsibleCard = ({
   className,
   children,
   ...props
-}: CollapsibleCardProps) => {
+}: CollapsibleCardProps): ReactNode => {
   const { open, toggle } = useDisclosure({
     defaultOpen,
     open: controlledOpen,
