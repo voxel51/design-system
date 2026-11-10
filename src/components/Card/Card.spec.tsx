@@ -9,4 +9,11 @@ describe("Card", () => {
     render(<Card>{CONTENT}</Card>);
     expect(screen.getByText(CONTENT)).toBeInTheDocument();
   });
+
+  it("draws a subtle border with `border` and keeps it off the DOM", () => {
+    render(<Card border>{CONTENT}</Card>);
+    const card = screen.getByText(CONTENT);
+    expect(card).toHaveClass("border-1");
+    expect(card).not.toHaveAttribute("border");
+  });
 });

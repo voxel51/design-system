@@ -55,4 +55,36 @@ export const Default: Story = {
   ),
 };
 
+export const Boxed: Story = {
+  render: () => (
+    <div className="p-6">
+      <Table variant="boxed">
+        <TableHeader>
+          <TableRow>
+            <TableHead onSort={() => undefined}>Class</TableHead>
+            <TableHead align="end" sort="desc" onSort={() => undefined}>
+              Support
+            </TableHead>
+            <TableHead align="end" onSort={() => undefined}>
+              Precision
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell>person</TableCell>
+            <TableCell align="end">1,204</TableCell>
+            <TableCell align="end">0.736</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>car</TableCell>
+            <TableCell align="end">318</TableCell>
+            <TableCell align="end">0.612</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </div>
+  ),
+};
+
 export default meta;

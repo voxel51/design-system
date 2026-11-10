@@ -178,3 +178,95 @@ describe("Table cell attributes", () => {
     expect(screen.getByText("Queue")).toHaveAttribute("scope", "col");
   });
 });
+
+describe("Table boxed variant", () => {
+  const renderBoxed = (onSort?: () => void) =>
+    render(
+      <Table variant="boxed">
+        <TableHeader>
+          <TableRow>
+            <TableHead align="end" sort="desc" onSort={onSort}>
+              Support
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell align="end">42</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    );
+
+  it("tints the header and tightens cells", () => {
+    renderBoxed();
+    expect(screen.getByRole("columnheader").closest("thead")).toHaveClass(
+      bgColorClass(BackgroundColor.CardElevated)
+    );
+    expect(screen.getByRole("cell")).toHaveClass("px-3", "py-2");
+    expect(screen.getByRole("columnheader")).not.toHaveClass("uppercase");
+  });
+
+  it("highlights only clickable rows of a boxed table", () => {
+    render(
+      <Table variant="boxed">
+        <TableBody>
+          <TableRow>
+            <TableCell>static</TableCell>
+          </TableRow>
+          <TableRow onClick={() => {}}>
+            <TableCell>clickable</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    );
+    const [plain, clickable] = screen.getAllByRole("row");
+    expect(plain.className).not.toContain("hover:");
+    expect(clickable.className).toContain("hover:");
+  });
+
+  it("right-aligns end cells with tabular figures", () => {
+    renderBoxed();
+    expect(screen.getByRole("cell")).toHaveClass("text-right", "tabular-nums");
+  });
+
+  it("marks the sorted header and sorts on click", async () => {
+    const onSort = jest.fn();
+    renderBoxed(onSort);
+    const header = screen.getByRole("columnheader");
+    expect(header).toHaveAttribute("aria-sort", "descending");
+    expect(header).toHaveClass(textColorClass(TextColor.Primary));
+    await userEvent.click(screen.getByRole("button", { name: "Support" }));
+    expect(onSort).toHaveBeenCalledTimes(1);
+  });
+
+  it("sorts from the keyboard, whatever onClick the caller passes", async () => {
+    const onSort = jest.fn();
+    const onClick = jest.fn();
+    render(
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead onSort={onSort} onClick={onClick}>
+              Name
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+      </Table>
+    );
+    expect(screen.getByRole("columnheader")).toHaveAttribute(
+      "aria-sort",
+      "none"
+    );
+    await userEvent.tab();
+    expect(screen.getByRole("button", { name: "Name" })).toHaveFocus();
+    await userEvent.keyboard("{Enter}");
+    expect(onSort).toHaveBeenCalledTimes(1);
+    expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("renders no sort button without onSort", () => {
+    renderBoxed();
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+  });
+});

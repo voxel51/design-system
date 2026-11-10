@@ -53,7 +53,8 @@ const bgColorMap: Record<CardBackground, Color> = {
  * ```
  *
  * @param background The background color variant. Defaults to `"primary"`.
- * @param border Whether to render a border around the card.
+ * @param border Draws a 1px subtle border, keeping the shadow; for cards
+ *  that sit on a surface of a similar tone (list cards in a panel).
  * @param className Additional CSS class names to apply to the card.
  * @param compact When true, reduces internal padding.
  * @param shadow The shadow depth applied to the card. Defaults to `"none"`.
@@ -66,6 +67,7 @@ export const Card: FC<CardProps> = ({
   className,
   compact,
   background = CardBackground.Primary,
+  border,
   outlined,
   // Figma Card: bg/card, radius 8, 20px padding, no shadow or edge
   shadow = Shadow.None,
@@ -78,6 +80,8 @@ export const Card: FC<CardProps> = ({
       className={cn(
         outlined ? "border-1" : shadowStyles(shadow),
         outlined && borderColorClass(BorderColor.Default),
+        border && !outlined && "border-1",
+        border && !outlined && borderColorClass(BorderColor.Subtle),
         bgColorClass(backgroundColor),
         compact ? "p-2.5" : "p-5",
         radiusStyles(Radius.Lg),

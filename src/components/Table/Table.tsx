@@ -1,16 +1,21 @@
-import type {
-  FC,
-  HTMLAttributes,
-  TdHTMLAttributes,
-  ThHTMLAttributes,
+import {
+  createContext,
+  type FC,
+  type HTMLAttributes,
+  type TdHTMLAttributes,
+  type ThHTMLAttributes,
+  useContext,
 } from "react";
 
+import { ArrowUpDownIcon } from "@/components/Icons";
 import radiusStyles from "@/styles/radius";
 import { RULE_BORDER } from "@/styles/rule";
 import { textStyles } from "@/styles/text";
 import {
   BackgroundColor,
   bgColorClass,
+  BorderColor,
+  borderColorClass,
   ElementState,
   Radius,
   TextColor,
@@ -18,6 +23,40 @@ import {
   TextVariant,
 } from "@/types";
 import { cn } from "@/util/classes";
+
+/** `"boxed"`: a bordered card with a tinted, sentence-case header row and tighter cells. */
+export const TableVariant = {
+  Default: "default",
+  Boxed: "boxed",
+} as const;
+export type TableVariant =
+  `${(typeof TableVariant)[keyof typeof TableVariant]}`;
+
+/** Horizontal alignment of a cell; `"end"` also uses tabular figures, for numbers. */
+export const TableAlign = {
+  Start: "start",
+  End: "end",
+} as const;
+export type TableAlign = `${(typeof TableAlign)[keyof typeof TableAlign]}`;
+
+/** Sort state of a sortable header cell. */
+export const TableSort = {
+  Asc: "asc",
+  Desc: "desc",
+  None: "none",
+} as const;
+export type TableSort = `${(typeof TableSort)[keyof typeof TableSort]}`;
+
+const TableVariantContext = createContext<TableVariant>(TableVariant.Default);
+
+const alignClass = (align?: TableAlign): string =>
+  align === TableAlign.End ? "text-right tabular-nums" : "text-left";
+
+const ARIA_SORT = {
+  [TableSort.Asc]: "ascending",
+  [TableSort.Desc]: "descending",
+  [TableSort.None]: "none",
+} as const;
 
 /**
  * A styled data table. It scrolls sideways inside its own box when the
@@ -45,28 +84,52 @@ import { cn } from "@/util/classes";
  * </Table>
  * ```
  *
+ * @param variant `"default"` or `"boxed"`. `"boxed"` draws the table as a bordered
+ *  card with a tinted header row in sentence case and tighter cells. See {@link TableVariant}.
  * @param className Additional CSS class names to apply to the table.
  * @param wrapperClassName Additional CSS class names to apply to the scroll box around the table.
  * @param children The table sections.
  * @param props Additional HTML properties to apply to the table.
  */
 export const Table: FC<
-  HTMLAttributes<HTMLTableElement> & { wrapperClassName?: string }
-> = ({ children, className, wrapperClassName, ...props }) => {
+  HTMLAttributes<HTMLTableElement> & {
+    wrapperClassName?: string;
+    variant?: TableVariant;
+  }
+> = ({
+  children,
+  className,
+  wrapperClassName,
+  variant = TableVariant.Default,
+  ...props
+}) => {
+  const boxed = variant === TableVariant.Boxed;
   return (
-    <div className={cn("w-full overflow-x-auto", wrapperClassName)}>
-      <table
+    <TableVariantContext.Provider value={variant}>
+      <div
         className={cn(
-          "w-full border-collapse",
-          bgColorClass(BackgroundColor.Card),
-          radiusStyles(Radius.Md),
-          className
+          "w-full overflow-x-auto",
+          boxed && "border-1",
+          boxed && borderColorClass(BorderColor.Subtle),
+          boxed && radiusStyles(Radius.Md),
+          wrapperClassName
         )}
-        {...props}
       >
-        {children}
-      </table>
-    </div>
+        <table
+          className={cn(
+            "w-full border-collapse",
+            bgColorClass(
+              boxed ? BackgroundColor.CardNested : BackgroundColor.Card
+            ),
+            !boxed && radiusStyles(Radius.Md),
+            className
+          )}
+          {...props}
+        >
+          {children}
+        </table>
+      </div>
+    </TableVariantContext.Provider>
   );
 };
 
@@ -87,6 +150,7 @@ export const TableRow: FC<HTMLAttributes<HTMLTableRowElement>> = ({
   ...props
 }) => {
   const isClickable = typeof props.onClick === "function";
+  const boxed = useContext(TableVariantContext) === TableVariant.Boxed;
   return (
     <tr
       className={cn(
@@ -94,7 +158,10 @@ export const TableRow: FC<HTMLAttributes<HTMLTableRowElement>> = ({
         RULE_BORDER,
         isClickable && "hover:cursor-pointer",
         isClickable &&
-          bgColorClass(BackgroundColor.CardNested, ElementState.Hover),
+          bgColorClass(
+            boxed ? BackgroundColor.CardElevated : BackgroundColor.CardNested,
+            ElementState.Hover
+          ),
         className
       )}
       {...props}
@@ -121,8 +188,17 @@ export const TableHeader: FC<HTMLAttributes<HTMLTableSectionElement>> = ({
   className,
   ...props
 }) => {
+  const boxed = useContext(TableVariantContext) === TableVariant.Boxed;
   return (
-    <thead className={cn("border-b", RULE_BORDER, className)} {...props}>
+    <thead
+      className={cn(
+        "border-b",
+        RULE_BORDER,
+        boxed && bgColorClass(BackgroundColor.CardElevated),
+        className
+      )}
+      {...props}
+    >
       {children}
     </thead>
   );
@@ -155,17 +231,21 @@ export const TableBody: FC<HTMLAttributes<HTMLTableSectionElement>> = ({
  * @example
  * ```tsx
  * <TableCell colSpan={2}>{run.name}</TableCell>
+ * <TableCell align="end">{run.count}</TableCell>
  * ```
+ *
+ * @param align `"start"` (default) or `"end"`; `"end"` right-aligns with tabular figures. See {@link TableAlign}.
  */
-export const TableCell: FC<TdHTMLAttributes<HTMLTableCellElement>> = ({
-  children,
-  className,
-  ...props
-}) => {
+export const TableCell: FC<
+  Omit<TdHTMLAttributes<HTMLTableCellElement>, "align"> & { align?: TableAlign }
+> = ({ children, className, align, ...props }) => {
+  const boxed = useContext(TableVariantContext) === TableVariant.Boxed;
   return (
     <td
       className={cn(
-        "px-4 py-3 text-left font-normal",
+        boxed ? "px-3 py-2" : "px-4 py-3",
+        alignClass(align),
+        "font-normal",
         textColorClass(TextColor.Primary),
         textStyles(TextVariant.BodySecondary),
         className
@@ -178,29 +258,65 @@ export const TableCell: FC<TdHTMLAttributes<HTMLTableCellElement>> = ({
 };
 
 /**
- * A header cell (`th`): an uppercase label in the tertiary text color.
+ * A header cell (`th`): an uppercase label in the tertiary text color, or in a
+ * `"boxed"` table a sentence-case caption in the secondary color. With
+ * `onSort` its label becomes a sort button with an up/down icon, in the
+ * primary color while it is the active sort.
  *
  * @example
  * ```tsx
  * <TableHead scope="col">Status</TableHead>
+ * <TableHead align="end" sort="desc" onSort={() => toggle("support")}>
+ *   Support
+ * </TableHead>
  * ```
+ *
+ * @param align `"start"` (default) or `"end"`. See {@link TableAlign}.
+ * @param sort The column's sort state; `"asc"` and `"desc"` mark it active. See {@link TableSort}.
+ * @param onSort Makes the header's label a sort button, called when it is pressed.
  */
-export const TableHead: FC<ThHTMLAttributes<HTMLTableCellElement>> = ({
-  children,
-  className,
-  ...props
-}) => {
+export const TableHead: FC<
+  Omit<ThHTMLAttributes<HTMLTableCellElement>, "align"> & {
+    align?: TableAlign;
+    sort?: TableSort;
+    onSort?: () => void;
+  }
+> = ({ children, className, align, sort, onSort, ...props }) => {
+  const boxed = useContext(TableVariantContext) === TableVariant.Boxed;
+  const sorted = sort === TableSort.Asc || sort === TableSort.Desc;
   return (
     <th
       className={cn(
-        "px-4 py-2.5 text-left",
-        textColorClass(TextColor.Tertiary),
-        textStyles(TextVariant.Label),
+        boxed ? "px-3 py-2 font-normal" : "px-4 py-2.5",
+        alignClass(align),
+        textStyles(boxed ? TextVariant.Caption : TextVariant.Label),
+        textColorClass(
+          sorted
+            ? TextColor.Primary
+            : boxed
+              ? TextColor.Secondary
+              : TextColor.Tertiary
+        ),
         className
       )}
+      aria-sort={sort || onSort ? ARIA_SORT[sort ?? TableSort.None] : undefined}
       {...props}
     >
-      {children}
+      {onSort ? (
+        <button
+          type="button"
+          className={cn(
+            "inline-flex cursor-pointer select-none items-center gap-1",
+            align === TableAlign.End && "w-full justify-end"
+          )}
+          onClick={onSort}
+        >
+          {children}
+          <ArrowUpDownIcon aria-hidden size={12} className="opacity-60" />
+        </button>
+      ) : (
+        children
+      )}
     </th>
   );
 };
