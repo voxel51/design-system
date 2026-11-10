@@ -212,7 +212,7 @@ export const Dropdown: FC<DropdownProps> = ({
   return (
     <div
       ref={root}
-      className={cn("relative inline-block", className)}
+      className={cn("relative inline-block max-w-full", className)}
       {...props}
     >
       <Menu.Root
