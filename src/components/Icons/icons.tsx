@@ -13,7 +13,6 @@ import AddSvg from "@/img/Add.svg?react";
 import AddBoxSvg from "@/img/AddBox.svg?react";
 import AddCircleOutlineSvg from "@/img/AddCircleOutline.svg?react";
 import AddLinkSvg from "@/img/AddLink.svg?react";
-import AgentSvg from "@/img/Agent.svg?react";
 import AlignLeftSvg from "@/img/AlignLeft.svg?react";
 import AltRouteSvg from "@/img/AltRoute.svg?react";
 import AnnotateSvg from "@/img/Annotate.svg?react";
@@ -107,7 +106,6 @@ import CloudCogSvg from "@/img/CloudCog.svg?react";
 import CloudDownloadSvg from "@/img/CloudDownload.svg?react";
 import CloudOutlinedSvg from "@/img/CloudOutlined.svg?react";
 import CloudUploadSvg from "@/img/CloudUpload.svg?react";
-import CloudUploadLucideSvg from "@/img/CloudUploadLucide.svg?react";
 import CodeSvg from "@/img/Code.svg?react";
 import CodeOutlinedSvg from "@/img/CodeOutlined.svg?react";
 import CogSvg from "@/img/Cog.svg?react";
@@ -203,7 +201,6 @@ import HubOutlinedSvg from "@/img/HubOutlined.svg?react";
 import IdCardSvg from "@/img/IdCard.svg?react";
 import ImageSvg from "@/img/Image.svg?react";
 import ImageAspectRatioSvg from "@/img/ImageAspectRatio.svg?react";
-import ImagePlusSvg from "@/img/ImagePlus.svg?react";
 import ImageSearchSvg from "@/img/ImageSearch.svg?react";
 import ImagesSvg from "@/img/Images.svg?react";
 import InfinitySvg from "@/img/Infinity.svg?react";
@@ -371,7 +368,8 @@ import TextSvg from "@/img/Text.svg?react";
 import TextSelectSvg from "@/img/TextSelect.svg?react";
 import TextureSvg from "@/img/Texture.svg?react";
 import ThreeSixtySvg from "@/img/ThreeSixty.svg?react";
-import ThumbDownOutlinedSvg from "@/img/ThumbDownOutlined.svg?react";
+import ThumbsDownSvg from "@/img/ThumbsDown.svg?react";
+import ThumbsUpSvg from "@/img/ThumbsUp.svg?react";
 import TimelineSvg from "@/img/Timeline.svg?react";
 import TimelineOutlinedSvg from "@/img/TimelineOutlined.svg?react";
 import TimerSvg from "@/img/Timer.svg?react";
@@ -419,10 +417,6 @@ import ZoomInSvg from "@/img/ZoomIn.svg?react";
 import ZoomOutSvg from "@/img/ZoomOut.svg?react";
 
 import { IconBase, type IconProps } from "./IconBase";
-
-export const AgentIcon: FC<IconProps> = (props) => (
-  <IconBase {...props} svg={AgentSvg} />
-);
 
 export const AIIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={AISvg} />
@@ -824,10 +818,6 @@ export const CloudOutlinedIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={CloudOutlinedSvg} />
 );
 
-export const CloudUploadLucideIcon: FC<IconProps> = (props) => (
-  <IconBase {...props} svg={CloudUploadLucideSvg} />
-);
-
 export const CloudUploadIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={CloudUploadSvg} />
 );
@@ -1210,10 +1200,6 @@ export const ImageIcon: FC<IconProps> = (props) => (
 
 export const ImageAspectRatioIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ImageAspectRatioSvg} />
-);
-
-export const ImagePlusIcon: FC<IconProps> = (props) => (
-  <IconBase {...props} svg={ImagePlusSvg} />
 );
 
 export const ImageSearchIcon: FC<IconProps> = (props) => (
@@ -1884,8 +1870,12 @@ export const ThreeSixtyIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={ThreeSixtySvg} />
 );
 
-export const ThumbDownOutlinedIcon: FC<IconProps> = (props) => (
-  <IconBase {...props} svg={ThumbDownOutlinedSvg} />
+export const ThumbsDownIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ThumbsDownSvg} />
+);
+
+export const ThumbsUpIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={ThumbsUpSvg} />
 );
 
 export const TimelineIcon: FC<IconProps> = (props) => (
