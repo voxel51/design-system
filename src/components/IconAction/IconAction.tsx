@@ -5,6 +5,7 @@ import type { ButtonHTMLAttributes, FC, ReactNode } from "react";
 import { type IconInput, IconWrapper } from "@/components/Icons";
 import { MenuIconTextItem } from "@/components/Menu/MenuIconTextItem";
 import { ActionTooltip } from "@/components/Tooltip/ActionTooltip";
+import { FOCUS_RING } from "@/styles/focus";
 import radiusStyles from "@/styles/radius";
 import {
   BackgroundColor,
@@ -102,6 +103,7 @@ export const IconAction: FC<IconActionProps> = ({
         className={clsx(
           "inline-flex shrink-0 items-center justify-center transition-colors",
           "hover:cursor-pointer disabled:pointer-events-none disabled:opacity-50",
+          FOCUS_RING,
           radiusStyles(Radius.Full),
           sizeStyles[size],
           active

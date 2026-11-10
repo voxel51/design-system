@@ -88,7 +88,7 @@ export const SplitButton: FC<SplitButtonProps> = ({
             disabled={disabled}
             aria-label={menuLabel}
             leadingIcon={ChevronDownStrokeIcon}
-            className="h-full rounded-l-none"
+            className="h-full rounded-l-none py-0"
           />
         }
       >

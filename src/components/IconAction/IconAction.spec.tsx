@@ -22,6 +22,7 @@ describe("IconAction", () => {
     expect(button.querySelector("svg")).toBeInTheDocument();
     fireEvent.click(button);
     expect(onClick).toHaveBeenCalledTimes(1);
+    expect(button).toHaveClass("focus-visible:outline-content-focus-ring");
   });
 
   it("sizes by token", () => {
