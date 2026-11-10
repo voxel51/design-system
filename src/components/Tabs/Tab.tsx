@@ -98,7 +98,9 @@ export const Tab = forwardRef<HTMLElement, TabProps>(
       size === "sm" ? "px-2" : "px-3",
       "cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
       "focus-visible:outline-none",
-      TEXT_STYLES[size === "sm" ? TextVariant.HeadingSm : TextVariant.HeadingMd],
+      TEXT_STYLES[
+        size === "sm" ? TextVariant.HeadingSm : TextVariant.HeadingMd
+      ],
       transitionPreset(TransitionPreset.Colors),
       active
         ? textColorClass(TextColor.Primary)
