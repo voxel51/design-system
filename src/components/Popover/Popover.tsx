@@ -20,6 +20,7 @@ import {
   type HTMLAttributes,
   type ReactElement,
   type ReactNode,
+  useState,
 } from "react";
 
 import { ZIndex, zIndexStyles } from "@/types";
@@ -135,9 +136,10 @@ export interface PopoverProps extends Omit<
    */
   fitViewport?: boolean;
   /**
-   * Moves focus into the panel when it opens and back to the trigger when
-   * it closes. Defaults to `true`; turn it off for a panel that must not take
-   * the keyboard, such as one that opens on its own.
+   * Moves focus into the panel when it opens and back to the trigger when it
+   * closes (without a focus ring after a pointer open). Defaults to `true`; turn it
+   * off for a panel that must not take the keyboard, such as one that opens
+   * on its own.
    * @default true
    */
   focusOnOpen?: boolean;
@@ -216,11 +218,26 @@ export const Popover: FC<PopoverProps> = ({
     ? !!trigger.props.disabled
     : false;
   const isDisabled = disabled || triggerDisabled;
+  const [pointerOpened, setPointerOpened] = useState(false);
+  // Focus still returns to the trigger after a pointer open, but from nowhere:
+  // a focused field would otherwise hand :focus-visible (the ring) on to it
+  const closePanel = useCallback((): void => {
+    if (pointerOpened && document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+    setOpen(false);
+  }, [pointerOpened, setOpen]);
+  const close = closePanel;
 
   const { refs, floatingStyles, context } = useFloating({
     placement: anchor as Placement,
     open,
-    onOpenChange: setOpen,
+    onOpenChange: (next, event) => {
+      if (next) {
+        setPointerOpened(event instanceof MouseEvent && event.detail > 0);
+        setOpen(true);
+      } else closePanel();
+    },
     middleware: [
       offset(4),
       flip(),
@@ -268,8 +285,6 @@ export const Popover: FC<PopoverProps> = ({
     zIndex ?? (portal ? ZIndex.AboveModal : ZIndex.High)
   );
 
-  const close = useCallback((): void => setOpen(false), [setOpen]);
-
   const panel = open ? (
     <FloatingFocusManager
       context={context}
@@ -296,6 +311,7 @@ export const Popover: FC<PopoverProps> = ({
       className={cn(
         // A width-matched panel hangs from a trigger that spans its container
         matchTriggerWidth ? "relative block w-full" : "relative inline-block",
+        "max-w-full",
         className
       )}
       {...props}
@@ -303,7 +319,7 @@ export const Popover: FC<PopoverProps> = ({
       <div
         ref={refs.setReference}
         className={cn(
-          matchTriggerWidth ? "block w-full" : "inline-block",
+          matchTriggerWidth ? "block w-full" : "inline-block max-w-full",
           !controlled && (isDisabled ? "cursor-not-allowed" : "cursor-pointer")
         )}
         {...getReferenceProps()}

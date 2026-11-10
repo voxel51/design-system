@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { DropdownTrigger } from "@/components/Dropdown";
@@ -12,6 +12,19 @@ describe("Popover", () => {
   it("should render the trigger", () => {
     render(<Popover trigger={trigger}>{null}</Popover>);
     expect(screen.getByText("Open settings")).toBeInTheDocument();
+  });
+
+  it("caps its wrappers at the container so a fullWidth trigger truncates", () => {
+    render(
+      <Popover
+        trigger={<DropdownTrigger fullWidth>A long panel name</DropdownTrigger>}
+      >
+        Panel
+      </Popover>
+    );
+    const reference = screen.getByRole("button").parentElement!;
+    expect(reference).toHaveClass("max-w-full");
+    expect(reference.parentElement).toHaveClass("max-w-full");
   });
 
   it("should not show the panel before the trigger is clicked", () => {
@@ -234,6 +247,32 @@ describe("Popover", () => {
     );
     await user.click(screen.getByText("Open settings"));
     expect(screen.getByLabelText("Quiet")).not.toHaveFocus();
+  });
+
+  it("returns focus to the trigger, blurring the panel first after a pointer open", async () => {
+    const user = userEvent.setup();
+    render(
+      <Popover trigger={trigger}>
+        <input aria-label="Field" />
+      </Popover>
+    );
+    const button = screen.getByRole("button", { name: "Open settings" });
+
+    button.focus();
+    await user.keyboard("{Enter}");
+    await waitFor(() => expect(screen.getByLabelText("Field")).toHaveFocus());
+    await user.keyboard("{Escape}");
+    await waitFor(() => expect(button).toHaveFocus());
+
+    await user.click(button);
+    await waitFor(() => expect(screen.getByLabelText("Field")).toHaveFocus());
+    const field = screen.getByLabelText("Field");
+    const blurred = jest.fn();
+    field.addEventListener("blur", blurred);
+    await user.keyboard("{Escape}");
+    expect(screen.queryByLabelText("Field")).not.toBeInTheDocument();
+    expect(blurred).toHaveBeenCalled();
+    await waitFor(() => expect(button).toHaveFocus());
   });
 
   it("should accept every anchor", () => {
