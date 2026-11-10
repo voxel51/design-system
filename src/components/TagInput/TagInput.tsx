@@ -4,6 +4,7 @@ import {
   type KeyboardEvent,
   useMemo,
   useRef,
+  useState,
 } from "react";
 
 import { Combobox } from "@/components/Combobox";
@@ -40,6 +41,8 @@ export interface TagInputProps extends Omit<
   /** Shown when there are no tags and no draft text. */
   placeholder?: string;
   disabled?: boolean;
+  /** The most tags it takes: once reached the text field hides (after it loses focus), and the chips stay removable. */
+  maxTags?: number;
 }
 
 /**
@@ -73,6 +76,7 @@ export interface TagInputProps extends Omit<
  * @param loading Show a spinner in place of the suggestions.
  * @param placeholder Shown when the field is empty.
  * @param disabled If `true`, tags cannot be added or removed.
+ * @param maxTags The most tags it takes; at the cap the text field hides, once it loses focus, until a chip is removed.
  * @param className `class` overrides for the frame.
  * @param props Additional HTML properties for the frame; `aria-label` names the text field.
  */
@@ -85,6 +89,7 @@ export const TagInput: FC<TagInputProps> = ({
   loading = false,
   placeholder,
   disabled = false,
+  maxTags,
   className,
   "aria-label": ariaLabel,
   ...props
@@ -99,9 +104,12 @@ export const TagInput: FC<TagInputProps> = ({
       .map((s) => ({ id: s, label: s }));
   }, [inputValue, suggestions, value]);
 
+  const full = maxTags !== undefined && value.length >= maxTags;
+  const [typing, setTyping] = useState(false);
+
   const commit = (raw: string): void => {
     const tag = raw.trim();
-    if (tag && !value.includes(tag)) onChange([...value, tag]);
+    if (tag && !full && !value.includes(tag)) onChange([...value, tag]);
     onInputChange("");
   };
 
@@ -139,8 +147,9 @@ export const TagInput: FC<TagInputProps> = ({
         <span
           key={tag}
           className={cn(
-            "inline-flex max-w-40 items-center gap-1 rounded-full py-0.5 pr-1 pl-2.5 text-body-secondary",
+            "inline-flex max-w-40 items-center gap-1 rounded-full border py-0.5 pr-1 pl-2.5 text-body-secondary",
             bgColorClass(BackgroundColor.CardElevated),
+            borderColorClass(BorderColor.Default),
             textColorClass(TextColor.Primary)
           )}
         >
@@ -161,37 +170,44 @@ export const TagInput: FC<TagInputProps> = ({
           </button>
         </span>
       ))}
-      <Combobox
-        className="min-w-20 flex-1"
-        borderless
-        allowFreeText
-        portal
-        anchor={frame}
-        disabled={disabled}
-        loading={loading}
-        options={options}
-        value={null}
-        inputValue={inputValue}
-        emptyMessage={null}
-        placeholder={value.length ? undefined : placeholder}
-        aria-label={ariaLabel}
-        inputProps={{ className: "h-7 py-1", onKeyDownCapture: onKeyDown }}
-        onInputChange={(next): void => {
-          if (next === picked.current) {
-            picked.current = null;
-            onInputChange("");
-          } else if (next.endsWith(",")) {
-            commit(next.slice(0, -1));
-          } else {
-            onInputChange(next);
-          }
-        }}
-        onChange={(option): void => {
-          if (!option) return;
-          picked.current = option.label;
-          commit(option.label);
-        }}
-      />
+      {(!full || typing) && (
+        <Combobox
+          className="min-w-20 flex-1"
+          borderless
+          allowFreeText
+          portal
+          anchor={frame}
+          disabled={disabled}
+          loading={loading}
+          options={options}
+          value={null}
+          inputValue={inputValue}
+          emptyMessage={null}
+          placeholder={value.length ? undefined : placeholder}
+          aria-label={ariaLabel}
+          inputProps={{
+            className: "h-7 py-1",
+            onKeyDownCapture: onKeyDown,
+            onFocusCapture: (): void => setTyping(true),
+            onBlurCapture: (): void => setTyping(false),
+          }}
+          onInputChange={(next): void => {
+            if (next === picked.current) {
+              picked.current = null;
+              onInputChange("");
+            } else if (next.endsWith(",")) {
+              commit(next.slice(0, -1));
+            } else {
+              onInputChange(next);
+            }
+          }}
+          onChange={(option): void => {
+            if (!option) return;
+            picked.current = option.label;
+            commit(option.label);
+          }}
+        />
+      )}
     </div>
   );
 };
