@@ -34,3 +34,12 @@ export default meta;
 export const WithIcon: Story = {
   args: { name: "ada@example.com", icon: <MailOutlineIcon size="md" /> },
 };
+
+export const Highlighted: Story = {
+  args: {
+    name: "Run",
+    size: "lg",
+    icon: <MailOutlineIcon size="sm" />,
+    highlighted: true,
+  },
+};

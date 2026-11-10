@@ -103,4 +103,11 @@ describe("Avatar", () => {
 
     expect(screen.getByRole("img")).not.toHaveClass("rounded-full");
   });
+
+  it("tints a highlighted avatar in brand", () => {
+    render(<Avatar name="Run" icon={<span />} highlighted />);
+    expect(screen.getByRole("img", { name: "Run" })).toHaveClass(
+      "bg-brand-primary/10"
+    );
+  });
 });

@@ -39,7 +39,12 @@ export interface AvatarProps extends HTMLAttributes<HTMLSpanElement> {
   colorKey?: string;
   /** Rounded square instead of a circle, for a group rather than a person. */
   square?: boolean;
+  /** Brand-tinted fill and glyph, for the hovered row or card it leads. */
+  highlighted?: boolean;
 }
+
+// The brand tint of a highlighted avatar (ListRow repeats it on group hover)
+const AVATAR_HIGHLIGHT = "bg-brand-primary/10 text-content-icon-brand";
 
 const sizeStyles: Record<AvatarSize, string> = {
   [Size.Sm]: "size-5 text-xxs leading-none font-medium",
@@ -166,6 +171,7 @@ const tintStyles = cn(
  * <Avatar name="ada@example.com" icon={<MailOutlineIcon size="md" />} />
  * <Avatar name="Labelers" icon={<UsersRoundIcon size={14} />} />
  * <Avatar name="Ada Lovelace" colorKey={user.email} />
+ * <Avatar name="Run" icon={<LayersIcon size="sm" />} size="lg" highlighted={hovering} />
  * ```
  *
  * @param name The person's name: it makes the initials and the accessible label.
@@ -182,6 +188,8 @@ const tintStyles = cn(
  * @param colorKey What picks the colour: a stable id such as the email.
  *  Defaults to the initials.
  * @param square Rounded square instead of a circle, for a group.
+ * @param highlighted Tints the fill and glyph in brand, as when the row or
+ *  card it leads is hovered.
  * @param className `class` overrides to apply to the component.
  * @param props Additional HTML properties to apply to the component.
  */
@@ -195,6 +203,7 @@ export const Avatar: FC<AvatarProps> = ({
   icon,
   colorKey,
   square = false,
+  highlighted = false,
   className,
   ...props
 }) => {
@@ -207,11 +216,12 @@ export const Avatar: FC<AvatarProps> = ({
       aria-label={showName ? undefined : name}
       aria-hidden={showName || undefined}
       className={cn(
-        "inline-flex shrink-0 select-none items-center justify-center overflow-hidden",
+        "inline-flex shrink-0 select-none items-center justify-center overflow-hidden transition-colors",
         radiusStyles(square ? Radius.Md : Radius.Full),
         neutral && bgColorClass(BackgroundColor.CardNested),
         neutral && textColorClass(TextColor.Secondary),
         !neutral && tintStyles,
+        highlighted && AVATAR_HIGHLIGHT,
         sizeStyles[size],
         !showName && className
       )}
