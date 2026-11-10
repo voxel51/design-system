@@ -17,6 +17,7 @@ import collapseStyles, {
   resolveCollapse,
   useLabelHidden,
 } from "@/styles/collapse";
+import { FOCUS_RING } from "@/styles/focus";
 import radiusStyles from "@/styles/radius";
 import { CAPTION_SIZE, TEXT_STYLES } from "@/styles/text";
 import {
@@ -34,6 +35,8 @@ import {
 } from "@/types";
 import { cn } from "@/util/classes";
 import { COLLAPSE_LABEL_ATTR, useOverflowRowFit } from "@/util/compact";
+
+import { LABEL_ATTR } from "./labelAttr";
 
 // Template-literal wrap defeats TS alias preservation so hovers and type
 // errors list the accepted strings instead of the alias name.
@@ -258,7 +261,10 @@ export const Button: FC<ButtonProps> = ({
   const hasLabel = childArray.some(
     (child) =>
       (typeof child === "string" && child.trim() !== "") ||
-      typeof child === "number"
+      typeof child === "number" ||
+      // a wrapper that is itself the text label (e.g. a truncating span)
+      (isValidElement<Record<string, unknown>>(child) &&
+        child.props[LABEL_ATTR] !== undefined)
   );
   // With an icon prop set, an element child (e.g. a translation component)
   // is the label, not a second icon, so it keeps the rectangular padding.
@@ -281,6 +287,7 @@ export const Button: FC<ButtonProps> = ({
       ? "transition-[filter]"
       : "transition-colors",
     "hover:cursor-pointer",
+    FOCUS_RING,
     "disabled:cursor-not-allowed disabled:pointer-events-none",
     isIconOnly
       ? iconOnlySizeStyles[size]
