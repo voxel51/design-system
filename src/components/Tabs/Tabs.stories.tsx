@@ -61,6 +61,17 @@ export const WithoutCounts: Story = {
   ),
 };
 
+export const Compact: Story = {
+  render: () => (
+    <Tabs aria-label="Panel">
+      <Tab size="sm" active>
+        Prompt
+      </Tab>
+      <Tab size="sm">Skills</Tab>
+    </Tabs>
+  ),
+};
+
 export const Links: Story = {
   render: () => (
     <Tabs aria-label="Workspace">

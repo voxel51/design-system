@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { Size } from "@/types";
+import { OverflowRowCompactContext } from "@/util/compact";
 
 import { ToggleSwitch, ToggleSwitchVariant } from "./ToggleSwitch";
 
@@ -18,6 +19,14 @@ describe("ToggleSwitch", () => {
     expect(screen.getByText("Tab 1")).toBeInTheDocument();
     expect(screen.getByText("Tab 2")).toBeInTheDocument();
     expect(screen.getByText("Tab 3")).toBeInTheDocument();
+  });
+
+  it("draws the voodo focus ring on a keyboard-focused tab", () => {
+    render(<ToggleSwitch tabs={tabs} />);
+    for (const tab of screen.getAllByRole("tab")) {
+      expect(tab).toHaveClass("focus-visible:outline-content-focus-ring");
+      expect(tab).not.toHaveClass("outline-none");
+    }
   });
 
   it("should render the first tab content by default", () => {
@@ -69,6 +78,34 @@ describe("ToggleSwitch", () => {
 
     expect(screen.getByText("Content 3")).toBeInTheDocument();
     expect(screen.queryByText("Content 1")).not.toBeInTheDocument();
+  });
+
+  it("shows no tab as active at index -1, keeping one focusable", () => {
+    render(
+      <ToggleSwitch tabs={tabs} variant={ToggleSwitchVariant.Soft} index={-1} />
+    );
+    const all = screen.getAllByRole("tab");
+    for (const tab of all) {
+      expect(tab.className).not.toContain("data-selected:bg-");
+      expect(tab.className).toContain("!text-content-text-secondary");
+    }
+    expect(all.filter((tab) => tab.tabIndex === 0)).toHaveLength(1);
+    for (const tab of all) {
+      expect(tab).toHaveAttribute("aria-selected", "false");
+    }
+  });
+
+  it("keeps link tabs as links at index -1", () => {
+    render(
+      <ToggleSwitch
+        index={-1}
+        tabs={[{ id: "a", data: { label: "A", href: "/a" } }]}
+      />
+    );
+    const tab = screen.getByRole("tab", { name: "A" });
+    expect(tab.tagName).toBe("A");
+    expect(tab).toHaveAttribute("href", "/a");
+    expect(tab).toHaveAttribute("aria-selected", "false");
   });
 
   it("should pass through additional props", () => {
@@ -168,5 +205,84 @@ describe("ToggleSwitch", () => {
     expect(container.querySelector('[role="tablist"]')).toHaveClass(
       "custom-tab-list"
     );
+  });
+
+  it("should render tabs with an href as links without panels", () => {
+    render(
+      <ToggleSwitch
+        index={1}
+        tabs={[
+          { id: "a", data: { label: "A", href: "/a" } },
+          { id: "b", data: { label: "B", href: "/b" } },
+        ]}
+      />
+    );
+
+    expect(screen.getByRole("tab", { name: "B" })).toHaveAttribute(
+      "href",
+      "/b"
+    );
+    expect(screen.queryByRole("tabpanel")).not.toBeInTheDocument();
+  });
+
+  it("should render a disabled tab with an href as a button", () => {
+    render(
+      <ToggleSwitch
+        tabs={[
+          { id: "a", data: { label: "A", href: "/a" } },
+          { id: "b", data: { label: "B", href: "/b", disabled: true } },
+        ]}
+      />
+    );
+
+    expect(screen.getByRole("tab", { name: "B" })).not.toHaveAttribute("href");
+  });
+});
+
+describe("ToggleSwitch icon tabs", () => {
+  const Glyph = () => <svg data-testid="glyph" />;
+  const iconTabs = [
+    { id: "chart", data: { label: "Chart", icon: Glyph } },
+    { id: "table", data: { label: "Table", icon: Glyph } },
+  ];
+
+  it("shows each tab's icon before its label", () => {
+    render(<ToggleSwitch tabs={iconTabs} />);
+    expect(screen.getAllByTestId("glyph")).toHaveLength(2);
+    expect(screen.getByRole("tab", { name: "Chart" })).toHaveTextContent(
+      "Chart"
+    );
+  });
+
+  it("names an icon-only tab by its label", () => {
+    render(<ToggleSwitch tabs={iconTabs} collapse="always" />);
+    const tab = screen.getByRole("tab", { name: "Chart" });
+    expect(tab).not.toHaveTextContent("Chart");
+    expect(tab).toHaveAttribute("aria-label", "Chart");
+  });
+
+  it("drops labels while the enclosing row is compact", () => {
+    render(
+      <OverflowRowCompactContext.Provider
+        value={{ compact: true, labelMax: null }}
+      >
+        <ToggleSwitch tabs={iconTabs} collapse="auto" />
+      </OverflowRowCompactContext.Provider>
+    );
+    expect(screen.getByRole("tab", { name: "Table" })).not.toHaveTextContent(
+      "Table"
+    );
+  });
+
+  it("renders no tab panel when every tab's content is null", () => {
+    render(
+      <ToggleSwitch
+        tabs={[
+          { id: "a", data: { label: "A", content: null } },
+          { id: "b", data: { label: "B", content: null } },
+        ]}
+      />
+    );
+    expect(screen.queryByRole("tabpanel")).toBeNull();
   });
 });

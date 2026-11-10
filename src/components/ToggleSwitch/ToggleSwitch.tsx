@@ -1,8 +1,22 @@
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import clsx from "clsx";
-import type { FC, HTMLAttributes, ReactNode } from "react";
+import {
+  type ElementType,
+  type FC,
+  forwardRef,
+  type HTMLAttributes,
+  type ReactNode,
+  type Ref,
+} from "react";
 
+import { type IconInput, IconWrapper } from "@/components/Icons";
 import { Tooltip } from "@/components/Tooltip";
+import {
+  type Collapse,
+  resolveCollapse,
+  useLabelHidden,
+} from "@/styles/collapse";
+import { FOCUS_RING } from "@/styles/focus";
 import { textStyles } from "@/styles/text";
 import {
   BackgroundColor,
@@ -17,10 +31,23 @@ import {
   TextVariant,
 } from "@/types";
 import { cn } from "@/util/classes";
+import { useOverflowRowFit } from "@/util/compact";
+
+const UnselectedTab = forwardRef<
+  HTMLElement,
+  HTMLAttributes<HTMLElement> & { tabAs: ElementType }
+>(({ tabAs: As, ...props }, ref) => (
+  <As ref={ref} {...props} aria-selected={false} />
+));
+UnselectedTab.displayName = "UnselectedTab";
 
 export interface ToggleSwitchTab {
   label: ReactNode;
-  content: ReactNode;
+  /** An icon before the label; with `collapse`, it stands in for the label. */
+  icon?: IconInput;
+  content?: ReactNode;
+  /** Renders the tab as a link, so open-in-new-tab and middle-click work. */
+  href?: string;
   disabled?: boolean;
   tooltip?: ReactNode;
 }
@@ -56,6 +83,12 @@ export interface ToggleSwitchProps extends Omit<
   tabListClassName?: string;
   tabPanelClassName?: string;
   fullWidth?: boolean;
+  /** Element for tabs with an `href` (e.g. a router link); defaults to `a`. */
+  linkComponent?: ElementType;
+  /** Ref to the tab row, e.g. for `useCompactRow`. */
+  tabListRef?: Ref<HTMLElement>;
+  /** Hides the labels of tabs with an `icon`, leaving the icons. */
+  collapse?: Collapse;
 }
 
 const tabSizeStyles: Record<ToggleSwitchSize, string> = {
@@ -69,6 +102,13 @@ const softSizeStyles: Record<ToggleSwitchSize, string> = {
   [Size.Xs]: clsx("min-w-5 min-h-5"),
   [Size.Sm]: clsx("min-w-6 min-h-6"),
   [Size.Md]: clsx("min-w-7 min-h-7"),
+};
+
+// Icon glyph sizes, as on Button: 16px at Medium, 14px below.
+const iconSizes: Record<ToggleSwitchSize, number> = {
+  [Size.Xs]: 14,
+  [Size.Sm]: 14,
+  [Size.Md]: 16,
 };
 
 const tabPaddingStyles: Record<ToggleSwitchSize, string> = {
@@ -180,8 +220,21 @@ const getTabTextColorClass = (selected: boolean): string => {
  * };
  * ```
  *
+ * @example
+ * ```tsx
+ * // Icon tabs that drop their labels while the enclosing row is short of room
+ * <ToggleSwitch
+ *   variant="soft"
+ *   collapse="auto"
+ *   tabs={[
+ *     { id: "chart", data: { label: "Chart", icon: BarChartIcon } },
+ *     { id: "table", data: { label: "Table", icon: TableChartOutlinedIcon } },
+ *   ]}
+ * />
+ * ```
+ *
  * @param tabs List of component descriptors which will be used to create {@link ToggleSwitchTab} children.
- *  Each tab supports optional `disabled` and `tooltip` fields. See {@link ToggleSwitchTab}.
+ *  Each tab supports optional `icon`, `disabled` and `tooltip` fields. See {@link ToggleSwitchTab}.
  * @param variant Visual style of the tab set:
  *    - `"default"` - tabs are bordered and have visible boundaries;
  *      the active tab has a distinct background from inactive tabs.
@@ -194,10 +247,16 @@ const getTabTextColorClass = (selected: boolean): string => {
  * @param defaultIndex The index of the tab which should be considered active when the component first renders (uncontrolled).
  *  Defaults to `0`.
  * @param index The active tab index for controlled usage; when set it drives the active tab and overrides `defaultIndex`.
+ *  `-1` shows no tab as active, nor marks one selected (e.g. a nav on a page none of its tabs names); keyboard focus still enters on the first enabled tab.
  * @param onChange Callback triggered when the active tab changes.
  * @param size Size of the tabs: `"xs"`, `"sm"` or `"md"`; this controls the text size and padding.
  *  Defaults to `"sm"`. See {@link ToggleSwitchSize}.
  * @param fullWidth If `true`, the tab group will fill the width of their container.
+ * @param collapse Hides the labels of tabs with an `icon`, leaving the icons: `true` or `"lg"` below 1024px,
+ *  `"sm"` below 640px, `"always"` at every width, `"auto"` while the enclosing row is compact.
+ *  A hidden label names its tab (a string label becomes its `aria-label`) and is its tooltip unless it has one.
+ * @param linkComponent Element for tabs with an `href` (a router link, say); defaults to `a`.
+ * @param tabListRef Ref to the tab row, e.g. for `useCompactRow`.
  * @param tabListClassName `class` overrides to apply to the tabs.
  * @param tabPanelClassName `class` overrides to apply to the active content container.
  * @param props Additional HTML properties to apply to the tab group.
@@ -212,8 +271,14 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
   fullWidth,
   tabListClassName,
   tabPanelClassName,
+  linkComponent = "a",
+  tabListRef,
+  collapse,
   ...props
 }) => {
+  const { compact } = useOverflowRowFit();
+  const labelHidden = useLabelHidden(resolveCollapse(collapse, compact));
+  const none = index === -1;
   return (
     <TabGroup
       // `index` (controlled) wins when provided; otherwise fall back to
@@ -225,6 +290,7 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
       {...props}
     >
       <TabList
+        ref={tabListRef}
         className={cn(
           "toggle-switch-tab-list",
           "flex flex-nowrap items-center",
@@ -240,58 +306,85 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
           const tabClassName = ({ selected }: { selected: boolean }): string =>
             cn(
               "cursor-pointer",
-              "flex-1",
+              "min-w-0 flex-1",
               "flex items-center justify-center",
               "whitespace-nowrap",
-              "outline-none",
+              FOCUS_RING,
               "transition-colors",
               "bg-transparent",
               // Figma: the active segment fills bg/card-nested in the bordered
               // set and bg/card-elevated in the soft tray.
-              bgColorClass(
-                variant === ToggleSwitchVariant.Soft
-                  ? BackgroundColor.CardElevated
-                  : BackgroundColor.CardNested,
-                ElementState.Selected
-              ),
-              getTabTextColorClass(selected),
+              !none &&
+                bgColorClass(
+                  variant === ToggleSwitchVariant.Soft
+                    ? BackgroundColor.CardElevated
+                    : BackgroundColor.CardNested,
+                  ElementState.Selected
+                ),
+              getTabTextColorClass(selected && !none),
               data.disabled && "hover:!text-content-text-secondary",
-              "data-[focus]:outline-none",
               "data-[disabled]:opacity-50",
               "data-[disabled]:cursor-not-allowed",
               getTabBorderRadius(variant, isFirst, isLast),
-              getTabStyles(variant, size)
+              getTabStyles(variant, size),
+              none && "data-selected:border-b-0"
             );
 
+          const iconOnly = labelHidden && data.icon !== undefined;
+          const tooltip = data.tooltip ?? (iconOnly ? data.label : undefined);
           const tab = (
-            <Tab disabled={data.disabled} className={tabClassName}>
-              {data.label}
+            <Tab
+              disabled={data.disabled}
+              className={tabClassName}
+              aria-label={
+                iconOnly && typeof data.label === "string"
+                  ? data.label
+                  : undefined
+              }
+              {...(data.href && !data.disabled
+                ? { as: linkComponent, href: data.href }
+                : {})}
+              {...(none && {
+                as: UnselectedTab,
+                tabAs: data.href && !data.disabled ? linkComponent : "button",
+              })}
+            >
+              {data.icon ? (
+                <span className="inline-flex items-center gap-1.5">
+                  <IconWrapper content={data.icon} size={iconSizes[size]} />
+                  {!iconOnly && data.label}
+                </span>
+              ) : (
+                data.label
+              )}
             </Tab>
           );
 
-          return data.tooltip ? (
+          return tooltip ? (
             <Tooltip
               key={id}
-              content={data.tooltip}
-              wrapperClassName="flex-1 flex"
+              content={tooltip}
+              wrapperClassName="min-w-0 flex-1 flex"
               portal
             >
               {tab}
             </Tooltip>
           ) : (
-            <div key={id} className="flex-1 flex">
+            <div key={id} className="min-w-0 flex-1 flex">
               {tab}
             </div>
           );
         })}
       </TabList>
-      <TabPanels className={cn(tabPanelClassName)}>
-        {tabs.map(({ id, data }) => (
-          <TabPanel key={id} className={cn("focus:outline-none")}>
-            {data.content}
-          </TabPanel>
-        ))}
-      </TabPanels>
+      {tabs.some(({ data }) => data.content != null) && (
+        <TabPanels className={cn(tabPanelClassName)}>
+          {tabs.map(({ id, data }) => (
+            <TabPanel key={id} className={cn("focus:outline-none")}>
+              {data.content}
+            </TabPanel>
+          ))}
+        </TabPanels>
+      )}
     </TabGroup>
   );
 };

@@ -107,6 +107,7 @@ import CloudCogSvg from "@/img/CloudCog.svg?react";
 import CloudDownloadSvg from "@/img/CloudDownload.svg?react";
 import CloudOutlinedSvg from "@/img/CloudOutlined.svg?react";
 import CloudUploadSvg from "@/img/CloudUpload.svg?react";
+import CloudUploadLucideSvg from "@/img/CloudUploadLucide.svg?react";
 import CodeSvg from "@/img/Code.svg?react";
 import CodeOutlinedSvg from "@/img/CodeOutlined.svg?react";
 import CogSvg from "@/img/Cog.svg?react";
@@ -288,6 +289,7 @@ import PenToolSvg from "@/img/PenTool.svg?react";
 import PencilSvg from "@/img/Pencil.svg?react";
 import PercentSvg from "@/img/Percent.svg?react";
 import PersonAddAltSvg from "@/img/PersonAddAlt.svg?react";
+import UserPlusSvg from "@/img/UserPlus.svg?react";
 import PersonAddOutlinedSvg from "@/img/PersonAddOutlined.svg?react";
 import PhotoCameraSvg from "@/img/PhotoCamera.svg?react";
 import PieChartOutlinedSvg from "@/img/PieChartOutlined.svg?react";
@@ -820,6 +822,10 @@ export const CloudDownloadIcon: FC<IconProps> = (props) => (
 
 export const CloudOutlinedIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={CloudOutlinedSvg} />
+);
+
+export const CloudUploadLucideIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={CloudUploadLucideSvg} />
 );
 
 export const CloudUploadIcon: FC<IconProps> = (props) => (
@@ -1948,6 +1954,10 @@ export const UploadIcon: FC<IconProps> = (props) => (
 
 export const UserIcon: FC<IconProps> = (props) => (
   <IconBase {...props} svg={UserSvg} />
+);
+
+export const UserPlusIcon: FC<IconProps> = (props) => (
+  <IconBase {...props} svg={UserPlusSvg} />
 );
 
 export const UserRoundIcon: FC<IconProps> = (props) => (
