@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { MouseEvent } from "react";
 
@@ -76,7 +76,9 @@ describe("ContextMenu", () => {
     await user.click(screen.getByText("Click me"));
 
     expect(onClick).toHaveBeenCalledTimes(1);
-    expect(screen.queryByText("Click me")).not.toBeInTheDocument();
+    await waitFor(() =>
+      expect(screen.queryByText("Click me")).not.toBeInTheDocument()
+    );
   });
 
   it("should close when Escape is pressed", async () => {
@@ -90,7 +92,9 @@ describe("ContextMenu", () => {
     expect(screen.getByText("First")).toBeInTheDocument();
 
     await user.keyboard("{Escape}");
-    expect(screen.queryByText("First")).not.toBeInTheDocument();
+    await waitFor(() =>
+      expect(screen.queryByText("First")).not.toBeInTheDocument()
+    );
   });
 
   it("should not open when disabled", () => {

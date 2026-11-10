@@ -42,7 +42,7 @@ describe("CodeBlock", () => {
     expect(onCopy).not.toHaveBeenCalled();
   });
 
-  it("should show given markup but copy the code", () => {
+  it("should show given markup but copy the code", async () => {
     const writeText = jest.fn().mockResolvedValue(undefined);
     Object.assign(navigator, { clipboard: { writeText } });
     render(
@@ -54,5 +54,6 @@ describe("CodeBlock", () => {
     expect(screen.getByText("marked").tagName).toBe("MARK");
     fireEvent.click(screen.getByRole("button", { name: "Copy" }));
     expect(writeText).toHaveBeenCalledWith("raw");
+    await screen.findByRole("button", { name: "Copied" });
   });
 });

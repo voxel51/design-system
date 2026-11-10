@@ -96,9 +96,14 @@ describe("Pill", () => {
       const outerClick = jest.fn();
       const onRemove = jest.fn();
       render(
-        <button type="button" onClick={outerClick}>
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={outerClick}
+          onKeyDown={outerClick}
+        >
           <Pill onRemove={onRemove}>{pillText}</Pill>
-        </button>
+        </div>
       );
 
       await user.click(screen.getByRole("button", { name: "Remove" }));

@@ -1,4 +1,4 @@
-import { type FC, useCallback, useRef } from "react";
+import { forwardRef, useCallback, useImperativeHandle, useRef } from "react";
 
 import { CaretDownIcon, DateRangeIcon } from "@/components/Icons";
 import formControlStyles from "@/styles/form-control.module.css";
@@ -82,63 +82,73 @@ export interface DatepickerInputProps {
  *
  * @internal For use by {@link DatePicker}.
  */
-export const DatepickerInput: FC<DatepickerInputProps> = ({
-  value,
-  onClick,
-  disabled,
-  error,
-  size = Size.Md,
-  radius = Radius.Sm,
-  hasValue,
-}) => {
-  const inputRef = useRef<HTMLInputElement>(null);
+export const DatepickerInput = forwardRef<
+  HTMLInputElement,
+  DatepickerInputProps
+>(
+  (
+    {
+      value,
+      onClick,
+      disabled,
+      error,
+      size = Size.Md,
+      radius = Radius.Sm,
+      hasValue,
+    },
+    ref
+  ) => {
+    const inputRef = useRef<HTMLInputElement>(null);
+    useImperativeHandle(ref, () => inputRef.current as HTMLInputElement);
 
-  const handleIconClick = useCallback(() => {
-    if (disabled) return;
-    if (onClick) {
-      onClick();
-    } else if (inputRef.current) {
-      inputRef.current.focus();
-      inputRef.current.click();
-    }
-  }, [disabled, onClick]);
+    const handleIconClick = useCallback(() => {
+      if (disabled) return;
+      if (onClick) {
+        onClick();
+      } else if (inputRef.current) {
+        inputRef.current.focus();
+        inputRef.current.click();
+      }
+    }, [disabled, onClick]);
 
-  const inputClasses = datePickerInputStyle({
-    disabled,
-    error,
-    radius,
-    size,
-  });
+    const inputClasses = datePickerInputStyle({
+      disabled,
+      error,
+      radius,
+      size,
+    });
 
-  return (
-    <div className="relative flex items-center">
-      {/* Calendar icon on the left */}
-      <DatepickerIconButton
-        onClick={handleIconClick}
-        disabled={disabled}
-        hasValue={hasValue}
-        size={size}
-        position={IconPosition.Leading}
-        icon={DateRangeIcon}
-      />
-      <input
-        ref={inputRef}
-        value={value}
-        onClick={onClick}
-        disabled={disabled}
-        className={inputClasses}
-      />
-      {/* Caret down icon on the right */}
-      <DatepickerIconButton
-        onClick={handleIconClick}
-        disabled={disabled}
-        hasValue={hasValue}
-        size={size}
-        position={IconPosition.Trailing}
-        icon={CaretDownIcon}
-      />
-    </div>
-  );
-};
+    return (
+      <div className="relative flex items-center">
+        {/* Calendar icon on the left */}
+        <DatepickerIconButton
+          onClick={handleIconClick}
+          disabled={disabled}
+          hasValue={hasValue}
+          size={size}
+          position={IconPosition.Leading}
+          icon={DateRangeIcon}
+        />
+        <input
+          ref={inputRef}
+          value={value}
+          readOnly
+          onClick={onClick}
+          disabled={disabled}
+          className={inputClasses}
+        />
+        {/* Caret down icon on the right */}
+        <DatepickerIconButton
+          onClick={handleIconClick}
+          disabled={disabled}
+          hasValue={hasValue}
+          size={size}
+          position={IconPosition.Trailing}
+          icon={CaretDownIcon}
+        />
+      </div>
+    );
+  }
+);
 
 export default DatepickerInput;
