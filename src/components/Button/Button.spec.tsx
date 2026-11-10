@@ -32,6 +32,13 @@ describe("Button", () => {
     expect(screen.getByText(buttonText)).toBeInTheDocument();
   });
 
+  it("draws the voodo focus ring on keyboard focus", () => {
+    render(<Button>{buttonText}</Button>);
+    expect(screen.getByRole("button")).toHaveClass(
+      "focus-visible:outline-content-focus-ring"
+    );
+  });
+
   it("hides only the text label below 640px when it collapses at sm", () => {
     render(
       <Button collapse="sm" aria-label="Ask agent">
