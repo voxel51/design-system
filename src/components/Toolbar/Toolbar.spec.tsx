@@ -14,6 +14,9 @@ import { ToolbarGroup } from "./ToolbarGroup";
 
 const TestIcon = () => <svg data-testid="icon" />;
 
+const dragHandleOf = (): HTMLElement =>
+  screen.getByRole("button", { name: "Drag to reposition toolbar" });
+
 function renderToolbar(
   props: Partial<React.ComponentProps<typeof Toolbar>> = {}
 ) {
@@ -86,9 +89,8 @@ describe("Toolbar", () => {
 
   it("collapses content on double-click of the drag handle", () => {
     renderToolbar();
-    const toolbar = screen.getByRole("toolbar");
     // The drag handle is the first child div
-    const dragHandle = toolbar.firstChild as HTMLElement;
+    const dragHandle = dragHandleOf();
     expect(
       screen.getByRole("button", { name: "Action 1" })
     ).toBeInTheDocument();
@@ -100,13 +102,25 @@ describe("Toolbar", () => {
 
   it("expands again after a second double-click on the drag handle", () => {
     renderToolbar();
-    const toolbar = screen.getByRole("toolbar");
-    const dragHandle = toolbar.firstChild as HTMLElement;
+    const dragHandle = dragHandleOf();
     fireEvent.doubleClick(dragHandle);
     fireEvent.doubleClick(dragHandle);
     expect(
       screen.getByRole("button", { name: "Action 1" })
     ).toBeInTheDocument();
+  });
+
+  it("hints at dragging and collapsing on the drag handle, then at expanding", async () => {
+    renderToolbar();
+    const dragHandle = dragHandleOf();
+    await userEvent.hover(dragHandle);
+    expect(screen.getByRole("tooltip")).toHaveTextContent(
+      "Drag to move · Double-click to collapse"
+    );
+    fireEvent.doubleClick(dragHandle);
+    expect(screen.getByRole("tooltip")).toHaveTextContent(
+      "Double-click to expand"
+    );
   });
 
   it("applies custom className to the container", () => {
@@ -180,8 +194,7 @@ describe("Toolbar", () => {
 
   it("collapses content when Enter is pressed on the drag handle", () => {
     renderToolbar();
-    const toolbar = screen.getByRole("toolbar");
-    const dragHandle = toolbar.firstChild as HTMLElement;
+    const dragHandle = dragHandleOf();
     expect(
       screen.getByRole("button", { name: "Action 1" })
     ).toBeInTheDocument();
@@ -193,8 +206,7 @@ describe("Toolbar", () => {
 
   it("collapses content when Space is pressed on the drag handle", () => {
     renderToolbar();
-    const toolbar = screen.getByRole("toolbar");
-    const dragHandle = toolbar.firstChild as HTMLElement;
+    const dragHandle = dragHandleOf();
     fireEvent.keyDown(dragHandle, { key: " " });
     expect(
       screen.queryByRole("button", { name: "Action 1" })
@@ -203,8 +215,7 @@ describe("Toolbar", () => {
 
   it("does not collapse on other key presses on the drag handle", () => {
     renderToolbar();
-    const toolbar = screen.getByRole("toolbar");
-    const dragHandle = toolbar.firstChild as HTMLElement;
+    const dragHandle = dragHandleOf();
     fireEvent.keyDown(dragHandle, { key: "Escape" });
     expect(
       screen.getByRole("button", { name: "Action 1" })
@@ -215,7 +226,7 @@ describe("Toolbar", () => {
     it("starts dragging on mousedown of the drag handle", () => {
       renderToolbar();
       const toolbar = screen.getByRole("toolbar");
-      const dragHandle = toolbar.firstChild as HTMLElement;
+      const dragHandle = dragHandleOf();
       fireEvent.mouseDown(dragHandle, { clientX: 0, clientY: 0 });
       expect(toolbar).toHaveAttribute("data-dragging");
     });
@@ -223,7 +234,7 @@ describe("Toolbar", () => {
     it("stops dragging on mouseup", () => {
       renderToolbar();
       const toolbar = screen.getByRole("toolbar");
-      const dragHandle = toolbar.firstChild as HTMLElement;
+      const dragHandle = dragHandleOf();
       fireEvent.mouseDown(dragHandle, { clientX: 0, clientY: 0 });
       fireEvent.mouseUp(document);
       expect(toolbar).not.toHaveAttribute("data-dragging");
@@ -246,7 +257,7 @@ describe("Toolbar", () => {
         { container }
       );
       const toolbar = screen.getByRole("toolbar");
-      const dragHandle = toolbar.firstChild as HTMLElement;
+      const dragHandle = dragHandleOf();
       fireEvent.mouseDown(dragHandle, { clientX: 0, clientY: 0 });
       fireEvent.mouseMove(document, { clientX: 30, clientY: 40 });
       expect(toolbar).toHaveStyle({ left: "50px", top: "60px" });
@@ -256,7 +267,7 @@ describe("Toolbar", () => {
     it("does not move on X axis when lockX=true", () => {
       renderToolbar({ xOffset: 20, yOffset: 20, lockX: true });
       const toolbar = screen.getByRole("toolbar");
-      const dragHandle = toolbar.firstChild as HTMLElement;
+      const dragHandle = dragHandleOf();
       fireEvent.mouseDown(dragHandle, { clientX: 0, clientY: 0 });
       fireEvent.mouseMove(document, { clientX: 50, clientY: 50 });
       expect(toolbar).toHaveStyle({ left: "20px" });
@@ -265,7 +276,7 @@ describe("Toolbar", () => {
     it("does not move on Y axis when lockY=true", () => {
       renderToolbar({ xOffset: 20, yOffset: 20, lockY: true });
       const toolbar = screen.getByRole("toolbar");
-      const dragHandle = toolbar.firstChild as HTMLElement;
+      const dragHandle = dragHandleOf();
       fireEvent.mouseDown(dragHandle, { clientX: 0, clientY: 0 });
       fireEvent.mouseMove(document, { clientX: 50, clientY: 50 });
       expect(toolbar).toHaveStyle({ top: "20px" });
