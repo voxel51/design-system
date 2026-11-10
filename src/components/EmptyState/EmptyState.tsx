@@ -1,5 +1,6 @@
 import type { FC, ReactNode } from "react";
 
+import { RichCard } from "@/components/Card";
 import { type IconInput, resolveIconInput } from "@/components/Icons";
 import { Stack, StackProps } from "@/components/Stack";
 import { Text } from "@/components/Text";
@@ -9,13 +10,27 @@ import {
   bgColorClass,
   Align,
   BrandColor,
+  Justify,
   Orientation,
   Radius,
   Size,
+  Spacing,
   TextColor,
   TextVariant,
 } from "@/types";
 import { cn } from "@/util/classes";
+
+import { DocsButton } from "./DocsButton";
+
+/** One card in an {@link EmptyState}'s "how to get started" row. */
+export interface EmptyStateStep {
+  icon?: IconInput;
+  /** Numbered by the caller, such as `"1. Connect a source"`. */
+  title: string;
+  description: string;
+  /** The step's own call to action; a step without one only informs. */
+  action?: ReactNode;
+}
 
 export interface EmptyStateProps extends StackProps {
   icon?: IconInput;
@@ -23,6 +38,20 @@ export interface EmptyStateProps extends StackProps {
   title: string;
   description?: string;
   size?: EmptyStateSize;
+  /** Calls to action in a centred row, the primary first. */
+  actions?: ReactNode;
+  /** Adds a {@link DocsButton} to this page after the actions. */
+  docsHref?: string;
+  /** The docs button's text. Defaults to `"View Docs"`. */
+  docsLabel?: string;
+  /** Context under the actions: why they are disabled, what to expect. */
+  note?: ReactNode;
+  /** A "how to get started" row of cards, wrapping when narrow. */
+  steps?: EmptyStateStep[];
+  /** Heading above the steps, such as `"How it works"`. */
+  stepsTitle?: string;
+  /** Small print under everything, such as a permission note. */
+  footer?: ReactNode;
 }
 
 /** `sm` for narrow sidebars and inline list slots, `md` for panels and pages. */
@@ -57,7 +86,30 @@ export type EmptyStateSize = `${Extract<Size, "sm" | "md">}`;
  * @param size `"sm"` for narrow sidebars and list slots (104px art, tighter
  *  padding and smaller text), `"md"` for panels and pages. Applies to the
  *  illustrated layout. Defaults to `"md"`.
- * @param children An optional action area below the text.
+ * With actions, a docs link and steps:
+ *
+ * ```tsx
+ * <EmptyState
+ *   art={<DataLensEmptyArt />}
+ *   title="Connect to your data source"
+ *   actions={<Button variant="primary" size="sm">Add data source</Button>}
+ *   docsHref="https://docs.voxel51.com/teams/data_lens.html"
+ *   steps={[
+ *     { icon: CodeIcon, title: "1. Define your pipeline", description: "Tell FiftyOne how to query it." },
+ *     { icon: HubOutlinedIcon, title: "2. Connect it", description: "Register your operator." },
+ *   ]}
+ * />
+ * ```
+ *
+ * @param actions Calls to action in a centred, wrapping row, the primary first.
+ * @param docsHref Adds a {@link DocsButton} to this page after the actions.
+ * @param docsLabel The docs button's text. Defaults to `"View Docs"`.
+ * @param note Context under the actions: why they are disabled, what to expect.
+ * @param steps A "how to get started" row of bordered {@link RichCard}s, as
+ *  many columns as fit (each at least 220px).
+ * @param stepsTitle Heading above the steps.
+ * @param footer Small print under everything.
+ * @param children Free-form content under the actions and note (a form, say).
  * @param props Additional {@link Stack} properties to apply to the component.
  */
 export const EmptyState: FC<EmptyStateProps> = ({
@@ -66,11 +118,19 @@ export const EmptyState: FC<EmptyStateProps> = ({
   title,
   description,
   size = Size.Md,
+  actions,
+  docsHref,
+  docsLabel,
+  note,
+  steps,
+  stepsTitle,
+  footer,
   className,
   children,
   ...props
 }) => {
   const sm = size === Size.Sm;
+  const hasActions = Boolean(actions || docsHref);
   const IconContent = resolveIconInput(icon);
 
   return (
@@ -128,10 +188,42 @@ export const EmptyState: FC<EmptyStateProps> = ({
           )}
         </>
       )}
-      {children && (
-        <div className={cn(sm && art ? "mt-5" : "mt-7", "w-full")}>
-          {children}
-        </div>
+      {(hasActions || note || children || steps || footer) && (
+        <Stack
+          orientation={Orientation.Column}
+          align={Align.Center}
+          spacing={Spacing.Lg}
+          className={cn(sm && art ? "mt-5" : "mt-7", "w-full")}
+        >
+          {hasActions && (
+            <Stack justify={Justify.Center} spacing={Spacing.Sm} wrap>
+              {actions}
+              {docsHref && <DocsButton href={docsHref} label={docsLabel} />}
+            </Stack>
+          )}
+          {note}
+          {children && (
+            <div className="flex w-full flex-col items-center">{children}</div>
+          )}
+          {steps && (
+            <div className="flex w-full flex-col gap-2 text-left">
+              {stepsTitle && (
+                <Text
+                  variant={TextVariant.BodySecondary}
+                  color={TextColor.Secondary}
+                >
+                  {stepsTitle}
+                </Text>
+              )}
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(min(220px,100%),1fr))] gap-md">
+                {steps.map((step) => (
+                  <RichCard key={step.title} border {...step} />
+                ))}
+              </div>
+            </div>
+          )}
+          {footer}
+        </Stack>
       )}
     </Stack>
   );

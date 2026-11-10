@@ -25,6 +25,17 @@ describe("EmptyState", () => {
     ).toBeInTheDocument();
   });
 
+  it("centres its children", () => {
+    render(
+      <EmptyState icon={DrawIcon} title="Empty">
+        <div data-testid="card">Card</div>
+      </EmptyState>
+    );
+    expect(screen.getByTestId("card").parentElement).toHaveClass(
+      "items-center"
+    );
+  });
+
   it("should render art instead of the icon, and an action area", () => {
     render(
       <EmptyState icon={DrawIcon} art={<PanelEmptyArt />} title="No runs yet">
@@ -43,5 +54,49 @@ describe("EmptyState", () => {
     );
     expect(container.querySelector(".w-\\[104px\\]")).not.toBeNull();
     expect(container.querySelector(".w-\\[150px\\]")).toBeNull();
+  });
+
+  it("lays out actions with a docs link, a note, steps and a footer", () => {
+    render(
+      <EmptyState
+        title="Connect a source"
+        actions={<button type="button">Add source</button>}
+        docsHref="https://docs.example.com"
+        note={<span>Admins only</span>}
+        stepsTitle="How it works"
+        steps={[
+          { title: "1. Define", description: "Write a pipeline" },
+          {
+            title: "2. Connect",
+            description: "Register it",
+            action: <button type="button">Register</button>,
+          },
+        ]}
+        footer={<span>Need help? Contact support.</span>}
+      />
+    );
+    expect(
+      screen.getByRole("button", { name: "Add source" })
+    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "View Docs" })).toHaveAttribute(
+      "href",
+      "https://docs.example.com"
+    );
+    expect(screen.getByText("Admins only")).toBeInTheDocument();
+    expect(screen.getByText("How it works")).toBeInTheDocument();
+    expect(screen.getByText("2. Connect")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Register" })
+    ).toBeInTheDocument();
+    expect(screen.getByText("Need help? Contact support.")).toBeInTheDocument();
+  });
+
+  it("names the docs button by its label", () => {
+    render(
+      <EmptyState title="t" docsHref="/docs" docsLabel="Read the guide" />
+    );
+    expect(
+      screen.getByRole("link", { name: "Read the guide" })
+    ).toHaveAttribute("target", "_blank");
   });
 });
