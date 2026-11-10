@@ -1,8 +1,15 @@
 import { Button as HeadlessButton } from "@headlessui/react";
 import clsx from "clsx";
-import type { FC, HTMLAttributes, ReactNode } from "react";
+import {
+  type FC,
+  type HTMLAttributes,
+  type ReactNode,
+  type SyntheticEvent,
+  useState,
+} from "react";
 
 import { CheckIcon } from "@/components/Icons";
+import { Tooltip } from "@/components/Tooltip";
 import radiusStyles from "@/styles/radius";
 import { TEXT_STYLES } from "@/styles/text";
 import {
@@ -36,6 +43,8 @@ export interface StepRailProps extends Omit<
 
 type StepState = "done" | "active" | "todo";
 
+const LABEL_ATTR = "data-step-label";
+
 const labelStyles: Record<StepState, string> = {
   done: textColorClass(TextColor.Secondary),
   active: textColorClass(TextColor.Primary),
@@ -57,7 +66,9 @@ const circleStyles: Record<StepState, string> = {
 
 /**
  * Shows progress through a multi-step flow. Completed steps show a check, the
- * current step is highlighted, and later steps are muted.
+ * current step is highlighted, and later steps are muted. Below `sm` only the
+ * current step keeps its label; the others show their number or check and
+ * name themselves in a tooltip.
  *
  * @example
  * ```tsx
@@ -86,6 +97,11 @@ export const StepRail: FC<StepRailProps> = ({
   ...props
 }) => {
   const index = steps.findIndex((step) => step.id === current);
+  const [labelHidden, setLabelHidden] = useState(false);
+  const measure = (event: SyntheticEvent<HTMLElement>): void => {
+    const el = event.currentTarget.querySelector(`[${LABEL_ATTR}]`);
+    setLabelHidden(!!el && window.getComputedStyle(el).position === "absolute");
+  };
   return (
     <ol
       aria-label={`Step ${index + 1} of ${steps.length}`}
@@ -109,37 +125,56 @@ export const StepRail: FC<StepRailProps> = ({
             >
               {state === "done" ? <CheckIcon size={10} /> : i + 1}
             </span>
-            {step.label}
+            <span
+              {...{ [LABEL_ATTR]: "" }}
+              className={
+                state === "active" ? undefined : "sr-only sm:not-sr-only"
+              }
+            >
+              {step.label}
+            </span>
           </>
         );
         const labelClass = clsx(
-          "flex items-center gap-[8px] whitespace-nowrap py-[4px] pr-[8px] pl-[4px] transition-colors",
+          "flex items-center gap-[8px] whitespace-nowrap py-[4px] pl-[4px] transition-colors",
+          state === "active"
+            ? "pr-[8px]"
+            : "max-sm:gap-0 max-sm:pr-[4px] sm:pr-[8px]",
           TEXT_STYLES[TextVariant.BodySecondary],
           radiusStyles(Radius.Full),
           labelStyles[state]
         );
         return (
           <li key={step.id} className="flex shrink-0 items-center gap-[2px]">
-            {clickable ? (
-              <HeadlessButton
-                className={clsx(
-                  labelClass,
-                  "hover:cursor-pointer",
-                  textColorClass(TextColor.Primary, ElementState.Hover),
-                  bgColorClass(BackgroundColor.CardElevated, ElementState.Hover)
-                )}
-                onClick={() => onSelect(step.id)}
-              >
-                {content}
-              </HeadlessButton>
-            ) : (
-              <span
-                aria-current={state === "active" ? "step" : undefined}
-                className={labelClass}
-              >
-                {content}
-              </span>
-            )}
+            <Tooltip
+              content={labelHidden ? step.label : null}
+              onMouseOverCapture={measure}
+              onPointerDownCapture={measure}
+            >
+              {clickable ? (
+                <HeadlessButton
+                  className={clsx(
+                    labelClass,
+                    "hover:cursor-pointer",
+                    textColorClass(TextColor.Primary, ElementState.Hover),
+                    bgColorClass(
+                      BackgroundColor.CardElevated,
+                      ElementState.Hover
+                    )
+                  )}
+                  onClick={() => onSelect(step.id)}
+                >
+                  {content}
+                </HeadlessButton>
+              ) : (
+                <span
+                  aria-current={state === "active" ? "step" : undefined}
+                  className={labelClass}
+                >
+                  {content}
+                </span>
+              )}
+            </Tooltip>
             {i < steps.length - 1 && (
               <span
                 className={clsx(

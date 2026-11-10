@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import {
+  BarChartIcon,
   Descriptor,
   DragHandleIcon,
   Heading,
@@ -8,6 +9,7 @@ import {
   IconName,
   RichList,
   Size,
+  TableChartOutlinedIcon,
   Text,
   ToggleSwitch,
   ToggleSwitchTab,
@@ -446,6 +448,25 @@ export const WithManyTabs: Story = {
     ],
     defaultIndex: 0,
     size: Size.Md,
+  },
+};
+
+export const WithIcons: Story = {
+  render: () => {
+    const tabs = [
+      { id: "chart", data: { label: "Chart", icon: BarChartIcon } },
+      { id: "table", data: { label: "Table", icon: TableChartOutlinedIcon } },
+    ];
+    return (
+      <div className="flex flex-col gap-3">
+        <ToggleSwitch variant={ToggleSwitchVariant.Soft} tabs={tabs} />
+        <ToggleSwitch
+          variant={ToggleSwitchVariant.Soft}
+          collapse="always"
+          tabs={tabs}
+        />
+      </div>
+    );
   },
 };
 

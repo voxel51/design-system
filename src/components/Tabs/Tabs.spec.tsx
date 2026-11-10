@@ -17,6 +17,16 @@ describe("Tabs", () => {
     expect(screen.getByRole("tablist")).toBeInTheDocument();
   });
 
+  it("should pad a compact tab by 8px", () => {
+    render(
+      <Tabs>
+        <Tab size="sm">Prompt</Tab>
+      </Tabs>
+    );
+
+    expect(screen.getByRole("tab")).toHaveClass("px-2");
+  });
+
   it("should mark only the active tab as selected", () => {
     render(
       <Tabs>
