@@ -8,10 +8,57 @@ export interface EmptyArtProps {
   className?: string;
 }
 
-const ACCENT = "var(--ea-accent)";
-const BORDER = "var(--ea-border)";
-const BORDER_STRONG = "var(--ea-border-strong)";
-const CARD = "var(--ea-card)";
+/**
+ * The palette an {@link EmptyArtFrame} drawing uses: one accent carrying the
+ * motion over neutral line work. Each value is a CSS color the frame sets.
+ */
+export const EmptyArtColor = {
+  Accent: "var(--ea-accent)",
+  Border: "var(--ea-border)",
+  BorderStrong: "var(--ea-border-strong)",
+  Card: "var(--ea-card)",
+} as const;
+
+/**
+ * Classes that animate a part of an {@link EmptyArtFrame} drawing, one idea
+ * each, on a shared 5s loop (`Sweep` 6s); set `transform-origin` (and any
+ * `animation-delay`) on the element. All stop under reduced motion.
+ */
+export const EmptyArtMotion = {
+  /** Slides across the frame, left to right. */
+  Sweep: styles.sweep,
+  /** Closes in from a larger scale, holds, then lets go. */
+  Lock: styles.lock,
+  /** Draws a dashed path (`stroke-dasharray` 64) in. */
+  Thread: styles.thread,
+  /** Rings out from its origin and fades. */
+  Ripple: styles.ripple,
+  /** A soft pulse of opacity. */
+  Core: styles.core,
+  /** Grows along x from its origin, like a line being typed. */
+  Typeline: styles.typeline,
+  /** Rises into place, holds, then rises out. */
+  Rise: styles.rise,
+  /** Draws a dashed path (`stroke-dasharray` 72) in. */
+  Spine: styles.spine,
+  /** Travels down 34px and back. */
+  Scan: styles.scan,
+  /** A slow pulse of opacity. */
+  Breathe: styles.breathe,
+  /** Gathers in from a larger scale, holds, then scatters. */
+  Gather: styles.gather,
+  /** Grows along y from its origin, like a bar. */
+  Grow: styles.grow,
+  /** Drops in from above with a small bounce, holds, then fades. */
+  Drop: styles.drop,
+  /** Moves 46px right while fading in and out. */
+  Flow: styles.flow,
+} as const;
+
+const ACCENT = EmptyArtColor.Accent;
+const BORDER = EmptyArtColor.Border;
+const BORDER_STRONG = EmptyArtColor.BorderStrong;
+const CARD = EmptyArtColor.Card;
 
 // The comments art runs on a slower 6s cycle with a shared easing.
 const SLOW: CSSProperties = {
@@ -19,13 +66,39 @@ const SLOW: CSSProperties = {
   animationTimingFunction: "cubic-bezier(.4,0,.2,1)",
 };
 
-const Art: FC<
-  EmptyArtProps & {
-    label: string;
-    glow: { cx: number; cy: number; rx: number; ry: number };
-    children: (glowId: string) => ReactNode;
-  }
-> = ({ className, label, glow, children }) => {
+export interface EmptyArtFrameProps extends EmptyArtProps {
+  /** Names the art for assistive tech, e.g. `"No locations yet"`. */
+  label: string;
+  /** The accent glow behind the drawing, in the 160×112 viewBox. */
+  glow: { cx: number; cy: number; rx: number; ry: number };
+  /** Draws the art; given an id unique to this instance, to prefix gradient and clip ids. */
+  children: (id: string) => ReactNode;
+}
+
+/**
+ * The frame every empty-state art draws in, for an app's own arts: a 160×112
+ * SVG that fills its container's width, with the accent glow, the
+ * {@link EmptyArtColor} palette and the {@link EmptyArtMotion} classes, stopped
+ * under reduced motion.
+ *
+ * @example
+ * ```tsx
+ * <EmptyArtFrame label="No locations yet" glow={{ cx: 80, cy: 58, rx: 58, ry: 40 }}>
+ *   {() => <circle cx="80" cy="56" r="8" stroke={EmptyArtColor.Accent} className={EmptyArtMotion.Breathe} />}
+ * </EmptyArtFrame>
+ * ```
+ *
+ * @param label Names the art for assistive tech.
+ * @param glow The accent glow behind the drawing, in viewBox units.
+ * @param children Draws the art, given an instance-unique id for its defs.
+ * @param className Extra classes for the SVG.
+ */
+export const EmptyArtFrame: FC<EmptyArtFrameProps> = ({
+  className,
+  label,
+  glow,
+  children,
+}) => {
   const id = useId();
   return (
     <svg
@@ -72,7 +145,7 @@ export const CommentsEmptyArt: FC<EmptyArtProps> = ({ className }) => {
     />
   );
   return (
-    <Art
+    <EmptyArtFrame
       className={className}
       label="No comments yet"
       glow={{ cx: 80, cy: 58, rx: 60, ry: 42 }}
@@ -176,7 +249,7 @@ export const CommentsEmptyArt: FC<EmptyArtProps> = ({ className }) => {
           />
         </>
       )}
-    </Art>
+    </EmptyArtFrame>
   );
 };
 CommentsEmptyArt.displayName = "CommentsEmptyArt";
@@ -192,7 +265,7 @@ CommentsEmptyArt.displayName = "CommentsEmptyArt";
  * @param className Extra classes for the SVG; it fills its container's width.
  */
 export const HistoryEmptyArt: FC<EmptyArtProps> = ({ className }) => (
-  <Art
+  <EmptyArtFrame
     className={className}
     label="No history yet"
     glow={{ cx: 80, cy: 58, rx: 58, ry: 40 }}
@@ -240,7 +313,7 @@ export const HistoryEmptyArt: FC<EmptyArtProps> = ({ className }) => (
         ))}
       </>
     )}
-  </Art>
+  </EmptyArtFrame>
 );
 HistoryEmptyArt.displayName = "HistoryEmptyArt";
 
@@ -255,7 +328,7 @@ HistoryEmptyArt.displayName = "HistoryEmptyArt";
  * @param className Extra classes for the SVG; it fills its container's width.
  */
 export const SearchEmptyArt: FC<EmptyArtProps> = ({ className }) => (
-  <Art
+  <EmptyArtFrame
     className={className}
     label="No results"
     glow={{ cx: 80, cy: 58, rx: 58, ry: 40 }}
@@ -305,7 +378,7 @@ export const SearchEmptyArt: FC<EmptyArtProps> = ({ className }) => (
         />
       </>
     )}
-  </Art>
+  </EmptyArtFrame>
 );
 SearchEmptyArt.displayName = "SearchEmptyArt";
 
@@ -321,7 +394,7 @@ SearchEmptyArt.displayName = "SearchEmptyArt";
  * @param className Extra classes for the SVG; it fills its container's width.
  */
 export const SimilarityEmptyArt: FC<EmptyArtProps> = ({ className }) => (
-  <Art
+  <EmptyArtFrame
     className={className}
     label="No similarity index yet"
     glow={{ cx: 80, cy: 56, rx: 58, ry: 40 }}
@@ -372,7 +445,7 @@ export const SimilarityEmptyArt: FC<EmptyArtProps> = ({ className }) => (
         ))}
       </>
     )}
-  </Art>
+  </EmptyArtFrame>
 );
 SimilarityEmptyArt.displayName = "SimilarityEmptyArt";
 
@@ -388,7 +461,7 @@ SimilarityEmptyArt.displayName = "SimilarityEmptyArt";
  * @param className Extra classes for the SVG; it fills its container's width.
  */
 export const EvaluationEmptyArt: FC<EmptyArtProps> = ({ className }) => (
-  <Art
+  <EmptyArtFrame
     className={className}
     label="No evaluations yet"
     glow={{ cx: 80, cy: 58, rx: 58, ry: 40 }}
@@ -428,7 +501,7 @@ export const EvaluationEmptyArt: FC<EmptyArtProps> = ({ className }) => (
         />
       </>
     )}
-  </Art>
+  </EmptyArtFrame>
 );
 EvaluationEmptyArt.displayName = "EvaluationEmptyArt";
 
@@ -443,7 +516,7 @@ EvaluationEmptyArt.displayName = "EvaluationEmptyArt";
  * @param className Extra classes for the SVG; it fills its container's width.
  */
 export const PanelEmptyArt: FC<EmptyArtProps> = ({ className }) => (
-  <Art
+  <EmptyArtFrame
     className={className}
     label="Nothing here yet"
     glow={{ cx: 80, cy: 56, rx: 56, ry: 38 }}
@@ -477,7 +550,7 @@ export const PanelEmptyArt: FC<EmptyArtProps> = ({ className }) => (
         ))}
       </>
     )}
-  </Art>
+  </EmptyArtFrame>
 );
 PanelEmptyArt.displayName = "PanelEmptyArt";
 
@@ -492,7 +565,7 @@ PanelEmptyArt.displayName = "PanelEmptyArt";
  * @param className Extra classes for the SVG; it fills its container's width.
  */
 export const AnnotationEmptyArt: FC<EmptyArtProps> = ({ className }) => (
-  <Art
+  <EmptyArtFrame
     className={className}
     label="No annotations yet"
     glow={{ cx: 80, cy: 56, rx: 56, ry: 38 }}
@@ -535,7 +608,7 @@ export const AnnotationEmptyArt: FC<EmptyArtProps> = ({ className }) => (
         </g>
       </>
     )}
-  </Art>
+  </EmptyArtFrame>
 );
 AnnotationEmptyArt.displayName = "AnnotationEmptyArt";
 
@@ -550,7 +623,7 @@ AnnotationEmptyArt.displayName = "AnnotationEmptyArt";
  * @param className Extra classes for the SVG; it fills its container's width.
  */
 export const ModelsEmptyArt: FC<EmptyArtProps> = ({ className }) => (
-  <Art
+  <EmptyArtFrame
     className={className}
     label="No models yet"
     glow={{ cx: 80, cy: 56, rx: 56, ry: 38 }}
@@ -603,6 +676,6 @@ export const ModelsEmptyArt: FC<EmptyArtProps> = ({ className }) => (
         <rect x="86" y="60" width="13" height="4" rx="2" fill={BORDER} />
       </>
     )}
-  </Art>
+  </EmptyArtFrame>
 );
 ModelsEmptyArt.displayName = "ModelsEmptyArt";

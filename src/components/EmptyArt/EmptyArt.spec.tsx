@@ -3,6 +3,9 @@ import { render, screen } from "@testing-library/react";
 import {
   AnnotationEmptyArt,
   CommentsEmptyArt,
+  EmptyArtColor,
+  EmptyArtFrame,
+  EmptyArtMotion,
   EvaluationEmptyArt,
   HistoryEmptyArt,
   ModelsEmptyArt,
@@ -37,5 +40,28 @@ describe("EmptyArt", () => {
       (g) => g.id
     );
     expect(new Set(ids).size).toBe(2);
+  });
+
+  it("frames an app's own art with the glow and motion classes", () => {
+    render(
+      <EmptyArtFrame
+        label="No locations yet"
+        glow={{ cx: 80, cy: 58, rx: 58, ry: 40 }}
+      >
+        {(id) => (
+          <circle
+            data-testid={id}
+            cx="80"
+            cy="56"
+            r="8"
+            stroke={EmptyArtColor.Accent}
+            className={EmptyArtMotion.Drop}
+          />
+        )}
+      </EmptyArtFrame>
+    );
+    const art = screen.getByRole("img", { name: "No locations yet" });
+    expect(art.querySelector("radialGradient")).not.toBeNull();
+    expect(art.querySelector("circle")).toHaveClass(EmptyArtMotion.Drop);
   });
 });
