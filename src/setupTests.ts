@@ -6,3 +6,5 @@ globalThis.ResizeObserver = class ResizeObserver {
   unobserve(): void {}
   disconnect(): void {}
 };
+
+Element.prototype.getAnimations = () => [];
