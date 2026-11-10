@@ -53,6 +53,7 @@ export * from "./Sheet";
 export * from "./Slider";
 export * from "./SplitButton";
 export * from "./Spinner";
+export * from "./StatTile";
 export * from "./StatusDot";
 export * from "./Stack";
 export * from "./StepRail";
