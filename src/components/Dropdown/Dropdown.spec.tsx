@@ -36,6 +36,18 @@ describe("Dropdown", () => {
     expect(screen.getByText("Visible item")).toBeInTheDocument();
   });
 
+  it("should space its rows apart", async () => {
+    const user = userEvent.setup();
+    render(
+      <Dropdown trigger={trigger}>
+        <MenuTextItem>First</MenuTextItem>
+        <MenuTextItem>Second</MenuTextItem>
+      </Dropdown>
+    );
+    await user.click(screen.getByText("Open menu"));
+    expect(await screen.findByRole("menu")).toHaveClass("flex-col", "gap-0.5");
+  });
+
   it("should close after an item is clicked", async () => {
     const user = userEvent.setup();
     const onClick = jest.fn();

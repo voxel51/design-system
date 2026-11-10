@@ -71,6 +71,19 @@ describe("MenuIconTextItem", () => {
     expect(document.querySelector("svg")).toBeInTheDocument();
   });
 
+  it("sizes every glyph to 16px, whatever size the caller set", async () => {
+    const user = userEvent.setup();
+    render(
+      <Dropdown trigger={trigger}>
+        <MenuIconTextItem icon={<EditIcon size={12} />} text="Edit" />
+      </Dropdown>
+    );
+    await user.click(screen.getByText("Open menu"));
+    const svg = (await screen.findByRole("menu")).querySelector("svg")!;
+    expect(svg).toHaveAttribute("width", "12");
+    expect(svg.parentElement).toHaveClass("[&_svg]:size-4");
+  });
+
   it("should render a custom icon node", async () => {
     const user = userEvent.setup();
     render(

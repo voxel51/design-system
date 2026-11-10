@@ -1,4 +1,4 @@
-import { act, render, screen } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { Dropdown, DropdownTrigger } from "@/components/Dropdown";
@@ -148,7 +148,8 @@ describe("MenuCheckItem", () => {
     await user.click(item);
 
     expect(onClick).toHaveBeenCalled();
-    await act(async () => {});
-    expect(screen.getByRole("menu")).toHaveAttribute("data-closed");
+    await waitFor(() =>
+      expect(screen.queryByRole("menu")).not.toBeInTheDocument()
+    );
   });
 });

@@ -73,7 +73,8 @@ describe("MenuSubmenuItem", () => {
   it("should close both levels when a submenu item is selected", async () => {
     const onSelect = jest.fn();
     const user = await renderOpenMenu({ onSelect });
-    await user.click(screen.getByText("Panels"));
+    act(() => submenuRow().focus());
+    await user.keyboard("{ArrowRight}");
     await user.click(await screen.findByText("Histograms"));
 
     expect(onSelect).toHaveBeenCalledTimes(1);
