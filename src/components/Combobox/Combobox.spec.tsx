@@ -433,3 +433,87 @@ describe("Combobox clearing", () => {
     expect(onPick).toHaveBeenLastCalledWith(null);
   });
 });
+
+describe("Combobox in a popover", () => {
+  function Picker({
+    onPick = jest.fn(),
+    onHostEscape = jest.fn(),
+  }: {
+    onPick?: (o: ComboboxOption | null) => void;
+    onHostEscape?: () => void;
+  }) {
+    const [value, setValue] = useState<ComboboxOption | null>(OPTIONS[1]);
+    return (
+      // eslint-disable-next-line jsx-a11y/no-static-element-interactions -- a host that would close on Escape
+      <div onKeyDown={(e) => e.key === "Escape" && onHostEscape()}>
+        <Combobox
+          trigger={<button type="button">Pick</button>}
+          options={OPTIONS}
+          value={value}
+          onChange={(o) => {
+            setValue(o);
+            onPick(o);
+          }}
+          placeholder="Search things"
+          footer={<span>Footer note</span>}
+        />
+      </div>
+    );
+  }
+
+  it("opens a search field, list and footer from the trigger", async () => {
+    const user = userEvent.setup();
+    render(<Picker />);
+    await user.click(screen.getByRole("button", { name: "Pick" }));
+
+    expect(
+      screen.getByRole("combobox", { name: "Search things" })
+    ).toHaveFocus();
+    expect(screen.getAllByRole("option")).toHaveLength(3);
+    expect(screen.getByText("Footer note")).toBeInTheDocument();
+  });
+
+  it("filters by the typed text without clearing the value", async () => {
+    const user = userEvent.setup();
+    const onPick = jest.fn();
+    render(<Picker onPick={onPick} />);
+    await user.click(screen.getByRole("button", { name: "Pick" }));
+    await user.keyboard("first");
+
+    expect(screen.getAllByRole("option")).toHaveLength(1);
+    expect(onPick).not.toHaveBeenCalled();
+  });
+
+  it("picks a row and closes", async () => {
+    const user = userEvent.setup();
+    const onPick = jest.fn();
+    render(<Picker onPick={onPick} />);
+    await user.click(screen.getByRole("button", { name: "Pick" }));
+    await user.keyboard("gam{Enter}");
+
+    expect(onPick).toHaveBeenCalledWith(OPTIONS[2]);
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+  });
+
+  it("does not re-pick the current row", async () => {
+    const user = userEvent.setup();
+    const onPick = jest.fn();
+    render(<Picker onPick={onPick} />);
+    await user.click(screen.getByRole("button", { name: "Pick" }));
+    await user.keyboard("beta{Enter}");
+
+    expect(onPick).not.toHaveBeenCalled();
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+  });
+
+  it("closes on the first Escape without reaching the host", async () => {
+    const user = userEvent.setup();
+    const onHostEscape = jest.fn();
+    render(<Picker onHostEscape={onHostEscape} />);
+    await user.click(screen.getByRole("button", { name: "Pick" }));
+    await user.keyboard("{Escape}");
+
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+    expect(onHostEscape).not.toHaveBeenCalled();
+  });
+});

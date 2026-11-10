@@ -6,10 +6,12 @@ import {
   ArrowUpDownIcon,
   Combobox,
   type ComboboxOption,
+  DropdownTrigger,
   FilterAltIcon,
   StatusDot,
   Text,
   TextColor,
+  TextAction,
   TextVariant,
 } from "@voxel51/voodo";
 
@@ -151,4 +153,24 @@ export const IconsAndHints: Story = {
       <Demo all={QUERIES} placeholder="Search" aria-label="Query" />
     </div>
   ),
+};
+
+export const InPopover: Story = {
+  render: function Render() {
+    const [value, setValue] = useState<ComboboxOption | null>(DATASETS[0]);
+    return (
+      <Combobox
+        trigger={
+          <DropdownTrigger borderless prefix="Dataset">
+            {value?.label ?? "None"}
+          </DropdownTrigger>
+        }
+        options={DATASETS}
+        value={value}
+        onChange={setValue}
+        placeholder="Search datasets"
+        footer={<TextAction onClick={() => {}}>Create a dataset</TextAction>}
+      />
+    );
+  },
 };
