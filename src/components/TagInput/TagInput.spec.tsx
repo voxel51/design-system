@@ -8,10 +8,12 @@ const Harness = ({
   initial = [],
   suggestions,
   onChange,
+  maxTags,
 }: {
   initial?: string[];
   suggestions?: string[];
   onChange?: (tags: string[]) => void;
+  maxTags?: number;
 }) => {
   const [tags, setTags] = useState<string[]>(initial);
   const [draft, setDraft] = useState("");
@@ -26,6 +28,7 @@ const Harness = ({
       inputValue={draft}
       onInputChange={setDraft}
       suggestions={suggestions}
+      maxTags={maxTags}
     />
   );
 };
@@ -78,5 +81,29 @@ describe("TagInput", () => {
     });
     expect(onChange).toHaveBeenLastCalledWith(["video", "demo"]);
     expect(field).toHaveValue("");
+  });
+
+  it("outlines each chip, so it shows on a light card", () => {
+    render(<Harness initial={["a"]} />);
+    expect(screen.getByText("a").parentElement).toHaveClass(
+      "border",
+      "border-content-border-default"
+    );
+  });
+
+  it("hides the field at maxTags, keeping the chips removable", async () => {
+    render(<Harness initial={["a"]} maxTags={1} />);
+    expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Remove a" }));
+    expect(screen.getByRole("combobox")).toBeInTheDocument();
+  });
+
+  it("keeps the focused field at maxTags, so Backspace still removes a chip", async () => {
+    render(<Harness maxTags={1} />);
+    const field = screen.getByRole("combobox");
+    await userEvent.type(field, "a{Enter}");
+    expect(field).toHaveFocus();
+    await userEvent.type(field, "{Backspace}");
+    expect(screen.queryByText("a")).not.toBeInTheDocument();
   });
 });
