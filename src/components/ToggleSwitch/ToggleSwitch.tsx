@@ -1,6 +1,6 @@
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import clsx from "clsx";
-import type { FC, HTMLAttributes, ReactNode } from "react";
+import type { ElementType, FC, HTMLAttributes, ReactNode, Ref } from "react";
 
 import { Tooltip } from "@/components/Tooltip";
 import { textStyles } from "@/styles/text";
@@ -20,7 +20,9 @@ import { cn } from "@/util/classes";
 
 export interface ToggleSwitchTab {
   label: ReactNode;
-  content: ReactNode;
+  content?: ReactNode;
+  /** Renders the tab as a link, so open-in-new-tab and middle-click work. */
+  href?: string;
   disabled?: boolean;
   tooltip?: ReactNode;
 }
@@ -56,6 +58,10 @@ export interface ToggleSwitchProps extends Omit<
   tabListClassName?: string;
   tabPanelClassName?: string;
   fullWidth?: boolean;
+  /** Element for tabs with an `href` (e.g. a router link); defaults to `a`. */
+  linkComponent?: ElementType;
+  /** Ref to the tab row, e.g. for `useCompactRow`. */
+  tabListRef?: Ref<HTMLElement>;
 }
 
 const tabSizeStyles: Record<ToggleSwitchSize, string> = {
@@ -212,6 +218,8 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
   fullWidth,
   tabListClassName,
   tabPanelClassName,
+  linkComponent = "a",
+  tabListRef,
   ...props
 }) => {
   return (
@@ -225,6 +233,7 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
       {...props}
     >
       <TabList
+        ref={tabListRef}
         className={cn(
           "toggle-switch-tab-list",
           "flex flex-nowrap items-center",
@@ -240,7 +249,7 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
           const tabClassName = ({ selected }: { selected: boolean }): string =>
             cn(
               "cursor-pointer",
-              "flex-1",
+              "min-w-0 flex-1",
               "flex items-center justify-center",
               "whitespace-nowrap",
               "outline-none",
@@ -264,7 +273,13 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
             );
 
           const tab = (
-            <Tab disabled={data.disabled} className={tabClassName}>
+            <Tab
+              disabled={data.disabled}
+              className={tabClassName}
+              {...(data.href && !data.disabled
+                ? { as: linkComponent, href: data.href }
+                : {})}
+            >
               {data.label}
             </Tab>
           );
@@ -273,25 +288,27 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
             <Tooltip
               key={id}
               content={data.tooltip}
-              wrapperClassName="flex-1 flex"
+              wrapperClassName="min-w-0 flex-1 flex"
               portal
             >
               {tab}
             </Tooltip>
           ) : (
-            <div key={id} className="flex-1 flex">
+            <div key={id} className="min-w-0 flex-1 flex">
               {tab}
             </div>
           );
         })}
       </TabList>
-      <TabPanels className={cn(tabPanelClassName)}>
-        {tabs.map(({ id, data }) => (
-          <TabPanel key={id} className={cn("focus:outline-none")}>
-            {data.content}
-          </TabPanel>
-        ))}
-      </TabPanels>
+      {tabs.some(({ data }) => data.content !== undefined) && (
+        <TabPanels className={cn(tabPanelClassName)}>
+          {tabs.map(({ id, data }) => (
+            <TabPanel key={id} className={cn("focus:outline-none")}>
+              {data.content}
+            </TabPanel>
+          ))}
+        </TabPanels>
+      )}
     </TabGroup>
   );
 };

@@ -169,4 +169,35 @@ describe("ToggleSwitch", () => {
       "custom-tab-list"
     );
   });
+
+  it("should render tabs with an href as links without panels", () => {
+    render(
+      <ToggleSwitch
+        index={1}
+        tabs={[
+          { id: "a", data: { label: "A", href: "/a" } },
+          { id: "b", data: { label: "B", href: "/b" } },
+        ]}
+      />
+    );
+
+    expect(screen.getByRole("tab", { name: "B" })).toHaveAttribute(
+      "href",
+      "/b"
+    );
+    expect(screen.queryByRole("tabpanel")).not.toBeInTheDocument();
+  });
+
+  it("should render a disabled tab with an href as a button", () => {
+    render(
+      <ToggleSwitch
+        tabs={[
+          { id: "a", data: { label: "A", href: "/a" } },
+          { id: "b", data: { label: "B", href: "/b", disabled: true } },
+        ]}
+      />
+    );
+
+    expect(screen.getByRole("tab", { name: "B" })).not.toHaveAttribute("href");
+  });
 });

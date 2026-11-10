@@ -57,7 +57,9 @@ const circleStyles: Record<StepState, string> = {
 
 /**
  * Shows progress through a multi-step flow. Completed steps show a check, the
- * current step is highlighted, and later steps are muted.
+ * current step is highlighted, and later steps are muted. Below `sm` only the
+ * current step keeps its label; the others show their number or check and
+ * name themselves in a tooltip.
  *
  * @example
  * ```tsx
@@ -109,11 +111,18 @@ export const StepRail: FC<StepRailProps> = ({
             >
               {state === "done" ? <CheckIcon size={10} /> : i + 1}
             </span>
-            {step.label}
+            <span
+              className={state === "active" ? undefined : "hidden sm:inline"}
+            >
+              {step.label}
+            </span>
           </>
         );
         const labelClass = clsx(
-          "flex items-center gap-[8px] whitespace-nowrap py-[4px] pr-[8px] pl-[4px] transition-colors",
+          "flex items-center gap-[8px] whitespace-nowrap py-[4px] pl-[4px] transition-colors",
+          state === "active"
+            ? "pr-[8px]"
+            : "max-sm:gap-0 max-sm:pr-[4px] sm:pr-[8px]",
           TEXT_STYLES[TextVariant.BodySecondary],
           radiusStyles(Radius.Full),
           labelStyles[state]
@@ -128,6 +137,7 @@ export const StepRail: FC<StepRailProps> = ({
                   textColorClass(TextColor.Primary, ElementState.Hover),
                   bgColorClass(BackgroundColor.CardElevated, ElementState.Hover)
                 )}
+                title={typeof step.label === "string" ? step.label : undefined}
                 onClick={() => onSelect(step.id)}
               >
                 {content}
@@ -135,6 +145,11 @@ export const StepRail: FC<StepRailProps> = ({
             ) : (
               <span
                 aria-current={state === "active" ? "step" : undefined}
+                title={
+                  state !== "active" && typeof step.label === "string"
+                    ? step.label
+                    : undefined
+                }
                 className={labelClass}
               >
                 {content}
