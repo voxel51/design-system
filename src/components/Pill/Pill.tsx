@@ -56,6 +56,14 @@ const removeIconSizes: Record<PillSize, number> = {
   [Size.Md]: 12,
 };
 
+// The leading icon sits a step below the caption: 10px at Xs (the Tag Pill),
+// then the standard Sm and Md icon sizes.
+const iconSizes: Record<PillSize, number> = {
+  [Size.Xs]: 10,
+  [Size.Sm]: 12,
+  [Size.Md]: 14,
+};
+
 // The status dot is a 5px ellipse at Small and 6px at Medium.
 const dotSizes: Record<PillSize, number> = {
   [Size.Xs]: 5,
@@ -129,7 +137,7 @@ export const Pill: FC<PillProps> = ({
       )}
       {IconContent && (
         <div>
-          <IconContent size={size} color={color} />
+          <IconContent size={iconSizes[size]} color={color} />
         </div>
       )}
       <div>{children}</div>

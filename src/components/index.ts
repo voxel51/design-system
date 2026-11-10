@@ -26,6 +26,7 @@ export * from "./FormField";
 export * from "./FormFieldGroup";
 export * from "./Heading";
 export * from "./IconAction";
+export * from "./ListToolbar";
 export * from "./Icons";
 export * from "./ImageList";
 export * from "./Input";

@@ -18,6 +18,8 @@ import {
 import { Tooltip, TooltipLabel } from "@/components/Tooltip";
 import { TEXT_STYLES } from "@/styles/text";
 import {
+  BackgroundColor,
+  bgColorClass,
   IconColor,
   Size,
   TextColor,
@@ -57,6 +59,8 @@ export type DropdownTriggerProps = Omit<
 > & {
   /** What the value is, shown before it (`Sort by: Newest`); on a phone only in the tooltip. */
   prefix?: ReactNode;
+  /** A borderless trigger whose value is set: a soft filled pill. */
+  active?: boolean;
   /** Spans its container: the label truncates on the left, the caret sits at the far right (a form picker). */
   fullWidth?: boolean;
 };
@@ -93,6 +97,7 @@ export type DropdownTriggerProps = Omit<
  *  shows and a tooltip reads prefix and value; the `aria-label` keeps both
  *  unless one is passed.
  * @param size Button size. Defaults to `"sm"`.
+ * @param active Marks a borderless trigger whose value is set: a soft filled pill.
  * @param borderless No outline; a rounded fill appears on hover. The leading
  *  icon shrinks to 14px and both icons take the muted icon colour.
  * @param leadingIcon Optional icon before the label.
@@ -105,6 +110,7 @@ export const DropdownTrigger: FC<DropdownTriggerProps> = ({
   borderless,
   prefix,
   fullWidth,
+  active = false,
   leadingIcon,
   className,
   ...props
@@ -134,6 +140,7 @@ export const DropdownTrigger: FC<DropdownTriggerProps> = ({
               : TextVariant.BodyTertiary
           ],
         borderless && size === Size.Md && "h-7 py-1",
+        borderless && active && bgColorClass(BackgroundColor.CardNested),
         prefix != null && textColorClass(TextColor.Primary),
         fullWidth && "w-full min-w-0 [&>div]:w-full [&>div]:justify-between",
         className
