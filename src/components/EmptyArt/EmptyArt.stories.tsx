@@ -3,6 +3,9 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   AnnotationEmptyArt,
   CommentsEmptyArt,
+  EmptyArtColor,
+  EmptyArtFrame,
+  EmptyArtMotion,
   EmptyState,
   EvaluationEmptyArt,
   HistoryEmptyArt,
@@ -55,6 +58,37 @@ export const InEmptyState: Story = {
         title="Nothing matches yet"
         description="Widen the filters to see more runs."
       />
+    </div>
+  ),
+};
+
+/** An app's own art in the shared frame: a pin dropping onto a ground line. */
+export const CustomArt: Story = {
+  render: () => (
+    <div className="w-[150px]">
+      <EmptyArtFrame
+        label="No locations yet"
+        glow={{ cx: 80, cy: 58, rx: 58, ry: 40 }}
+      >
+        {() => (
+          <>
+            <path
+              d="M40 80h80"
+              stroke={EmptyArtColor.BorderStrong}
+              strokeLinecap="round"
+            />
+            <g className={EmptyArtMotion.Drop}>
+              <circle
+                cx="80"
+                cy="56"
+                r="9"
+                fill={EmptyArtColor.Card}
+                stroke={EmptyArtColor.Accent}
+              />
+            </g>
+          </>
+        )}
+      </EmptyArtFrame>
     </div>
   ),
 };

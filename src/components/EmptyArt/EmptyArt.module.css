@@ -48,6 +48,12 @@
 .grow {
   animation: grow 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
+.drop {
+  animation: drop 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+.flow {
+  animation: flow 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
 
 @keyframes sweep {
   0% {
@@ -188,6 +194,46 @@
   100% {
     transform: scaleY(0.12);
     opacity: 0.3;
+  }
+}
+
+@keyframes drop {
+  0% {
+    transform: translateY(-18px);
+    opacity: 0;
+  }
+  14% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  20% {
+    transform: translateY(-4px);
+  }
+  27%,
+  86% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+}
+@keyframes flow {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  80%,
+  100% {
+    transform: translateX(46px);
+    opacity: 0;
   }
 }
 
