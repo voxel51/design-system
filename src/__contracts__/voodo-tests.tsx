@@ -108,6 +108,11 @@ import {
   Spinner,
   StatusDot,
   Stack,
+  StatTile,
+  StatTileGroup,
+  StatTileTone,
+  Combobox,
+  DocsButton,
   StepRail,
   StatusColor,
   Text,
@@ -145,6 +150,19 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableAlign,
+  TableSort,
+  TableVariant,
+  Tab,
+  Tabs,
+  SpinnerIcon,
+  ThumbsUpIcon,
+  ThumbsDownIcon,
+  type SliderMark,
+  MultiValueSlider,
+  EmptyArtFrame,
+  EmptyArtColor,
+  EmptyArtMotion,
 } from "@voxel51/voodo";
 
 const noop = (): void => undefined;
@@ -440,6 +458,22 @@ export const exhaustive = {
     right: true,
   } satisfies Record<SheetSide, true>,
 
+  tableVariant: {
+    default: true,
+    boxed: true,
+  } satisfies Record<TableVariant, true>,
+
+  tableAlign: {
+    start: true,
+    end: true,
+  } satisfies Record<TableAlign, true>,
+
+  tableSort: {
+    asc: true,
+    desc: true,
+    none: true,
+  } satisfies Record<TableSort, true>,
+
   // PillColor spans three color families; spot-check assignability from each
   pillColor: ["bg-card", "bg-transparent"] satisfies readonly PillColor[],
 };
@@ -652,7 +686,23 @@ export const Everything = (
           onChange={() => {}}
           options={[{ id: "a", label: "A" }]}
         />
+        <ChipSelect
+          aria-label="Owner"
+          value="a"
+          onChange={() => {}}
+          options={[{ id: "a", label: "A" }]}
+          active
+          className="px-2"
+        />
       </FilterBar>
+      <Tabs>
+        <Tab active count={3} size="sm">
+          t
+        </Tab>
+        <Tab size="md">t</Tab>
+      </Tabs>
+      {/* @ts-expect-error - Tab has no lg size */}
+      <Tab size="lg">t</Tab>
       <ListRow
         href="#"
         title="t"
@@ -662,17 +712,47 @@ export const Everything = (
       />
       <ListRow title="t" onClick={() => {}} />
       <ListRow title="t" active disabled />
+      <ListRow title="t" icon={AddIcon} onClick={noop} />
+      <Avatar name="Run" icon={<span />} size="lg" highlighted />
+      <StatTileGroup>
+        <StatTile label="l" value="1" hint="2%" />
+        <StatTile
+          label="l"
+          value="1"
+          color="brand-primary"
+          delta="+1"
+          deltaTone="success"
+          onSelect={noop}
+          selected
+          selectLabel="Show"
+          compare={{ value: "2", color: "#0af", onSelect: noop }}
+        />
+        <StatTile label="l" value="1" deltaTone={StatTileTone.Failure} />
+      </StatTileGroup>
+      {/* @ts-expect-error - deltaTone is a fixed set */}
+      <StatTile label="l" value="1" deltaTone="warning" />
+      <Combobox
+        trigger={<button type="button">t</button>}
+        options={[{ id: "a", label: "a" }]}
+        value={null}
+        onChange={noop}
+        footer={<span />}
+      />
       <CollapsibleCard
         title="t"
         summary="s"
         icon={AddIcon}
         actions={<span />}
+        loading
         open
         onOpenChange={() => {}}
       >
         c
       </CollapsibleCard>
+      {/* @ts-expect-error - the card's surface is fixed */}
+      <CollapsibleCard title="t" background="secondary" />
       <CollapsibleCard title="t" defaultOpen={false} />
+      <CollapsibleCard title="t" keepMounted />
       <SplitButton onClick={() => {}} menuLabel="m" menu={<span />}>
         t
       </SplitButton>
@@ -686,6 +766,7 @@ export const Everything = (
         onInputChange={() => {}}
         suggestions={["b"]}
         loading
+        maxTags={1}
         aria-label="Tags"
       />
       <RichButtonGroup
@@ -825,7 +906,7 @@ export const Everything = (
     <Table variant="boxed" wrapperClassName="x">
       <TableHeader>
         <TableRow>
-          <TableHead align="end" sort="asc" onSort={noop}>
+          <TableHead align={TableAlign.End} sort="asc" onSort={noop}>
             A
           </TableHead>
         </TableRow>
@@ -840,6 +921,15 @@ export const Everything = (
     <Table variant="striped" />
     {/* @ts-expect-error - sort is a fixed set */}
     <TableHead sort="up" />
+    <Table variant={TableVariant.Default}>
+      <TableHeader>
+        <TableRow>
+          <TableHead sort={TableSort.None} onSort={noop}>
+            B
+          </TableHead>
+        </TableRow>
+      </TableHeader>
+    </Table>
 
     {/* Pagination: every prop */}
     <Pagination
@@ -940,6 +1030,18 @@ export const Everything = (
       ))}
       {/* @ts-expect-error - lg is excluded from ToggleSwitchSize */}
       <ToggleSwitch size="lg" tabs={[]} />
+      <ToggleSwitch
+        collapse="auto"
+        tabs={[{ id: "one", data: { label: "One", icon: AddIcon } }]}
+      />
+      <ToggleSwitch
+        linkComponent="a"
+        tabListRef={{ current: null }}
+        tabs={[
+          { id: "one", data: { label: "One", href: "/one" } },
+          { id: "two", data: { label: "Two", href: "/two", disabled: true } },
+        ]}
+      />
       <SingleValueSlider min={0} max={10} value={5} onChange={noop} />
       <SingleValueSlider
         min={0}
@@ -949,6 +1051,29 @@ export const Everything = (
         formatInput={(v: number) => String(v * 100)}
         parseInput={(text: string) => Number.parseFloat(text) / 100}
       />
+      <SingleValueSlider
+        min={0}
+        max={1}
+        marks={[{ value: 0, label: "0" }, { value: 0.5 } satisfies SliderMark]}
+      />
+      <MultiValueSlider min={0} max={1} marks={[{ value: 1, label: "1" }]} />
+      <ToggleSwitch index={-1} tabs={[{ id: "a", data: { label: "A" } }]} />
+      <Button leadingIcon={SpinnerIcon}>busy</Button>
+      <ThumbsUpIcon size="sm" />
+      <ThumbsDownIcon size={16} />
+      <EmptyArtFrame
+        label="l"
+        glow={{ cx: 1, cy: 1, rx: 1, ry: 1 }}
+        className="x"
+      >
+        {(id) => (
+          <circle
+            id={id}
+            stroke={EmptyArtColor.Accent}
+            className={EmptyArtMotion.Breathe}
+          />
+        )}
+      </EmptyArtFrame>
       {SIZES.map((s) => (
         <DatePicker key={s} size={s} radius="lg" onChange={noop} />
       ))}
@@ -1000,6 +1125,9 @@ export const Everything = (
     <Text truncate>A long title</Text>
     <Stack scroll>
       <DropdownTrigger prefix="Sort by">Newest</DropdownTrigger>
+      <DropdownTrigger borderless active>
+        Owner
+      </DropdownTrigger>
     </Stack>
     <LoadingDots text="Searching" variant="sm" color="text-tertiary" />
     {MENU_ANCHORS.map((a) => (
@@ -1041,6 +1169,19 @@ export const Everything = (
       <RichList spacing="md" listItems={[]} />
       <EmptyState orientation="col" spacing="md" title="Nothing here" />
       <EmptyState size="sm" title="Nothing here" />
+      <EmptyState
+        title="Nothing here"
+        actions={<span />}
+        docsHref="/docs"
+        docsLabel="Docs"
+        note={<span />}
+        stepsTitle="How"
+        steps={[
+          { icon: AddIcon, title: "1", description: "d", action: <span /> },
+        ]}
+        footer={<span />}
+      />
+      <DocsButton href="/docs" label="Docs" size="xs" />
       <Collapsible
         defaultOpen
         header={({ open }) => <span>{String(open)}</span>}
