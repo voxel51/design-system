@@ -1,6 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { AnnotationEmptyArt, EmptyState, IconName } from "@voxel51/voodo";
+import {
+  AnnotationEmptyArt,
+  Button,
+  EmptyState,
+  IconName,
+} from "@voxel51/voodo";
 
 const meta: Meta<typeof EmptyState> = {
   title: "Components/EmptyState",
@@ -68,3 +73,37 @@ export const SmallWithArt: Story = {
 };
 
 export default meta;
+
+export const WithActionsAndSteps: Story = {
+  decorators: [
+    (Story) => (
+      <div className="w-[720px] max-w-full">
+        <Story />
+      </div>
+    ),
+  ],
+  args: {
+    art: <AnnotationEmptyArt />,
+    title: "Connect to your data source",
+    description: "Explore samples in your external data sources.",
+    actions: (
+      <Button variant="primary" size="sm">
+        Add data source
+      </Button>
+    ),
+    docsHref: "https://docs.voxel51.com",
+    stepsTitle: "How it works",
+    steps: [
+      {
+        icon: IconName.Code,
+        title: "1. Define your pipeline",
+        description: "Tell FiftyOne how to query your data source.",
+      },
+      {
+        icon: IconName.Add,
+        title: "2. Connect your data source",
+        description: "Register your operator to connect to a data source.",
+      },
+    ],
+  },
+};
