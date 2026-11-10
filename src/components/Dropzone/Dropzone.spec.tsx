@@ -28,11 +28,25 @@ describe("Dropzone", () => {
     const { rerender } = render(<Dropzone title="Drop" onFiles={onFiles} />);
     const zone = screen.getByRole("button");
 
-    fireEvent.dragOver(zone);
+    fireEvent.dragEnter(zone);
     expect(zone).toHaveAttribute("data-dragging", "true");
 
     rerender(<Dropzone title="Drop" onFiles={onFiles} disabled />);
     fireEvent.drop(zone, { dataTransfer: { files: [file] } });
     expect(onFiles).not.toHaveBeenCalled();
+  });
+
+  it("stays highlighted while the drag crosses its children", () => {
+    render(
+      <Dropzone title="Drop" description="or browse" onFiles={jest.fn()} />
+    );
+    const zone = screen.getByRole("button");
+    const child = screen.getByText("or browse");
+    fireEvent.dragEnter(zone);
+    fireEvent.dragEnter(child);
+    fireEvent.dragLeave(zone);
+    expect(zone).toHaveAttribute("data-dragging", "true");
+    fireEvent.dragLeave(child);
+    expect(zone).not.toHaveAttribute("data-dragging");
   });
 });
