@@ -9,6 +9,7 @@ import { TEXT_STYLES } from "@/styles/text";
 import {
   ElementState,
   IconColor,
+  Size,
   TextColor,
   textColorClass,
   TextVariant,
@@ -30,6 +31,8 @@ export interface TabProps
   active?: boolean;
   /** A trailing count, e.g. how many datasets the tab's page lists. */
   count?: number;
+  /** `sm` is the compact tab for narrow panels: 14px label, 8px sides. */
+  size?: `${Size.Sm | Size.Md}`;
 }
 
 /**
@@ -44,6 +47,7 @@ export interface TabProps
  *
  * @param active Whether this is the selected tab. The {@link Tabs} underline slides to it.
  * @param count Optional trailing count rendered after the label.
+ * @param size `md` (default) or the compact `sm`.
  * @param href Renders the tab as an anchor. See {@link TabProps.href}.
  * @param target Anchor target, used with `href`.
  * @param rel Anchor rel, used with `href`. Defaults to `"noreferrer"` when
@@ -58,6 +62,7 @@ export const Tab = forwardRef<HTMLElement, TabProps>(
     {
       active = false,
       count,
+      size = Size.Md,
       href,
       target,
       rel,
@@ -90,10 +95,13 @@ export const Tab = forwardRef<HTMLElement, TabProps>(
       // text/primary when active and text/secondary otherwise. 12px side
       // padding is kept: the list only adds a 4px gap, which is not enough
       // on its own to separate adjacent tabs.
-      "flex h-full shrink-0 items-center whitespace-nowrap px-3 pt-1.5 pb-2.5",
+      "flex h-full shrink-0 items-center whitespace-nowrap pt-1.5 pb-2.5",
+      size === Size.Sm ? "px-2" : "px-3",
       "cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
       "focus-visible:outline-none",
-      TEXT_STYLES[TextVariant.HeadingMd],
+      TEXT_STYLES[
+        size === Size.Sm ? TextVariant.HeadingSm : TextVariant.HeadingMd
+      ],
       transitionPreset(TransitionPreset.Colors),
       active
         ? textColorClass(TextColor.Primary)
