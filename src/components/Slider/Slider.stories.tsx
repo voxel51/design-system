@@ -127,6 +127,29 @@ export const WithSliderLabels: Story = {
   render: singleKnobProps.render,
 };
 
+const TICKS = [0, 0.25, 0.5, 0.75, 1].map((value) => ({
+  value,
+  label: String(value),
+}));
+
+/** Ticks with labels under the track, e.g. a confidence range. */
+export const WithMarks: Story = {
+  render: () => {
+    const [value, setValue] = useState([0.25, 0.75]);
+    return (
+      <MultiValueSlider
+        bare
+        min={0}
+        max={1}
+        step={0.01}
+        marks={TICKS}
+        value={value}
+        onChange={setValue}
+      />
+    );
+  },
+};
+
 export const WithInputLabels: Story = {
   args: {
     ...multiKnobProps.args,

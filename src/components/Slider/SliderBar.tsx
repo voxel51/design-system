@@ -25,6 +25,7 @@ interface SliderBarProps extends Omit<
   onChangeCommitted?: (value: number | number[]) => void;
   step: number;
   keyboardStep?: number | false;
+  marks?: number[];
   value?: number | number[];
 }
 
@@ -40,6 +41,7 @@ interface SliderBarProps extends Omit<
  * @param onChange Callback triggered when slider values change.
  *  If `multi` is `true`, emits a value of the form [low, high]; otherwise, emits a single value.
  * @param step Step size of the slider; moving a knob will modify the current value by a minimum of this size.
+ * @param marks Values to draw a tick at on the track.
  * @param value Value of the slider.
  *  If `multi` is true, this must be a value of the form [low, high]; otherwise, this is a single numeric value.
  * @param props Additional HTML properties to apply to the component.
@@ -54,6 +56,7 @@ export const SliderBar: FC<SliderBarProps> = ({
   onChangeCommitted,
   step,
   keyboardStep,
+  marks,
   value,
   ...props
 }) => {
@@ -310,7 +313,23 @@ export const SliderBar: FC<SliderBarProps> = ({
               right: `${(1 - getKnobPosition(maxValue)) * 100}%`,
             }}
           />
+        </>
+      )}
 
+      {marks?.map((mark) => (
+        <span
+          key={mark}
+          className={clsx(
+            "pointer-events-none absolute size-1 -ml-0.5",
+            bgColorClass(BackgroundColor.Card),
+            radiusStyles(Radius.Full)
+          )}
+          style={{ left: `${getKnobPosition(mark) * 100}%` }}
+        />
+      ))}
+
+      {!isUnset && (
+        <>
           {multi && (
             <SliderKnob
               position={getKnobPosition(minValue)}
