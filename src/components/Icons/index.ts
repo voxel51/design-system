@@ -3,3 +3,4 @@ export * from "./Icon";
 export * from "./IconBase";
 export * from "./icons";
 export * from "./IconWrapper";
+export * from "./Spinner";

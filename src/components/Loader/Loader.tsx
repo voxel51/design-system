@@ -91,7 +91,7 @@ export const Loader: FC<LoaderProps> = ({
       style={style}
       {...props}
     >
-      <SpinnerIcon className="animate-spin" />
+      <SpinnerIcon />
     </div>
   );
 
