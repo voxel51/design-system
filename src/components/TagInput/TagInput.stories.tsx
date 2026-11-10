@@ -30,4 +30,24 @@ export const Default: Story = {
   },
 };
 
+export const AtCap: Story = {
+  render: () => {
+    const [tags, setTags] = useState<string[]>(["person"]);
+    const [draft, setDraft] = useState("");
+    return (
+      <div className="max-w-md">
+        <TagInput
+          aria-label="Class"
+          value={tags}
+          onChange={setTags}
+          inputValue={draft}
+          onInputChange={setDraft}
+          maxTags={1}
+          placeholder="Type a class and press Enter"
+        />
+      </div>
+    );
+  },
+};
+
 export default meta;
