@@ -12,6 +12,7 @@ import {
 
 import { DragHandleGripIcon } from "@/components/Icons";
 import { Stack } from "@/components/Stack";
+import { Tooltip } from "@/components/Tooltip";
 import radiusStyles from "@/styles/radius";
 import shadowStyles from "@/styles/shadow";
 import {
@@ -209,21 +210,33 @@ export const Toolbar = ({
         {...props}
       >
         {canDrag && (
-          <div
-            role="button"
-            tabIndex={0}
-            aria-label="Drag to reposition toolbar"
-            onMouseDown={handleDragStart}
-            onDoubleClick={handleDragHandleDoubleClick}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                handleDragHandleDoubleClick();
-              }
-            }}
-            className={dragHandleClass}
+          <Tooltip
+            content={
+              isCollapsed
+                ? "Double-click to expand"
+                : "Drag to move · Double-click to collapse"
+            }
+            wrapperClassName={cn(
+              "flex self-stretch",
+              orientation === Orientation.Column ? "flex-col" : "flex-row"
+            )}
           >
-            <DragHandleGripIcon />
-          </div>
+            <div
+              role="button"
+              tabIndex={0}
+              aria-label="Drag to reposition toolbar"
+              onMouseDown={handleDragStart}
+              onDoubleClick={handleDragHandleDoubleClick}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  handleDragHandleDoubleClick();
+                }
+              }}
+              className={dragHandleClass}
+            >
+              <DragHandleGripIcon />
+            </div>
+          </Tooltip>
         )}
         {!isCollapsed && (
           <Stack
