@@ -41,19 +41,21 @@ export const menuPanelStyles = (): string =>
 
 /**
  * Panel styles for action menus (Dropdown, ContextMenu, submenu flyouts):
- * {@link menuPanelStyles} plus the width floor of the Figma ActionMenu, so a
- * menu of short labels is not squeezed to a sliver. Lists sized to an input,
+ * {@link menuPanelStyles} plus a width floor, so a menu of short labels is
+ * not squeezed to a sliver. Lists sized to an input,
  * such as Combobox, keep the plain panel styles.
  *
  * @internal
  */
 export const actionMenuPanelStyles = (): string =>
-  // Figma ActionMenu: 226px wide (214px rows inside 6px panel padding).
+  // 140px floor (Figma's ActionMenu was 226px, which left a short menu such
+  // as Edit / Delete mostly empty): the panel hugs its widest row, and rows
+  // with a description grow it up to the max width.
   // Base UI's positioner reports the room left in the viewport; a longer
   // list scrolls instead of running off screen.
   cn(
     menuPanelStyles(),
-    "min-w-[226px] max-h-[var(--available-height)] overflow-y-auto"
+    "flex flex-col gap-0.5 min-w-[140px] max-h-[var(--available-height)] overflow-y-auto"
   );
 
 /**
