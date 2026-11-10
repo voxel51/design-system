@@ -20,12 +20,12 @@ export const FieldText: FC<{ label?: ReactNode; description?: ReactNode }> = ({
   description,
 }) =>
   description ? (
-    <div className="flex min-w-0 flex-col gap-1">
+    <div className="flex min-w-0 flex-col">
       {label}
       <Description
         className={cn(
-          textColorClass(TextColor.Tertiary),
-          TEXT_STYLES[TextVariant.BodyTertiary]
+          textColorClass(TextColor.Secondary),
+          TEXT_STYLES[TextVariant.BodySecondary]
         )}
       >
         {description}

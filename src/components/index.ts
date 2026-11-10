@@ -9,6 +9,7 @@ export * from "./ChipSelect";
 export * from "./CodeBlock";
 export * from "./CodeEditor";
 export * from "./Collapsible";
+export * from "./CollapsibleCard";
 export * from "./Combobox";
 export * from "./ContextMenu";
 export * from "./DataTable";

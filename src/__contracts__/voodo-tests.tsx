@@ -75,6 +75,7 @@ import {
   FilterChip,
   TagInput,
   ListRow,
+  CollapsibleCard,
   SplitButton,
   Orientation,
   ScrimColor,
@@ -661,6 +662,17 @@ export const Everything = (
       />
       <ListRow title="t" onClick={() => {}} />
       <ListRow title="t" active disabled />
+      <CollapsibleCard
+        title="t"
+        summary="s"
+        icon={AddIcon}
+        actions={<span />}
+        open
+        onOpenChange={() => {}}
+      >
+        c
+      </CollapsibleCard>
+      <CollapsibleCard title="t" defaultOpen={false} />
       <SplitButton onClick={() => {}} menuLabel="m" menu={<span />}>
         t
       </SplitButton>
