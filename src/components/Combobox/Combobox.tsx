@@ -17,17 +17,22 @@ import {
   type FC,
   type HTMLAttributes,
   type KeyboardEvent,
+  type ReactElement,
   type ReactNode,
   type RefObject,
 } from "react";
 
+import { Divider } from "@/components/Divider";
 import {
+  CheckIcon,
   CornerDownLeftIcon,
   IconWrapper,
+  SearchIcon,
   type IconInput,
 } from "@/components/Icons";
 import { Input } from "@/components/Input";
 import { MenuSectionTitle, menuPanelStyles } from "@/components/Menu";
+import { Popover, PopoverAnchor } from "@/components/Popover";
 import { Spinner } from "@/components/Spinner";
 import { Text } from "@/components/Text";
 import {
@@ -80,10 +85,14 @@ export interface ComboboxProps extends Omit<
   options: ComboboxOption[];
   /** The picked option, or `null` when nothing is picked. */
   value: ComboboxOption | null;
-  /** Text in the field. Controlled, so the caller can drive a query from it. */
-  inputValue: string;
+  /**
+   * Text in the field. Controlled, so the caller can drive a query from it
+   * and filter `options` itself. Leave it unset to let the combobox keep the
+   * text and filter `options` by label, description and group.
+   */
+  inputValue?: string;
   /** Fires on every keystroke with the next field text. */
-  onInputChange: (value: string) => void;
+  onInputChange?: (value: string) => void;
   /**
    * Fires when the user picks a row, clears the field, or — with
    * `allowFreeText` — commits text that matches no row (as an option whose
@@ -161,6 +170,15 @@ export interface ComboboxProps extends Omit<
    * @default false
    */
   autoHighlight?: boolean;
+  /**
+   * Makes it a searchable pick-one list in a popover this element opens (a
+   * `DropdownTrigger`): a search field, the rows, and `footer`. Picking a row
+   * or Escape closes it; the picked row is checked. The field only searches,
+   * so typing never clears `value`.
+   */
+  trigger?: ReactElement;
+  /** With `trigger`, pinned under the list whatever it is scrolled to. */
+  footer?: ReactNode;
 }
 
 // An inline list sits on its popover's surface, so its highlight is a
@@ -194,71 +212,17 @@ const ListPortal: FC<{ portal: boolean; children: ReactNode }> = ({
 
 ListPortal.displayName = "ListPortal";
 
-/**
- * A text field that suggests rows as you type.
- *
- * Use it where a {@link Select} can't reach: the list is long, remote, or
- * unknown until the user types. The caller owns the options and the field
- * text, so the same component serves a local filter and a server-side
- * typeahead — pass `loading` while a query is in flight.
- *
- * Keyboard: ArrowDown / ArrowUp move the highlight (opening the list if
- * closed), Enter picks the highlighted row, Escape closes without picking,
- * and blur commits the text when `allowFreeText` is set (unless `commitOnBlur` is `false`).
- *
- * @example
- * ```tsx
- * // Remote typeahead: only a real dataset is a valid answer.
- * const [text, setText] = useState("");
- * const [dataset, setDataset] = useState<ComboboxOption | null>(null);
- * const { data, isLoading } = useDatasetSearch(text);
- *
- * <Combobox
- *   options={data ?? []}
- *   value={dataset}
- *   inputValue={text}
- *   onInputChange={setText}
- *   onChange={setDataset}
- *   loading={isLoading}
- *   placeholder="All datasets"
- *   emptyMessage={text ? "No matching datasets" : "Type to search"}
- * />
- * ```
- *
- * @example
- * ```tsx
- * // Open domain: suggestions help, but any string is allowed.
- * <Combobox allowFreeText options={knownTypes} value={type} inputValue={text} onInputChange={setText} onChange={setType} />
- * ```
- *
- * @param options Rows to offer, already filtered by the caller.
- * @param value The picked option, or `null`.
- * @param inputValue Controlled field text.
- * @param onInputChange Fires with the next field text.
- * @param onChange Fires when a row is picked, the field is cleared, or free text is committed.
- * @param allowFreeText Accept text that matches no row.
- * @param placeholder Shown when the field is empty.
- * @param size Field size. See {@link Size}.
- * @param disabled If `true`, the field cannot be interacted with.
- * @param loading Show a spinner in place of the list.
- * @param emptyMessage Shown when there are no options; a function receives `close`.
- * @param className `class` overrides for the wrapper.
- * @param portal Render the list in a portal, anchored to the field.
- * @param anchor With `portal`, the element the list drops under instead of the field.
- * @param inline The list always shows, in the flow, unframed.
- * @param zIndex Explicit z-index for the list.
- * @param commitOnBlur Commit free text on blur (default `true`).
- * @param borderless No frame on the field.
- * @param icon A leading icon in the field.
- * @param focusOnMount Focus the field on mount.
- * @param autoHighlight Highlight the first row whenever there is text (inline: always).
- * @param inputProps Attributes for the field itself.
- * @param header Shown above the list's contents whenever the list is open.
- * @param listProps Attributes for the list.
- * @param onOpenChange Fires when the list opens or closes.
- * @param props Additional HTML properties for the wrapper.
- */
-export const Combobox: FC<ComboboxProps> = ({
+type ComboboxFieldProps = Omit<
+  ComboboxProps,
+  "trigger" | "footer" | "inputValue" | "onInputChange"
+> & {
+  inputValue: string;
+  onInputChange: (value: string) => void;
+  /** Set for the popover's search field: picking or Escape calls it. */
+  onClose?: () => void;
+};
+
+const ComboboxField: FC<ComboboxFieldProps> = ({
   options,
   value,
   inputValue,
@@ -284,6 +248,7 @@ export const Combobox: FC<ComboboxProps> = ({
   header,
   listProps,
   onOpenChange,
+  onClose,
   "aria-label": ariaLabel,
   ...props
 }) => {
@@ -388,14 +353,21 @@ export const Combobox: FC<ComboboxProps> = ({
 
   const pick = useCallback(
     (option: ComboboxOption): void => {
+      if (onClose) {
+        if (option.id !== value?.id) onChange(option);
+        onClose();
+        return;
+      }
       onChange(option);
       onInputChange(option.label);
       close();
     },
-    [close, onChange, onInputChange]
+    [close, onChange, onClose, onInputChange, value]
   );
 
   const commitText = useCallback((): void => {
+    // The popover's field only searches: its text is never the value
+    if (onClose) return;
     const text = inputValue.trim();
     // Emptying the field clears the selection whether or not free text is
     // allowed: "" is a valid answer for every combobox — it means no filter.
@@ -406,7 +378,7 @@ export const Combobox: FC<ComboboxProps> = ({
     if (!allowFreeText) return;
     if (value?.label === text) return;
     onChange({ id: text, label: text });
-  }, [allowFreeText, inputValue, onChange, value]);
+  }, [allowFreeText, inputValue, onChange, onClose, value]);
 
   const onKeyDown = (e: KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === "ArrowDown" || e.key === "ArrowUp") {
@@ -451,6 +423,12 @@ export const Combobox: FC<ComboboxProps> = ({
       return;
     }
     if (e.key === "Escape") {
+      // Closes the popover once: kept from its own dismiss and any host's
+      if (onClose) {
+        e.stopPropagation();
+        onClose();
+        return;
+      }
       if (open) e.stopPropagation();
       close();
     }
@@ -481,7 +459,8 @@ export const Combobox: FC<ComboboxProps> = ({
           // Typing invalidates whatever was highlighted
           setActive(null);
           // Typing past a pick means the pick no longer describes the field.
-          if (value && e.target.value !== value.label) onChange(null);
+          if (!onClose && value && e.target.value !== value.label)
+            onChange(null);
         }}
       />
       {(open || inline) &&
@@ -545,7 +524,11 @@ export const Combobox: FC<ComboboxProps> = ({
                     className={optionStyles(
                       i === highlighted,
                       inline,
-                      Boolean(option.icon || option.hint)
+                      Boolean(
+                        option.icon ||
+                        option.hint ||
+                        (onClose && option.id === value?.id)
+                      )
                     )}
                     // The field owns focus; hovering only moves the highlight so
                     // pointer and keyboard agree on what Enter would pick.
@@ -601,12 +584,171 @@ export const Combobox: FC<ComboboxProps> = ({
                         )}
                       </span>
                     )}
+                    {onClose && option.id === value?.id && (
+                      <IconWrapper
+                        content={CheckIcon}
+                        size={14}
+                        className={cn(
+                          "shrink-0",
+                          textColorClass(TextColor.Secondary)
+                        )}
+                      />
+                    )}
                   </button>,
                 ])}
             </div>
           </ListPortal>
         )}
     </div>
+  );
+};
+
+ComboboxField.displayName = "ComboboxField";
+
+const matches = (option: ComboboxOption, query: string): boolean => {
+  const text = query.trim().toLowerCase();
+  return (
+    !text ||
+    [option.label, option.description, option.group].some(
+      (part) => typeof part === "string" && part.toLowerCase().includes(text)
+    )
+  );
+};
+
+/**
+ * A text field that suggests rows as you type.
+ *
+ * Use it where a {@link Select} can't reach: the list is long, remote, or
+ * unknown until the user types. The caller owns the options and the field
+ * text, so the same component serves a local filter and a server-side
+ * typeahead — pass `loading` while a query is in flight.
+ *
+ * Keyboard: ArrowDown / ArrowUp move the highlight (opening the list if
+ * closed), Enter picks the highlighted row, Escape closes without picking,
+ * and blur commits the text when `allowFreeText` is set (unless `commitOnBlur` is `false`).
+ *
+ * @example
+ * ```tsx
+ * // Remote typeahead: only a real dataset is a valid answer.
+ * const [text, setText] = useState("");
+ * const [dataset, setDataset] = useState<ComboboxOption | null>(null);
+ * const { data, isLoading } = useDatasetSearch(text);
+ *
+ * <Combobox
+ *   options={data ?? []}
+ *   value={dataset}
+ *   inputValue={text}
+ *   onInputChange={setText}
+ *   onChange={setDataset}
+ *   loading={isLoading}
+ *   placeholder="All datasets"
+ *   emptyMessage={text ? "No matching datasets" : "Type to search"}
+ * />
+ * ```
+ *
+ * @example
+ * ```tsx
+ * // Open domain: suggestions help, but any string is allowed.
+ * <Combobox allowFreeText options={knownTypes} value={type} inputValue={text} onInputChange={setText} onChange={setType} />
+ * ```
+ *
+ * @example
+ * ```tsx
+ * // A searchable pick-one popover; the combobox keeps and filters the text.
+ * <Combobox
+ *   trigger={<DropdownTrigger borderless prefix="Color by">{field.label}</DropdownTrigger>}
+ *   options={fields}
+ *   value={field}
+ *   onChange={(option) => option && setField(option)}
+ *   placeholder="Search fields"
+ *   footer={<TextAction onClick={addField}>Add a field</TextAction>}
+ * />
+ * ```
+ *
+ * @param options Rows to offer, already filtered by the caller.
+ * @param value The picked option, or `null`.
+ * @param inputValue Controlled field text; the caller then filters `options`. Unset, the combobox keeps the text and filters by label, description and group.
+ * @param onInputChange Fires with the next field text.
+ * @param onChange Fires when a row is picked, the field is cleared, or free text is committed.
+ * @param allowFreeText Accept text that matches no row.
+ * @param placeholder Shown when the field is empty.
+ * @param size Field size. See {@link Size}.
+ * @param disabled If `true`, the field cannot be interacted with.
+ * @param loading Show a spinner in place of the list.
+ * @param emptyMessage Shown when there are no options; a function receives `close`.
+ * @param className `class` overrides for the wrapper.
+ * @param portal Render the list in a portal, anchored to the field.
+ * @param anchor With `portal`, the element the list drops under instead of the field.
+ * @param inline The list always shows, in the flow, unframed.
+ * @param zIndex Explicit z-index for the list.
+ * @param commitOnBlur Commit free text on blur (default `true`).
+ * @param borderless No frame on the field.
+ * @param icon A leading icon in the field.
+ * @param focusOnMount Focus the field on mount.
+ * @param autoHighlight Highlight the first row whenever there is text (inline: always).
+ * @param inputProps Attributes for the field itself.
+ * @param header Shown above the list's contents whenever the list is open.
+ * @param listProps Attributes for the list.
+ * @param onOpenChange Fires when the list opens or closes.
+ * @param trigger Makes it a searchable pick-one list in a popover this element opens: picking a row or Escape closes it, and the picked row is checked.
+ * @param footer With `trigger`, pinned under the list.
+ * @param props Additional HTML properties for the wrapper.
+ */
+export const Combobox: FC<ComboboxProps> = ({
+  trigger,
+  footer,
+  options,
+  inputValue,
+  onInputChange,
+  className,
+  ...props
+}) => {
+  const [ownText, setOwnText] = useState("");
+  const text = inputValue ?? ownText;
+  const field = {
+    ...props,
+    options:
+      inputValue === undefined
+        ? options.filter((option) => matches(option, text))
+        : options,
+    inputValue: text,
+    onInputChange: onInputChange ?? setOwnText,
+  };
+  if (!trigger) return <ComboboxField {...field} className={className} />;
+  return (
+    <Popover
+      anchor={PopoverAnchor.BottomStart}
+      fitViewport
+      disabled={props.disabled}
+      className={className}
+      // the padding of the menu panels beside it
+      panelClassName="p-1.5"
+      onOpenChange={(open) => open && setOwnText("")}
+      trigger={trigger}
+    >
+      {({ close }) => (
+        <div className="w-80 max-w-[85vw]">
+          <ComboboxField
+            size={Size.Sm}
+            icon={SearchIcon}
+            {...field}
+            placeholder={props.placeholder ?? "Search"}
+            aria-label={props["aria-label"] ?? props.placeholder ?? "Search"}
+            inline
+            autoHighlight
+            focusOnMount
+            disabled={false}
+            onClose={close}
+          />
+          {footer && (
+            <>
+              <Divider />
+              <div className="px-1 pt-1.5 pb-0.5">{footer}</div>
+            </>
+          )}
+        </div>
+      )}
+    </Popover>
   );
 };
 
