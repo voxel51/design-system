@@ -21,7 +21,13 @@ import {
 
 export interface DropzoneProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
-  "onDrop" | "onDragOver" | "onDragLeave" | "onClick" | "onKeyDown" | "title"
+  | "onDrop"
+  | "onDragEnter"
+  | "onDragOver"
+  | "onDragLeave"
+  | "onClick"
+  | "onKeyDown"
+  | "title"
 > {
   onFiles: (files: File[]) => void;
   title: ReactNode;
@@ -66,6 +72,7 @@ export const Dropzone: FC<DropzoneProps> = ({
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
+  const depth = useRef(0);
   const browse = (): void => {
     if (!disabled) inputRef.current?.click();
   };
@@ -96,13 +103,18 @@ export const Dropzone: FC<DropzoneProps> = ({
           browse();
         }
       }}
-      onDragOver={(event) => {
-        event.preventDefault();
+      onDragEnter={() => {
+        depth.current += 1;
         if (!disabled) setDragging(true);
       }}
-      onDragLeave={() => setDragging(false)}
+      onDragOver={(event) => event.preventDefault()}
+      onDragLeave={() => {
+        depth.current = Math.max(depth.current - 1, 0);
+        if (depth.current === 0) setDragging(false);
+      }}
       onDrop={(event) => {
         event.preventDefault();
+        depth.current = 0;
         setDragging(false);
         if (!disabled) onFiles(Array.from(event.dataTransfer.files));
       }}
