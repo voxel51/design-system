@@ -1,6 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { IconAction, ListRow, PinIcon, StatusDot } from "@voxel51/voodo";
+import {
+  IconAction,
+  LayersIcon,
+  ListRow,
+  PinIcon,
+  StatusDot,
+  Toggle,
+} from "@voxel51/voodo";
 
 const meta: Meta<typeof ListRow> = {
   title: "Components/ListRow",
@@ -43,6 +50,25 @@ export const ActiveAndDisabled: Story = {
         subtitle="@voxel51/utils"
         disabled
         actions={<IconAction icon={PinIcon} aria-label="Pin" />}
+      />
+    </div>
+  ),
+};
+
+export const WithIcon: Story = {
+  render: () => (
+    <div className="flex w-80 flex-col gap-0.5">
+      <ListRow
+        icon={LayersIcon}
+        title="Find duplicates"
+        subtitle="Group near-identical samples"
+        actions={<Toggle size="sm" checked onChange={() => {}} />}
+      />
+      <ListRow
+        icon={LayersIcon}
+        title="Find label mistakes"
+        subtitle="Spot labels a model disagrees with"
+        actions={<Toggle size="sm" checked={false} onChange={() => {}} />}
       />
     </div>
   ),
