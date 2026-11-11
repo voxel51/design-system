@@ -60,6 +60,11 @@ export type DataTableColumn = {
 /** A row of a {@link DataTable}. */
 export type DataTableRow = {
   id: string;
+  /**
+   * Makes the row a full-width section header (a group's title) in place of
+   * its cells; give it a button to collapse the rows that follow.
+   */
+  section?: ReactNode;
   /** Cell content keyed by column `key`. */
   cells: Record<string, ReactNode>;
   /** Called on a click or Enter on the row; the event tells e.g. a ⌘-click to open in a new tab. */
@@ -146,35 +151,40 @@ const cellClass = (column: DataTableColumn): string =>
 const WideRow: FC<{ columns: DataTableColumn[]; row: DataTableRow }> = ({
   columns,
   row,
-}) => (
-  <Fragment>
-    <TableRow {...row.props} {...clickableProps(row)}>
-      {columns.map((column) => (
-        <TableCell
-          key={column.key}
-          className={cn(
-            column.width !== "fit" && "wrap-anywhere",
-            cellClass(column)
-          )}
-          style={widthStyle(column.width)}
-          {...(column.role === "actions" && {
-            onClick: stop,
-            onKeyDown: stop,
-          })}
-        >
-          {row.cells[column.key]}
-        </TableCell>
-      ))}
+}) =>
+  hasValue(row.section) ? (
+    <TableRow>
+      <TableCell colSpan={columns.length}>{row.section}</TableCell>
     </TableRow>
-    {hasValue(row.detail) && (
-      <TableRow>
-        <TableCell colSpan={columns.length} className="p-0">
-          {row.detail}
-        </TableCell>
+  ) : (
+    <Fragment>
+      <TableRow {...row.props} {...clickableProps(row)}>
+        {columns.map((column) => (
+          <TableCell
+            key={column.key}
+            className={cn(
+              column.width !== "fit" && "wrap-anywhere",
+              cellClass(column)
+            )}
+            style={widthStyle(column.width)}
+            {...(column.role === "actions" && {
+              onClick: stop,
+              onKeyDown: stop,
+            })}
+          >
+            {row.cells[column.key]}
+          </TableCell>
+        ))}
       </TableRow>
-    )}
-  </Fragment>
-);
+      {hasValue(row.detail) && (
+        <TableRow>
+          <TableCell colSpan={columns.length} className="p-0">
+            {row.detail}
+          </TableCell>
+        </TableRow>
+      )}
+    </Fragment>
+  );
 
 const WideTable: FC<Omit<DataTableProps, "cardBelow">> = ({
   columns,
@@ -224,6 +234,13 @@ const Card: FC<{ columns: DataTableColumn[]; row: DataTableRow }> = ({
   columns,
   row,
 }) => {
+  if (hasValue(row.section)) {
+    return (
+      <div className={cn("border-b p-1 last:border-0", RULE_BORDER)}>
+        {row.section}
+      </div>
+    );
+  }
   const cells = (role: DataTableColumn["role"]): DataTableColumn[] =>
     columns.filter(
       (column) =>
