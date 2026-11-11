@@ -201,3 +201,18 @@ passing classes to the popover.
   background-color: var(--color-content-border-active);
   color: #fff;
 }
+
+.react-datepicker__close-icon {
+  padding-right: 12px;
+}
+
+.react-datepicker__close-icon::after {
+  background-color: transparent;
+  color: var(--color-content-text-secondary);
+  font-size: 16px;
+  padding: 0;
+}
+
+.react-datepicker__close-icon:hover::after {
+  color: var(--color-content-text-primary);
+}
