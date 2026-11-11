@@ -154,7 +154,9 @@ const WideRow: FC<{ columns: DataTableColumn[]; row: DataTableRow }> = ({
 }) =>
   hasValue(row.section) ? (
     <TableRow>
-      <TableCell colSpan={columns.length}>{row.section}</TableCell>
+      <TableCell colSpan={columns.length} className="p-1">
+        {row.section}
+      </TableCell>
     </TableRow>
   ) : (
     <Fragment>
