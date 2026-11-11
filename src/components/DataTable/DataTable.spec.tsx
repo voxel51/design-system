@@ -126,6 +126,21 @@ describe("DataTable", () => {
     }
   );
 
+  it.each([1000, 390])(
+    "renders a section row in place of cells at %ipx",
+    (width) => {
+      withWidth(width);
+      render(
+        <DataTable
+          columns={columns}
+          rows={[{ id: "g", section: "Group A", cells: {} }, rows[0]]}
+        />
+      );
+      expect(screen.getByText("Group A")).toBeInTheDocument();
+      expect(screen.getByText("Alpha")).toBeInTheDocument();
+    }
+  );
+
   it.each([1000, 390])("renders empty at %ipx", (width) => {
     withWidth(width);
     render(<DataTable columns={columns} rows={[]} empty="Nothing yet" />);
