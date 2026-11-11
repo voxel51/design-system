@@ -36,6 +36,21 @@ describe("DropdownTrigger", () => {
     expect(screen.getByRole("button")).toHaveClass("border-0", "rounded-full");
   });
 
+  it("should be shorter when borderless at sm than at md", () => {
+    render(
+      <Dropdown
+        trigger={
+          <DropdownTrigger borderless size="sm">
+            Menu
+          </DropdownTrigger>
+        }
+      >
+        {null}
+      </Dropdown>
+    );
+    expect(screen.getByRole("button")).toHaveClass("h-6");
+  });
+
   it("should be disabled when disabled prop is set", () => {
     render(
       <Dropdown trigger={<DropdownTrigger disabled>Menu</DropdownTrigger>}>

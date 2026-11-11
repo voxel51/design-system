@@ -30,4 +30,22 @@ export const Default: Story = {
   },
 };
 
+export const Small: Story = {
+  render: () => {
+    const [value, setValue] = useState("25");
+    return (
+      <ChipSelect
+        aria-label="Rows per page"
+        size="sm"
+        value={value}
+        onChange={setValue}
+        options={[
+          { id: "25", label: "25 / page" },
+          { id: "50", label: "50 / page" },
+        ]}
+      />
+    );
+  },
+};
+
 export default meta;
