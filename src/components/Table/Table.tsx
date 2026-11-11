@@ -24,10 +24,11 @@ import {
 } from "@/types";
 import { cn } from "@/util/classes";
 
-/** `"boxed"`: a bordered card with a tinted, sentence-case header row and tighter cells. */
+/** `"boxed"`: a bordered card with a tinted, sentence-case header row and tighter cells. `"plain"`: the default table with a sentence-case, secondary-color header. */
 export const TableVariant = {
   Default: "default",
   Boxed: "boxed",
+  Plain: "plain",
 } as const;
 export type TableVariant =
   `${(typeof TableVariant)[keyof typeof TableVariant]}`;
@@ -84,7 +85,7 @@ const ARIA_SORT = {
  * </Table>
  * ```
  *
- * @param variant `"default"` or `"boxed"`. `"boxed"` draws the table as a bordered
+ * @param variant `"default"`, `"boxed"` or `"plain"`. `"boxed"` draws the table as a bordered
  *  card with a tinted header row in sentence case and tighter cells. See {@link TableVariant}.
  * @param className Additional CSS class names to apply to the table.
  * @param wrapperClassName Additional CSS class names to apply to the scroll box around the table.
@@ -282,18 +283,21 @@ export const TableHead: FC<
     onSort?: () => void;
   }
 > = ({ children, className, align, sort, onSort, ...props }) => {
-  const boxed = useContext(TableVariantContext) === TableVariant.Boxed;
+  const variant = useContext(TableVariantContext);
+  const boxed = variant === TableVariant.Boxed;
+  const sentence = boxed || variant === TableVariant.Plain;
   const sorted = sort === TableSort.Asc || sort === TableSort.Desc;
   return (
     <th
       className={cn(
         boxed ? "px-3 py-2 font-normal" : "px-4 py-2.5",
         alignClass(align),
-        textStyles(boxed ? TextVariant.Caption : TextVariant.Label),
+        textStyles(sentence ? TextVariant.Caption : TextVariant.Label),
+        sentence && !boxed && "font-medium",
         textColorClass(
           sorted
             ? TextColor.Primary
-            : boxed
+            : sentence
               ? TextColor.Secondary
               : TextColor.Tertiary
         ),

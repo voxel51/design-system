@@ -49,6 +49,13 @@ describe("DataTable", () => {
     expect(screen.getByText("full")).toBeInTheDocument();
   });
 
+  it("plain variant gives sentence-case headers", () => {
+    withWidth(1000);
+    render(<DataTable columns={columns} rows={rows} variant="plain" />);
+    const [header] = screen.getAllByRole("columnheader");
+    expect(header).not.toHaveClass("uppercase");
+  });
+
   it("keeps the table at a narrow width when cardBelow is never", () => {
     withWidth(300);
     render(<DataTable columns={columns} rows={rows} cardBelow="never" />);
