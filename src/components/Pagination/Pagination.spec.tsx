@@ -24,6 +24,33 @@ describe("Pagination", () => {
     expect(container).toBeEmptyDOMElement();
   });
 
+  it("renders nothing when the total is below the smallest page size", () => {
+    const { container } = render(
+      <Pagination
+        page={1}
+        pageCount={1}
+        total={10}
+        pageSize={25}
+        onPageSizeChange={jest.fn()}
+        onPageChange={jest.fn()}
+      />
+    );
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it("renders nothing for a single page at the smallest page size", () => {
+    const { container } = render(
+      <Pagination
+        page={1}
+        pageCount={1}
+        pageSize={25}
+        onPageSizeChange={jest.fn()}
+        onPageChange={jest.fn()}
+      />
+    );
+    expect(container).toBeEmptyDOMElement();
+  });
+
   it("marks the current page", () => {
     setup();
     expect(screen.getByRole("button", { name: "Page 5" })).toHaveAttribute(

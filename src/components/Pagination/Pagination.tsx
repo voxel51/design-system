@@ -8,6 +8,7 @@ import {
   useState,
 } from "react";
 
+import { ChipSelect } from "@/components/ChipSelect";
 import {
   KeyboardArrowLeftIcon,
   KeyboardArrowRightIcon,
@@ -15,7 +16,6 @@ import {
   KeyboardDoubleArrowRightIcon,
 } from "@/components/Icons";
 import { Input } from "@/components/Input";
-import { Select } from "@/components/Select";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
 import { textStyles } from "@/styles/text";
@@ -60,7 +60,7 @@ export type PaginationPart =
   `${(typeof PaginationPart)[keyof typeof PaginationPart]}`;
 
 const ALIGN_STYLES: Record<PaginationAlign, string> = {
-  between: "justify-between",
+  between: "justify-center",
   start: "justify-start",
   center: "justify-center",
   end: "justify-end",
@@ -108,19 +108,21 @@ const JUMP_THRESHOLD = 7;
  *
  * @param page The current page, starting at 1.
  * @param pageCount The total number of pages. Nothing renders when it is 1 or less
- *  and there is no page-size select.
+ *  and there is no page-size select, or the page size is already the smallest option.
  * @param onPageChange Called with the requested page, already clamped to `1..pageCount`.
  * @param pageSize The current rows per page. Required for the range summary and select.
  * @param pageSizes The selectable rows-per-page values. Defaults to `[25, 50, 100]`.
  * @param onPageSizeChange Called with the chosen rows per page. The select is hidden
  *  when omitted.
  * @param total The total number of rows. Enables the "1–25 of 312" summary; without it
- *  the summary reads "Page X of N".
+ *  the summary reads "Page X of N". Nothing renders when it is below the smallest
+ *  of `pageSizes`, since no page size could split it.
  * @param disabled Disables every control.
  * @param siblingCount Pages shown either side of the current page. Defaults to 1.
  * @param boundaryCount Pages always shown at each end. Defaults to 1.
  * @param align Horizontal placement of the summary and controls: `"between"`
- *  (default, summary left and controls right), `"start"`, `"center"` or `"end"`.
+ *  (default, rows select, pages and summary clustered in the centre), `"start"`,
+ *  `"center"` or `"end"`.
  * @param jump How the user types a page number: `"input"` (default, a "Go to"
  *  field), `"ellipsis"` (clicking a `…` turns it into a field) or `"both"`.
  *  `hide=["jump"]` removes either.
@@ -160,7 +162,7 @@ export const Pagination: FC<PaginationProps> = ({
       (pageSizes.includes(pageSize ?? -1) || pageSize === undefined
         ? pageSizes
         : [...pageSizes, pageSize].sort((a, b) => a - b)
-      ).map((n) => ({ id: String(n), data: { label: `${n} / page` } })),
+      ).map((n) => ({ id: String(n), label: `${n} / page` })),
     [pageSizes, pageSize]
   );
 
@@ -168,6 +170,10 @@ export const Pagination: FC<PaginationProps> = ({
   const hasSize = onPageSizeChange !== undefined && pageSize !== undefined;
   const showSize = hasSize && shows("page-size");
   if (pageCount <= 1 && !hasSize) return null;
+  const smallest = Math.min(...pageSizes);
+  if (total !== undefined && total < smallest) return null;
+  if (pageCount <= 1 && pageSize !== undefined && pageSize <= smallest)
+    return null;
 
   const goTo = (next: number): void => {
     const clamped = Math.min(Math.max(next, 1), Math.max(pageCount, 1));
@@ -199,186 +205,175 @@ export const Pagination: FC<PaginationProps> = ({
     <nav
       aria-label="Pagination"
       className={clsx(
-        "@container flex w-full flex-wrap items-center gap-x-6 gap-y-3",
+        "@container flex w-full flex-wrap items-center gap-x-2 gap-y-3",
         ALIGN_STYLES[align],
         className
       )}
     >
-      {(shows("summary") || showSize) && (
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          {shows("summary") && (
-            <Text
-              variant="body-tertiary"
-              color={TextColor.Secondary}
-              className="tabular-nums"
-              aria-live="polite"
-            >
-              {lead}
-              <span className={textColorClass(TextColor.Foreground)}>
-                {range}
-              </span>
-              {rest}
-            </Text>
+      {showSize && (
+        <ChipSelect
+          size={Size.Sm}
+          aria-label="Rows per page"
+          value={String(pageSize)}
+          options={sizeOptions}
+          onChange={(v) => onPageSizeChange(Number(v))}
+        />
+      )}
+      {pageCount > 1 && (
+        <div
+          className={clsx(
+            "flex flex-wrap items-center gap-x-4 gap-y-2",
+            "justify-center"
           )}
-          {showSize && (
-            <div className="w-36">
-              <Select
-                exclusive
-                size={Size.Sm}
-                disabled={disabled}
-                aria-label="Rows per page"
-                value={String(pageSize)}
-                options={sizeOptions}
-                onChange={(v) =>
-                  typeof v === "string" && onPageSizeChange(Number(v))
-                }
-              />
+        >
+          {pageCount > 1 && (
+            <div
+              className={clsx(
+                "inline-flex items-center gap-0.5 p-0.5",
+                radiusStyles(Radius.Md),
+                bgColorClass(BackgroundColor.Muted)
+              )}
+            >
+              {shows("edges") && (
+                <TrackButton
+                  className="@max-lg:hidden"
+                  label="First page"
+                  testId="go-to-first-page"
+                  disabled={disabled || first}
+                  onClick={() => goTo(1)}
+                >
+                  <KeyboardDoubleArrowLeftIcon size={Size.Sm} />
+                </TrackButton>
+              )}
+              <TrackButton
+                label="Previous page"
+                testId="go-to-previous-page"
+                disabled={disabled || first}
+                onClick={() => goTo(page - 1)}
+              >
+                <KeyboardArrowLeftIcon size={Size.Sm} />
+              </TrackButton>
+              {shows("pages") &&
+                items.map((item) =>
+                  typeof item === "number" ? (
+                    <TrackButton
+                      key={item}
+                      className="@max-lg:hidden"
+                      label={`Page ${item}`}
+                      current={item === page}
+                      disabled={disabled}
+                      onClick={() => goTo(item)}
+                    >
+                      {item}
+                    </TrackButton>
+                  ) : editing === item ? (
+                    <Input
+                      key={item}
+                      // eslint-disable-next-line jsx-a11y/no-autofocus -- focus follows the user's click on the ellipsis
+                      autoFocus
+                      borderless
+                      size={Size.Sm}
+                      className="h-6 w-12 text-center tabular-nums"
+                      inputMode="numeric"
+                      aria-label="Go to page"
+                      value={jump}
+                      onFocus={(e) => e.target.select()}
+                      onChange={(e) =>
+                        /^\d*$/.test(e.target.value) && setJump(e.target.value)
+                      }
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          commitJump();
+                          setEditing(null);
+                        } else if (e.key === "Escape") setEditing(null);
+                      }}
+                      onBlur={() => setEditing(null)}
+                    />
+                  ) : jumpMode !== PaginationJump.Input && shows("jump") ? (
+                    <TrackButton
+                      key={item}
+                      className="@max-lg:hidden"
+                      label="Jump to page"
+                      disabled={disabled}
+                      onClick={() => {
+                        setJump("");
+                        setEditing(item);
+                      }}
+                    >
+                      …
+                    </TrackButton>
+                  ) : (
+                    <span
+                      key={item}
+                      aria-hidden
+                      className={clsx(
+                        "flex h-6 min-w-5 items-center justify-center @max-lg:hidden",
+                        textStyles(TextVariant.BodyTertiary),
+                        textColorClass(TextColor.Tertiary)
+                      )}
+                    >
+                      …
+                    </span>
+                  )
+                )}
+              <TrackButton
+                label="Next page"
+                testId="go-to-next-page"
+                disabled={disabled || last}
+                onClick={() => goTo(page + 1)}
+              >
+                <KeyboardArrowRightIcon size={Size.Sm} />
+              </TrackButton>
+              {shows("edges") && (
+                <TrackButton
+                  className="@max-lg:hidden"
+                  label="Last page"
+                  testId="go-to-last-page"
+                  disabled={disabled || last}
+                  onClick={() => goTo(pageCount)}
+                >
+                  <KeyboardDoubleArrowRightIcon size={Size.Sm} />
+                </TrackButton>
+              )}
             </div>
           )}
+
+          {pageCount > JUMP_THRESHOLD &&
+            shows("jump") &&
+            jumpMode !== PaginationJump.Ellipsis && (
+              <div className="flex items-center gap-2 @max-lg:hidden">
+                <Text variant="body-tertiary" color={TextColor.Secondary}>
+                  Go to
+                </Text>
+                <Input
+                  size={Size.Sm}
+                  className="w-12 text-center tabular-nums"
+                  inputMode="numeric"
+                  aria-label="Go to page"
+                  value={jump}
+                  disabled={disabled}
+                  onChange={(e) =>
+                    /^\d*$/.test(e.target.value) && setJump(e.target.value)
+                  }
+                  onKeyDown={onJumpKey}
+                  onBlur={commitJump}
+                />
+              </div>
+            )}
         </div>
       )}
-
-      <div
-        className={clsx(
-          "flex flex-wrap items-center gap-x-4 gap-y-2",
-          align === PaginationAlign.Between && "ml-auto"
-        )}
-      >
-        {pageCount > 1 && (
-          <div
-            className={clsx(
-              "inline-flex items-center gap-0.5 p-0.5",
-              radiusStyles(Radius.Md),
-              bgColorClass(BackgroundColor.Muted)
-            )}
-          >
-            {shows("edges") && (
-              <TrackButton
-                className="@max-lg:hidden"
-                label="First page"
-                testId="go-to-first-page"
-                disabled={disabled || first}
-                onClick={() => goTo(1)}
-              >
-                <KeyboardDoubleArrowLeftIcon size={Size.Sm} />
-              </TrackButton>
-            )}
-            <TrackButton
-              label="Previous page"
-              testId="go-to-previous-page"
-              disabled={disabled || first}
-              onClick={() => goTo(page - 1)}
-            >
-              <KeyboardArrowLeftIcon size={Size.Sm} />
-            </TrackButton>
-            {shows("pages") &&
-              items.map((item) =>
-                typeof item === "number" ? (
-                  <TrackButton
-                    key={item}
-                    className="@max-lg:hidden"
-                    label={`Page ${item}`}
-                    current={item === page}
-                    disabled={disabled}
-                    onClick={() => goTo(item)}
-                  >
-                    {item}
-                  </TrackButton>
-                ) : editing === item ? (
-                  <Input
-                    key={item}
-                    // eslint-disable-next-line jsx-a11y/no-autofocus -- focus follows the user's click on the ellipsis
-                    autoFocus
-                    borderless
-                    size={Size.Sm}
-                    className="h-6 w-12 text-center tabular-nums"
-                    inputMode="numeric"
-                    aria-label="Go to page"
-                    value={jump}
-                    onFocus={(e) => e.target.select()}
-                    onChange={(e) =>
-                      /^\d*$/.test(e.target.value) && setJump(e.target.value)
-                    }
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        commitJump();
-                        setEditing(null);
-                      } else if (e.key === "Escape") setEditing(null);
-                    }}
-                    onBlur={() => setEditing(null)}
-                  />
-                ) : jumpMode !== PaginationJump.Input && shows("jump") ? (
-                  <TrackButton
-                    key={item}
-                    className="@max-lg:hidden"
-                    label="Jump to page"
-                    disabled={disabled}
-                    onClick={() => {
-                      setJump("");
-                      setEditing(item);
-                    }}
-                  >
-                    …
-                  </TrackButton>
-                ) : (
-                  <span
-                    key={item}
-                    aria-hidden
-                    className={clsx(
-                      "flex h-6 min-w-5 items-center justify-center @max-lg:hidden",
-                      textStyles(TextVariant.BodyTertiary),
-                      textColorClass(TextColor.Tertiary)
-                    )}
-                  >
-                    …
-                  </span>
-                )
-              )}
-            <TrackButton
-              label="Next page"
-              testId="go-to-next-page"
-              disabled={disabled || last}
-              onClick={() => goTo(page + 1)}
-            >
-              <KeyboardArrowRightIcon size={Size.Sm} />
-            </TrackButton>
-            {shows("edges") && (
-              <TrackButton
-                className="@max-lg:hidden"
-                label="Last page"
-                testId="go-to-last-page"
-                disabled={disabled || last}
-                onClick={() => goTo(pageCount)}
-              >
-                <KeyboardDoubleArrowRightIcon size={Size.Sm} />
-              </TrackButton>
-            )}
-          </div>
-        )}
-
-        {pageCount > JUMP_THRESHOLD &&
-          shows("jump") &&
-          jumpMode !== PaginationJump.Ellipsis && (
-            <div className="flex items-center gap-2 @max-lg:hidden">
-              <Text variant="body-tertiary" color={TextColor.Secondary}>
-                Go to
-              </Text>
-              <Input
-                size={Size.Sm}
-                className="w-12 text-center tabular-nums"
-                inputMode="numeric"
-                aria-label="Go to page"
-                value={jump}
-                disabled={disabled}
-                onChange={(e) =>
-                  /^\d*$/.test(e.target.value) && setJump(e.target.value)
-                }
-                onKeyDown={onJumpKey}
-                onBlur={commitJump}
-              />
-            </div>
-          )}
-      </div>
+      {shows("summary") && (
+        <Text
+          variant="body-tertiary"
+          color={TextColor.Secondary}
+          className="px-2.5 tabular-nums"
+          aria-live="polite"
+        >
+          {lead}
+          <span className={textColorClass(TextColor.Foreground)}>{range}</span>
+          {rest}
+        </Text>
+      )}
     </nav>
   );
 };
