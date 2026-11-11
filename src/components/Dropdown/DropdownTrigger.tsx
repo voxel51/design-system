@@ -140,6 +140,7 @@ export const DropdownTrigger: FC<DropdownTriggerProps> = ({
               : TextVariant.BodyTertiary
           ],
         borderless && size === Size.Md && "h-7 py-1",
+        borderless && size === Size.Sm && "h-6 py-0.5",
         borderless && active && bgColorClass(BackgroundColor.CardNested),
         prefix != null && textColorClass(TextColor.Primary),
         fullWidth && "w-full min-w-0 [&>div]:w-full [&>div]:justify-between",
