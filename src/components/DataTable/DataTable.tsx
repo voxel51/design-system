@@ -14,6 +14,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  type TableVariant,
 } from "@/components/Table";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
@@ -87,6 +88,8 @@ export interface DataTableProps {
   /** The table shows cards while it is narrower than this; `"never"` keeps the table. Defaults to `"sm"`. */
   cardBelow?: Breakpoint | "never";
   className?: string;
+  /** The table's look: `"plain"` gives sentence-case headers. See {@link TableVariant}. */
+  variant?: TableVariant;
   /** Names the table for assistive technology. */
   "aria-label"?: string;
   /**
@@ -193,11 +196,12 @@ const WideTable: FC<Omit<DataTableProps, "cardBelow">> = ({
   rows,
   empty,
   className,
+  variant,
   children,
   "aria-label": ariaLabel,
 }) => {
   return (
-    <Table className={className} aria-label={ariaLabel}>
+    <Table className={className} variant={variant} aria-label={ariaLabel}>
       {columns.some((column) => hasValue(column.label)) && (
         <TableHeader>
           <TableRow>
@@ -385,6 +389,7 @@ export const DataTable: FC<DataTableProps> = ({
   empty,
   cardBelow = "sm",
   className,
+  variant,
   children,
   "aria-label": ariaLabel,
 }) => {
@@ -421,6 +426,7 @@ export const DataTable: FC<DataTableProps> = ({
             rows={rows}
             empty={empty}
             className={className}
+            variant={variant}
             aria-label={ariaLabel}
           >
             {children}
