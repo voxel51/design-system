@@ -249,8 +249,13 @@ export const Dropdown: FC<DropdownProps> = ({
           >
             <Menu.Popup
               className={actionMenuPanelStyles()}
-              // Return focus to the consumer's trigger, not the wrapper
-              finalFocus={focusableTrigger}
+              // Return focus to the consumer's trigger, not the wrapper; a
+              // pointer dismissal leaves it be, or the trigger keeps a ring
+              finalFocus={(closeType) =>
+                ["mouse", "touch", "pen"].includes(closeType)
+                  ? false
+                  : focusableTrigger()
+              }
             >
               {children}
             </Menu.Popup>
