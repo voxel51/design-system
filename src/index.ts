@@ -15,6 +15,8 @@ export {
   useBelowBreakpoint,
 } from "./util/breakpoints";
 export { useClippedItems } from "./util/useClippedItems";
+export { useShowMore } from "./util/useShowMore";
+export type { UseShowMoreReturn } from "./util/useShowMore";
 export { useScrollEdges } from "./util/useScrollEdges";
 export { useTextHighlight } from "./util/useTextHighlight";
 export type { UseClippedItemsOptions } from "./util/useClippedItems";

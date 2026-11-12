@@ -35,6 +35,8 @@ import {
   Card,
   CardBackground,
   Checkbox,
+  ClampedText,
+  CopyAction,
   CodeColor,
   Collapsible,
   DatePicker,
@@ -144,6 +146,7 @@ import {
   Variant,
   ZIndex,
   zIndexStyles,
+  PillList,
   Table,
   TableBody,
   TableCell,
@@ -931,6 +934,23 @@ export const Everything = (
         </TableRow>
       </TableBody>
     </Table>
+    {/* CopyAction: every prop */}
+    <CopyAction text="x" size="sm" className="x" onCopy={noop} />
+    {/* @ts-expect-error - text is required */}
+    <CopyAction />
+    {/* ClampedText and PillList: every prop */}
+    <ClampedText lines={4} expanded className="x">
+      text
+    </ClampedText>
+    <PillList
+      items={["a"]}
+      max={3}
+      expanded
+      size="sm"
+      backgroundColor="bg-card-nested"
+    />
+    {/* @ts-expect-error - items are required */}
+    <PillList />
     {/* @ts-expect-error - variant is a fixed set */}
     <Table variant="striped" />
     {/* @ts-expect-error - sort is a fixed set */}
