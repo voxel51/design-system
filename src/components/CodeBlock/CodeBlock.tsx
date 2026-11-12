@@ -1,20 +1,12 @@
 import { Highlight, type PrismTheme } from "prism-react-renderer";
-import {
-  useEffect,
-  useState,
-  type FC,
-  type HTMLAttributes,
-  type ReactNode,
-} from "react";
+import { type FC, type HTMLAttributes, type ReactNode } from "react";
 
-import { IconAction } from "@/components/IconAction";
-import { CheckIcon, CopyIcon } from "@/components/Icons";
+import { CopyAction } from "@/components/CopyAction";
 import { textStyles } from "@/styles/text";
 import {
   BackgroundColor,
   bgColorClass,
   getColorCssVar,
-  Size,
   TextColor,
   TextVariant,
 } from "@/types";
@@ -99,14 +91,6 @@ export const CodeBlock: FC<CodeBlockProps> = ({
   className,
   ...props
 }) => {
-  const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    if (!copied) return;
-    const timeout = window.setTimeout(() => setCopied(false), 1500);
-    return () => window.clearTimeout(timeout);
-  }, [copied]);
-
   return (
     <div
       data-testid="code"
@@ -138,20 +122,10 @@ export const CodeBlock: FC<CodeBlockProps> = ({
           )}
         </Highlight>
       )}
-      <IconAction
-        size={Size.Sm}
-        aria-label={copied ? "Copied" : "Copy"}
-        icon={copied ? CheckIcon : CopyIcon}
+      <CopyAction
+        text={code}
+        onCopy={onCopy}
         className="absolute top-2 right-2"
-        onClick={() => {
-          navigator.clipboard
-            ?.writeText(code)
-            .then(() => {
-              setCopied(true);
-              onCopy?.(code);
-            })
-            .catch(() => undefined);
-        }}
       />
     </div>
   );
