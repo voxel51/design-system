@@ -17,4 +17,13 @@ export const Default: Story = {
   args: { icon: IconName.Close, "aria-label": "Dismiss" },
 };
 
+export const ActiveTint: Story = {
+  args: {
+    icon: IconName.Add,
+    "aria-label": "Panel",
+    active: true,
+    activeLook: "tint",
+  },
+};
+
 export default meta;
