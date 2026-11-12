@@ -24,10 +24,15 @@ import {
 } from "@/types";
 import { cn } from "@/util/classes";
 
-/** `"boxed"`: a bordered card with a tinted, sentence-case header row and tighter cells. */
+/**
+ * `"boxed"`: a bordered card with a tinted, sentence-case header row and
+ * tighter cells. `"rows"`: name and value rows on a card, with the dividers
+ * inset by the card's padding.
+ */
 export const TableVariant = {
   Default: "default",
   Boxed: "boxed",
+  Rows: "rows",
 } as const;
 export type TableVariant =
   `${(typeof TableVariant)[keyof typeof TableVariant]}`;
@@ -46,6 +51,15 @@ export const TableSort = {
   None: "none",
 } as const;
 export type TableSort = `${(typeof TableSort)[keyof typeof TableSort]}`;
+
+/** How far each indent level of a cell steps in, in px. */
+const INDENT_STEP = 20;
+
+const CELL_PADDING_LEFT: Record<TableVariant, number> = {
+  [TableVariant.Default]: 16,
+  [TableVariant.Boxed]: 12,
+  [TableVariant.Rows]: 0,
+};
 
 const TableVariantContext = createContext<TableVariant>(TableVariant.Default);
 
@@ -84,8 +98,10 @@ const ARIA_SORT = {
  * </Table>
  * ```
  *
- * @param variant `"default"` or `"boxed"`. `"boxed"` draws the table as a bordered
- *  card with a tinted header row in sentence case and tighter cells. See {@link TableVariant}.
+ * @param variant `"default"`, `"boxed"` or `"rows"`. `"boxed"` draws the table as a bordered
+ *  card with a tinted header row in sentence case and tighter cells; `"rows"` draws
+ *  name and value rows on a card, 10px above and below the text, the dividers inset
+ *  by the card's 16px side padding. See {@link TableVariant}.
  * @param className Additional CSS class names to apply to the table.
  * @param wrapperClassName Additional CSS class names to apply to the scroll box around the table.
  * @param children The table sections.
@@ -104,11 +120,15 @@ export const Table: FC<
   ...props
 }) => {
   const boxed = variant === TableVariant.Boxed;
+  const rows = variant === TableVariant.Rows;
   return (
     <TableVariantContext.Provider value={variant}>
       <div
         className={cn(
           "w-full overflow-x-auto",
+          rows && "px-4",
+          rows && bgColorClass(BackgroundColor.Card),
+          rows && radiusStyles(Radius.Md),
           boxed && "border-1",
           boxed && borderColorClass(BorderColor.Subtle),
           boxed && radiusStyles(Radius.Md),
@@ -118,10 +138,11 @@ export const Table: FC<
         <table
           className={cn(
             "w-full border-collapse",
-            bgColorClass(
-              boxed ? BackgroundColor.CardNested : BackgroundColor.Card
-            ),
-            !boxed && radiusStyles(Radius.Md),
+            !rows &&
+              bgColorClass(
+                boxed ? BackgroundColor.CardNested : BackgroundColor.Card
+              ),
+            !boxed && !rows && radiusStyles(Radius.Md),
             className
           )}
           {...props}
@@ -235,21 +256,38 @@ export const TableBody: FC<HTMLAttributes<HTMLTableSectionElement>> = ({
  * ```
  *
  * @param align `"start"` (default) or `"end"`; `"end"` right-aligns with tabular figures. See {@link TableAlign}.
+ * @param indent Steps the content in by this many levels of 20px past the variant's own padding, for a row nested under another.
  */
 export const TableCell: FC<
-  Omit<TdHTMLAttributes<HTMLTableCellElement>, "align"> & { align?: TableAlign }
-> = ({ children, className, align, ...props }) => {
-  const boxed = useContext(TableVariantContext) === TableVariant.Boxed;
+  Omit<TdHTMLAttributes<HTMLTableCellElement>, "align"> & {
+    align?: TableAlign;
+    indent?: number;
+  }
+> = ({ children, className, align, indent, style, ...props }) => {
+  const variant = useContext(TableVariantContext);
+  const boxed = variant === TableVariant.Boxed;
   return (
     <td
       className={cn(
-        boxed ? "px-3 py-2" : "px-4 py-3",
+        variant === TableVariant.Rows
+          ? "py-2.5 pr-4 align-top last:pr-0"
+          : boxed
+            ? "px-3 py-2"
+            : "px-4 py-3",
         alignClass(align),
         "font-normal",
         textColorClass(TextColor.Primary),
         textStyles(TextVariant.BodySecondary),
         className
       )}
+      style={
+        indent
+          ? {
+              paddingLeft: CELL_PADDING_LEFT[variant] + indent * INDENT_STEP,
+              ...style,
+            }
+          : style
+      }
       {...props}
     >
       {children}
@@ -282,12 +320,17 @@ export const TableHead: FC<
     onSort?: () => void;
   }
 > = ({ children, className, align, sort, onSort, ...props }) => {
-  const boxed = useContext(TableVariantContext) === TableVariant.Boxed;
+  const variant = useContext(TableVariantContext);
+  const boxed = variant === TableVariant.Boxed;
   const sorted = sort === TableSort.Asc || sort === TableSort.Desc;
   return (
     <th
       className={cn(
-        boxed ? "px-3 py-2 font-normal" : "px-4 py-2.5",
+        variant === TableVariant.Rows
+          ? "py-2.5 pr-4 last:pr-0"
+          : boxed
+            ? "px-3 py-2 font-normal"
+            : "px-4 py-2.5",
         alignClass(align),
         textStyles(boxed ? TextVariant.Caption : TextVariant.Label),
         textColorClass(

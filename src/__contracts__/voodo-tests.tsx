@@ -461,6 +461,7 @@ export const exhaustive = {
   tableVariant: {
     default: true,
     boxed: true,
+    rows: true,
   } satisfies Record<TableVariant, true>,
 
   tableAlign: {
@@ -917,6 +918,16 @@ export const Everything = (
       <TableBody>
         <TableRow>
           <TableCell align="end">1</TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
+    {/* Table: rows variant, indented cell */}
+    <Table variant="rows">
+      <TableBody>
+        <TableRow>
+          <TableCell indent={1} style={{ width: 196 }}>
+            nested
+          </TableCell>
         </TableRow>
       </TableBody>
     </Table>
