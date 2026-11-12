@@ -833,8 +833,11 @@ export const Everything = (
       <IconAction icon="Add" tone="brand" aria-label="Pin" />
       <IconAction icon="Add" tone="danger" aria-label="Remove" />
       <IconAction icon="Add" aria-label="Archive" tooltip hint="Archived" />
+      <IconAction icon="Add" active activeLook="tint" aria-label="Panel" />
       {/* @ts-expect-error - unknown tone */}
       <IconAction icon="Add" tone="warning" aria-label="Pin" />
+      {/* @ts-expect-error - unknown active look */}
+      <IconAction icon="Add" active activeLook="solid" aria-label="Panel" />
       <TextAction collapse leadingIcon="Add" aria-label="Share" onClick={noop}>
         Share
       </TextAction>

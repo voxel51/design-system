@@ -49,6 +49,21 @@ describe("IconAction", () => {
     expect(button).not.toHaveClass("bg-content-bg-card-nested");
   });
 
+  it("keeps an outline glyph on a faint brand fill when active with the tint look", () => {
+    render(
+      <IconAction
+        icon={IconName.Add}
+        aria-label="Panel"
+        active
+        activeLook="tint"
+      />
+    );
+
+    const button = screen.getByRole("button");
+    expect(button).toHaveClass("bg-brand-primary/10");
+    expect(button).not.toHaveClass("[&_svg]:fill-current");
+  });
+
   it("fills with the danger colour on hover with the danger tone", () => {
     render(
       <IconAction icon={IconName.Close} aria-label="Remove" tone="danger" />
