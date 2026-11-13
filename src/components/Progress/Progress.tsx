@@ -5,8 +5,10 @@ import radiusStyles from "@/styles/radius";
 import {
   BackgroundColor,
   bgColorClass,
+  BorderColor,
   BrandColor,
   type Color,
+  getColorCssVar,
   Radius,
   Size,
 } from "@/types";
@@ -46,7 +48,8 @@ const sizeStyles: Record<ProgressSize, string> = {
  * @param size Track thickness: `"sm"`, `"md"` or `"lg"`. Defaults to `"md"`. See {@link ProgressSize}.
  * @param color Fill color. See {@link Color}. Defaults to `"brand-primary"`.
  * @param trackColor Background color of the unfilled track. See {@link BackgroundColor}.
- *  Defaults to `"bg-card-elevated"`.
+ *  Defaults to the default border color, which stays visible on a card surface in both themes
+ *  (`card-elevated` is the same white as the card in light).
  * @param className `class` overrides to apply to the component.
  * @param props Additional HTML properties to apply to the component.
  */
@@ -55,8 +58,9 @@ export const Progress: FC<ProgressProps> = ({
   max = 100,
   size = Size.Md,
   color = BrandColor.Primary,
-  trackColor = BackgroundColor.CardElevated,
+  trackColor,
   className,
+  style,
   ...props
 }) => {
   const ratio = max > 0 ? Math.min(Math.max(value, 0), max) / max : 0;
@@ -70,11 +74,17 @@ export const Progress: FC<ProgressProps> = ({
       aria-valuemax={100}
       className={clsx(
         "relative w-full overflow-hidden",
-        bgColorClass(trackColor),
+        trackColor && bgColorClass(trackColor),
         radiusStyles(Radius.Full),
         sizeStyles[size],
         className
       )}
+      style={{
+        backgroundColor: trackColor
+          ? undefined
+          : getColorCssVar(BorderColor.Default),
+        ...style,
+      }}
       {...props}
     >
       <div
