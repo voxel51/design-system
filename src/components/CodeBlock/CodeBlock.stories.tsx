@@ -33,4 +33,15 @@ export const Shell: Story = {
   },
 };
 
+/** `wrap` soft-wraps long lines, e.g. an error's technical details. */
+export const Wrap: Story = {
+  args: {
+    wrap: true,
+    language: "shell",
+    code: `Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/site-packages/fiftyone/server/routes/dataset.py", line 128, in get_dataset
+ValueError: Dataset 'a-very-long-dataset-name-without-any-spaces-that-keeps-going-and-going' not found`,
+  },
+};
+
 export default meta;

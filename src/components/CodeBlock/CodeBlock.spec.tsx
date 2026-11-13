@@ -56,4 +56,16 @@ describe("CodeBlock", () => {
     expect(writeText).toHaveBeenCalledWith("raw");
     await screen.findByRole("button", { name: "Copied" });
   });
+
+  it("should scroll long lines unless wrap is set", () => {
+    const { rerender } = render(<CodeBlock code={CODE} />);
+    const pre = screen.getByTestId("code").querySelector("pre");
+    expect(pre).not.toHaveClass("whitespace-pre-wrap");
+
+    rerender(<CodeBlock code={CODE} wrap />);
+    expect(screen.getByTestId("code").querySelector("pre")).toHaveClass(
+      "whitespace-pre-wrap",
+      "break-words"
+    );
+  });
 });

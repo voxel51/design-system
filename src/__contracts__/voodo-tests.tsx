@@ -36,6 +36,7 @@ import {
   CardBackground,
   Checkbox,
   ClampedText,
+  CodeBlock,
   CopyAction,
   CodeColor,
   Collapsible,
@@ -937,6 +938,12 @@ export const Everything = (
         </TableRow>
       </TableBody>
     </Table>
+    {/* CodeBlock: every prop */}
+    <CodeBlock code="x" language="ts" wrap onCopy={noop} className="x">
+      x
+    </CodeBlock>
+    {/* @ts-expect-error - code is required */}
+    <CodeBlock />
     {/* CopyAction: every prop */}
     <CopyAction text="x" size="sm" className="x" onCopy={noop} />
     {/* @ts-expect-error - text is required */}
