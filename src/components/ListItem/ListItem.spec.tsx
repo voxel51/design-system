@@ -19,6 +19,32 @@ describe("ListItem", () => {
     expect(element).toBeInTheDocument();
   });
 
+  describe("long text", () => {
+    it("should truncate a string name and detail on one line", () => {
+      render(
+        <ListItem
+          primaryContent="A long name"
+          secondaryContent="A long detail"
+        />
+      );
+
+      expect(screen.getByText("A long name").className).toContain("truncate");
+      expect(screen.getByText("A long detail").className).toContain("truncate");
+    });
+
+    it("should cap the name at 70% only beside a detail", () => {
+      const capped = () =>
+        screen.getByText("A long name").closest(".max-w-\\[70\\%\\]");
+      const { rerender } = render(
+        <ListItem primaryContent="A long name" secondaryContent="Detail" />
+      );
+      expect(capped()).toHaveClass("shrink-0");
+
+      rerender(<ListItem primaryContent="A long name" />);
+      expect(capped()).toBeNull();
+    });
+  });
+
   describe("canSelect", () => {
     describe("when true", () => {
       it("should render a checkbox", () => {

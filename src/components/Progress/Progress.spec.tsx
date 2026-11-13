@@ -1,11 +1,32 @@
 import { render, screen } from "@testing-library/react";
 
+import {
+  BackgroundColor,
+  bgColorClass,
+  BorderColor,
+  getColorCssVar,
+} from "@/types";
+
 import { Progress } from "./Progress";
 
 describe("Progress", () => {
   it("should render with role progressbar", () => {
     render(<Progress value={50} />);
     expect(screen.getByRole("progressbar")).toBeInTheDocument();
+  });
+
+  it("should draw the empty track in the border color so it shows on a card", () => {
+    render(<Progress value={0} />);
+    expect(screen.getByRole("progressbar").style.backgroundColor).toBe(
+      getColorCssVar(BorderColor.Default)
+    );
+  });
+
+  it("should use trackColor over the default track", () => {
+    render(<Progress value={0} trackColor={BackgroundColor.CardElevated} />);
+    const track = screen.getByRole("progressbar");
+    expect(track).toHaveClass(bgColorClass(BackgroundColor.CardElevated));
+    expect(track.style.backgroundColor).toBe("");
   });
 
   it("should report the percent of max as aria-valuenow", () => {

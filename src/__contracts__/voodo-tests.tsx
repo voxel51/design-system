@@ -791,6 +791,9 @@ export const Everything = (
         </Alert>
       ))}
       <Divider onCard />
+      <MetaList truncate>
+        <span>a</span>
+      </MetaList>
       <MetaList>
         <span>a</span>
         <TextLink href="/b" external accent truncate>
