@@ -1,5 +1,7 @@
 import { type RefObject, useEffect, useId } from "react";
 
+import { BackgroundColor, getColorCssVar, TextColor } from "../types/color";
+
 interface HighlightRegistry {
   set(name: string, highlight: unknown): void;
   delete(name: string): void;
@@ -14,7 +16,7 @@ const ensureStyle = (name: string): void => {
   if (document.getElementById(name)) return;
   const style = document.createElement("style");
   style.id = name;
-  style.textContent = `::highlight(${name}) { background-color: var(--color-content-bg-accent); color: inherit; }`;
+  style.textContent = `::highlight(${name}) { background-color: ${getColorCssVar(BackgroundColor.Accent)}; color: ${getColorCssVar(TextColor.Primary)}; }`;
   document.head.appendChild(style);
 };
 

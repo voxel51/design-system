@@ -34,4 +34,11 @@ describe("useTextHighlight", () => {
     unmount();
     expect(registry.size).toBe(0);
   });
+
+  it("gives matches their own text colour", () => {
+    render(<Highlighted text="alpha" query="alp" />);
+    expect(document.head.querySelector("style")?.textContent).toContain(
+      "color: var(--color-content-text-primary)"
+    );
+  });
 });
