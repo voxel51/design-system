@@ -21,3 +21,15 @@ export const Default: Story = {
     </MetaList>
   ),
 };
+
+export const Truncated: Story = {
+  render: () => (
+    <div style={{ width: 200 }}>
+      <MetaList truncate>
+        <span>Dev User</span>
+        <span>Started 7 days ago</span>
+        <span>Ran for 7s</span>
+      </MetaList>
+    </div>
+  ),
+};

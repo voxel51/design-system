@@ -1,20 +1,12 @@
 import { Highlight, type PrismTheme } from "prism-react-renderer";
-import {
-  useEffect,
-  useState,
-  type FC,
-  type HTMLAttributes,
-  type ReactNode,
-} from "react";
+import { type FC, type HTMLAttributes, type ReactNode } from "react";
 
-import { IconAction } from "@/components/IconAction";
-import { CheckIcon, CopyIcon } from "@/components/Icons";
+import { CopyAction } from "@/components/CopyAction";
 import { textStyles } from "@/styles/text";
 import {
   BackgroundColor,
   bgColorClass,
   getColorCssVar,
-  Size,
   TextColor,
   TextVariant,
 } from "@/types";
@@ -69,6 +61,7 @@ export interface CodeBlockProps extends Omit<
   children?: ReactNode;
   language?: string;
   onCopy?: (code: string) => void;
+  wrap?: boolean;
 }
 
 /**
@@ -80,6 +73,7 @@ export interface CodeBlockProps extends Omit<
  * @param children Already highlighted markup to show instead of `language`
  *  colours; `code` is still what is copied.
  * @param onCopy Called with the code after it is copied.
+ * @param wrap Soft-wraps long lines instead of scrolling sideways.
  * @param props Additional HTML properties to apply to the card.
  *
  * @example
@@ -96,17 +90,11 @@ export const CodeBlock: FC<CodeBlockProps> = ({
   language = "python",
   children,
   onCopy,
+  wrap,
   className,
   ...props
 }) => {
-  const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    if (!copied) return;
-    const timeout = window.setTimeout(() => setCopied(false), 1500);
-    return () => window.clearTimeout(timeout);
-  }, [copied]);
-
+  const preClass = cn(preClassName, wrap && "whitespace-pre-wrap break-words");
   return (
     <div
       data-testid="code"
@@ -118,13 +106,13 @@ export const CodeBlock: FC<CodeBlockProps> = ({
       )}
     >
       {children !== undefined ? (
-        <pre className={preClassName} style={theme.plain}>
+        <pre className={preClass} style={theme.plain}>
           <code>{children}</code>
         </pre>
       ) : (
         <Highlight code={code.trimEnd()} language={language} theme={theme}>
           {({ style, tokens, getLineProps, getTokenProps }) => (
-            <pre style={style} className={preClassName}>
+            <pre style={style} className={preClass}>
               <code>
                 {tokens.map((line, i) => (
                   <div key={i} {...getLineProps({ line })}>
@@ -138,20 +126,10 @@ export const CodeBlock: FC<CodeBlockProps> = ({
           )}
         </Highlight>
       )}
-      <IconAction
-        size={Size.Sm}
-        aria-label={copied ? "Copied" : "Copy"}
-        icon={copied ? CheckIcon : CopyIcon}
+      <CopyAction
+        text={code}
+        onCopy={onCopy}
         className="absolute top-2 right-2"
-        onClick={() => {
-          navigator.clipboard
-            ?.writeText(code)
-            .then(() => {
-              setCopied(true);
-              onCopy?.(code);
-            })
-            .catch(() => undefined);
-        }}
       />
     </div>
   );

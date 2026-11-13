@@ -270,3 +270,72 @@ describe("Table boxed variant", () => {
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
   });
 });
+
+describe("Table rows variant", () => {
+  it("insets the dividers with the card's side padding, and pads cells 10px", () => {
+    const { container } = render(
+      <Table variant="rows">
+        <TableBody>
+          <TableRow>
+            <TableCell>name</TableCell>
+            <TableCell>value</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    );
+
+    expect(container.firstElementChild).toHaveClass("px-4");
+    expect(screen.getByText("name")).toHaveClass("py-2.5", "pr-4");
+  });
+
+  it("aligns header cells with the body cells", () => {
+    render(
+      <Table variant="rows">
+        <TableHeader>
+          <TableRow>
+            <TableHead>Name</TableHead>
+          </TableRow>
+        </TableHeader>
+      </Table>
+    );
+
+    const head = screen.getByText("Name");
+    expect(head).toHaveClass("py-2.5", "pr-4");
+    expect(head).not.toHaveClass("px-4");
+  });
+});
+
+describe("TableCell indent", () => {
+  it("steps the content in by 20px a level", () => {
+    render(
+      <table>
+        <tbody>
+          <tr>
+            <TableCell indent={2}>nested</TableCell>
+            <TableCell>flat</TableCell>
+          </tr>
+        </tbody>
+      </table>
+    );
+
+    expect(screen.getByText("nested")).toHaveStyle({ paddingLeft: "56px" });
+    expect(screen.getByText("flat")).not.toHaveStyle({ paddingLeft: "20px" });
+  });
+
+  it.each([
+    ["boxed", "32px"],
+    ["rows", "20px"],
+  ] as const)("adds to the %s variant's own padding", (variant, padding) => {
+    render(
+      <Table variant={variant}>
+        <TableBody>
+          <TableRow>
+            <TableCell indent={1}>nested</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    );
+
+    expect(screen.getByText("nested")).toHaveStyle({ paddingLeft: padding });
+  });
+});

@@ -35,6 +35,9 @@ import {
   Card,
   CardBackground,
   Checkbox,
+  ClampedText,
+  CodeBlock,
+  CopyAction,
   CodeColor,
   Collapsible,
   DatePicker,
@@ -144,6 +147,7 @@ import {
   Variant,
   ZIndex,
   zIndexStyles,
+  PillList,
   Table,
   TableBody,
   TableCell,
@@ -461,6 +465,7 @@ export const exhaustive = {
   tableVariant: {
     default: true,
     boxed: true,
+    rows: true,
   } satisfies Record<TableVariant, true>,
 
   tableAlign: {
@@ -787,6 +792,9 @@ export const Everything = (
         </Alert>
       ))}
       <Divider onCard />
+      <MetaList truncate>
+        <span>a</span>
+      </MetaList>
       <MetaList>
         <span>a</span>
         <TextLink href="/b" external accent truncate>
@@ -833,8 +841,11 @@ export const Everything = (
       <IconAction icon="Add" tone="brand" aria-label="Pin" />
       <IconAction icon="Add" tone="danger" aria-label="Remove" />
       <IconAction icon="Add" aria-label="Archive" tooltip hint="Archived" />
+      <IconAction icon="Add" active activeLook="tint" aria-label="Panel" />
       {/* @ts-expect-error - unknown tone */}
       <IconAction icon="Add" tone="warning" aria-label="Pin" />
+      {/* @ts-expect-error - unknown active look */}
+      <IconAction icon="Add" active activeLook="solid" aria-label="Panel" />
       <TextAction collapse leadingIcon="Add" aria-label="Share" onClick={noop}>
         Share
       </TextAction>
@@ -917,6 +928,39 @@ export const Everything = (
         </TableRow>
       </TableBody>
     </Table>
+    {/* Table: rows variant, indented cell */}
+    <Table variant="rows">
+      <TableBody>
+        <TableRow>
+          <TableCell indent={1} style={{ width: 196 }}>
+            nested
+          </TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
+    {/* CodeBlock: every prop */}
+    <CodeBlock code="x" language="ts" wrap onCopy={noop} className="x">
+      x
+    </CodeBlock>
+    {/* @ts-expect-error - code is required */}
+    <CodeBlock />
+    {/* CopyAction: every prop */}
+    <CopyAction text="x" size="sm" className="x" onCopy={noop} />
+    {/* @ts-expect-error - text is required */}
+    <CopyAction />
+    {/* ClampedText and PillList: every prop */}
+    <ClampedText lines={4} expanded className="x">
+      text
+    </ClampedText>
+    <PillList
+      items={["a"]}
+      max={3}
+      expanded
+      size="sm"
+      backgroundColor="bg-card-nested"
+    />
+    {/* @ts-expect-error - items are required */}
+    <PillList />
     {/* @ts-expect-error - variant is a fixed set */}
     <Table variant="striped" />
     {/* @ts-expect-error - sort is a fixed set */}

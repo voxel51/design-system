@@ -87,4 +87,46 @@ export const Boxed: Story = {
   ),
 };
 
+export const Rows: Story = {
+  render: () => (
+    <div className="p-6">
+      <Table variant="rows">
+        <TableBody>
+          <TableRow>
+            <TableCell style={{ width: 196 }}>Dataset</TableCell>
+            <TableCell>quickstart</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Samples</TableCell>
+            <TableCell>1,200</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </div>
+  ),
+};
+
+export const Nested: Story = {
+  render: () => (
+    <div className="p-6">
+      <Table variant="rows">
+        <TableBody>
+          <TableRow>
+            <TableCell style={{ width: 196 }}>details</TableCell>
+            <TableCell>2 keys</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell indent={1}>model</TableCell>
+            <TableCell>yolov8n</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell indent={1}>task</TableCell>
+            <TableCell>segmentation</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </div>
+  ),
+};
+
 export default meta;

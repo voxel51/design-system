@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { MenuTextItem } from "@/components/Menu";
@@ -221,5 +221,63 @@ describe("Dropdown", () => {
 
     expect(screen.queryByRole("menu")).not.toBeInTheDocument();
     expect(screen.queryByText("Disabled item")).not.toBeInTheDocument();
+  });
+
+  it("should return focus to the trigger after a keyboard close", async () => {
+    const user = userEvent.setup();
+    render(
+      <Dropdown trigger={trigger}>
+        <MenuTextItem>Item</MenuTextItem>
+      </Dropdown>
+    );
+    await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
+    await user.keyboard("{Escape}");
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "Open menu" })).toHaveFocus()
+    );
+  });
+
+  it("should return focus to the trigger after a programmatic close", async () => {
+    const { rerender } = render(
+      <Dropdown open onOpenChange={jest.fn()} trigger={trigger}>
+        <MenuTextItem>Item</MenuTextItem>
+      </Dropdown>
+    );
+    await screen.findByRole("menu");
+    rerender(
+      <Dropdown open={false} onOpenChange={jest.fn()} trigger={trigger}>
+        <MenuTextItem>Item</MenuTextItem>
+      </Dropdown>
+    );
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "Open menu" })).toHaveFocus()
+    );
+  });
+
+  it("should leave focus off the trigger after an outside pointer press", async () => {
+    const user = userEvent.setup();
+    render(
+      <Dropdown trigger={trigger}>
+        <MenuTextItem>Item</MenuTextItem>
+      </Dropdown>
+    );
+    await user.click(screen.getByText("Open menu"));
+    await screen.findByRole("menu");
+    const focus = jest.spyOn(
+      screen.getByRole("button", { name: "Open menu" }),
+      "focus"
+    );
+    fireEvent(
+      document.body,
+      Object.assign(new Event("pointerdown", { bubbles: true }), {
+        pointerType: "mouse",
+      })
+    );
+    fireEvent.click(document.body);
+    await waitFor(() =>
+      expect(screen.queryByRole("menu")).not.toBeInTheDocument()
+    );
+    expect(focus).not.toHaveBeenCalled();
   });
 });

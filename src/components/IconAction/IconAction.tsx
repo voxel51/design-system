@@ -23,11 +23,16 @@ type IconActionSize = `${Size.Xs | Size.Sm | Size.Md | Size.Lg}`;
 
 export type IconActionTone = "default" | "brand" | "danger";
 
+/** How an active action shows: a filled glyph (a pin), or a brand-colored outline on a faint brand tint (a panel toggle). */
+export type IconActionActiveLook = "filled" | "tint";
+
 export interface IconActionProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon: IconInput;
   size?: IconActionSize;
   /** On (a pinned pin, say): a filled brand-coloured glyph on a nested-card fill. */
   active?: boolean;
+  /** `"tint"` keeps the glyph an outline, brand-colored on a faint brand fill, for a toggle such as a side panel. Defaults to `"filled"`. */
+  activeLook?: IconActionActiveLook;
   /** `"brand"`: brand-tinted on hover while off, as it is when on. `"danger"`: a danger fill on hover (remove, delete). */
   tone?: IconActionTone;
   /** Names the action in a tooltip, from its `aria-label`. */
@@ -66,6 +71,7 @@ const iconSizes: Record<IconActionSize, number> = {
  * @param icon The icon to show: a per-icon component such as `CloseIcon`.
  * @param size `"xs"`, `"sm"`, `"md"` or `"lg"`. Defaults to `"md"`.
  * @param active Shows the action as on: a filled brand-coloured glyph on a nested-card fill, brand-tinted on hover.
+ * @param activeLook `"filled"` (default) fills the glyph, as a pin is; `"tint"` keeps an outline glyph in the brand color on a faint brand fill, for a toggle such as a side panel.
  * @param tone `"brand"` gives the off state the same brand-tinted hover (a pin that is not pinned yet); `"danger"` fills with the danger colour on hover (remove, delete). Defaults to `"default"`.
  * @param tooltip Names the action in a tooltip, from its `aria-label`.
  * @param hint More about the action, such as why it is disabled: its tooltip, under its name with `tooltip`.
@@ -77,6 +83,7 @@ export const IconAction: FC<IconActionProps> = ({
   icon,
   size = Size.Md,
   active,
+  activeLook = "filled",
   tone = "default",
   tooltip = false,
   hint,
@@ -107,11 +114,16 @@ export const IconAction: FC<IconActionProps> = ({
           radiusStyles(Radius.Full),
           sizeStyles[size],
           active
-            ? [
-                "hover:bg-brand-primary/15 [&_svg]:fill-current",
-                textColorClass(IconColor.Brand),
-                bgColorClass(BackgroundColor.CardNested),
-              ]
+            ? activeLook === "tint"
+              ? [
+                  "bg-brand-primary/10 hover:bg-brand-primary/15",
+                  textColorClass(IconColor.Brand),
+                ]
+              : [
+                  "hover:bg-brand-primary/15 [&_svg]:fill-current",
+                  textColorClass(IconColor.Brand),
+                  bgColorClass(BackgroundColor.CardNested),
+                ]
             : tone === "brand"
               ? [
                   "hover:bg-brand-primary/15",

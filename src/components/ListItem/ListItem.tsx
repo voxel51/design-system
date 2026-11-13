@@ -39,8 +39,10 @@ export interface ListItemProps extends HTMLAttributes<HTMLDivElement> {
  * @param onSelected Called when the checkbox toggles, with the new selected state.
  * @param canDrag If `true`, displays a 14px grip handle to allow dragging this component.
  * @param dragHandleListeners Optional mapping of `listenerId: listener` for drag events.
- * @param primaryContent Primary content to display in the list item.
- * @param secondaryContent Secondary content to display in the list item.
+ * @param primaryContent Primary content to display in the list item. One line: it truncates with an ellipsis
+ *  (full text in a tooltip when cut, when a string), up to 70% of the row when there is secondary content, after that content has given up its space.
+ * @param secondaryContent Secondary content to display in the list item. A string is one line and truncates
+ *  with an ellipsis (full text in a tooltip when cut); a node must handle its own overflow with `min-width: 0`.
  * @param actions Content to display as "actions" for the list item.
  *  This content will be pushed to the trailing edge of the list item.
  * @param additionalContent Additional content to display in the list item.
@@ -109,19 +111,27 @@ export const ListItem: FC<ListItemProps> = ({
               />
             </span>
           )}
-          <Text
-            variant={
-              size === Size.Sm
-                ? TextVariant.BodySecondary
-                : TextVariant.BodyPrimary
-            }
-            className="min-w-0"
-          >
-            {primaryContent}
-          </Text>
           <div
             className={cn(
-              "flex min-w-0 items-center",
+              "min-w-0",
+              !!secondaryContent && "max-w-[70%] shrink-0"
+            )}
+          >
+            <Text
+              variant={
+                size === Size.Sm
+                  ? TextVariant.BodySecondary
+                  : TextVariant.BodyPrimary
+              }
+              className="min-w-0"
+              truncate={typeof primaryContent === "string"}
+            >
+              {primaryContent}
+            </Text>
+          </div>
+          <div
+            className={cn(
+              "flex min-w-0 shrink items-center",
               TEXT_STYLES[
                 size === Size.Sm
                   ? TextVariant.BodyTertiary
@@ -130,7 +140,21 @@ export const ListItem: FC<ListItemProps> = ({
               textColorClass(TextColor.Secondary)
             )}
           >
-            {secondaryContent}
+            {typeof secondaryContent === "string" ? (
+              <Text
+                variant={
+                  size === Size.Sm
+                    ? TextVariant.BodyTertiary
+                    : TextVariant.BodySecondary
+                }
+                color={TextColor.Secondary}
+                truncate
+              >
+                {secondaryContent}
+              </Text>
+            ) : (
+              secondaryContent
+            )}
           </div>
         </div>
 
