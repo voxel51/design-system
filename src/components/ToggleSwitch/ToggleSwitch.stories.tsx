@@ -40,6 +40,11 @@ const meta: Meta<typeof ToggleSwitch> = {
       control: "boolean",
       description: "Whether the group should fill its container",
     },
+    scroll: {
+      control: "boolean",
+      description:
+        "Keep tabs at least as wide as their labels; scroll the row when they do not fit",
+    },
     defaultIndex: {
       control: "number",
       description: "The index of the initially selected tab",
@@ -449,6 +454,21 @@ export const WithManyTabs: Story = {
     defaultIndex: 0,
     size: Size.Md,
   },
+};
+
+export const ScrollWhenNarrow: Story = {
+  args: {
+    ...WithManyTabs.args,
+    fullWidth: true,
+    scroll: true,
+  },
+  decorators: [
+    (Story) => (
+      <div style={{ width: 240 }}>
+        <Story />
+      </div>
+    ),
+  ],
 };
 
 export const WithIcons: Story = {

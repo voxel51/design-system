@@ -83,6 +83,8 @@ export interface ToggleSwitchProps extends Omit<
   tabListClassName?: string;
   tabPanelClassName?: string;
   fullWidth?: boolean;
+  /** Keeps every tab at least as wide as its label; the row scrolls sideways when they do not fit. */
+  scroll?: boolean;
   /** Element for tabs with an `href` (e.g. a router link); defaults to `a`. */
   linkComponent?: ElementType;
   /** Ref to the tab row, e.g. for `useCompactRow`. */
@@ -252,6 +254,8 @@ const getTabTextColorClass = (selected: boolean): string => {
  * @param size Size of the tabs: `"xs"`, `"sm"` or `"md"`; this controls the text size and padding.
  *  Defaults to `"sm"`. See {@link ToggleSwitchSize}.
  * @param fullWidth If `true`, the tab group will fill the width of their container.
+ * @param scroll If `true`, every tab stays at least as wide as its label, and the row scrolls sideways when
+ *  they do not fit, instead of squeezing the tabs.
  * @param collapse Hides the labels of tabs with an `icon`, leaving the icons: `true` or `"lg"` below 1024px,
  *  `"sm"` below 640px, `"always"` at every width, `"auto"` while the enclosing row is compact.
  *  A hidden label names its tab (a string label becomes its `aria-label`) and is its tooltip unless it has one.
@@ -269,6 +273,7 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
   onChange,
   size = Size.Sm,
   fullWidth,
+  scroll,
   tabListClassName,
   tabPanelClassName,
   linkComponent = "a",
@@ -296,6 +301,7 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
           "flex flex-nowrap items-center",
           "rounded-sm",
           fullWidth ? "w-full" : "w-fit",
+          scroll && "max-w-full overflow-x-auto",
           ...getTabListBorderStyles(variant),
           tabListClassName
         )}
@@ -364,13 +370,19 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
             <Tooltip
               key={id}
               content={tooltip}
-              wrapperClassName="min-w-0 flex-1 flex"
+              wrapperClassName={cn(
+                scroll ? "min-w-max" : "min-w-0",
+                "flex-1 flex"
+              )}
               portal
             >
               {tab}
             </Tooltip>
           ) : (
-            <div key={id} className="min-w-0 flex-1 flex">
+            <div
+              key={id}
+              className={cn(scroll ? "min-w-max" : "min-w-0", "flex-1 flex")}
+            >
               {tab}
             </div>
           );

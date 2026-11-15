@@ -150,6 +150,23 @@ describe("ToggleSwitch", () => {
     expect(tabList).not.toHaveClass("w-fit");
   });
 
+  it("keeps tabs at their labels' width and scrolls when specified", () => {
+    const { container } = render(<ToggleSwitch tabs={tabs} fullWidth scroll />);
+
+    const tabList = container.querySelector('[role="tablist"]');
+    expect(tabList).toHaveClass("overflow-x-auto");
+    expect(tabList?.firstElementChild).toHaveClass("min-w-max");
+    expect(tabList?.firstElementChild).not.toHaveClass("min-w-0");
+  });
+
+  it("squeezes tabs to fit by default", () => {
+    const { container } = render(<ToggleSwitch tabs={tabs} fullWidth />);
+
+    const tabList = container.querySelector('[role="tablist"]');
+    expect(tabList).not.toHaveClass("overflow-x-auto");
+    expect(tabList?.firstElementChild).toHaveClass("min-w-0");
+  });
+
   it("should render a single tab (isFirst and isLast both true)", () => {
     const singleTab = [
       {
