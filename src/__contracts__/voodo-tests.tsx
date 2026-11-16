@@ -739,7 +739,13 @@ export const Everything = (
       <StatTile label="l" value="1" deltaTone="warning" />
       <Combobox
         trigger={<button type="button">t</button>}
-        options={[{ id: "a", label: "a" }]}
+        options={[
+          {
+            id: "a",
+            label: "a",
+            action: { icon: AddIcon, label: "l", onClick: noop },
+          },
+        ]}
         value={null}
         onChange={noop}
         footer={<span />}
