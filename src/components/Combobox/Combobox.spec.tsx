@@ -545,6 +545,35 @@ describe("Combobox in a popover", () => {
     expect(screen.queryByRole("status")).not.toBeInTheDocument();
   });
 
+  it("runs a row action without picking the row, then closes", async () => {
+    const user = userEvent.setup();
+    const onPick = jest.fn();
+    const onEdit = jest.fn();
+    render(
+      <Combobox
+        trigger={<button type="button">Pick</button>}
+        options={[
+          {
+            ...OPTIONS[0],
+            action: {
+              icon: IconName.Add,
+              label: "Edit first",
+              onClick: onEdit,
+            },
+          },
+        ]}
+        value={null}
+        onChange={onPick}
+      />
+    );
+    await user.click(screen.getByRole("button", { name: "Pick" }));
+    await user.click(screen.getByRole("button", { name: "Edit first" }));
+
+    expect(onEdit).toHaveBeenCalledTimes(1);
+    expect(onPick).not.toHaveBeenCalled();
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+  });
+
   describe("ComboboxAction", () => {
     function ActionPicker({
       onAction,

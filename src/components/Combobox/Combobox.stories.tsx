@@ -9,6 +9,7 @@ import {
   ComboboxAction,
   type ComboboxOption,
   DropdownTrigger,
+  EditIcon,
   FilterAltIcon,
   StatusDot,
   Text,
@@ -175,6 +176,32 @@ export const InPopover: Story = {
             Create a dataset
           </ComboboxAction>
         }
+      />
+    );
+  },
+};
+
+/** Rows with an action at the end, shown on the highlighted row. */
+export const RowActions: Story = {
+  render: function Render() {
+    const [value, setValue] = useState<ComboboxOption | null>(DATASETS[0]);
+    return (
+      <Combobox
+        trigger={
+          <DropdownTrigger borderless>{value?.label ?? "None"}</DropdownTrigger>
+        }
+        options={DATASETS.map((option) => ({
+          ...option,
+          hint: "120",
+          action: {
+            icon: EditIcon,
+            label: `Edit ${option.label}`,
+            onClick: () => {},
+          },
+        }))}
+        value={value}
+        onChange={setValue}
+        placeholder="Search subsets"
       />
     );
   },

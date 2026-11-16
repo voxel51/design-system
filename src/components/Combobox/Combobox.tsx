@@ -63,6 +63,14 @@ import { cn } from "@/util/classes";
 export type DataAttributes = Record<`data-${string}`, string | undefined>;
 
 /** One row in a {@link Combobox}'s list. */
+/** A {@link ComboboxOption}'s row action. */
+export interface ComboboxOptionAction {
+  icon: IconInput;
+  /** The button's accessible name, such as "Edit Cats". */
+  label: string;
+  onClick: () => void;
+}
+
 export interface ComboboxOption {
   /** Stable identity. Returned to `onChange`; not shown. */
   id: string;
@@ -80,6 +88,12 @@ export interface ComboboxOption {
    * group changes, so pass the rows ordered by group.
    */
   group?: string;
+  /**
+   * An icon button at the row's end that acts on the row without picking it,
+   * such as Edit. It shows while the row is highlighted, and the list closes
+   * once it is clicked.
+   */
+  action?: ComboboxOptionAction;
   /** `data-*` attributes for the row — a test id, a tracking hook. */
   [dataAttribute: `data-${string}`]: string | undefined;
 }
@@ -327,6 +341,45 @@ const dataAttributes = (
 ): Record<string, string | undefined> =>
   Object.fromEntries(
     Object.entries(option).filter(([key]) => key.startsWith("data-"))
+  );
+
+/**
+ * An option's row: the option alone, or the option with its action laid over
+ * the end it keeps clear. Mousedown is held back so the field keeps focus and
+ * the click lands before the list could close.
+ */
+const OptionRow: FC<{
+  action?: ComboboxOptionAction;
+  highlighted: boolean;
+  close: () => void;
+  onMouseEnter: () => void;
+  children: ReactNode;
+}> = ({ action, highlighted, close, onMouseEnter, children }) =>
+  action ? (
+    <div role="none" className="group relative" onMouseEnter={onMouseEnter}>
+      {children}
+      <span
+        className={cn(
+          "absolute top-1/2 right-1 -translate-y-1/2",
+          // Touch screens have no hover to reveal it
+          !highlighted &&
+            "opacity-0 group-focus-within:opacity-100 [@media(hover:none)]:opacity-100"
+        )}
+      >
+        <IconAction
+          icon={action.icon}
+          onMouseDown={(event): void => event.preventDefault()}
+          size={Size.Sm}
+          aria-label={action.label}
+          onClick={(): void => {
+            action.onClick();
+            close();
+          }}
+        />
+      </span>
+    </div>
+  ) : (
+    <>{children}</>
   );
 
 /** The list in the flow, or in a floating UI portal. */
@@ -662,92 +715,103 @@ const ComboboxField: FC<ComboboxFieldProps> = ({
                       {option.group}
                     </MenuSectionTitle>
                   ),
-                  <button
+                  <OptionRow
                     key={option.id}
-                    type="button"
-                    role="option"
-                    // The visible row is label + description; the name is the label
-                    aria-label={option.label}
-                    {...dataAttributes(option)}
-                    aria-selected={i === highlighted}
-                    className={
-                      onClose
-                        ? pickerOptionStyles(i === highlighted)
-                        : optionStyles(
-                            i === highlighted,
-                            inline,
-                            Boolean(option.icon || option.hint)
-                          )
-                    }
-                    // The field owns focus; hovering only moves the highlight so
-                    // pointer and keyboard agree on what Enter would pick.
+                    action={option.action}
+                    highlighted={i === highlighted}
+                    close={onClose ?? close}
                     onMouseEnter={(): void => setActive(i)}
-                    // Mousedown, not click: click lands after blur, and blur has
-                    // already committed or closed by then.
-                    onMouseDown={(e): void => {
-                      e.preventDefault();
-                      pick(option);
-                    }}
                   >
-                    {option.icon && (
-                      <IconWrapper
-                        content={option.icon}
-                        size={14}
-                        className={cn(
-                          "shrink-0",
-                          textColorClass(TextColor.Secondary)
-                        )}
-                      />
-                    )}
-                    <span className="flex min-w-0 flex-1 flex-col items-start gap-0.5">
-                      <Text
-                        variant={
-                          onClose
-                            ? TextVariant.BodyPrimary
-                            : TextVariant.BodySecondary
-                        }
-                        color={TextColor.Primary}
-                      >
-                        {option.label}
-                      </Text>
-                      {option.description && (
-                        <Text
-                          variant={TextVariant.BodyTertiary}
-                          color={TextColor.Secondary}
-                        >
-                          {option.description}
-                        </Text>
+                    <button
+                      type="button"
+                      role="option"
+                      // The visible row is label + description; the name is the label
+                      aria-label={option.label}
+                      {...dataAttributes(option)}
+                      aria-selected={i === highlighted}
+                      className={cn(
+                        onClose
+                          ? pickerOptionStyles(i === highlighted)
+                          : optionStyles(
+                              i === highlighted,
+                              inline,
+                              Boolean(option.icon || option.hint)
+                            ),
+                        option.action && "pr-9"
                       )}
-                    </span>
-                    {option.hint && (
-                      <span
-                        className={cn(
-                          "flex shrink-0 items-center gap-1.5 whitespace-nowrap",
-                          textColorClass(TextColor.Tertiary)
-                        )}
-                      >
+                      // The field owns focus; hovering only moves the highlight so
+                      // pointer and keyboard agree on what Enter would pick.
+                      onMouseEnter={(): void => setActive(i)}
+                      // Mousedown, not click: click lands after blur, and blur has
+                      // already committed or closed by then.
+                      onMouseDown={(e): void => {
+                        e.preventDefault();
+                        pick(option);
+                      }}
+                    >
+                      {option.icon && (
+                        <IconWrapper
+                          content={option.icon}
+                          size={14}
+                          className={cn(
+                            "shrink-0",
+                            textColorClass(TextColor.Secondary)
+                          )}
+                        />
+                      )}
+                      <span className="flex min-w-0 flex-1 flex-col items-start gap-0.5">
                         <Text
-                          variant={TextVariant.BodyTertiary}
-                          color={TextColor.Tertiary}
+                          variant={
+                            onClose
+                              ? TextVariant.BodyPrimary
+                              : TextVariant.BodySecondary
+                          }
+                          color={TextColor.Primary}
                         >
-                          {option.hint}
+                          {option.label}
                         </Text>
-                        {i === highlighted && (
-                          <IconWrapper content={CornerDownLeftIcon} size={12} />
+                        {option.description && (
+                          <Text
+                            variant={TextVariant.BodyTertiary}
+                            color={TextColor.Secondary}
+                          >
+                            {option.description}
+                          </Text>
                         )}
                       </span>
-                    )}
-                    {onClose && option.id === value?.id && (
-                      <IconWrapper
-                        content={CheckIcon}
-                        size={14}
-                        className={cn(
-                          "shrink-0",
-                          textColorClass(BrandColor.Primary)
-                        )}
-                      />
-                    )}
-                  </button>,
+                      {option.hint && (
+                        <span
+                          className={cn(
+                            "flex shrink-0 items-center gap-1.5 whitespace-nowrap",
+                            textColorClass(TextColor.Tertiary)
+                          )}
+                        >
+                          <Text
+                            variant={TextVariant.BodyTertiary}
+                            color={TextColor.Tertiary}
+                          >
+                            {option.hint}
+                          </Text>
+                          {i === highlighted && (
+                            <IconWrapper
+                              content={CornerDownLeftIcon}
+                              size={12}
+                            />
+                          )}
+                        </span>
+                      )}
+                      {onClose && option.id === value?.id && (
+                        <IconWrapper
+                          content={CheckIcon}
+                          size={14}
+                          className={cn(
+                            "shrink-0",
+                            textColorClass(BrandColor.Primary)
+                          )}
+                        />
+                      )}
+                    </button>
+                  </OptionRow>,
                 ])}
             </div>
           </ListPortal>
