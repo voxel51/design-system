@@ -50,6 +50,13 @@ describe("StatTile", () => {
     );
   });
 
+  it("colours a warning delta", () => {
+    render(
+      <StatTile label="Rate" value="7%" delta="Watch" deltaTone="warning" />
+    );
+    expect(screen.getByText("Watch")).toHaveClass("text-content-text-warning");
+  });
+
   it("lays tiles out in a wrapping grid", () => {
     const { container } = render(
       <StatTileGroup>

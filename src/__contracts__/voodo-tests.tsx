@@ -735,9 +735,10 @@ export const Everything = (
           compare={{ value: "2", color: "#0af", onSelect: noop }}
         />
         <StatTile label="l" value="1" deltaTone={StatTileTone.Failure} />
+        <StatTile label="l" value="1" deltaTone={StatTileTone.Warning} />
       </StatTileGroup>
       {/* @ts-expect-error - deltaTone is a fixed set */}
-      <StatTile label="l" value="1" deltaTone="warning" />
+      <StatTile label="l" value="1" deltaTone="bogus" />
       <Combobox
         trigger={<button type="button">t</button>}
         options={[
