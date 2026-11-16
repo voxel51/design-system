@@ -5,7 +5,7 @@ import { StrictMode, useRef, useState } from "react";
 
 import { IconName } from "@/types";
 
-import { Combobox, type ComboboxOption } from "./Combobox";
+import { Combobox, ComboboxAction, type ComboboxOption } from "./Combobox";
 
 const OPTIONS: ComboboxOption[] = [
   { id: "a", label: "alpha", description: "the first one" },
@@ -484,6 +484,24 @@ describe("Combobox in a popover", () => {
     expect(onPick).not.toHaveBeenCalled();
   });
 
+  it("clears the search from the field's clear button", async () => {
+    const user = userEvent.setup();
+    render(<Picker />);
+    await user.click(screen.getByRole("button", { name: "Pick" }));
+    expect(
+      screen.queryByRole("button", { name: "Clear search" })
+    ).not.toBeInTheDocument();
+
+    await user.keyboard("first");
+    expect(screen.getAllByRole("option")).toHaveLength(1);
+    await user.click(screen.getByRole("button", { name: "Clear search" }));
+
+    const field = screen.getByRole("combobox", { name: "Search things" });
+    expect(field).toHaveValue("");
+    expect(field).toHaveFocus();
+    expect(screen.getAllByRole("option")).toHaveLength(3);
+  });
+
   it("picks a row and closes", async () => {
     const user = userEvent.setup();
     const onPick = jest.fn();
@@ -515,5 +533,75 @@ describe("Combobox in a popover", () => {
 
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
     expect(onHostEscape).not.toHaveBeenCalled();
+  });
+  it("shows a spinner for the field's icon while searching, rows kept", () => {
+    const { rerender } = render(
+      <Harness icon={IconName.Search} searching inline />
+    );
+    expect(screen.getByRole("status", { name: "Loading" })).toBeInTheDocument();
+    expect(screen.getAllByRole("option")).toHaveLength(3);
+
+    rerender(<Harness icon={IconName.Search} inline />);
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+  });
+
+  describe("ComboboxAction", () => {
+    function ActionPicker({
+      onAction,
+    }: {
+      onAction: (event: { preventDefault: () => void }) => void;
+    }) {
+      return (
+        <Combobox
+          trigger={<button type="button">Pick</button>}
+          options={OPTIONS}
+          value={null}
+          onChange={() => {}}
+          placeholder="Search things"
+          footer={
+            <ComboboxAction icon={IconName.Add} onClick={onAction}>
+              Add a thing
+            </ComboboxAction>
+          }
+        />
+      );
+    }
+
+    it("runs its action and closes the picker", async () => {
+      const user = userEvent.setup();
+      const onAction = jest.fn();
+      render(<ActionPicker onAction={onAction} />);
+      await user.click(screen.getByRole("button", { name: "Pick" }));
+      await user.click(screen.getByRole("button", { name: "Add a thing" }));
+
+      expect(onAction).toHaveBeenCalledTimes(1);
+      expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+    });
+
+    it("leaves no row highlighted while the pointer is on it", async () => {
+      const user = userEvent.setup();
+      render(<ActionPicker onAction={jest.fn()} />);
+      await user.click(screen.getByRole("button", { name: "Pick" }));
+      const highlighted = (): HTMLElement[] =>
+        screen
+          .getAllByRole("option")
+          .filter((row) => row.getAttribute("aria-selected") === "true");
+      expect(highlighted()).toHaveLength(1);
+
+      await user.hover(screen.getByRole("button", { name: "Add a thing" }));
+      expect(highlighted()).toHaveLength(0);
+
+      await user.unhover(screen.getByRole("button", { name: "Add a thing" }));
+      expect(highlighted()).toHaveLength(1);
+    });
+
+    it("keeps the picker open when the action prevents the default", async () => {
+      const user = userEvent.setup();
+      render(<ActionPicker onAction={(event) => event.preventDefault()} />);
+      await user.click(screen.getByRole("button", { name: "Pick" }));
+      await user.click(screen.getByRole("button", { name: "Add a thing" }));
+
+      expect(screen.getByRole("listbox")).toBeInTheDocument();
+    });
   });
 });

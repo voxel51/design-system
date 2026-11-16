@@ -8,12 +8,15 @@ import {
   useFloating,
 } from "@floating-ui/react";
 import {
+  createContext,
   useCallback,
+  useContext,
   useEffect,
   useId,
   useLayoutEffect,
   useRef,
   useState,
+  type ButtonHTMLAttributes,
   type FC,
   type HTMLAttributes,
   type KeyboardEvent,
@@ -22,22 +25,30 @@ import {
   type RefObject,
 } from "react";
 
-import { Divider } from "@/components/Divider";
+import { IconAction } from "@/components/IconAction";
 import {
   CheckIcon,
+  CloseIcon,
   CornerDownLeftIcon,
   IconWrapper,
   SearchIcon,
   type IconInput,
 } from "@/components/Icons";
 import { Input } from "@/components/Input";
-import { MenuSectionTitle, menuPanelStyles } from "@/components/Menu";
+import {
+  MenuSectionTitle,
+  MenuSeparator,
+  menuPanelStyles,
+  menuRowStyles,
+} from "@/components/Menu";
 import { Popover, PopoverAnchor } from "@/components/Popover";
 import { Spinner } from "@/components/Spinner";
 import { Text } from "@/components/Text";
+import { FOCUS_RING } from "@/styles/focus";
 import {
   BackgroundColor,
   bgColorClass,
+  BrandColor,
   ElementState,
   Size,
   TextColor,
@@ -112,6 +123,11 @@ export interface ComboboxProps extends Omit<
   disabled?: boolean;
   /** Spinner in place of the list while the caller's query is in flight. */
   loading?: boolean;
+  /**
+   * A query for the typed text is in flight while the current rows stay: the
+   * field's leading icon turns into a spinner.
+   */
+  searching?: boolean;
   /**
    * Shown when there are no options and nothing is loading. Pass `null` to
    * show no list at all in that case — for a field whose suggestions are a
@@ -196,6 +212,115 @@ const optionStyles = (active: boolean, inline: boolean, row: boolean): string =>
       )
   );
 
+const pickerOptionStyles = (active: boolean): string =>
+  cn(menuRowStyles({ highlighted: active, disabled: false }), "gap-2");
+
+const InputInset: FC<{
+  picker: boolean;
+  onClear: (() => void) | null;
+  children: ReactNode;
+}> = ({ picker, onClear, children }) =>
+  picker ? (
+    <div className="px-1.5 pt-1">
+      <div className="relative">
+        {children}
+        {onClear && (
+          <span className="absolute top-1/2 right-1 -translate-y-1/2">
+            <IconAction
+              icon={CloseIcon}
+              size={Size.Sm}
+              aria-label="Clear search"
+              onMouseDown={(event): void => event.preventDefault()}
+              onClick={onClear}
+            />
+          </span>
+        )}
+      </div>
+    </div>
+  ) : (
+    <>{children}</>
+  );
+
+const SpinnerIconSm: FC = () => <Spinner size={Size.Sm} />;
+const SpinnerIconMd: FC = () => <Spinner size={Size.Md} />;
+
+const PickerClose = createContext<(() => void) | null>(null);
+
+export interface ComboboxActionProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  /** A leading icon saying what the action does. */
+  icon?: IconInput;
+}
+
+/**
+ * A row in a {@link Combobox} picker's `footer` that runs an action rather
+ * than picking, such as "All datasets" or "Add a field": it looks like the
+ * picker's rows and closes the picker once clicked.
+ *
+ * @example
+ * ```tsx
+ * <Combobox
+ *   trigger={<DropdownTrigger borderless>{dataset.label}</DropdownTrigger>}
+ *   options={datasets}
+ *   value={dataset}
+ *   onChange={(option) => option && open(option.id)}
+ *   placeholder="Find dataset"
+ *   footer={
+ *     <ComboboxAction icon={GridViewIcon} onClick={showAll}>
+ *       All datasets
+ *     </ComboboxAction>
+ *   }
+ * />
+ * ```
+ *
+ * @param icon A leading icon saying what the action does.
+ * @param children The action's label.
+ * @param onClick Runs the action; the picker then closes unless the handler calls `preventDefault`.
+ * @param className `class` overrides for the row.
+ * @param props Additional HTML properties for the row's button.
+ */
+export const ComboboxAction: FC<ComboboxActionProps> = ({
+  icon,
+  children,
+  className,
+  onClick,
+  disabled,
+  ...props
+}) => {
+  const close = useContext(PickerClose);
+  return (
+    <button
+      type="button"
+      {...props}
+      disabled={disabled}
+      className={cn(
+        menuRowStyles({ highlighted: false, disabled: Boolean(disabled) }),
+        "gap-2",
+        !disabled &&
+          bgColorClass(BackgroundColor.CardNested, ElementState.Hover),
+        FOCUS_RING,
+        className
+      )}
+      onClick={(event): void => {
+        onClick?.(event);
+        if (!event.defaultPrevented) close?.();
+      }}
+    >
+      {icon && (
+        <IconWrapper
+          content={icon}
+          size={14}
+          className={cn("shrink-0", textColorClass(TextColor.Secondary))}
+        />
+      )}
+      <Text variant={TextVariant.BodyPrimary} color={TextColor.Primary}>
+        {children}
+      </Text>
+    </button>
+  );
+};
+
+ComboboxAction.displayName = "ComboboxAction";
+
 /** The data-* attributes an option carries, for the row that renders it. */
 const dataAttributes = (
   option: ComboboxOption
@@ -220,6 +345,8 @@ type ComboboxFieldProps = Omit<
   onInputChange: (value: string) => void;
   /** Set for the popover's search field: picking or Escape calls it. */
   onClose?: () => void;
+  /** The pointer is on the popover's footer, so no row is highlighted. */
+  footerHovered?: boolean;
 };
 
 const ComboboxField: FC<ComboboxFieldProps> = ({
@@ -233,6 +360,7 @@ const ComboboxField: FC<ComboboxFieldProps> = ({
   size = Size.Md,
   disabled = false,
   loading = false,
+  searching = false,
   emptyMessage = "No matches",
   className,
   portal = false,
@@ -249,6 +377,7 @@ const ComboboxField: FC<ComboboxFieldProps> = ({
   listProps,
   onOpenChange,
   onClose,
+  footerHovered = false,
   "aria-label": ariaLabel,
   ...props
 }) => {
@@ -321,11 +450,12 @@ const ComboboxField: FC<ComboboxFieldProps> = ({
   // auto-highlighting combobox stands on the top row whenever there is text
   // (an inline list, always on screen, even without), so Enter takes the top match — derived, not stored, so a fresh list or
   // fresh text never has to reset it.
-  const highlighted =
-    active ??
-    (autoHighlight && (inline || inputValue.trim()) && options.length
-      ? 0
-      : null);
+  const highlighted = footerHovered
+    ? null
+    : (active ??
+      (autoHighlight && (inline || inputValue.trim()) && options.length
+        ? 0
+        : null));
 
   const close = useCallback((): void => {
     setOpen(false);
@@ -436,33 +566,52 @@ const ComboboxField: FC<ComboboxFieldProps> = ({
 
   return (
     <div ref={setWrapper} className={cn("relative", className)} {...props}>
-      <Input
-        onKeyDown={onKeyDown}
-        size={size}
-        disabled={disabled}
-        borderless={borderless}
-        icon={icon}
-        autoComplete="off"
-        value={inputValue}
-        placeholder={placeholder}
-        role="combobox"
-        aria-expanded={open}
-        aria-controls={listId}
-        aria-autocomplete="list"
-        aria-label={ariaLabel}
-        {...inputProps}
-        onFocus={(): void => setOpen(true)}
-        onBlur={commitOnBlur ? commitText : undefined}
-        onChange={(e): void => {
-          onInputChange(e.target.value);
-          setOpen(true);
-          // Typing invalidates whatever was highlighted
-          setActive(null);
-          // Typing past a pick means the pick no longer describes the field.
-          if (!onClose && value && e.target.value !== value.label)
-            onChange(null);
-        }}
-      />
+      <InputInset
+        picker={Boolean(onClose)}
+        onClear={
+          onClose && inputValue
+            ? (): void => {
+                onInputChange("");
+                setActive(null);
+              }
+            : null
+        }
+      >
+        <Input
+          onKeyDown={onKeyDown}
+          size={size}
+          disabled={disabled}
+          borderless={borderless}
+          icon={
+            searching && icon
+              ? size === Size.Sm || size === Size.Xs
+                ? SpinnerIconSm
+                : SpinnerIconMd
+              : icon
+          }
+          autoComplete="off"
+          value={inputValue}
+          placeholder={placeholder}
+          role="combobox"
+          aria-expanded={open}
+          aria-controls={listId}
+          aria-autocomplete="list"
+          aria-label={ariaLabel}
+          className={onClose ? "pr-9" : undefined}
+          {...inputProps}
+          onFocus={(): void => setOpen(true)}
+          onBlur={commitOnBlur ? commitText : undefined}
+          onChange={(e): void => {
+            onInputChange(e.target.value);
+            setOpen(true);
+            // Typing invalidates whatever was highlighted
+            setActive(null);
+            // Typing past a pick means the pick no longer describes the field.
+            if (!onClose && value && e.target.value !== value.label)
+              onChange(null);
+          }}
+        />
+      </InputInset>
       {(open || inline) &&
         (loading || options.length > 0 || emptyMessage !== null) && (
           <ListPortal portal={portal && !inline}>
@@ -474,7 +623,7 @@ const ComboboxField: FC<ComboboxFieldProps> = ({
               style={portal && !inline ? floatingStyles : undefined}
               className={
                 inline
-                  ? "mt-1 max-h-80 overflow-y-auto"
+                  ? cn(onClose ? "mt-1.5" : "mt-1", "max-h-80 overflow-y-auto")
                   : cn(
                       portal
                         ? undefined
@@ -521,15 +670,15 @@ const ComboboxField: FC<ComboboxFieldProps> = ({
                     aria-label={option.label}
                     {...dataAttributes(option)}
                     aria-selected={i === highlighted}
-                    className={optionStyles(
-                      i === highlighted,
-                      inline,
-                      Boolean(
-                        option.icon ||
-                        option.hint ||
-                        (onClose && option.id === value?.id)
-                      )
-                    )}
+                    className={
+                      onClose
+                        ? pickerOptionStyles(i === highlighted)
+                        : optionStyles(
+                            i === highlighted,
+                            inline,
+                            Boolean(option.icon || option.hint)
+                          )
+                    }
                     // The field owns focus; hovering only moves the highlight so
                     // pointer and keyboard agree on what Enter would pick.
                     onMouseEnter={(): void => setActive(i)}
@@ -552,7 +701,11 @@ const ComboboxField: FC<ComboboxFieldProps> = ({
                     )}
                     <span className="flex min-w-0 flex-1 flex-col items-start gap-0.5">
                       <Text
-                        variant={TextVariant.BodySecondary}
+                        variant={
+                          onClose
+                            ? TextVariant.BodyPrimary
+                            : TextVariant.BodySecondary
+                        }
                         color={TextColor.Primary}
                       >
                         {option.label}
@@ -590,7 +743,7 @@ const ComboboxField: FC<ComboboxFieldProps> = ({
                         size={14}
                         className={cn(
                           "shrink-0",
-                          textColorClass(TextColor.Secondary)
+                          textColorClass(BrandColor.Primary)
                         )}
                       />
                     )}
@@ -661,7 +814,7 @@ const matches = (option: ComboboxOption, query: string): boolean => {
  *   value={field}
  *   onChange={(option) => option && setField(option)}
  *   placeholder="Search fields"
- *   footer={<TextAction onClick={addField}>Add a field</TextAction>}
+ *   footer={<ComboboxAction icon={AddIcon} onClick={addField}>Add a field</ComboboxAction>}
  * />
  * ```
  *
@@ -675,6 +828,7 @@ const matches = (option: ComboboxOption, query: string): boolean => {
  * @param size Field size. See {@link Size}.
  * @param disabled If `true`, the field cannot be interacted with.
  * @param loading Show a spinner in place of the list.
+ * @param searching Show a spinner in place of the field's icon while the rows stay.
  * @param emptyMessage Shown when there are no options; a function receives `close`.
  * @param className `class` overrides for the wrapper.
  * @param portal Render the list in a portal, anchored to the field.
@@ -704,6 +858,7 @@ export const Combobox: FC<ComboboxProps> = ({
   ...props
 }) => {
   const [ownText, setOwnText] = useState("");
+  const [footerHovered, setFooterHovered] = useState(false);
   const text = inputValue ?? ownText;
   const field = {
     ...props,
@@ -723,30 +878,43 @@ export const Combobox: FC<ComboboxProps> = ({
       className={className}
       // the padding of the menu panels beside it
       panelClassName="p-1.5"
-      onOpenChange={(open) => open && setOwnText("")}
+      onOpenChange={(open) => {
+        if (!open) return;
+        setOwnText("");
+        setFooterHovered(false);
+      }}
       trigger={trigger}
     >
       {({ close }) => (
-        <div className="w-80 max-w-[85vw]">
-          <ComboboxField
-            size={Size.Sm}
-            icon={SearchIcon}
-            {...field}
-            placeholder={props.placeholder ?? "Search"}
-            aria-label={props["aria-label"] ?? props.placeholder ?? "Search"}
-            inline
-            autoHighlight
-            focusOnMount
-            disabled={false}
-            onClose={close}
-          />
-          {footer && (
-            <>
-              <Divider />
-              <div className="px-1 pt-1.5 pb-0.5">{footer}</div>
-            </>
-          )}
-        </div>
+        <PickerClose.Provider value={close}>
+          <div className="w-80 max-w-[85vw]">
+            <ComboboxField
+              size={Size.Md}
+              icon={SearchIcon}
+              {...field}
+              placeholder={props.placeholder ?? "Search"}
+              aria-label={props["aria-label"] ?? props.placeholder ?? "Search"}
+              inline
+              autoHighlight
+              focusOnMount
+              disabled={false}
+              onClose={close}
+              footerHovered={footerHovered}
+            />
+            {footer && (
+              <>
+                <MenuSeparator className="mb-0" />
+                <div
+                  className="pt-1.5"
+                  onMouseEnter={(): void => setFooterHovered(true)}
+                  onMouseLeave={(): void => setFooterHovered(false)}
+                >
+                  {footer}
+                </div>
+              </>
+            )}
+          </div>
+        </PickerClose.Provider>
       )}
     </Popover>
   );

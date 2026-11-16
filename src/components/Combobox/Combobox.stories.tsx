@@ -3,15 +3,16 @@ import type { ComponentProps } from "react";
 import { useMemo, useState } from "react";
 
 import {
+  AddIcon,
   ArrowUpDownIcon,
   Combobox,
+  ComboboxAction,
   type ComboboxOption,
   DropdownTrigger,
   FilterAltIcon,
   StatusDot,
   Text,
   TextColor,
-  TextAction,
   TextVariant,
 } from "@voxel51/voodo";
 
@@ -169,7 +170,11 @@ export const InPopover: Story = {
         value={value}
         onChange={setValue}
         placeholder="Search datasets"
-        footer={<TextAction onClick={() => {}}>Create a dataset</TextAction>}
+        footer={
+          <ComboboxAction icon={AddIcon} onClick={() => {}}>
+            Create a dataset
+          </ComboboxAction>
+        }
       />
     );
   },
