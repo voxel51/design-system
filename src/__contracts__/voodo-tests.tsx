@@ -115,6 +115,7 @@ import {
   StatTileGroup,
   StatTileTone,
   Combobox,
+  ComboboxAction,
   DocsButton,
   StepRail,
   StatusColor,
@@ -742,6 +743,18 @@ export const Everything = (
         value={null}
         onChange={noop}
         footer={<span />}
+      />
+      <Combobox
+        trigger={<button type="button">t</button>}
+        options={[]}
+        value={null}
+        onChange={noop}
+        searching
+        footer={
+          <ComboboxAction icon={AddIcon} onClick={noop} disabled={false}>
+            a
+          </ComboboxAction>
+        }
       />
       <CollapsibleCard
         title="t"
