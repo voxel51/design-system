@@ -466,6 +466,7 @@ export const exhaustive = {
     default: true,
     boxed: true,
     rows: true,
+    plain: true,
   } satisfies Record<TableVariant, true>,
 
   tableAlign: {

@@ -75,4 +75,17 @@ export const WithDetail: Story = {
   render: Default.render,
 };
 
+export const WithSections: Story = {
+  args: {
+    ...Default.args,
+    rows: [
+      { id: "s1", section: <b>Group A</b>, cells: {} },
+      ...rows.slice(0, 2),
+      { id: "s2", section: <b>Group B</b>, cells: {} },
+      ...rows.slice(2),
+    ],
+  },
+  render: Default.render,
+};
+
 export default meta;
