@@ -3,15 +3,17 @@ import type { ComponentProps } from "react";
 import { useMemo, useState } from "react";
 
 import {
+  AddIcon,
   ArrowUpDownIcon,
   Combobox,
+  ComboboxAction,
   type ComboboxOption,
   DropdownTrigger,
+  EditIcon,
   FilterAltIcon,
   StatusDot,
   Text,
   TextColor,
-  TextAction,
   TextVariant,
 } from "@voxel51/voodo";
 
@@ -169,7 +171,37 @@ export const InPopover: Story = {
         value={value}
         onChange={setValue}
         placeholder="Search datasets"
-        footer={<TextAction onClick={() => {}}>Create a dataset</TextAction>}
+        footer={
+          <ComboboxAction icon={AddIcon} onClick={() => {}}>
+            Create a dataset
+          </ComboboxAction>
+        }
+      />
+    );
+  },
+};
+
+/** Rows with an action at the end, shown on the highlighted row. */
+export const RowActions: Story = {
+  render: function Render() {
+    const [value, setValue] = useState<ComboboxOption | null>(DATASETS[0]);
+    return (
+      <Combobox
+        trigger={
+          <DropdownTrigger borderless>{value?.label ?? "None"}</DropdownTrigger>
+        }
+        options={DATASETS.map((option) => ({
+          ...option,
+          hint: "120",
+          action: {
+            icon: EditIcon,
+            label: `Edit ${option.label}`,
+            onClick: () => {},
+          },
+        }))}
+        value={value}
+        onChange={setValue}
+        placeholder="Search subsets"
       />
     );
   },
