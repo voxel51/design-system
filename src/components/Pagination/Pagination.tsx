@@ -8,6 +8,7 @@ import {
   useState,
 } from "react";
 
+import { ChipSelect } from "@/components/ChipSelect";
 import {
   KeyboardArrowLeftIcon,
   KeyboardArrowRightIcon,
@@ -15,7 +16,6 @@ import {
   KeyboardDoubleArrowRightIcon,
 } from "@/components/Icons";
 import { Input } from "@/components/Input";
-import { Select } from "@/components/Select";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
 import { textStyles } from "@/styles/text";
@@ -108,7 +108,7 @@ const JUMP_THRESHOLD = 7;
  *
  * @param page The current page, starting at 1.
  * @param pageCount The total number of pages. Nothing renders when it is 1 or less
- *  and there is no page-size select.
+ *  and there is no page-size select, or no page size could split the rows.
  * @param onPageChange Called with the requested page, already clamped to `1..pageCount`.
  * @param pageSize The current rows per page. Required for the range summary and select.
  * @param pageSizes The selectable rows-per-page values. Defaults to `[25, 50, 100]`.
@@ -119,8 +119,9 @@ const JUMP_THRESHOLD = 7;
  * @param disabled Disables every control.
  * @param siblingCount Pages shown either side of the current page. Defaults to 1.
  * @param boundaryCount Pages always shown at each end. Defaults to 1.
- * @param align Horizontal placement of the summary and controls: `"between"`
- *  (default, summary left and controls right), `"start"`, `"center"` or `"end"`.
+ * @param align Horizontal placement of the rows select, pages and summary:
+ *  `"center"` (default, clustered in the centre), `"between"` (spread across
+ *  the row), `"start"` or `"end"`.
  * @param jump How the user types a page number: `"input"` (default, a "Go to"
  *  field), `"ellipsis"` (clicking a `…` turns it into a field) or `"both"`.
  *  `hide=["jump"]` removes either.
@@ -139,7 +140,7 @@ export const Pagination: FC<PaginationProps> = ({
   disabled = false,
   siblingCount = 1,
   boundaryCount = 1,
-  align = PaginationAlign.Between,
+  align = PaginationAlign.Center,
   jump: jumpMode = PaginationJump.Input,
   hide = [],
   className,
@@ -160,14 +161,19 @@ export const Pagination: FC<PaginationProps> = ({
       (pageSizes.includes(pageSize ?? -1) || pageSize === undefined
         ? pageSizes
         : [...pageSizes, pageSize].sort((a, b) => a - b)
-      ).map((n) => ({ id: String(n), data: { label: `${n} / page` } })),
+      ).map((n) => ({ id: String(n), label: `${n} / page` })),
     [pageSizes, pageSize]
   );
 
   const shows = (part: PaginationPart): boolean => !hide.includes(part);
   const hasSize = onPageSizeChange !== undefined && pageSize !== undefined;
   const showSize = hasSize && shows("page-size");
-  if (pageCount <= 1 && !hasSize) return null;
+  const smallest = Math.min(...pageSizes, pageSize ?? Infinity);
+  if (
+    pageCount <= 1 &&
+    (!hasSize || pageSize <= smallest || (total ?? Infinity) < smallest)
+  )
+    return null;
 
   const goTo = (next: number): void => {
     const clamped = Math.min(Math.max(next, 1), Math.max(pageCount, 1));
@@ -199,52 +205,23 @@ export const Pagination: FC<PaginationProps> = ({
     <nav
       aria-label="Pagination"
       className={clsx(
-        "@container flex w-full flex-wrap items-center gap-x-6 gap-y-3",
+        "@container flex w-full flex-wrap items-center gap-x-2 gap-y-3",
         ALIGN_STYLES[align],
         className
       )}
     >
-      {(shows("summary") || showSize) && (
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          {shows("summary") && (
-            <Text
-              variant="body-tertiary"
-              color={TextColor.Secondary}
-              className="tabular-nums"
-              aria-live="polite"
-            >
-              {lead}
-              <span className={textColorClass(TextColor.Foreground)}>
-                {range}
-              </span>
-              {rest}
-            </Text>
-          )}
-          {showSize && (
-            <div className="w-36">
-              <Select
-                exclusive
-                size={Size.Sm}
-                disabled={disabled}
-                aria-label="Rows per page"
-                value={String(pageSize)}
-                options={sizeOptions}
-                onChange={(v) =>
-                  typeof v === "string" && onPageSizeChange(Number(v))
-                }
-              />
-            </div>
-          )}
-        </div>
+      {showSize && (
+        <ChipSelect
+          size={Size.Sm}
+          aria-label="Rows per page"
+          value={String(pageSize)}
+          options={sizeOptions}
+          disabled={disabled}
+          onChange={(v) => onPageSizeChange(Number(v))}
+        />
       )}
-
-      <div
-        className={clsx(
-          "flex flex-wrap items-center gap-x-4 gap-y-2",
-          align === PaginationAlign.Between && "ml-auto"
-        )}
-      >
-        {pageCount > 1 && (
+      {pageCount > 1 && (
+        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
           <div
             className={clsx(
               "inline-flex items-center gap-0.5 p-0.5",
@@ -354,31 +331,43 @@ export const Pagination: FC<PaginationProps> = ({
               </TrackButton>
             )}
           </div>
-        )}
 
-        {pageCount > JUMP_THRESHOLD &&
-          shows("jump") &&
-          jumpMode !== PaginationJump.Ellipsis && (
-            <div className="flex items-center gap-2 @max-lg:hidden">
-              <Text variant="body-tertiary" color={TextColor.Secondary}>
-                Go to
-              </Text>
-              <Input
-                size={Size.Sm}
-                className="w-12 text-center tabular-nums"
-                inputMode="numeric"
-                aria-label="Go to page"
-                value={jump}
-                disabled={disabled}
-                onChange={(e) =>
-                  /^\d*$/.test(e.target.value) && setJump(e.target.value)
-                }
-                onKeyDown={onJumpKey}
-                onBlur={commitJump}
-              />
-            </div>
-          )}
-      </div>
+          {pageCount > JUMP_THRESHOLD &&
+            shows("jump") &&
+            jumpMode !== PaginationJump.Ellipsis && (
+              <div className="flex items-center gap-2 @max-lg:hidden">
+                <Text variant="body-tertiary" color={TextColor.Secondary}>
+                  Go to
+                </Text>
+                <Input
+                  size={Size.Sm}
+                  className="w-12 text-center tabular-nums"
+                  inputMode="numeric"
+                  aria-label="Go to page"
+                  value={jump}
+                  disabled={disabled}
+                  onChange={(e) =>
+                    /^\d*$/.test(e.target.value) && setJump(e.target.value)
+                  }
+                  onKeyDown={onJumpKey}
+                  onBlur={commitJump}
+                />
+              </div>
+            )}
+        </div>
+      )}
+      {shows("summary") && (
+        <Text
+          variant="body-tertiary"
+          color={TextColor.Secondary}
+          className="px-2.5 tabular-nums"
+          aria-live="polite"
+        >
+          {lead}
+          <span className={textColorClass(TextColor.Foreground)}>{range}</span>
+          {rest}
+        </Text>
+      )}
     </nav>
   );
 };
