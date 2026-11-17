@@ -309,9 +309,14 @@ export const Select: FC<SelectProps> = ({
           anchor={{ to: anchor, gap: 2 }}
           portal={portal}
           modal={false}
-          style={triggerWidth ? { width: triggerWidth } : undefined}
+          style={{
+            minWidth: triggerWidth || undefined,
+            width: "max-content",
+          }}
           className={clsx(
             "p-1",
+            // Headless UI sets an inline viewport max-width; only !important wins.
+            "max-w-[min(24rem,90vw)]!",
             // About eight rows, then the list scrolls: a long list left to
             // fill the viewport covers the form it opened from.
             "[--anchor-max-height:20rem]",
