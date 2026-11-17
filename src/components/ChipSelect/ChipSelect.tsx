@@ -31,8 +31,12 @@ export interface ChipSelectProps<T extends string = string> {
   label?: string;
   /** The value is set (not the default): the chip gets a soft filled pill. */
   active?: boolean;
+  /** Trigger size. Defaults to `"md"`. */
+  size?: ButtonProps["size"];
   /** Classes for the trigger, such as tighter padding. */
   className?: string;
+  /** The trigger cannot open the menu. */
+  disabled?: boolean;
   "data-cy"?: string;
 }
 
@@ -61,7 +65,9 @@ export interface ChipSelectProps<T extends string = string> {
  * @param icon Leading icon of the trigger.
  * @param prefix What the value is, shown before it. Below 640px only the value shows and a tooltip names both.
  * @param active Marks the chip as set.
+ * @param size Trigger size. Defaults to `"md"`.
  * @param className Classes for the trigger.
+ * @param disabled The trigger cannot open the menu.
  * @param label The trigger text, when it should differ from the checked option's label. Defaults to that label.
  */
 export function ChipSelect<T extends string = string>({
@@ -73,7 +79,9 @@ export function ChipSelect<T extends string = string>({
   label,
   "aria-label": ariaLabel,
   active,
+  size = Size.Md,
   className,
+  disabled,
   "data-cy": dataCy,
 }: ChipSelectProps<T>): JSX.Element {
   return (
@@ -82,12 +90,13 @@ export function ChipSelect<T extends string = string>({
       trigger={
         <DropdownTrigger
           borderless
-          size={Size.Md}
+          size={size}
           leadingIcon={icon}
           prefix={prefix}
           collapse="auto"
           active={active}
           className={className}
+          disabled={disabled}
           aria-label={ariaLabel}
           data-cy={dataCy}
         >
