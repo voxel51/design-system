@@ -11,6 +11,7 @@ import { cn } from "@/util/classes";
 /** What a {@link StatTile}'s delta says about the change. */
 export const StatTileTone = {
   Success: "success",
+  Warning: "warning",
   Failure: "failure",
   Neutral: "neutral",
 } as const;
@@ -19,6 +20,7 @@ export type StatTileTone =
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace StatTileTone {
   export type Success = typeof StatTileTone.Success;
+  export type Warning = typeof StatTileTone.Warning;
   export type Failure = typeof StatTileTone.Failure;
   export type Neutral = typeof StatTileTone.Neutral;
 }
@@ -59,6 +61,7 @@ export interface StatTileProps extends Omit<
 
 const DELTA_COLOR: Record<StatTileTone, TextColor> = {
   [StatTileTone.Success]: TextColor.Success,
+  [StatTileTone.Warning]: TextColor.Warning,
   [StatTileTone.Failure]: TextColor.Failure,
   [StatTileTone.Neutral]: TextColor.Tertiary,
 };
@@ -125,7 +128,7 @@ const Target: FC<{
  * @param value The figure.
  * @param hint Beside the value, in secondary text (a share, a unit).
  * @param delta A line under the value saying how it changed.
- * @param deltaTone `"success"`, `"failure"` or `"neutral"` (default): the delta's colour.
+ * @param deltaTone `"success"`, `"warning"`, `"failure"` or `"neutral"` (default): the delta's colour.
  * @param color Colour of the value: a token or a CSS colour (a run's colour).
  * @param onSelect Makes the value a filter: a funnel marks the tile and the value is a toggle button.
  * @param selected The filter is applied: the tile is outlined and its funnel turns brand.
