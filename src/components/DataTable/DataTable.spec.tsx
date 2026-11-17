@@ -49,6 +49,13 @@ describe("DataTable", () => {
     expect(screen.getByText("full")).toBeInTheDocument();
   });
 
+  it("plain variant gives sentence-case headers", () => {
+    withWidth(1000);
+    render(<DataTable columns={columns} rows={rows} variant="plain" />);
+    const [header] = screen.getAllByRole("columnheader");
+    expect(header).not.toHaveClass("uppercase");
+  });
+
   it("keeps the table at a narrow width when cardBelow is never", () => {
     withWidth(300);
     render(<DataTable columns={columns} rows={rows} cardBelow="never" />);
@@ -123,6 +130,21 @@ describe("DataTable", () => {
       );
       await user.click(screen.getByText("More about Alpha"));
       expect(onClick).not.toHaveBeenCalled();
+    }
+  );
+
+  it.each([1000, 390])(
+    "renders a section row in place of cells at %ipx",
+    (width) => {
+      withWidth(width);
+      render(
+        <DataTable
+          columns={columns}
+          rows={[{ id: "g", section: "Group A", cells: {} }, rows[0]]}
+        />
+      );
+      expect(screen.getByText("Group A")).toBeInTheDocument();
+      expect(screen.getByText("Alpha")).toBeInTheDocument();
     }
   );
 
