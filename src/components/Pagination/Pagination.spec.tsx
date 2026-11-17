@@ -24,6 +24,61 @@ describe("Pagination", () => {
     expect(container).toBeEmptyDOMElement();
   });
 
+  it("renders nothing when the total is below the smallest page size", () => {
+    const { container } = render(
+      <Pagination
+        page={1}
+        pageCount={1}
+        total={10}
+        pageSize={25}
+        onPageSizeChange={jest.fn()}
+        onPageChange={jest.fn()}
+      />
+    );
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it("renders nothing for a single page at the smallest page size", () => {
+    const { container } = render(
+      <Pagination
+        page={1}
+        pageCount={1}
+        pageSize={25}
+        onPageSizeChange={jest.fn()}
+        onPageChange={jest.fn()}
+      />
+    );
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it("shows the pages when the page size is below every option", () => {
+    setup({
+      page: 1,
+      pageCount: 2,
+      total: 20,
+      pageSize: 10,
+      onPageSizeChange: jest.fn(),
+    });
+    expect(screen.getByRole("button", { name: "Page 2" })).toBeInTheDocument();
+  });
+
+  it("disables the rows select with the rest", () => {
+    setup({ disabled: true, pageSize: 25, onPageSizeChange: jest.fn() });
+    expect(
+      screen.getByRole("button", { name: /Rows per page/ })
+    ).toBeDisabled();
+  });
+
+  it("centres by default and spreads with between", () => {
+    const { unmount } = render(
+      <Pagination page={5} pageCount={20} onPageChange={jest.fn()} />
+    );
+    expect(screen.getByRole("navigation")).toHaveClass("justify-center");
+    unmount();
+    setup({ align: "between" });
+    expect(screen.getByRole("navigation")).toHaveClass("justify-between");
+  });
+
   it("marks the current page", () => {
     setup();
     expect(screen.getByRole("button", { name: "Page 5" })).toHaveAttribute(
