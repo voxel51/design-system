@@ -66,4 +66,17 @@ describe("ChipSelect", () => {
       expect(screen.queryByRole("menu")).not.toBeInTheDocument()
     );
   });
+
+  it("sizes the trigger", () => {
+    render(
+      <ChipSelect
+        aria-label="Sort by"
+        size="sm"
+        value="newest"
+        onChange={jest.fn()}
+        options={options}
+      />
+    );
+    expect(screen.getByRole("button", { name: "Sort by" })).toHaveClass("h-6");
+  });
 });
