@@ -14,6 +14,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  type TableVariant,
 } from "@/components/Table";
 import { Text } from "@/components/Text";
 import radiusStyles from "@/styles/radius";
@@ -60,6 +61,11 @@ export type DataTableColumn = {
 /** A row of a {@link DataTable}. */
 export type DataTableRow = {
   id: string;
+  /**
+   * Makes the row a full-width section header (a group's title) in place of
+   * its cells; give it a button to collapse the rows that follow.
+   */
+  section?: ReactNode;
   /** Cell content keyed by column `key`. */
   cells: Record<string, ReactNode>;
   /** Called on a click or Enter on the row; the event tells e.g. a ⌘-click to open in a new tab. */
@@ -82,6 +88,8 @@ export interface DataTableProps {
   /** The table shows cards while it is narrower than this; `"never"` keeps the table. Defaults to `"sm"`. */
   cardBelow?: Breakpoint | "never";
   className?: string;
+  /** The table's look: `"plain"` gives sentence-case headers. See {@link TableVariant}. */
+  variant?: TableVariant;
   /** Names the table for assistive technology. */
   "aria-label"?: string;
   /**
@@ -146,46 +154,54 @@ const cellClass = (column: DataTableColumn): string =>
 const WideRow: FC<{ columns: DataTableColumn[]; row: DataTableRow }> = ({
   columns,
   row,
-}) => (
-  <Fragment>
-    <TableRow {...row.props} {...clickableProps(row)}>
-      {columns.map((column) => (
-        <TableCell
-          key={column.key}
-          className={cn(
-            column.width !== "fit" && "wrap-anywhere",
-            cellClass(column)
-          )}
-          style={widthStyle(column.width)}
-          {...(column.role === "actions" && {
-            onClick: stop,
-            onKeyDown: stop,
-          })}
-        >
-          {row.cells[column.key]}
-        </TableCell>
-      ))}
+}) =>
+  hasValue(row.section) ? (
+    <TableRow>
+      <TableCell colSpan={columns.length} className="p-1">
+        {row.section}
+      </TableCell>
     </TableRow>
-    {hasValue(row.detail) && (
-      <TableRow>
-        <TableCell colSpan={columns.length} className="p-0">
-          {row.detail}
-        </TableCell>
+  ) : (
+    <Fragment>
+      <TableRow {...row.props} {...clickableProps(row)}>
+        {columns.map((column) => (
+          <TableCell
+            key={column.key}
+            className={cn(
+              column.width !== "fit" && "wrap-anywhere",
+              cellClass(column)
+            )}
+            style={widthStyle(column.width)}
+            {...(column.role === "actions" && {
+              onClick: stop,
+              onKeyDown: stop,
+            })}
+          >
+            {row.cells[column.key]}
+          </TableCell>
+        ))}
       </TableRow>
-    )}
-  </Fragment>
-);
+      {hasValue(row.detail) && (
+        <TableRow>
+          <TableCell colSpan={columns.length} className="p-0">
+            {row.detail}
+          </TableCell>
+        </TableRow>
+      )}
+    </Fragment>
+  );
 
 const WideTable: FC<Omit<DataTableProps, "cardBelow">> = ({
   columns,
   rows,
   empty,
   className,
+  variant,
   children,
   "aria-label": ariaLabel,
 }) => {
   return (
-    <Table className={className} aria-label={ariaLabel}>
+    <Table className={className} variant={variant} aria-label={ariaLabel}>
       {columns.some((column) => hasValue(column.label)) && (
         <TableHeader>
           <TableRow>
@@ -224,6 +240,13 @@ const Card: FC<{ columns: DataTableColumn[]; row: DataTableRow }> = ({
   columns,
   row,
 }) => {
+  if (hasValue(row.section)) {
+    return (
+      <div className={cn("border-b p-1 last:border-0", RULE_BORDER)}>
+        {row.section}
+      </div>
+    );
+  }
   const cells = (role: DataTableColumn["role"]): DataTableColumn[] =>
     columns.filter(
       (column) =>
@@ -366,6 +389,7 @@ export const DataTable: FC<DataTableProps> = ({
   empty,
   cardBelow = "sm",
   className,
+  variant,
   children,
   "aria-label": ariaLabel,
 }) => {
@@ -402,6 +426,7 @@ export const DataTable: FC<DataTableProps> = ({
             rows={rows}
             empty={empty}
             className={className}
+            variant={variant}
             aria-label={ariaLabel}
           >
             {children}
