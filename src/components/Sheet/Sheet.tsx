@@ -67,6 +67,8 @@ export interface SheetProps {
    * rather than detail views. Defaults to `false`.
    */
   compact?: boolean;
+  /** Blur the page behind the sheet. Defaults to `true`; pass `false` for a plain scrim. */
+  blur?: boolean;
   /** `class` overrides for the panel. */
   className?: string;
   /** `class` overrides for the scrollable body. */
@@ -99,6 +101,7 @@ export interface SheetProps {
  * @param title Heading for the title bar.
  * @param width Panel width in pixels; full-width below it.
  * @param compact Tighter title bar with a medium close button.
+ * @param blur Blurs the page behind the sheet. Defaults to `true`.
  * @param showCloseButton Whether the title bar renders a close button.
  * @param className `class` overrides for the panel.
  * @param contentClassName `class` overrides for the scrollable body.
@@ -112,6 +115,7 @@ export const Sheet: FC<SheetProps> = ({
   width = 460,
   showCloseButton,
   compact = false,
+  blur = true,
   className,
   contentClassName,
   children,
@@ -132,8 +136,9 @@ export const Sheet: FC<SheetProps> = ({
         className={cn(
           "fixed inset-0",
           bgColorClass(ScrimColor.Default),
+          blur && "backdrop-blur-[6px] data-closed:backdrop-blur-[0px]",
           transitionDuration(TransitionDuration.Normal),
-          "transition-opacity data-closed:opacity-0"
+          "ease-[ease] transition-[opacity,backdrop-filter] data-closed:opacity-0"
         )}
       />
       <DialogPanel

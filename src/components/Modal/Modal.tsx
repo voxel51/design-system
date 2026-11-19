@@ -100,6 +100,8 @@ export interface ModalProps {
    * overlays (an open sample viewer and its tooltips).
    */
   zIndex?: ZIndex;
+  /** Blur the page behind the modal. Defaults to `true`; pass `false` for a plain scrim. */
+  blur?: boolean;
   /** `class` overrides for the panel. */
   className?: string;
   /** `class` overrides for the scrollable body. */
@@ -171,6 +173,7 @@ export interface ModalProps {
  * @param onBack When given, renders a back arrow before the title that calls it.
  * @param closeButtonProps Extra props for the close button.
  * @param zIndex Stacking level. See {@link ZIndex}.
+ * @param blur Blurs the page behind the modal. Defaults to `true`.
  * @param className `class` overrides for the panel.
  * @param contentClassName `class` overrides for the scrollable body.
  * @param children Modal content.
@@ -187,6 +190,7 @@ export const Modal: FC<ModalProps> = ({
   onBack,
   closeButtonProps,
   zIndex = ZIndex.High,
+  blur = true,
   className,
   contentClassName,
   children,
@@ -203,23 +207,36 @@ export const Modal: FC<ModalProps> = ({
         // spans the viewport, so the root itself has a box (tests and
         // hit-testing find the dialog by it)
         "fixed inset-0",
-        zIndexStyles(zIndex),
-        transitionDuration(TransitionDuration.Normal),
-        "transition-opacity data-closed:opacity-0"
+        zIndexStyles(zIndex)
       )}
       {...props}
     >
+      {/* The backdrop and panel fade on their own: a faded parent would hide
+          the backdrop blur until the fade ends, so it popped in and out. */}
       <DialogBackdrop
-        className={cn("fixed inset-0", bgColorClass(ScrimColor.Default))}
+        transition
+        className={cn(
+          "fixed inset-0",
+          bgColorClass(ScrimColor.Default),
+          blur && "backdrop-blur-[6px] data-closed:backdrop-blur-[0px]",
+          transitionDuration(TransitionDuration.Normal),
+          "ease-[ease] transition-[opacity,backdrop-filter] data-closed:opacity-0"
+        )}
       />
       {/* Sized to the viewport, not to the page beside its scrollbar: the
           scroll lock lifts as the close fades in, and a scrollbar returning
           then would slide a centered panel sideways. */}
       <div className="fixed inset-y-0 left-0 flex w-screen items-center justify-center p-4">
         <DialogPanel
+          transition
           data-testid="modal-panel"
           className={cn(
             "flex w-full flex-col overflow-hidden",
+            // Lovable's dialog: fade, zoom from 95% and settle up ~2%
+            transitionDuration(TransitionDuration.Normal),
+            "ease-[ease]",
+            "transition-[opacity,scale,translate]",
+            "data-closed:translate-y-[2%] data-closed:scale-95 data-closed:opacity-0",
             "max-h-[85vh]",
             sizeStyles[size],
             // Figma Confirmation Modal: bg/background, border/default, radius 8,
