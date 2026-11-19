@@ -178,4 +178,42 @@ describe("Select", () => {
       screen.getByRole("combobox", { name: "Color by" })
     ).toBeInTheDocument();
   });
+
+  describe("with option icons", () => {
+    const options = [
+      { id: "a", data: { label: "Alpha", icon: <svg data-testid="icon-a" /> } },
+      { id: "b", data: { label: "Beta", icon: <svg data-testid="icon-b" /> } },
+    ];
+
+    it("should show the selected option's icon in the closed field", () => {
+      render(<Select exclusive options={options} value="b" />);
+
+      expect(screen.getByTestId("icon-b")).toBeInTheDocument();
+      expect(screen.queryByTestId("icon-a")).not.toBeInTheDocument();
+    });
+
+    it("should show every icon in the list", async () => {
+      const user = userEvent.setup();
+      render(<Select exclusive options={options} value="b" />);
+
+      await user.click(screen.getByRole("combobox"));
+
+      await waitFor(() =>
+        expect(screen.getAllByTestId("icon-a")).toHaveLength(1)
+      );
+    });
+  });
+
+  it("should not accept typing when not searchable", () => {
+    render(
+      <Select
+        exclusive
+        searchable={false}
+        options={[{ id: "a", data: { label: "Alpha" } }]}
+        value="a"
+      />
+    );
+
+    expect(screen.getByRole("combobox")).toHaveAttribute("readonly");
+  });
 });

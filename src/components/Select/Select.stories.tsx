@@ -100,6 +100,21 @@ export const Unset: Story = {
   },
 };
 
+export const WithIcons: Story = {
+  args: {
+    exclusive: true,
+    searchable: false,
+    value: "gcp",
+    options: ["gcp", "aws", "azure"].map((id) => ({
+      id,
+      data: {
+        label: id.toUpperCase(),
+        icon: <WrenchScrewdriverIcon className="size-5" />,
+      },
+    })),
+  },
+};
+
 export const Placeholder: Story = {
   args: {
     ...defaultArgs,
