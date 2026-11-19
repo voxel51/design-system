@@ -186,6 +186,15 @@ export const Borderless: Story = {
   },
 };
 
+export const Cards: Story = {
+  args: {
+    tabs: basicTabs,
+    defaultIndex: 0,
+    variant: ToggleSwitchVariant.Cards,
+    fullWidth: true,
+  },
+};
+
 export const ExtraSmall: Story = {
   args: {
     tabs: basicTabs,
