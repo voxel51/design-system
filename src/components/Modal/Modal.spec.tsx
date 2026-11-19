@@ -187,4 +187,24 @@ describe("Modal", () => {
 
     expect(screen.getByTestId("root")).toHaveClass("z-[var(--z-above-modal)]");
   });
+
+  it("blurs the page behind by default, and not when blur is false", () => {
+    const { rerender } = render(
+      <Modal open onClose={jest.fn()} title="Title">
+        body
+      </Modal>
+    );
+    expect(
+      document.querySelector(".backdrop-blur-\\[6px\\]")
+    ).toBeInTheDocument();
+
+    rerender(
+      <Modal open onClose={jest.fn()} title="Title" blur={false}>
+        body
+      </Modal>
+    );
+    expect(
+      document.querySelector(".backdrop-blur-\\[6px\\]")
+    ).not.toBeInTheDocument();
+  });
 });

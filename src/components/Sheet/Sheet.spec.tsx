@@ -93,4 +93,24 @@ describe("Sheet", () => {
       maxWidth: "640px",
     });
   });
+
+  it("blurs the page behind by default, and not when blur is false", () => {
+    const { rerender } = render(
+      <Sheet open onClose={jest.fn()} title="Run">
+        body
+      </Sheet>
+    );
+    expect(
+      document.querySelector(".backdrop-blur-\\[6px\\]")
+    ).toBeInTheDocument();
+
+    rerender(
+      <Sheet open onClose={jest.fn()} title="Run" blur={false}>
+        body
+      </Sheet>
+    );
+    expect(
+      document.querySelector(".backdrop-blur-\\[6px\\]")
+    ).not.toBeInTheDocument();
+  });
 });
