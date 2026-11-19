@@ -41,6 +41,11 @@ export interface PillProps extends HTMLAttributes<HTMLSpanElement> {
   onRemove?: () => void;
 }
 
+// Card-elevated is white in light mode, the same as the card a pill sits on, so
+// the default steps down to card-nested there
+const DEFAULT_BACKGROUND =
+  "bg-[var(--color-content-bg-card-nested)] dark:bg-[var(--color-content-bg-card-elevated)]";
+
 // Figma pills all set type/caption (12/16). Xs is the Tag Pill (2/8 padding,
 // 20px tall), Sm and Md the two StatusPill sizes (4/10 → 24px, 6/12 → 28px).
 const sizeStyles: Record<PillSize, string> = {
@@ -86,7 +91,7 @@ const dotSizes: Record<PillSize, number> = {
  * @param radius The border radius of the pill. See {@link Radius}.
  * @param shadow Optional drop shadow to apply to the pill. See {@link Shadow}.
  * @param color Text color of the pill. See {@link TextColor}.
- * @param backgroundColor Background color of the pill. Defaults to `"bg-card-elevated"`. See {@link PillColor}.
+ * @param backgroundColor Background color of the pill. Defaults to `"bg-card-elevated"` in dark and `"bg-card-nested"` in light, where elevated matches the card. See {@link PillColor}.
  * @param isStatus If `true`, prefixes the content with a bullet-like icon.
  * @param dotColor Color of the status dot, when it differs from the text. Defaults to `color`. See {@link TextColor}.
  * @param onRemove Callback triggered when the remove control is clicked. Providing this makes the pill
@@ -101,7 +106,7 @@ export const Pill: FC<PillProps> = ({
   radius = Radius.Full,
   shadow = undefined,
   color = TextColor.Primary,
-  backgroundColor = BackgroundColor.CardElevated,
+  backgroundColor,
   icon,
   isStatus = false,
   dotColor = color,
@@ -118,7 +123,7 @@ export const Pill: FC<PillProps> = ({
         "items-center gap-1.5",
         CAPTION_SIZE, // colour is the prop
         textColorClass(color),
-        bgColorClass(backgroundColor),
+        backgroundColor ? bgColorClass(backgroundColor) : DEFAULT_BACKGROUND,
         radiusStyles(radius),
         shadowStyles(shadow),
         sizeStyles[size],
