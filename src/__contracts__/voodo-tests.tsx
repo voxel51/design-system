@@ -1234,6 +1234,7 @@ export const Everything = (
       <RichList spacing="md" listItems={[]} />
       <EmptyState orientation="col" spacing="md" title="Nothing here" />
       <EmptyState size="sm" title="Nothing here" />
+      <EmptyState inline size="sm" title="Nothing here" />
       <EmptyState
         title="Nothing here"
         actions={<span />}
