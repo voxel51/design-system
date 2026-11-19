@@ -73,6 +73,8 @@ export interface SelectProps extends Omit<
   options?: Descriptor<{
     label: string;
     content?: ReactNode;
+    /** Leading logo or icon, shown in the list and, for the selected option, in the closed field. */
+    icon?: ReactNode;
     disabled?: boolean;
   }>[];
   zIndex?: ZIndex;
@@ -80,6 +82,8 @@ export interface SelectProps extends Omit<
   size?: Size;
   value?: string | string[];
   placeholder?: string;
+  /** When `false` the field cannot be typed into: it only opens the list. Defaults to `true`. */
+  searchable?: boolean;
   variant?: SelectVariant;
 }
 
@@ -201,6 +205,7 @@ export const Select: FC<SelectProps> = ({
   size,
   value,
   placeholder,
+  searchable = true,
   variant = "default",
   "aria-label": ariaLabel,
   ...props
@@ -255,6 +260,11 @@ export const Select: FC<SelectProps> = ({
     [options]
   );
 
+  const selectedIcon =
+    typeof value === "string"
+      ? options?.find((e) => e.id === value)?.data.icon
+      : undefined;
+
   return (
     <div className={clsx(className, "w-full")} {...props}>
       <Combobox
@@ -266,9 +276,15 @@ export const Select: FC<SelectProps> = ({
         onClose={() => setQuery("")}
       >
         <div ref={triggerRef} className="relative flex items-center">
+          {selectedIcon && (
+            <span className="pointer-events-none absolute left-2.5 flex items-center">
+              {selectedIcon}
+            </span>
+          )}
           <ComboboxInput
             aria-label={ariaLabel}
             autoComplete="off" // interferes with dropdown menu
+            readOnly={!searchable}
             displayValue={getDisplayValue}
             onChange={(e) => setQuery(e.target.value)}
             onClick={(e) =>
@@ -288,7 +304,9 @@ export const Select: FC<SelectProps> = ({
                 borderless: variant === "borderless",
               }),
               variant === "borderless" && "rounded-full",
-              "w-full pr-8 cursor-pointer"
+              "w-full pr-8 cursor-pointer",
+              !searchable && "caret-transparent",
+              !!selectedIcon && "pl-8"
             )}
           />
           <ComboboxButton
@@ -342,7 +360,14 @@ export const Select: FC<SelectProps> = ({
                 disabled={opt.data.disabled}
                 className={clsx(!opt.data.disabled && "cursor-pointer")}
               >
-                <Text>{opt.data.content ?? opt.data.label}</Text>
+                {opt.data.icon ? (
+                  <span className="flex items-center gap-2">
+                    {opt.data.icon}
+                    <Text>{opt.data.content ?? opt.data.label}</Text>
+                  </span>
+                ) : (
+                  <Text>{opt.data.content ?? opt.data.label}</Text>
+                )}
               </Option>
             );
           })}
