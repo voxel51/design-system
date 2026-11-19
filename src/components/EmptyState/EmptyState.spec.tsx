@@ -56,6 +56,21 @@ describe("EmptyState", () => {
     expect(container.querySelector(".w-\\[150px\\]")).toBeNull();
   });
 
+  it("sets an icon small and the title at heading-sm when small", () => {
+    const { container } = render(
+      <EmptyState size="sm" icon={DrawIcon} title="No keys yet" />
+    );
+    expect(screen.getByText("No keys yet")).toHaveClass("text-heading-sm");
+    expect(container.firstChild).toHaveClass("px-4", "py-6");
+  });
+
+  it("keeps the card fill unless inline", () => {
+    const { container, rerender } = render(<EmptyState title="Nothing yet" />);
+    expect(container.firstChild).toHaveClass("rounded-md");
+    rerender(<EmptyState inline title="Nothing yet" />);
+    expect(container.firstChild).not.toHaveClass("rounded-md");
+  });
+
   it("lays out actions with a docs link, a note, steps and a footer", () => {
     render(
       <EmptyState

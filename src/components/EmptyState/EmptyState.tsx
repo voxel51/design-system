@@ -52,6 +52,8 @@ export interface EmptyStateProps extends StackProps {
   stepsTitle?: string;
   /** Small print under everything, such as a permission note. */
   footer?: ReactNode;
+  /** No card fill or corners, for use inside a card that already frames it. */
+  inline?: boolean;
 }
 
 /** `sm` for narrow sidebars and inline list slots, `md` for panels and pages. */
@@ -109,6 +111,7 @@ export type EmptyStateSize = `${Extract<Size, "sm" | "md">}`;
  *  many columns as fit (each at least 220px).
  * @param stepsTitle Heading above the steps.
  * @param footer Small print under everything.
+ * @param inline Drops the card fill and corners, for an empty state inside a card.
  * @param children Free-form content under the actions and note (a form, say).
  * @param props Additional {@link Stack} properties to apply to the component.
  */
@@ -125,6 +128,7 @@ export const EmptyState: FC<EmptyStateProps> = ({
   steps,
   stepsTitle,
   footer,
+  inline,
   className,
   children,
   ...props
@@ -139,9 +143,9 @@ export const EmptyState: FC<EmptyStateProps> = ({
       align={Align.Center}
       className={cn(
         "text-center",
-        sm && art ? "px-4 py-6" : "p-10",
-        radiusStyles(Radius.Md),
-        bgColorClass(BackgroundColor.Card),
+        sm ? "px-4 py-6" : "p-10",
+        !inline && radiusStyles(Radius.Md),
+        !inline && bgColorClass(BackgroundColor.Card),
         className
       )}
       {...props}
@@ -150,50 +154,43 @@ export const EmptyState: FC<EmptyStateProps> = ({
       {!art && IconContent && (
         <span
           className={cn(
-            "p-3",
+            sm ? "p-2.5" : "p-3",
             radiusStyles(Radius.Full),
             bgColorClass(BackgroundColor.CardElevated)
           )}
         >
-          <IconContent size={Size.Lg} color={BrandColor.Accent} />
+          <IconContent
+            size={sm ? Size.Md : Size.Lg}
+            color={BrandColor.Accent}
+          />
         </span>
       )}
-      {art ? (
-        <>
-          <Text
-            variant={sm ? TextVariant.HeadingSm : TextVariant.BodyPrimary}
-            className={sm ? "mt-3" : "mt-5 font-medium"}
-          >
-            {title}
-          </Text>
-          {description && (
-            <Text
-              variant={
-                sm ? TextVariant.BodyTertiary : TextVariant.BodySecondary
-              }
-              color={TextColor.Tertiary}
-              className={sm ? "mt-1 max-w-[240px]" : "mt-1.5"}
-            >
-              {description}
-            </Text>
-          )}
-        </>
-      ) : (
-        <>
-          <Text variant={TextVariant.HeadingLg}>{title}</Text>
-          {description && (
-            <Text variant={TextVariant.BodySecondary} color={TextColor.Muted}>
-              {description}
-            </Text>
-          )}
-        </>
+      <Text
+        variant={sm ? TextVariant.HeadingSm : TextVariant.BodyPrimary}
+        className={cn(
+          art || IconContent ? (sm ? "mt-3" : "mt-5") : undefined,
+          !sm && "font-medium"
+        )}
+      >
+        {title}
+      </Text>
+      {description && (
+        <Text
+          variant={sm ? TextVariant.BodyTertiary : TextVariant.BodySecondary}
+          color={TextColor.Tertiary}
+          className={
+            sm ? cn("mt-1", art ? "max-w-[240px]" : "max-w-[420px]") : "mt-1.5"
+          }
+        >
+          {description}
+        </Text>
       )}
       {(hasActions || note || children || steps || footer) && (
         <Stack
           orientation={Orientation.Column}
           align={Align.Center}
           spacing={Spacing.Lg}
-          className={cn(sm && art ? "mt-5" : "mt-7", "w-full")}
+          className={cn(sm ? "mt-4" : "mt-7", "w-full")}
         >
           {hasActions && (
             <Stack justify={Justify.Center} spacing={Spacing.Sm} wrap>

@@ -107,3 +107,23 @@ export const WithActionsAndSteps: Story = {
     ],
   },
 };
+
+/** The list-slot look: a small icon tile, title, description and one action. */
+export const ListSlot: Story = {
+  args: {
+    size: "sm",
+    icon: IconName.Lock,
+    title: "No secrets yet",
+    description: "Store encrypted values your plugins and operators can use.",
+    actions: (
+      <Button variant="secondary" size="sm">
+        Add secret
+      </Button>
+    ),
+  },
+};
+
+/** Inside a card that already frames it: no second fill. */
+export const InsideCard: Story = {
+  args: { ...ListSlot.args, inline: true },
+};
