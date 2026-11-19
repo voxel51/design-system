@@ -9,6 +9,7 @@ export const IconName = {
   Add: "Add",
   AI: "AI",
   Annotate: "Annotate",
+  Aperture: "Aperture",
   ArrowDown: "ArrowDown",
   ArrowLeft: "ArrowLeft",
   ArrowRight: "ArrowRight",
@@ -17,6 +18,7 @@ export const IconName = {
   BadgeCheck: "BadgeCheck",
   Blocks: "Blocks",
   Boxes: "Boxes",
+  Building2: "Building2",
   CalendarClock: "CalendarClock",
   CaretDown: "CaretDown",
   Check: "Check",
@@ -52,6 +54,7 @@ export const IconName = {
   ExitWorkspace: "ExitWorkspace",
   ExternalLink: "ExternalLink",
   FileClock: "FileClock",
+  Files: "Files",
   FineTune: "FineTune",
   Fingerprint: "Fingerprint",
   Fullscreen: "Fullscreen",
@@ -86,6 +89,7 @@ export const IconName = {
   Polyline: "Polyline",
   Puzzle: "Puzzle",
   Radio: "Radio",
+  RectangleHorizontal: "RectangleHorizontal",
   Redo: "Redo",
   Refresh: "Refresh",
   Remove: "Remove",
@@ -98,6 +102,7 @@ export const IconName = {
   Sliders: "Sliders",
   Spinner: "Spinner",
   Sparkles: "Sparkles",
+  Sun: "Sun",
   Tag: "Tag",
   Text: "Text",
   Toggle: "Toggle",
@@ -113,6 +118,7 @@ export const IconName = {
   VolumeOff: "VolumeOff",
   VolumeUp: "VolumeUp",
   Warning: "Warning",
+  Waves: "Waves",
   Waypoints: "Waypoints",
   Workflow: "Workflow",
   Workspaces: "Workspaces",
@@ -125,6 +131,7 @@ export namespace IconName {
   export type Add = typeof IconName.Add;
   export type AI = typeof IconName.AI;
   export type Annotate = typeof IconName.Annotate;
+  export type Aperture = typeof IconName.Aperture;
   export type ArrowDown = typeof IconName.ArrowDown;
   export type ArrowLeft = typeof IconName.ArrowLeft;
   export type ArrowRight = typeof IconName.ArrowRight;
@@ -133,6 +140,7 @@ export namespace IconName {
   export type BadgeCheck = typeof IconName.BadgeCheck;
   export type Blocks = typeof IconName.Blocks;
   export type Boxes = typeof IconName.Boxes;
+  export type Building2 = typeof IconName.Building2;
   export type CalendarClock = typeof IconName.CalendarClock;
   export type CaretDown = typeof IconName.CaretDown;
   export type Check = typeof IconName.Check;
@@ -168,6 +176,7 @@ export namespace IconName {
   export type ExitWorkspace = typeof IconName.ExitWorkspace;
   export type ExternalLink = typeof IconName.ExternalLink;
   export type FileClock = typeof IconName.FileClock;
+  export type Files = typeof IconName.Files;
   export type FineTune = typeof IconName.FineTune;
   export type Fingerprint = typeof IconName.Fingerprint;
   export type Fullscreen = typeof IconName.Fullscreen;
@@ -202,6 +211,7 @@ export namespace IconName {
   export type Polyline = typeof IconName.Polyline;
   export type Puzzle = typeof IconName.Puzzle;
   export type Radio = typeof IconName.Radio;
+  export type RectangleHorizontal = typeof IconName.RectangleHorizontal;
   export type Redo = typeof IconName.Redo;
   export type Refresh = typeof IconName.Refresh;
   export type Remove = typeof IconName.Remove;
@@ -214,6 +224,7 @@ export namespace IconName {
   export type Sliders = typeof IconName.Sliders;
   export type Spinner = typeof IconName.Spinner;
   export type Sparkles = typeof IconName.Sparkles;
+  export type Sun = typeof IconName.Sun;
   export type Tag = typeof IconName.Tag;
   export type Text = typeof IconName.Text;
   export type Toggle = typeof IconName.Toggle;
@@ -229,6 +240,7 @@ export namespace IconName {
   export type VolumeOff = typeof IconName.VolumeOff;
   export type VolumeUp = typeof IconName.VolumeUp;
   export type Warning = typeof IconName.Warning;
+  export type Waves = typeof IconName.Waves;
   export type Waypoints = typeof IconName.Waypoints;
   export type Workflow = typeof IconName.Workflow;
   export type Workspaces = typeof IconName.Workspaces;

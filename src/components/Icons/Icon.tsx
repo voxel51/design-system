@@ -6,6 +6,7 @@ import AIIcon from "@/img/AI.svg?react";
 import ActivityIcon from "@/img/Activity.svg?react";
 import AddIcon from "@/img/Add.svg?react";
 import AnnotateIcon from "@/img/Annotate.svg?react";
+import ApertureIcon from "@/img/Aperture.svg?react";
 import ArrowDownIcon from "@/img/ArrowDown.svg?react";
 import ArrowLeftIcon from "@/img/ArrowLeft.svg?react";
 import ArrowRightIcon from "@/img/ArrowRight.svg?react";
@@ -14,6 +15,7 @@ import ArrowUpRightIcon from "@/img/ArrowUpRight.svg?react";
 import BadgeCheckIcon from "@/img/BadgeCheck.svg?react";
 import BlocksIcon from "@/img/Blocks.svg?react";
 import BoxesIcon from "@/img/Boxes.svg?react";
+import Building2Icon from "@/img/Building2.svg?react";
 import CalendarClockIcon from "@/img/CalendarClock.svg?react";
 import CaretDownIcon from "@/img/CaretDown.svg?react";
 import CheckIcon from "@/img/Check.svg?react";
@@ -49,6 +51,7 @@ import ErrorIcon from "@/img/Error.svg?react";
 import ExitWorkspaceIcon from "@/img/ExitWorkspace.svg?react";
 import ExternalLinkIcon from "@/img/ExternalLink.svg?react";
 import FileClockIcon from "@/img/FileClock.svg?react";
+import FilesIcon from "@/img/Files.svg?react";
 import FineTuneIcon from "@/img/FineTune.svg?react";
 import FingerprintIcon from "@/img/Fingerprint.svg?react";
 import FullscreenIcon from "@/img/Fullscreen.svg?react";
@@ -83,6 +86,7 @@ import PlayIcon from "@/img/Play.svg?react";
 import PolylineIcon from "@/img/Polyline.svg?react";
 import PuzzleIcon from "@/img/Puzzle.svg?react";
 import RadioIcon from "@/img/Radio.svg?react";
+import RectangleHorizontalIcon from "@/img/RectangleHorizontal.svg?react";
 import RedoIcon from "@/img/Redo.svg?react";
 import RefreshIcon from "@/img/Refresh.svg?react";
 import RemoveIcon from "@/img/Remove.svg?react";
@@ -94,6 +98,7 @@ import ShieldCheckIcon from "@/img/ShieldCheck.svg?react";
 import SliderIcon from "@/img/Slider.svg?react";
 import SlidersIcon from "@/img/Sliders.svg?react";
 import SparklesIcon from "@/img/Sparkles.svg?react";
+import SunIcon from "@/img/Sun.svg?react";
 import TagIcon from "@/img/Tag.svg?react";
 import TextIcon from "@/img/Text.svg?react";
 import ToggleIcon from "@/img/Toggle.svg?react";
@@ -109,6 +114,7 @@ import VALIcon from "@/img/VAL.svg?react";
 import VolumeOffIcon from "@/img/VolumeOff.svg?react";
 import VolumeUpIcon from "@/img/VolumeUp.svg?react";
 import WarningIcon from "@/img/Warning.svg?react";
+import WavesIcon from "@/img/Waves.svg?react";
 import WaypointsIcon from "@/img/Waypoints.svg?react";
 import WorkflowIcon from "@/img/Workflow.svg?react";
 import WorkspacesIcon from "@/img/Workspaces.svg?react";
@@ -134,6 +140,7 @@ export const iconMap: Record<
   [IconName.Add]: AddIcon,
   [IconName.AI]: AIIcon,
   [IconName.Annotate]: AnnotateIcon,
+  [IconName.Aperture]: ApertureIcon,
   [IconName.ArrowDown]: ArrowDownIcon,
   [IconName.ArrowLeft]: ArrowLeftIcon,
   [IconName.ArrowRight]: ArrowRightIcon,
@@ -142,6 +149,7 @@ export const iconMap: Record<
   [IconName.BadgeCheck]: BadgeCheckIcon,
   [IconName.Blocks]: BlocksIcon,
   [IconName.Boxes]: BoxesIcon,
+  [IconName.Building2]: Building2Icon,
   [IconName.CalendarClock]: CalendarClockIcon,
   [IconName.CaretDown]: CaretDownIcon,
   [IconName.Check]: CheckIcon,
@@ -177,6 +185,7 @@ export const iconMap: Record<
   [IconName.ExitWorkspace]: ExitWorkspaceIcon,
   [IconName.ExternalLink]: ExternalLinkIcon,
   [IconName.FileClock]: FileClockIcon,
+  [IconName.Files]: FilesIcon,
   [IconName.FineTune]: FineTuneIcon,
   [IconName.Fingerprint]: FingerprintIcon,
   [IconName.Fullscreen]: FullscreenIcon,
@@ -211,6 +220,7 @@ export const iconMap: Record<
   [IconName.Polyline]: PolylineIcon,
   [IconName.Puzzle]: PuzzleIcon,
   [IconName.Radio]: RadioIcon,
+  [IconName.RectangleHorizontal]: RectangleHorizontalIcon,
   [IconName.Redo]: RedoIcon,
   [IconName.Refresh]: RefreshIcon,
   [IconName.Remove]: RemoveIcon,
@@ -222,6 +232,7 @@ export const iconMap: Record<
   [IconName.Slider]: SliderIcon,
   [IconName.Sliders]: SlidersIcon,
   [IconName.Sparkles]: SparklesIcon,
+  [IconName.Sun]: SunIcon,
   [IconName.Tag]: TagIcon,
   [IconName.Text]: TextIcon,
   [IconName.Toggle]: ToggleIcon,
@@ -237,6 +248,7 @@ export const iconMap: Record<
   [IconName.VolumeOff]: VolumeOffIcon,
   [IconName.VolumeUp]: VolumeUpIcon,
   [IconName.Warning]: WarningIcon,
+  [IconName.Waves]: WavesIcon,
   [IconName.Waypoints]: WaypointsIcon,
   [IconName.Workflow]: WorkflowIcon,
   [IconName.Workspaces]: WorkspacesIcon,
