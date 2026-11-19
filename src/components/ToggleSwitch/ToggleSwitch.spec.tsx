@@ -132,6 +132,18 @@ describe("ToggleSwitch", () => {
     expect(tabList).not.toHaveClass("w-full");
   });
 
+  it("should render a rounded left-aligned track when variant is cards", () => {
+    const { container } = render(
+      <ToggleSwitch tabs={tabs} variant={ToggleSwitchVariant.Cards} fullWidth />
+    );
+
+    expect(container.querySelector('[role="tablist"]')).toHaveClass(
+      "rounded-xl",
+      "w-full"
+    );
+    expect(screen.getAllByRole("tab")[0]).toHaveClass("justify-start");
+  });
+
   it("should default to fit width", () => {
     const { container } = render(<ToggleSwitch tabs={tabs} />);
 

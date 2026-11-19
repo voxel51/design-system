@@ -57,6 +57,7 @@ export const ToggleSwitchVariant = {
   Soft: "soft",
   Full: "full",
   Borderless: "borderless",
+  Cards: "cards",
 } as const;
 export type ToggleSwitchVariant =
   `${(typeof ToggleSwitchVariant)[keyof typeof ToggleSwitchVariant]}`;
@@ -66,6 +67,7 @@ export namespace ToggleSwitchVariant {
   export type Soft = typeof ToggleSwitchVariant.Soft;
   export type Full = typeof ToggleSwitchVariant.Full;
   export type Borderless = typeof ToggleSwitchVariant.Borderless;
+  export type Cards = typeof ToggleSwitchVariant.Cards;
 }
 
 export type ToggleSwitchSize = `${Exclude<Size, Size.Lg | Size.Xl>}`;
@@ -115,7 +117,7 @@ const iconSizes: Record<ToggleSwitchSize, number> = {
 
 const tabPaddingStyles: Record<ToggleSwitchSize, string> = {
   [Size.Xs]: clsx("py-1 px-3"),
-  [Size.Sm]: clsx("py-1.5 px-4"),
+  [Size.Sm]: clsx("py-1 px-3"),
   [Size.Md]: clsx("py-2 px-4"),
 };
 
@@ -130,14 +132,8 @@ const tabVariantStyles: Record<ToggleSwitchVariant, string> = {
     "rounded-sm",
     textColorClass(TextColor.Primary, ElementState.Selected)
   ),
-  [ToggleSwitchVariant.Default]: clsx(
-    // transparent border reserves layout space; selection is shown by the bg
-    "border",
-    "border-transparent"
-  ),
+  [ToggleSwitchVariant.Default]: "",
   [ToggleSwitchVariant.Full]: clsx(
-    "border",
-    "border-transparent",
     textColorClass(TextColor.Primary, ElementState.Selected)
   ),
   [ToggleSwitchVariant.Borderless]: clsx(
@@ -146,6 +142,14 @@ const tabVariantStyles: Record<ToggleSwitchVariant, string> = {
     "data-[selected]:bg-transparent",
     textColorClass(TextColor.Primary, ElementState.Selected),
     "data-[selected]:border-b-2"
+  ),
+  // Lovable ViewCards: roomy, left-aligned label in a rounded segment
+  [ToggleSwitchVariant.Cards]: clsx(
+    "rounded-lg",
+    "px-4 py-3",
+    "justify-start",
+    "text-left",
+    textColorClass(TextColor.Primary, ElementState.Selected)
   ),
 };
 
@@ -156,7 +160,8 @@ const getTabBorderRadius = (
 ): string => {
   if (
     variant === ToggleSwitchVariant.Soft ||
-    variant === ToggleSwitchVariant.Borderless
+    variant === ToggleSwitchVariant.Borderless ||
+    variant === ToggleSwitchVariant.Cards
   )
     return "";
   if (isFirst && isLast) return "rounded-sm";
@@ -171,7 +176,9 @@ const getTabStyles = (
 ): string => {
   const classNames = [tabVariantStyles[variant], tabSizeStyles[size]];
 
-  if (variant !== ToggleSwitchVariant.Soft) {
+  if (variant === ToggleSwitchVariant.Cards) {
+    // padding comes from the variant
+  } else if (variant !== ToggleSwitchVariant.Soft) {
     classNames.push(tabPaddingStyles[size]);
   } else {
     classNames.push(softSizeStyles[size]);
@@ -184,6 +191,13 @@ const getTabListBorderStyles = (variant: ToggleSwitchVariant): string[] => {
   if (variant === ToggleSwitchVariant.Borderless) return [];
   if (variant === ToggleSwitchVariant.Soft)
     return ["p-1 gap-0.5", bgColorClass(BackgroundColor.CardNested)];
+  if (variant === ToggleSwitchVariant.Cards)
+    return [
+      "p-1 gap-1",
+      "rounded-xl",
+      "border",
+      borderColorClass(BorderColor.Default),
+    ];
   return ["border", borderColorClass(BorderColor.Default)];
 };
 
@@ -245,6 +259,8 @@ const getTabTextColorClass = (selected: boolean): string => {
  *    - `"full"` - like `"default"`, with primary text on the active tab.
  *      Use `fullWidth` to fill the container.
  *    - `"borderless"` - tabs are not bordered; the active tab has a bottom border.
+ *    - `"cards"` - an outlined, rounded track of roomy, left-aligned segments with the active one raised;
+ *      for page-level views. Use with `fullWidth`.
  *  See {@link ToggleSwitchVariant}.
  * @param defaultIndex The index of the tab which should be considered active when the component first renders (uncontrolled).
  *  Defaults to `0`.
@@ -299,7 +315,7 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
         className={cn(
           "toggle-switch-tab-list",
           "flex flex-nowrap items-center",
-          "rounded-sm",
+          variant !== ToggleSwitchVariant.Cards && "rounded-sm",
           fullWidth ? "w-full" : "w-fit",
           scroll && "max-w-full overflow-x-auto",
           ...getTabListBorderStyles(variant),
@@ -311,20 +327,18 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
           const isLast = index === tabs.length - 1;
           const tabClassName = ({ selected }: { selected: boolean }): string =>
             cn(
-              "cursor-pointer",
+              "cursor-pointer font-medium",
               "min-w-0 flex-1",
-              "flex items-center justify-center",
+              "flex items-center",
+              variant !== ToggleSwitchVariant.Cards && "justify-center",
               "whitespace-nowrap",
               FOCUS_RING,
               "transition-colors",
               "bg-transparent",
-              // Figma: the active segment fills bg/card-nested in the bordered
-              // set and bg/card-elevated in the soft tray.
+              // Lovable: the active segment fills bg/card-elevated.
               !none &&
                 bgColorClass(
-                  variant === ToggleSwitchVariant.Soft
-                    ? BackgroundColor.CardElevated
-                    : BackgroundColor.CardNested,
+                  BackgroundColor.CardElevated,
                   ElementState.Selected
                 ),
               getTabTextColorClass(selected && !none),
@@ -372,7 +386,8 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
               content={tooltip}
               wrapperClassName={cn(
                 scroll ? "min-w-max" : "min-w-0",
-                "flex-1 flex"
+                fullWidth ? "flex-1" : "flex-none",
+                "flex"
               )}
               portal
             >
@@ -381,7 +396,11 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
           ) : (
             <div
               key={id}
-              className={cn(scroll ? "min-w-max" : "min-w-0", "flex-1 flex")}
+              className={cn(
+                scroll ? "min-w-max" : "min-w-0",
+                fullWidth ? "flex-1" : "flex-none",
+                "flex"
+              )}
             >
               {tab}
             </div>
