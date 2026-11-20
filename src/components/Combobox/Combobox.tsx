@@ -78,6 +78,8 @@ export interface ComboboxOption {
   label: string;
   /** Optional second line — a definition, a slug, an owner. */
   description?: ReactNode;
+  /** Shows the row muted and not pickable; `description` can say why. */
+  disabled?: boolean;
   /** A leading icon saying what kind of row it is. */
   icon?: IconInput;
   /** A short note at the row's end, such as what picking it does; the
@@ -536,6 +538,7 @@ const ComboboxField: FC<ComboboxFieldProps> = ({
 
   const pick = useCallback(
     (option: ComboboxOption): void => {
+      if (option.disabled) return;
       if (onClose) {
         if (option.id !== value?.id) onChange(option);
         onClose();
@@ -725,19 +728,23 @@ const ComboboxField: FC<ComboboxFieldProps> = ({
                     <button
                       type="button"
                       role="option"
+                      aria-disabled={option.disabled || undefined}
                       // The visible row is label + description; the name is the label
                       aria-label={option.label}
                       {...dataAttributes(option)}
                       aria-selected={i === highlighted}
                       className={cn(
                         onClose
-                          ? pickerOptionStyles(i === highlighted)
+                          ? pickerOptionStyles(
+                              i === highlighted && !option.disabled
+                            )
                           : optionStyles(
-                              i === highlighted,
+                              i === highlighted && !option.disabled,
                               inline,
                               Boolean(option.icon || option.hint)
                             ),
-                        option.action && "pr-9"
+                        option.action && "pr-9",
+                        option.disabled && "cursor-not-allowed opacity-50"
                       )}
                       // The field owns focus; hovering only moves the highlight so
                       // pointer and keyboard agree on what Enter would pick.

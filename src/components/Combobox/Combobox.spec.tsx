@@ -94,6 +94,22 @@ describe("Combobox", () => {
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
   });
 
+  it("shows a disabled option as such and does not pick it", async () => {
+    const onPick = jest.fn();
+    render(
+      <Harness
+        onPick={onPick}
+        options={[OPTIONS[0], { ...OPTIONS[1], disabled: true }]}
+      />
+    );
+    await userEvent.click(screen.getByRole("combobox"));
+    const row = screen.getByRole("option", { name: "beta" });
+    await userEvent.click(row);
+
+    expect(row).toHaveAttribute("aria-disabled", "true");
+    expect(onPick).not.toHaveBeenCalled();
+  });
+
   it("moves the highlight with the arrows and picks with Enter", async () => {
     const onPick = jest.fn();
     render(<Harness onPick={onPick} />);
