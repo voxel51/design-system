@@ -70,6 +70,20 @@ export namespace ToggleSwitchVariant {
   export type Cards = typeof ToggleSwitchVariant.Cards;
 }
 
+export const ToggleSwitchWeight = {
+  Regular: "regular",
+  Medium: "medium",
+  Bold: "bold",
+} as const;
+export type ToggleSwitchWeight =
+  `${(typeof ToggleSwitchWeight)[keyof typeof ToggleSwitchWeight]}`;
+
+const tabWeightStyles: Record<ToggleSwitchWeight, string> = {
+  regular: "font-normal",
+  medium: "font-medium",
+  bold: "font-bold",
+};
+
 export type ToggleSwitchSize = `${Exclude<Size, Size.Lg | Size.Xl>}`;
 
 export interface ToggleSwitchProps extends Omit<
@@ -82,6 +96,8 @@ export interface ToggleSwitchProps extends Omit<
   index?: number;
   onChange?: (index: number) => void;
   size?: ToggleSwitchSize;
+  /** Font weight of the tab labels. Defaults to `"regular"`. */
+  weight?: ToggleSwitchWeight;
   tabListClassName?: string;
   tabPanelClassName?: string;
   fullWidth?: boolean;
@@ -269,6 +285,7 @@ const getTabTextColorClass = (selected: boolean): string => {
  * @param onChange Callback triggered when the active tab changes.
  * @param size Size of the tabs: `"xs"`, `"sm"` or `"md"`; this controls the text size and padding.
  *  Defaults to `"sm"`. See {@link ToggleSwitchSize}.
+ * @param weight Font weight of the tab labels: `"regular"`, `"medium"` or `"bold"`. Defaults to `"regular"`.
  * @param fullWidth If `true`, the tab group will fill the width of their container.
  * @param scroll If `true`, every tab stays at least as wide as its label, and the row scrolls sideways when
  *  they do not fit, instead of squeezing the tabs.
@@ -288,6 +305,7 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
   index,
   onChange,
   size = Size.Sm,
+  weight = ToggleSwitchWeight.Regular,
   fullWidth,
   scroll,
   tabListClassName,
@@ -327,7 +345,8 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({
           const isLast = index === tabs.length - 1;
           const tabClassName = ({ selected }: { selected: boolean }): string =>
             cn(
-              "cursor-pointer font-medium",
+              "cursor-pointer",
+              tabWeightStyles[weight],
               "min-w-0 flex-1",
               "flex items-center",
               variant !== ToggleSwitchVariant.Cards && "justify-center",

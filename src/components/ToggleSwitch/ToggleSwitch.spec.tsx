@@ -21,6 +21,22 @@ describe("ToggleSwitch", () => {
     expect(screen.getByText("Tab 3")).toBeInTheDocument();
   });
 
+  it("renders labels at Regular weight unless asked otherwise", () => {
+    const { rerender } = render(<ToggleSwitch tabs={tabs} />);
+    for (const tab of screen.getAllByRole("tab")) {
+      expect(tab).toHaveClass("font-normal");
+      expect(tab).not.toHaveClass("font-medium");
+    }
+    rerender(<ToggleSwitch tabs={tabs} weight="medium" />);
+    for (const tab of screen.getAllByRole("tab")) {
+      expect(tab).toHaveClass("font-medium");
+    }
+    rerender(<ToggleSwitch tabs={tabs} weight="bold" />);
+    for (const tab of screen.getAllByRole("tab")) {
+      expect(tab).toHaveClass("font-bold");
+    }
+  });
+
   it("draws the voodo focus ring on a keyboard-focused tab", () => {
     render(<ToggleSwitch tabs={tabs} />);
     for (const tab of screen.getAllByRole("tab")) {
