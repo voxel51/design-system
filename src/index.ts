@@ -6,6 +6,7 @@ export type {
   UseDisclosureOptions,
   UseDisclosureReturn,
 } from "./util/useDisclosure";
+export { useElapsed, formatElapsed } from "./util/useElapsed";
 export { useElementSize } from "./util/useElementSize";
 export { useMediaQuery } from "./util/useMediaQuery";
 export {
