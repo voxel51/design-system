@@ -679,3 +679,140 @@ export const ModelsEmptyArt: FC<EmptyArtProps> = ({ className }) => (
   </EmptyArtFrame>
 );
 ModelsEmptyArt.displayName = "ModelsEmptyArt";
+
+const ROWS = [22, 46, 70];
+
+/**
+ * A list assembling itself, row by row: the "still loading" art every panel
+ * shows while it waits on data or a job.
+ *
+ * @example
+ * ```tsx
+ * <EmptyState art={<LoadingEmptyArt />} title="Loading" />
+ * ```
+ *
+ * @param className Extra classes for the SVG; it fills its container's width.
+ */
+export const LoadingEmptyArt: FC<EmptyArtProps> = ({ className }) => (
+  <EmptyArtFrame
+    className={className}
+    label="Loading"
+    glow={{ cx: 80, cy: 56, rx: 58, ry: 38 }}
+  >
+    {() => (
+      <>
+        {ROWS.map((y, i) => (
+          <g
+            key={y}
+            className={EmptyArtMotion.Rise}
+            style={{ animationDelay: `${i * 0.35}s` }}
+          >
+            <rect
+              x="34"
+              y={y}
+              width="92"
+              height="20"
+              rx="6"
+              fill={CARD}
+              stroke={BORDER_STRONG}
+            />
+            <circle
+              cx="46"
+              cy={y + 10}
+              r="4"
+              fill={i === 0 ? ACCENT : CARD}
+              fillOpacity={i === 0 ? 0.9 : 1}
+              stroke={i === 0 ? ACCENT : BORDER_STRONG}
+              className={i === 0 ? EmptyArtMotion.Core : undefined}
+            />
+            <path
+              d={`M58 ${y + 7}h${44 - i * 6}`}
+              stroke={ACCENT}
+              strokeOpacity="0.5"
+              strokeLinecap="round"
+              className={EmptyArtMotion.Typeline}
+              style={{
+                transformOrigin: `58px ${y + 7}px`,
+                animationDelay: `${i * 0.35 + 0.2}s`,
+              }}
+            />
+            <path
+              d={`M58 ${y + 13}h${60 - i * 8}`}
+              stroke={BORDER}
+              strokeLinecap="round"
+            />
+          </g>
+        ))}
+      </>
+    )}
+  </EmptyArtFrame>
+);
+LoadingEmptyArt.displayName = "LoadingEmptyArt";
+
+/**
+ * Two nodes whose link breaks between them, a spark where it gave way: the
+ * "couldn't load" art every panel shows when a fetch or a job fails.
+ *
+ * @example
+ * ```tsx
+ * <EmptyState art={<ErrorEmptyArt />} title="Couldn't load" />
+ * ```
+ *
+ * @param className Extra classes for the SVG; it fills its container's width.
+ */
+export const ErrorEmptyArt: FC<EmptyArtProps> = ({ className }) => (
+  <EmptyArtFrame
+    className={className}
+    label="Something went wrong"
+    glow={{ cx: 80, cy: 56, rx: 58, ry: 38 }}
+  >
+    {() => (
+      <>
+        <path
+          d="M47 56h19M94 56h19"
+          stroke={BORDER_STRONG}
+          strokeLinecap="round"
+        />
+        <path
+          d="M70 56h4M86 56h4"
+          stroke={ACCENT}
+          strokeOpacity="0.55"
+          strokeLinecap="round"
+          strokeDasharray="1 5"
+          className={EmptyArtMotion.Breathe}
+        />
+        {[38, 122].map((x) => (
+          <circle
+            key={x}
+            cx={x}
+            cy="56"
+            r="9"
+            fill={CARD}
+            stroke={BORDER_STRONG}
+          />
+        ))}
+        <circle cx="38" cy="56" r="3" fill={BORDER_STRONG} />
+        <circle cx="122" cy="56" r="3" fill={BORDER_STRONG} />
+        <ellipse
+          cx="80"
+          cy="56"
+          rx="11"
+          ry="11"
+          stroke={ACCENT}
+          strokeOpacity="0.6"
+          className={EmptyArtMotion.Ripple}
+          style={{ transformOrigin: "80px 56px" }}
+        />
+        <g className={EmptyArtMotion.Core}>
+          <circle cx="80" cy="56" r="8" fill={CARD} stroke={ACCENT} />
+          <path
+            d="m77 53 6 6M83 53l-6 6"
+            stroke={ACCENT}
+            strokeLinecap="round"
+          />
+        </g>
+      </>
+    )}
+  </EmptyArtFrame>
+);
+ErrorEmptyArt.displayName = "ErrorEmptyArt";
