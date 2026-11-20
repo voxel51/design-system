@@ -6,8 +6,10 @@ import {
   EmptyArtColor,
   EmptyArtFrame,
   EmptyArtMotion,
+  ErrorEmptyArt,
   EvaluationEmptyArt,
   HistoryEmptyArt,
+  LoadingEmptyArt,
   ModelsEmptyArt,
   PanelEmptyArt,
   SearchEmptyArt,
@@ -24,6 +26,8 @@ describe("EmptyArt", () => {
     [PanelEmptyArt, "Nothing here yet"],
     [AnnotationEmptyArt, "No annotations yet"],
     [ModelsEmptyArt, "No models yet"],
+    [LoadingEmptyArt, "Loading"],
+    [ErrorEmptyArt, "Something went wrong"],
   ])("should render %p labelled %s", (Art, label) => {
     render(<Art />);
     expect(screen.getByRole("img", { name: label })).toBeInTheDocument();

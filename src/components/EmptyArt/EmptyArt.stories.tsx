@@ -7,8 +7,10 @@ import {
   EmptyArtFrame,
   EmptyArtMotion,
   EmptyState,
+  ErrorEmptyArt,
   EvaluationEmptyArt,
   HistoryEmptyArt,
+  LoadingEmptyArt,
   ModelsEmptyArt,
   PanelEmptyArt,
   SearchEmptyArt,
@@ -35,6 +37,8 @@ const ARTS = {
   Evaluation: EvaluationEmptyArt,
   Annotation: AnnotationEmptyArt,
   Models: ModelsEmptyArt,
+  Loading: LoadingEmptyArt,
+  Error: ErrorEmptyArt,
 };
 
 export const Gallery: Story = {
