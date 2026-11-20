@@ -31,6 +31,11 @@ const meta: Meta<typeof ToggleSwitch> = {
       options: ["xs", "sm", "md"],
       description: "The size of the tabs",
     },
+    weight: {
+      control: "select",
+      options: ["regular", "medium", "bold"],
+      description: "The font weight of the tab labels",
+    },
     variant: {
       control: "select",
       options: Object.values(ToggleSwitchVariant),
