@@ -53,6 +53,7 @@ export * from "./RichButtonGroup";
 export * from "./RichList";
 export * from "./Select";
 export * from "./Sheet";
+export * from "./Skeleton";
 export * from "./Slider";
 export * from "./SplitButton";
 export * from "./Spinner";
