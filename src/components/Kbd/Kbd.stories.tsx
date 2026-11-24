@@ -19,6 +19,19 @@ export const Word: Story = {
   args: { children: "Esc" },
 };
 
+export const Small: Story = {
+  args: { size: "sm", children: "Esc" },
+};
+
+export const Sizes: Story = {
+  render: () => (
+    <Stack orientation="row" spacing="sm" align="center">
+      <Kbd size="sm">⌘Z</Kbd>
+      <Kbd size="md">⌘Z</Kbd>
+    </Stack>
+  ),
+};
+
 export const ShortcutRow: Story = {
   render: () => (
     <Stack orientation="row" spacing="sm" align="center">
