@@ -60,6 +60,15 @@ export or token is a breaking change and needs a major version.
 Merging to `main` publishes nothing. Pushing a `vX.Y.Z` tag publishes to npm
 and to the Storybook site; `package.json` must already carry that version.
 
+## Keyboard events
+
+Never stop a keydown a component does not handle. Apps listen for shortcuts on
+`document`, so a stopped key dies while focus is anywhere inside the component.
+Handle your own keys with `preventDefault()` and let them bubble; ancestors
+check `e.defaultPrevented`. Stopping clicks and pointer presses is fine when
+they must stay off the surface underneath. The Toolbar, Slider and DataTable
+specs pin this.
+
 ## Before opening a PR
 
     npm run validate:all

@@ -173,7 +173,7 @@ describe("Toolbar", () => {
     expect(parentPointerDown).not.toHaveBeenCalled();
   });
 
-  it("stops propagation of keydown events and forwards onKeyDown prop", () => {
+  it("lets keydown events bubble and still calls the onKeyDown prop", () => {
     const parentKeyDown = jest.fn();
     const ownKeyDown = jest.fn();
     render(
@@ -187,9 +187,29 @@ describe("Toolbar", () => {
         </Toolbar>
       </div>
     );
-    fireEvent.keyDown(screen.getByRole("toolbar"), { key: "Tab" });
-    expect(parentKeyDown).not.toHaveBeenCalled();
+    fireEvent.keyDown(screen.getByRole("button", { name: "Action" }), {
+      key: "z",
+      metaKey: true,
+    });
     expect(ownKeyDown).toHaveBeenCalledTimes(1);
+    expect(parentKeyDown).toHaveBeenCalledTimes(1);
+  });
+
+  it("lets keys pressed after clicking an action reach a document listener", async () => {
+    const seen: string[] = [];
+    const listener = (e: KeyboardEvent): void => {
+      seen.push(e.key);
+    };
+    document.addEventListener("keydown", listener);
+    try {
+      renderToolbar();
+      const user = userEvent.setup();
+      await user.click(screen.getByRole("button", { name: "Action 1" }));
+      await user.keyboard("z");
+      expect(seen).toEqual(["z"]);
+    } finally {
+      document.removeEventListener("keydown", listener);
+    }
   });
 
   it("collapses content when Enter is pressed on the drag handle", () => {

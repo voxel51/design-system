@@ -346,6 +346,24 @@ describe("Slider", () => {
         expect(fireEvent.keyDown(knob, { key: "ArrowRight" })).toBe(false);
         expect(fireEvent.keyDown(knob, { key: "a" })).toBe(true);
       });
+
+      it("should let handled and unhandled keys reach a document listener", () => {
+        const seen: { key: string; prevented: boolean }[] = [];
+        const listener = (e: KeyboardEvent): void => {
+          seen.push({ key: e.key, prevented: e.defaultPrevented });
+        };
+        document.addEventListener("keydown", listener);
+        try {
+          fireEvent.keyDown(knob, { key: "ArrowRight" });
+          fireEvent.keyDown(knob, { key: "a" });
+        } finally {
+          document.removeEventListener("keydown", listener);
+        }
+        expect(seen).toEqual([
+          { key: "ArrowRight", prevented: true },
+          { key: "a", prevented: false },
+        ]);
+      });
     });
 
     describe("keyboard ownership", () => {
@@ -384,6 +402,19 @@ describe("Slider", () => {
 
         expect(onChange).not.toHaveBeenCalled();
         expect(onChangeCommitted).not.toHaveBeenCalled();
+      });
+
+      it("should hand keys to a document listener when keyboardStep is false", () => {
+        render(<SingleValueSlider {...defaultProps} keyboardStep={false} />);
+        const knob = within(screen.getByTestId(testId)).getByRole("slider");
+        const listener = jest.fn();
+        document.addEventListener("keydown", listener);
+        try {
+          fireEvent.keyDown(knob, { key: "ArrowRight" });
+        } finally {
+          document.removeEventListener("keydown", listener);
+        }
+        expect(listener).toHaveBeenCalledTimes(1);
       });
     });
   });
