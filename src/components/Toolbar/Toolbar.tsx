@@ -84,8 +84,10 @@ const DEFAULT_Y_OFFSET = 20;
  * @param visible Whether the toolbar is rendered. Default `true`.
  * @param onPositionChange Called after every drag move with the new pixel position.
  * @param props Any additional `HTMLDivElement` attributes (e.g. `data-testid`, `aria-label`) are
- *   forwarded to the root `div`. Internal `onPointerDown`, `onClick`, and `onKeyDown` handlers that
- *   call `stopPropagation` are merged with any consumer-provided handlers.
+ *   forwarded to the root `div`. Internal `onPointerDown` and `onClick` handlers call
+ *   `stopPropagation`, so presses stay off the surface under the toolbar; they are merged with any
+ *   consumer-provided handlers. Key events always bubble, so app shortcuts keep working while a
+ *   toolbar button has focus.
  *
  * @example
  * ```tsx
@@ -203,10 +205,8 @@ export const Toolbar = ({
           e.stopPropagation();
           onClick?.(e);
         }}
-        onKeyDown={(e) => {
-          e.stopPropagation();
-          onKeyDown?.(e);
-        }}
+        // keys bubble: apps listen for shortcuts on `document`
+        onKeyDown={onKeyDown}
         {...props}
       >
         {canDrag && (
@@ -229,6 +229,9 @@ export const Toolbar = ({
               onDoubleClick={handleDragHandleDoubleClick}
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
+                  // handled here: the key still bubbles, marked as used, so
+                  // app shortcuts on the same key step aside
+                  e.preventDefault();
                   handleDragHandleDoubleClick();
                 }
               }}

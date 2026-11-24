@@ -173,7 +173,7 @@ describe("Toolbar", () => {
     expect(parentPointerDown).not.toHaveBeenCalled();
   });
 
-  it("stops propagation of keydown events and forwards onKeyDown prop", () => {
+  it("lets keydown events bubble and still calls the onKeyDown prop", () => {
     const parentKeyDown = jest.fn();
     const ownKeyDown = jest.fn();
     render(
@@ -187,30 +187,56 @@ describe("Toolbar", () => {
         </Toolbar>
       </div>
     );
-    fireEvent.keyDown(screen.getByRole("toolbar"), { key: "Tab" });
-    expect(parentKeyDown).not.toHaveBeenCalled();
+    fireEvent.keyDown(screen.getByRole("button", { name: "Action" }), {
+      key: "z",
+      metaKey: true,
+    });
     expect(ownKeyDown).toHaveBeenCalledTimes(1);
+    expect(parentKeyDown).toHaveBeenCalledTimes(1);
   });
 
-  it("collapses content when Enter is pressed on the drag handle", () => {
+  it("lets keys pressed after clicking an action reach a document listener", async () => {
+    const seen: string[] = [];
+    const listener = (e: KeyboardEvent): void => {
+      seen.push(e.key);
+    };
+    document.addEventListener("keydown", listener);
+    try {
+      renderToolbar();
+      const user = userEvent.setup();
+      await user.click(screen.getByRole("button", { name: "Action 1" }));
+      await user.keyboard("z");
+      expect(seen).toEqual(["z"]);
+    } finally {
+      document.removeEventListener("keydown", listener);
+    }
+  });
+
+  // fireEvent returns false when the key was marked handled (preventDefault)
+  it("collapses content when Enter is pressed on the drag handle, and claims the key", () => {
     renderToolbar();
     const dragHandle = dragHandleOf();
     expect(
       screen.getByRole("button", { name: "Action 1" })
     ).toBeInTheDocument();
-    fireEvent.keyDown(dragHandle, { key: "Enter" });
+    expect(fireEvent.keyDown(dragHandle, { key: "Enter" })).toBe(false);
     expect(
       screen.queryByRole("button", { name: "Action 1" })
     ).not.toBeInTheDocument();
   });
 
-  it("collapses content when Space is pressed on the drag handle", () => {
+  it("collapses content when Space is pressed on the drag handle, and claims the key", () => {
     renderToolbar();
     const dragHandle = dragHandleOf();
-    fireEvent.keyDown(dragHandle, { key: " " });
+    expect(fireEvent.keyDown(dragHandle, { key: " " })).toBe(false);
     expect(
       screen.queryByRole("button", { name: "Action 1" })
     ).not.toBeInTheDocument();
+  });
+
+  it("leaves other keys on the drag handle unclaimed", () => {
+    renderToolbar();
+    expect(fireEvent.keyDown(dragHandleOf(), { key: "a" })).toBe(true);
   });
 
   it("does not collapse on other key presses on the drag handle", () => {

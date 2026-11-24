@@ -296,7 +296,6 @@ export const SliderBar: FC<SliderBarProps> = ({
         radiusStyles(Radius.Full)
       )}
       onMouseDown={handleTrackMouseDown}
-      onKeyDown={(e) => e.stopPropagation()}
       {...props}
     >
       {!isUnset && (

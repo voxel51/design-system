@@ -127,6 +127,8 @@ const DataTableContext = createContext<{
   card: boolean;
 } | null>(null);
 
+// Clicks only. Keys bubble so app shortcuts keep working; the row's Enter
+// already ignores keys pressed inside it.
 const stop = (e: SyntheticEvent): void => e.stopPropagation();
 
 const hasValue = (value: ReactNode): boolean =>
@@ -172,10 +174,7 @@ const WideRow: FC<{ columns: DataTableColumn[]; row: DataTableRow }> = ({
               cellClass(column)
             )}
             style={widthStyle(column.width)}
-            {...(column.role === "actions" && {
-              onClick: stop,
-              onKeyDown: stop,
-            })}
+            {...(column.role === "actions" && { onClick: stop })}
           >
             {row.cells[column.key]}
           </TableCell>
@@ -298,7 +297,6 @@ const Card: FC<{ columns: DataTableColumn[]; row: DataTableRow }> = ({
             role="presentation"
             className="flex shrink-0 items-center gap-xs"
             onClick={stop}
-            onKeyDown={stop}
           >
             <OverflowRowCompactContext.Provider value={COMPACT}>
               {actions.map((column) => (
@@ -337,7 +335,7 @@ const Card: FC<{ columns: DataTableColumn[]; row: DataTableRow }> = ({
         </div>
       )}
       {hasValue(row.detail) && (
-        <div role="presentation" onClick={stop} onKeyDown={stop}>
+        <div role="presentation" onClick={stop}>
           {row.detail}
         </div>
       )}
@@ -354,7 +352,7 @@ const Card: FC<{ columns: DataTableColumn[]; row: DataTableRow }> = ({
  * A row's `detail` (e.g. expanded details) shows full width under it.
  *
  * Clicks and Enter in an `actions` cell or a `detail` do not reach the
- * row's `onClick`.
+ * row's `onClick`. Key presses there still bubble to the page.
  *
  * @example
  * ```tsx

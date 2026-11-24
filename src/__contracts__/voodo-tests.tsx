@@ -64,6 +64,7 @@ import {
   Input,
   Justify,
   Kbd,
+  KbdSize,
   LinkColor,
   ListItem,
   Loader,
@@ -421,6 +422,11 @@ export const exhaustive = {
     md: true,
   } satisfies Record<PillSize, true>,
 
+  kbdSize: {
+    sm: true,
+    md: true,
+  } satisfies Record<KbdSize, true>,
+
   radioGroupSize: {
     sm: true,
     md: true,
@@ -653,6 +659,10 @@ export const Everything = (
       <AddIcon size={Size.Xl} color={BrandColor.Accent} />
       <StatusDot pulse color={BrandColor.Accent} />
       <Kbd title="Escape">Esc</Kbd>
+      <Kbd size="sm">Esc</Kbd>
+      <Kbd size={Size.Md}>Esc</Kbd>
+      {/* @ts-expect-error - lg is not a KbdSize */}
+      <Kbd size="lg">Esc</Kbd>
       {(["sm", "md", "lg"] as const).map((s) => (
         <Avatar key={s} name="Ada Lovelace" size={s} />
       ))}

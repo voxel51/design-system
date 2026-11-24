@@ -117,6 +117,38 @@ describe("DataTable", () => {
   );
 
   it.each([1000, 390])(
+    "lets keys in actions and detail reach a document listener, without the row's onClick, at %ipx",
+    async (width) => {
+      withWidth(width);
+      const onClick = jest.fn();
+      const seen: string[] = [];
+      const listener = (e: KeyboardEvent): void => {
+        seen.push(e.key);
+      };
+      document.addEventListener("keydown", listener);
+      try {
+        const user = userEvent.setup();
+        render(
+          <DataTable
+            columns={columns}
+            rows={[
+              { ...rows[0], onClick, detail: <button>Detail action</button> },
+            ]}
+          />
+        );
+        screen.getByRole("button", { name: /^(full|compact)$/ }).focus();
+        await user.keyboard("z{Enter}");
+        screen.getByRole("button", { name: "Detail action" }).focus();
+        await user.keyboard("x{Enter}");
+        expect(seen).toEqual(["z", "Enter", "x", "Enter"]);
+        expect(onClick).not.toHaveBeenCalled();
+      } finally {
+        document.removeEventListener("keydown", listener);
+      }
+    }
+  );
+
+  it.each([1000, 390])(
     "shows a row's detail without the row's onClick at %ipx",
     async (width) => {
       withWidth(width);
