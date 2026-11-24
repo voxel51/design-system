@@ -107,6 +107,22 @@ const SCRUB_THRESHOLD = 3;
 const decimalsFor = (rate: number): number =>
   Math.min(20, Math.max(0, Math.ceil(-Math.log10(rate) - 1e-9)));
 
+/** The decimal places `value` is written with. */
+const decimalsOf = (value: number): number => {
+  const [mantissa, exponent] = String(value).split("e");
+  const fraction = mantissa.split(".")[1]?.length ?? 0;
+  return Math.max(0, fraction - Number(exponent ?? 0));
+};
+
+/** A numeric prop as a finite number; `undefined` when unset, empty or not a number. */
+const toFiniteNumber = (value: unknown): number | undefined => {
+  if (typeof value === "number")
+    return Number.isFinite(value) ? value : undefined;
+  if (typeof value !== "string") return undefined;
+  const parsed = Number.parseFloat(value);
+  return Number.isFinite(parsed) ? parsed : undefined;
+};
+
 /**
  * Set a native input's value the way typing would, so React's `onChange` runs
  * for controlled and uncontrolled inputs alike.
@@ -356,6 +372,10 @@ export const Input: FC<InputProps> = ({
   const canScrub =
     Boolean(scrub) && type === InputType.Number && !disabled && !props.readOnly;
 
+  // ends a scrub in progress; `unmounting` skips the state update and focus
+  const endScrub = useRef<((unmounting?: boolean) => void) | null>(null);
+  useEffect(() => () => endScrub.current?.(true), []);
+
   const handlePointerDown = (event: PointerEvent<HTMLInputElement>): void => {
     onPointerDown?.(event);
 
@@ -364,8 +384,11 @@ export const Input: FC<InputProps> = ({
       !canScrub ||
       event.defaultPrevented ||
       event.button !== 0 ||
+      // a touch drag scrolls the page; touch taps the field to type
+      event.pointerType === "touch" ||
       // a focused field is being typed in: a press places the caret
-      document.activeElement === el
+      document.activeElement === el ||
+      endScrub.current
     ) {
       return;
     }
@@ -374,16 +397,18 @@ export const Input: FC<InputProps> = ({
     event.preventDefault();
     el.setPointerCapture(event.pointerId);
 
-    const step = Number(props.step);
-    const perPixel =
-      scrubStep ?? (Number.isFinite(step) && step > 0 ? step : 1);
-    const min = props.min === undefined ? -Infinity : Number(props.min);
-    const max = props.max === undefined ? Infinity : Number(props.max);
+    const step = toFiniteNumber(props.step);
+    const snap = step !== undefined && step > 0 ? step : undefined;
+    const perPixel = scrubStep ?? snap ?? 1;
+    const min = toFiniteNumber(props.min) ?? -Infinity;
+    const max = toFiniteNumber(props.max) ?? Infinity;
+    // the native step grid starts at `min`
+    const base = Number.isFinite(min) ? min : 0;
 
     const startY = event.clientY;
     let lastY = event.clientY;
-    let value = Number.parseFloat(el.value);
-    value = Number.isFinite(value) ? value : 0;
+    let value = toFiniteNumber(el.value) ?? 0;
+    let shown = el.value;
     let moved = false;
 
     const root = document.documentElement;
@@ -403,38 +428,67 @@ export const Input: FC<InputProps> = ({
         return;
       }
 
+      // a controlled parent may have clamped or rounded the last value:
+      // carry on from what it committed
+      if (el.value !== shown) {
+        value = toFiniteNumber(el.value) ?? value;
+      }
+
       const rate = perPixel * (e.shiftKey ? 10 : e.altKey ? 0.1 : 1);
       // up is more: screen y grows downward
       value = Math.min(max, Math.max(min, value + (lastY - e.clientY) * rate));
       lastY = e.clientY;
 
-      const shown = Number(value.toFixed(decimalsFor(rate)));
-      if (String(shown) !== el.value) {
-        setNativeValue(el, String(shown));
+      // on the step grid, so the field stays valid; otherwise at the drag's
+      // own precision
+      const next = snap
+        ? Number(
+            (base + Math.round((value - base) / snap) * snap).toFixed(
+              decimalsOf(snap) + decimalsOf(base)
+            )
+          )
+        : Number(value.toFixed(decimalsFor(rate)));
+      const text = String(Math.min(max, Math.max(min, next)));
+      if (text !== el.value) {
+        setNativeValue(el, text);
       }
+      shown = el.value;
     };
 
-    const end = (e: globalThis.PointerEvent): void => {
+    const finish = (unmounting: boolean, focus: boolean): void => {
+      endScrub.current = null;
       el.removeEventListener("pointermove", move);
       el.removeEventListener("pointerup", end);
       el.removeEventListener("pointercancel", end);
-      if (el.hasPointerCapture(e.pointerId)) {
-        el.releasePointerCapture(e.pointerId);
+      el.removeEventListener("lostpointercapture", end);
+      if (el.hasPointerCapture(event.pointerId)) {
+        el.releasePointerCapture(event.pointerId);
       }
       root.style.cursor = rootCursor;
-      setScrubbing(false);
 
       if (moved) {
         onScrubEnd?.();
-      } else if (e.type === "pointerup") {
-        el.focus();
-        el.select();
+      }
+
+      if (!unmounting) {
+        setScrubbing(false);
+        if (focus) {
+          el.focus();
+          el.select();
+        }
       }
     };
+
+    // released, cancelled, or the capture was lost (the field hidden)
+    const end = (e: globalThis.PointerEvent): void =>
+      finish(false, !moved && e.type === "pointerup");
+
+    endScrub.current = (unmounting = false) => finish(unmounting, false);
 
     el.addEventListener("pointermove", move);
     el.addEventListener("pointerup", end);
     el.addEventListener("pointercancel", end);
+    el.addEventListener("lostpointercapture", end);
   };
 
   const inputClasses = cn(
