@@ -212,25 +212,31 @@ describe("Toolbar", () => {
     }
   });
 
-  it("collapses content when Enter is pressed on the drag handle", () => {
+  // fireEvent returns false when the key was marked handled (preventDefault)
+  it("collapses content when Enter is pressed on the drag handle, and claims the key", () => {
     renderToolbar();
     const dragHandle = dragHandleOf();
     expect(
       screen.getByRole("button", { name: "Action 1" })
     ).toBeInTheDocument();
-    fireEvent.keyDown(dragHandle, { key: "Enter" });
+    expect(fireEvent.keyDown(dragHandle, { key: "Enter" })).toBe(false);
     expect(
       screen.queryByRole("button", { name: "Action 1" })
     ).not.toBeInTheDocument();
   });
 
-  it("collapses content when Space is pressed on the drag handle", () => {
+  it("collapses content when Space is pressed on the drag handle, and claims the key", () => {
     renderToolbar();
     const dragHandle = dragHandleOf();
-    fireEvent.keyDown(dragHandle, { key: " " });
+    expect(fireEvent.keyDown(dragHandle, { key: " " })).toBe(false);
     expect(
       screen.queryByRole("button", { name: "Action 1" })
     ).not.toBeInTheDocument();
+  });
+
+  it("leaves other keys on the drag handle unclaimed", () => {
+    renderToolbar();
+    expect(fireEvent.keyDown(dragHandleOf(), { key: "a" })).toBe(true);
   });
 
   it("does not collapse on other key presses on the drag handle", () => {

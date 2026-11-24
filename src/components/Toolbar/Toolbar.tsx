@@ -229,6 +229,9 @@ export const Toolbar = ({
               onDoubleClick={handleDragHandleDoubleClick}
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
+                  // handled here: the key still bubbles, marked as used, so
+                  // app shortcuts on the same key step aside
+                  e.preventDefault();
                   handleDragHandleDoubleClick();
                 }
               }}
