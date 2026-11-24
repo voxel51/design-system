@@ -1048,6 +1048,15 @@ export const Everything = (
           control={<Input size={s} placeholder={s} />}
         />
       ))}
+      <Input
+        type="number"
+        size="sm"
+        step={0.01}
+        scrub
+        scrubStep={0.001}
+        onScrubStart={() => {}}
+        onScrubEnd={() => {}}
+      />
       {RESIZES.map((r) => (
         <FormField key={r} control={<TextArea size="sm" resize={r} />} />
       ))}

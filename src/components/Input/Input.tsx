@@ -5,6 +5,7 @@ import {
   type KeyboardEvent,
   InputHTMLAttributes,
   type MutableRefObject,
+  type PointerEvent,
   type Ref,
   useEffect,
   useRef,
@@ -83,7 +84,39 @@ export interface InputProps extends ModifiedInputProps {
   borderless?: boolean;
   /** Ref to the native input element, for a parent that must focus or measure it. */
   inputRef?: Ref<HTMLInputElement>;
+  /**
+   * For a `"number"` input: press and drag up to raise the value, down to lower
+   * it. A press without a drag focuses the field for typing.
+   */
+  scrub?: boolean;
+  /**
+   * How far the value moves per pixel dragged when `scrub` is set. Defaults to
+   * `step`, or 1. Holding Shift moves ten times as far, Alt a tenth as far.
+   */
+  scrubStep?: number;
+  /** A scrub drag started moving the value. */
+  onScrubStart?: () => void;
+  /** A scrub drag that moved the value ended. */
+  onScrubEnd?: () => void;
 }
+
+/** Pixels a press must travel before it scrubs rather than focuses. */
+const SCRUB_THRESHOLD = 3;
+
+/** The decimal places that show a value moving in increments of `rate`. */
+const decimalsFor = (rate: number): number =>
+  Math.min(20, Math.max(0, Math.ceil(-Math.log10(rate) - 1e-9)));
+
+/**
+ * Set a native input's value the way typing would, so React's `onChange` runs
+ * for controlled and uncontrolled inputs alike.
+ */
+const setNativeValue = (el: HTMLInputElement, value: string): void => {
+  // the prototype's setter, with `el` as receiver: React's own value tracker
+  // overrides `value` on the element and would swallow the change
+  Reflect.set(HTMLInputElement.prototype, "value", value, el);
+  el.dispatchEvent(new Event("input", { bubbles: true }));
+};
 
 /**
  * Characters permitted within a telephone (`"tel"`) input.
@@ -205,6 +238,9 @@ export const inputStyle = ({
  *     <Input size="sm" value={value} onChange={onChange} error={!!error} />
  *   );
  * };
+ *
+ * // a number field that changes as the pointer drags up or down on it
+ * <Input type="number" size="sm" step={0.01} scrub defaultValue={0.5} />
  * ```
  *
  * @param size The size of the input. Defaults to `"md"`. See {@link Size}.
@@ -218,6 +254,10 @@ export const inputStyle = ({
  * @param icon Optional icon component to prefix the input's value.
  * @param borderless If `true`, drops the frame so the field sits flush in a bar or header.
  * @param inputRef Ref to the native input element.
+ * @param scrub For a `"number"` input, drag up or down on the field to change its value.
+ * @param scrubStep How far the value moves per pixel dragged. Defaults to `step`, or 1.
+ * @param onScrubStart Callback when a scrub drag starts moving the value.
+ * @param onScrubEnd Callback when a scrub drag that moved the value ends.
  * @param props Additional HTML properties to apply to the component.
  */
 export const Input: FC<InputProps> = ({
@@ -233,6 +273,11 @@ export const Input: FC<InputProps> = ({
   icon,
   borderless,
   inputRef: forwardedRef,
+  scrub,
+  scrubStep,
+  onScrubStart,
+  onScrubEnd,
+  onPointerDown,
   ...props
 }) => {
   // Password fields toggle their rendered type between "password" and "text".
@@ -306,6 +351,92 @@ export const Input: FC<InputProps> = ({
     onChange?.(event);
   };
 
+  // Scrubbing: pressed on a number field, the up/down cursor shows until release
+  const [scrubbing, setScrubbing] = useState(false);
+  const canScrub =
+    Boolean(scrub) && type === InputType.Number && !disabled && !props.readOnly;
+
+  const handlePointerDown = (event: PointerEvent<HTMLInputElement>): void => {
+    onPointerDown?.(event);
+
+    const el = event.currentTarget;
+    if (
+      !canScrub ||
+      event.defaultPrevented ||
+      event.button !== 0 ||
+      // a focused field is being typed in: a press places the caret
+      document.activeElement === el
+    ) {
+      return;
+    }
+
+    // hold focus back until the press turns out to be a click, not a drag
+    event.preventDefault();
+    el.setPointerCapture(event.pointerId);
+
+    const step = Number(props.step);
+    const perPixel =
+      scrubStep ?? (Number.isFinite(step) && step > 0 ? step : 1);
+    const min = props.min === undefined ? -Infinity : Number(props.min);
+    const max = props.max === undefined ? Infinity : Number(props.max);
+
+    const startY = event.clientY;
+    let lastY = event.clientY;
+    let value = Number.parseFloat(el.value);
+    value = Number.isFinite(value) ? value : 0;
+    let moved = false;
+
+    const root = document.documentElement;
+    const rootCursor = root.style.cursor;
+    root.style.cursor = "ns-resize";
+    setScrubbing(true);
+
+    const move = (e: globalThis.PointerEvent): void => {
+      if (!moved && Math.abs(startY - e.clientY) < SCRUB_THRESHOLD) {
+        return;
+      }
+
+      if (!moved) {
+        moved = true;
+        lastY = e.clientY;
+        onScrubStart?.();
+        return;
+      }
+
+      const rate = perPixel * (e.shiftKey ? 10 : e.altKey ? 0.1 : 1);
+      // up is more: screen y grows downward
+      value = Math.min(max, Math.max(min, value + (lastY - e.clientY) * rate));
+      lastY = e.clientY;
+
+      const shown = Number(value.toFixed(decimalsFor(rate)));
+      if (String(shown) !== el.value) {
+        setNativeValue(el, String(shown));
+      }
+    };
+
+    const end = (e: globalThis.PointerEvent): void => {
+      el.removeEventListener("pointermove", move);
+      el.removeEventListener("pointerup", end);
+      el.removeEventListener("pointercancel", end);
+      if (el.hasPointerCapture(e.pointerId)) {
+        el.releasePointerCapture(e.pointerId);
+      }
+      root.style.cursor = rootCursor;
+      setScrubbing(false);
+
+      if (moved) {
+        onScrubEnd?.();
+      } else if (e.type === "pointerup") {
+        el.focus();
+        el.select();
+      }
+    };
+
+    el.addEventListener("pointermove", move);
+    el.addEventListener("pointerup", end);
+    el.addEventListener("pointercancel", end);
+  };
+
   const inputClasses = cn(
     inputStyle({
       borderless,
@@ -317,6 +448,7 @@ export const Input: FC<InputProps> = ({
       trailingControl: isPassword,
     }),
     type === InputType.Number && numberInputStyles,
+    scrubbing && "cursor-ns-resize select-none",
     className
   );
 
@@ -335,6 +467,7 @@ export const Input: FC<InputProps> = ({
           value={value}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
+          onPointerDown={handlePointerDown}
           {...props}
         />
         {isPassword && (

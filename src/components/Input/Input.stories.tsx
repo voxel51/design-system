@@ -106,6 +106,28 @@ export const Types: Story = {
   ),
 };
 
+/** Press and drag up or down on the field; a click without a drag types. */
+export const Scrub: Story = {
+  render: () => {
+    const [value, setValue] = useState("0.5");
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+        <Input
+          type={InputType.Number}
+          size={Size.Sm}
+          step={0.01}
+          min={0}
+          max={1}
+          scrub
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+        />
+        <Input type={InputType.Number} size={Size.Sm} scrub defaultValue={10} />
+      </div>
+    );
+  },
+};
+
 export const Disabled: Story = {
   args: {
     placeholder: "you@example.com",
