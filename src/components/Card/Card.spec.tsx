@@ -16,4 +16,11 @@ describe("Card", () => {
     expect(card).toHaveClass("border-1");
     expect(card).not.toHaveAttribute("border");
   });
+
+  it("is a pointer target with `interactive` and keeps it off the DOM", () => {
+    render(<Card interactive>{CONTENT}</Card>);
+    const card = screen.getByText(CONTENT);
+    expect(card).toHaveClass("cursor-pointer");
+    expect(card).not.toHaveAttribute("interactive");
+  });
 });
