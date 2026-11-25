@@ -8,6 +8,7 @@ import {
   BorderColor,
   borderColorClass,
   Color,
+  ElementState,
   Radius,
   Shadow,
 } from "@/types";
@@ -34,6 +35,7 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
   compact?: boolean;
   shadow?: Shadow;
   outlined?: boolean;
+  interactive?: boolean;
 }
 
 const bgColorMap: Record<CardBackground, Color> = {
@@ -59,6 +61,9 @@ const bgColorMap: Record<CardBackground, Color> = {
  * @param compact When true, reduces internal padding.
  * @param shadow The shadow depth applied to the card. Defaults to `"none"`.
  * @param outlined When true, replaces the shadow with a border outline.
+ * @param interactive When true, the card is a target: a pointer cursor, one
+ *  step toward the nested surface on hover, and a focus ring. It does not set a
+ *  role or handle keys; do that where the card opens something.
  * @param children The content of the card.
  * @param props Additional HTML properties to apply to the card.
  */
@@ -69,6 +74,7 @@ export const Card: FC<CardProps> = ({
   background = CardBackground.Primary,
   border,
   outlined,
+  interactive,
   // Figma Card: bg/card, radius 8, 20px padding, no shadow or edge
   shadow = Shadow.None,
   ...props
@@ -85,6 +91,11 @@ export const Card: FC<CardProps> = ({
         bgColorClass(backgroundColor),
         compact ? "p-2.5" : "p-5",
         radiusStyles(Radius.Lg),
+        interactive &&
+          cn(
+            "cursor-pointer transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-solid",
+            bgColorClass(BackgroundColor.CardNested, ElementState.Hover)
+          ),
         className
       )}
       {...props}
