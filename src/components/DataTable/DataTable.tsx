@@ -49,6 +49,10 @@ export type DataTableColumn = {
   /** Hides the column (header and cells) on windows narrower than this. Wide mode only. */
   hideBelow?: Breakpoint;
   align?: "start" | "end";
+  /** Makes the header a sort button; pass the column's current direction. Wide mode only. */
+  sort?: "asc" | "desc" | "none";
+  /** Called when the sortable header is clicked. */
+  onSort?: () => void;
   /**
    * Column width in wide mode: a length such as `"16rem"`; `"fit"` hugs the
    * content without wrapping; `"fill"` takes the free space and truncates
@@ -210,6 +214,8 @@ const WideTable: FC<Omit<DataTableProps, "cardBelow">> = ({
                 scope="col"
                 className={cellClass(column)}
                 style={widthStyle(column.width)}
+                sort={column.sort}
+                onSort={column.onSort}
               >
                 {column.label}
               </TableHead>

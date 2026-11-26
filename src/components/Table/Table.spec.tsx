@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import radiusStyles from "@/styles/radius";
@@ -337,5 +337,44 @@ describe("TableCell indent", () => {
     );
 
     expect(screen.getByText("nested")).toHaveStyle({ paddingLeft: padding });
+  });
+
+  it("keeps the plain variant's header row to py-2", () => {
+    render(
+      <Table variant="plain">
+        <TableHeader>
+          <TableRow>
+            <TableHead>name</TableHead>
+          </TableRow>
+        </TableHeader>
+      </Table>
+    );
+
+    expect(screen.getByRole("columnheader")).toHaveClass(
+      "px-4",
+      "py-2",
+      "leading-4"
+    );
+  });
+
+  it("makes a sortable header one button that fills the cell", () => {
+    const onSort = jest.fn();
+    render(
+      <Table variant="plain">
+        <TableHeader>
+          <TableRow>
+            <TableHead sort="asc" onSort={onSort}>
+              name
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+      </Table>
+    );
+
+    expect(screen.getByRole("columnheader")).toHaveClass("p-0");
+    const button = screen.getByRole("button", { name: "name" });
+    expect(button).toHaveClass("w-full", "px-4", "py-2");
+    fireEvent.click(button);
+    expect(onSort).toHaveBeenCalledTimes(1);
   });
 });
