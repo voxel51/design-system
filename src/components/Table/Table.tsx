@@ -7,7 +7,11 @@ import {
   useContext,
 } from "react";
 
-import { ArrowUpDownIcon } from "@/components/Icons";
+import {
+  ArrowDownwardIcon,
+  ArrowUpDownIcon,
+  ArrowUpwardIcon,
+} from "@/components/Icons";
 import radiusStyles from "@/styles/radius";
 import { RULE_BORDER } from "@/styles/rule";
 import { textStyles } from "@/styles/text";
@@ -328,17 +332,25 @@ export const TableHead: FC<
   const boxed = variant === TableVariant.Boxed;
   const sentence = boxed || variant === TableVariant.Plain;
   const sorted = sort === TableSort.Asc || sort === TableSort.Desc;
+  const padding =
+    variant === TableVariant.Rows
+      ? "py-2.5 pr-4 last:pr-0"
+      : boxed
+        ? "px-3 py-2 font-normal"
+        : variant === TableVariant.Plain
+          ? "px-4 py-2"
+          : "px-4 py-2.5";
   return (
     <th
       className={cn(
-        variant === TableVariant.Rows
-          ? "py-2.5 pr-4 last:pr-0"
-          : boxed
-            ? "px-3 py-2 font-normal"
-            : "px-4 py-2.5",
+        // A sortable header is one button that fills the cell, so the whole
+        // cell is the target and its hover tint.
+        onSort ? "p-0" : padding,
         alignClass(align),
         textStyles(sentence ? TextVariant.Caption : TextVariant.Label),
         sentence && !boxed && "font-medium",
+        // After the text style, which would otherwise merge it away
+        variant === TableVariant.Plain && "leading-4",
         textColorClass(
           sorted
             ? TextColor.Primary
@@ -355,13 +367,21 @@ export const TableHead: FC<
         <button
           type="button"
           className={cn(
-            "inline-flex cursor-pointer select-none items-center gap-1",
-            align === TableAlign.End && "w-full justify-end"
+            "flex w-full cursor-pointer select-none items-center gap-1 text-[inherit] font-[inherit]",
+            padding,
+            bgColorClass(BackgroundColor.CardNested, ElementState.Hover),
+            align === TableAlign.End && "justify-end"
           )}
           onClick={onSort}
         >
           {children}
-          <ArrowUpDownIcon aria-hidden size={12} className="opacity-60" />
+          {sort === TableSort.Asc ? (
+            <ArrowUpwardIcon aria-hidden size={12} />
+          ) : sort === TableSort.Desc ? (
+            <ArrowDownwardIcon aria-hidden size={12} />
+          ) : (
+            <ArrowUpDownIcon aria-hidden size={12} className="opacity-60" />
+          )}
         </button>
       ) : (
         children

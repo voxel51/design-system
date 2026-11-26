@@ -1,7 +1,7 @@
 import { Menu } from "@base-ui/react/menu";
 import type { FC, HTMLAttributes, ReactNode } from "react";
 
-import { ChevronRightIcon, Icon } from "@/components/Icons";
+import { ChevronRightStrokeIcon, Icon } from "@/components/Icons";
 import { Text } from "@/components/Text";
 import {
   BackgroundColor,
@@ -144,11 +144,11 @@ export const MenuSubmenuItem: FC<MenuSubmenuItemProps> = ({
         <span
           aria-hidden
           className={cn(
-            "flex size-5 shrink-0 items-center justify-center",
+            "flex size-4 shrink-0 items-center justify-center",
             textColorClass(IconColor.Default)
           )}
         >
-          <ChevronRightIcon />
+          <ChevronRightStrokeIcon size={16} />
         </span>
       </Menu.SubmenuTrigger>
 
